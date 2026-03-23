@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "skills": {
+    "skill-vetter": {
+      "version": "1.0.0",
+      "installedAt": 1774276686791
+    },
+    "self-improving": {
+      "version": "1.2.16",
+      "installedAt": 1774276742610
+    },
+    "find": {
+      "version": "1.0.0",
+      "installedAt": 1774276802031
+    },
+    "agent-browser-clawdbot": {
+      "version": "0.1.0",
+      "installedAt": 1774276982162
+    },
+    "skill-creator": {
+      "version": "0.1.0",
+      "installedAt": 1774277164805
+    },
+    "memory-setup-openclaw": {
+      "version": "1.0.0",
+      "installedAt": 1774277402124
+    },
+    "find-skill": {
+      "version": "1.0.0",
+      "installedAt": 1774277403872
+    },
+    "offline-llama": {
+      "version": "1.0.0",
+      "installedAt": 1774279141770
+    },
+    "cron-health-check": {
+      "version": "1.0.0",
+      "installedAt": 1774287489408
+    }
+  }
+}
