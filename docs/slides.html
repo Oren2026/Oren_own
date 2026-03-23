@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oren 黑輪 - 我們的挑戰與解法</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .slideshow {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            padding: 60px 80px;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+        }
+        
+        .slide.active { display: flex; flex-direction: column; }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        h1 {
+            font-size: 3.5em;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        h2 {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: #ffd93d;
+        }
+        
+        h3 {
+            font-size: 1.4em;
+            color: #6bffb8;
+            margin-bottom: 16px;
+        }
+        
+        .subtitle {
+            font-size: 1.5em;
+            color: #888;
+            margin-bottom: 40px;
+        }
+        
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 20px;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .card.problem { border-left: 4px solid #ff6b6b; }
+        .card.solution { border-left: 4px solid #6bffb8; }
+        .card.idea { border-left: 4px solid #ffd93d; }
+        
+        ul {
+            list-style: none;
+            margin-top: 15px;
+        }
+        
+        li {
+            padding: 10px 0;
+            font-size: 1.2em;
+            color: #ccc;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        li:last-child { border-bottom: none; }
+        
+        li::before {
+            content: '→';
+            margin-right: 15px;
+            color: #ffd93d;
+        }
+        
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+            transition: width 0.3s ease;
+            z-index: 100;
+        }
+        
+        .nav-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 40px;
+            font-size: 14px;
+            color: #444;
+        }
+        
+        .big-text {
+            font-size: 2.5em;
+            line-height: 1.5;
+            color: #fff;
+        }
+        
+        .highlight {
+            color: #ffd93d;
+            font-weight: 700;
+        }
+        
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .tag {
+            background: rgba(255,107,107,0.2);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1em;
+            color: #ff6b6b;
+            border: 1px solid rgba(255,107,107,0.3);
+        }
+        
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .timeline-time {
+            background: rgba(107,255,184,0.2);
+            color: #6bffb8;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            min-width: 100px;
+            text-align: center;
+        }
+        
+        .timeline-text {
+            font-size: 1.3em;
+            color: #ddd;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .icon-item {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+        }
+        
+        .icon-item .emoji {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .icon-item p {
+            color: #888;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progress"></div>
+    
+    <div class="slideshow" id="slideshow">
+        
+        <!-- Slide 1: 標題 -->
+        <div class="slide active">
+            <div class="content" style="justify-content: center; align-items: center; text-align: center;">
+                <h1>🐟 Oren 黑輪</h1>
+                <p class="subtitle">我們的挑戰與解法</p>
+                <p style="color: #666; margin-top: 60px;">2026.03.23</p>
+            </div>
+            <div class="slide-number">1 / 8</div>
+        </div>
+        
+        <!-- Slide 2: 今天發生什麼 -->
+        <div class="slide">
+            <h2>📋 今天我們做了什麼</h2>
+            <div class="content">
+                <div class="icon-grid">
+                    <div class="icon-item">
+                        <div class="emoji">🧠</div>
+                        <h3>知識庫重構</h3>
+                        <p>GitHub Pages 上線<br>自動每小時更新</p>
+                    </div>
+                    <div class="icon-item">
+                        <div class="emoji">⚡</div>
+                        <h3>資訊收集優化</h3>
+                        <p>每 5 分鐘搜尋<br>興趣主題追蹤</p>
+                    </div>
+                    <div class="icon-item">
+                        <div class="emoji">🎨</div>
+                        <h3>前端介面調整</h3>
+                        <p>標籤過濾器優化<br>手機版 RWD</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">2 / 8</div>
+        </div>
+        
+        <!-- Slide 3: 挑戰 1 -->
+        <div class="slide">
+            <h2>🚧 挑戰一：CRON 卡住</h2>
+            <div class="content">
+                <div class="grid-2">
+                    <div class="card problem">
+                        <h3>❌ 問題</h3>
+                        <ul>
+                            <li>每小時整合停在 "running"</li>
+                            <li>GitHub 24 小時沒更新</li>
+                            <li>daily/ 累積 5+ 篇文章</li>
+                            <li>系統看似正常但實際僵屍</li>
+                        </ul>
+                    </div>
+                    <div class="card solution">
+                        <h3>✅ 解法</h3>
+                        <ul>
+                            <li>刪除僵住的 CRON</li>
+                            <li>重新建立新的每小時任務</li>
+                            <li>設定 120 秒 timeout</li>
+                            <li>未來加強監控機制</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">3 / 8</div>
+        </div>
+        
+        <!-- Slide 4: 挑戰 2 -->
+        <div class="slide">
+            <h2>🚧 挑戰二：Telegram 回應延遲</h2>
+            <div class="content">
+                <div class="grid-2">
+                    <div class="card problem">
+                        <h3>❌ 問題</h3>
+                        <ul>
+                            <li>14:00 後需要發 2 次才能回</li>
+                            <li>溝通節奏被打斷</li>
+                            <li>讓人覺得「系統怪怪的」</li>
+                        </ul>
+                    </div>
+                    <div class="card solution">
+                        <h3>✅ 解法</h3>
+                        <ul>
+                            <li>確認 isolated session 隔離</li>
+                            <li>CRON 與 main session 獨立</li>
+                            <li>觀察是否網路/頻道問題</li>
+                            <li>目前已穩定，持續監控</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">4 / 8</div>
+        </div>
+        
+        <!-- Slide 5: 挑戰 3 -->
+        <div class="slide">
+            <h2>🚧 挑戰三：標籤太雜</h2>
+            <div class="content">
+                <div class="grid-2">
+                    <div class="card problem">
+                        <h3>❌ 問題</h3>
+                        <ul>
+                            <li>所有標籤都顯示出來</li>
+                            <li>數量多但很多只出現 1-2 次</li>
+                            <li>過濾器反而造成視覺負擔</li>
+                        </ul>
+                    </div>
+                    <div class="card solution">
+                        <h3>✅ 解法</h3>
+                        <ul>
+                            <li>設定門檻：只顯示 ≥3 篇的標籤</li>
+                            <li>動態計算，隨文章增加調整</li>
+                            <li>上方乾淨，點下面文章才看到</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">5 / 8</div>
+        </div>
+        
+        <!-- Slide 6: 我們的核心 -->
+        <div class="slide">
+            <h2>💡 我們的核心邏輯</h2>
+            <div class="content">
+                <div class="big-text" style="text-align: center;">
+                    <p style="margin-bottom: 30px;">「世界是可以很簡單的看，<br>很複雜的享受的」</p>
+                    <p>— 黑皮</p>
+                </div>
+                <div class="timeline" style="margin-top: 50px;">
+                    <div class="timeline-item">
+                        <span class="timeline-time">拆解</span>
+                        <span class="timeline-text">複雜事物 → 簡單元素</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-time">找規律</span>
+                        <span class="timeline-text">萬變不離其宗</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-time">享受</span>
+                        <span class="timeline-text">用規律生成新東西</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">6 / 8</div>
+        </div>
+        
+        <!-- Slide 7: 設計哲學 -->
+        <div class="slide">
+            <h2>🎨 排版與設計的邏輯</h2>
+            <div class="content">
+                <div class="grid-2">
+                    <div class="card idea">
+                        <h3>🧱 結構優先</h3>
+                        <ul>
+                            <li>先有層次，才有美觀</li>
+                            <li>資訊太多時用過濾/分類</li>
+                            <li>手機 vs 電腦不同佈局</li>
+                        </ul>
+                    </div>
+                    <div class="card idea">
+                        <h3>👁️ 視覺引導</h3>
+                        <ul>
+                            <li>顏色用來區分狀態</li>
+                            <li>大小用來表示重要性</li>
+                            <li>留白讓眼睛休息</li>
+                        </ul>
+                    </div>
+                    <div class="card idea">
+                        <h3>🔄 互動回饋</h3>
+                        <ul>
+                            <li>點擊要有反應</li>
+                            <li>狀態變化要明確</li>
+                            <li>操作要可逆/可恢復</li>
+                        </ul>
+                    </div>
+                    <div class="card idea">
+                        <h3>📱 簡約取勝</h3>
+                        <ul>
+                            <li>不重要的就隱藏</li>
+                            <li>門檻式呈現（≥3才顯示）</li>
+                            <li>減少視覺噪音</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">7 / 8</div>
+        </div>
+        
+        <!-- Slide 8: 結尾 -->
+        <div class="slide">
+            <div class="content" style="justify-content: center; align-items: center; text-align: center;">
+                <h1 style="font-size: 4em;">🐟</h1>
+                <p class="subtitle" style="margin-top: 30px;">持續迭代，保持好奇</p>
+                <div class="tag-cloud" style="justify-content: center; margin-top: 50px;">
+                    <span class="tag">知識庫</span>
+                    <span class="tag">CRON 監控</span>
+                    <span class="tag">UI/UX</span>
+                    <span class="tag">簡報系統</span>
+                </div>
+                <p style="color: #666; margin-top: 60px;">github.com/Oren2026/Oren_own</p>
+            </div>
+            <div class="slide-number">8 / 8</div>
+        </div>
+        
+    </div>
+    
+    <div class="nav-hint">← → 或點擊 切換頁面</div>
+    
+    <script>
+        let current = 0;
+        const slides = document.querySelectorAll('.slide');
+        const total = slides.length;
+        const progress = document.getElementById('progress');
+        
+        function showSlide(n) {
+            slides.forEach(s => s.classList.remove('active'));
+            current = (n + total) % total;
+            slides[current].classList.add('active');
+            progress.style.width = ((current + 1) / total * 100) + '%';
+        }
+        
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight' || e.key === ' ') showSlide(current + 1);
+            if (e.key === 'ArrowLeft') showSlide(current - 1);
+        });
+        
+        document.addEventListener('click', e => {
+            if (e.clientX > window.innerWidth / 2) showSlide(current + 1);
+            else showSlide(current - 1);
+        });
+        
+        showSlide(0);
+    </script>
+</body>
+</html>
