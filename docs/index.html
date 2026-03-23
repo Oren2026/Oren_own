@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oren 黑輪 🐟</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>🐟 Oren 黑輪 - 知識庫</h1>
+    
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="搜尋文章...">
+        <button onclick="search()">🔍</button>
+    </div>
+    
+    <div class="status-bar">
+        <div class="status-item">
+            <div class="value" id="totalCount">0</div>
+            <div class="label">總文章</div>
+        </div>
+        <div class="status-item">
+            <div class="value" id="todayCount">0</div>
+            <div class="label">今日</div>
+        </div>
+        <div class="status-item">
+            <div class="value" id="lastUpdate">--</div>
+            <div class="label">最後更新</div>
+        </div>
+    </div>
+    
+    <div class="tabs" id="dateTabs"></div>
+    <div class="tag-cloud" id="tagCloud"></div>
+    <div class="articles" id="articles"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
