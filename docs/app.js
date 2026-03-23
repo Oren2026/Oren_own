@@ -34,7 +34,10 @@ async function loadAllData() {
                 if (response.ok) {
                     const data = await response.json();
                     if (data.articles && Array.isArray(data.articles)) {
-                        allArticles = allArticles.concat(data.articles);
+                        // 將 JSON 檔案的 date 注入到每篇文章
+                        const fileDate = data.date || filename;
+                        const articlesWithDate = data.articles.map(a => ({...a, date: fileDate}));
+                        allArticles = allArticles.concat(articlesWithDate);
                         dateList.push(dateStr);
                     }
                 }
