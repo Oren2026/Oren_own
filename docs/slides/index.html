@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oren 黑輪 - 我們的挑戰與解法</title>
+    <title>FIRA AutoRace - TurtleBot 3 進度匯報</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,201 +14,237 @@
         <!-- Slide 1: 標題 -->
         <div class="slide active">
             <div class="content" style="justify-content: center; align-items: center; text-align: center;">
-                <h1>🐟 Oren 黑輪</h1>
-                <p class="subtitle">我們的挑戰與解法</p>
+                <h1>🤖 FIRA AutoRace 機器人</h1>
+                <p class="subtitle">TurtleBot 3 自動駕駛系統開發</p>
+                <div style="margin-top: 40px;">
+                    <span class="tag">ROS</span>
+                    <span class="tag yellow">OpenCV</span>
+                    <span class="tag blue">Python</span>
+                </div>
                 <p style="color: #666; margin-top: 60px;">2026.03.23</p>
             </div>
-            <div class="slide-number">1 / 8</div>
+            <div class="slide-number">1 / 7</div>
         </div>
         
-        <!-- Slide 2: 今天發生什麼 -->
+        <!-- Slide 2: 硬體架構 -->
         <div class="slide">
-            <h2>📋 今天我們做了什麼</h2>
-            <div class="content">
-                <div class="icon-grid">
-                    <div class="icon-item">
-                        <div class="emoji">🧠</div>
-                        <h3>知識庫重構</h3>
-                        <p>GitHub Pages 上線<br>自動每小時更新</p>
-                    </div>
-                    <div class="icon-item">
-                        <div class="emoji">⚡</div>
-                        <h3>資訊收集優化</h3>
-                        <p>每 5 分鐘搜尋<br>興趣主題追蹤</p>
-                    </div>
-                    <div class="icon-item">
-                        <div class="emoji">🎨</div>
-                        <h3>前端介面調整</h3>
-                        <p>標籤過濾器優化<br>手機版 RWD</p>
-                    </div>
-                </div>
-            </div>
-            <div class="slide-number">2 / 8</div>
-        </div>
-        
-        <!-- Slide 3: 挑戰 1 -->
-        <div class="slide">
-            <h2>🚧 挑戰一：CRON 卡住</h2>
+            <h2>📦 硬體架構</h2>
             <div class="content">
                 <div class="grid-2">
-                    <div class="card problem">
-                        <h3>❌ 問題</h3>
+                    <div>
+                        <h3>主控制器</h3>
+                        <div class="card info">
+                            <p style="font-size: 1.2em; color: #fff;">TurtleBot 3 Burger</p>
+                            <p style="color: #888; margin-top: 8px;">Raspberry Pi 3 B+ + STM32F411</p>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <h3>感測器</h3>
+                            <div class="card info" style="margin-top: 10px;">
+                                <p>🔴 LDS-01 雷射雷達</p>
+                                <p style="color: #888; font-size: 0.9em; margin-top: 5px;">360° 障礙偵測，範圍 120mm ~ 3,500mm</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>視覺系統</h3>
+                        <div class="card info">
+                            <p style="font-size: 1.2em; color: #fff;">USB Camera</p>
+                            <p style="color: #888; margin-top: 8px;">解析度：640×480</p>
+                            <p style="color: #888;">用途：OpenCV 影像處理（待開發）</p>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <h3>通訊</h3>
+                            <div class="card info" style="margin-top: 10px;">
+                                <p>📡 ROS Topics / Services</p>
+                                <p style="color: #888; margin-top: 5px;">Python 訂閱 / 發布控制指令</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">2 / 7</div>
+        </div>
+        
+        <!-- Slide 3: 軟體架構 -->
+        <div class="slide">
+            <h2>⚙️ 軟體架構</h2>
+            <div class="content">
+                <div class="architecture">
+                    <div class="arch-box">
+                        <h4>📷 Camera</h4>
+                        <p>USB 視訊輸入</p>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-box">
+                        <h4>🐍 Python</h4>
+                        <p>OpenCV 處理</p>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-box">
+                        <h4>📨 ROS Topic</h4>
+                        <p>cmd_vel 控制</p>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-box">
+                        <h4>🤖 TB3</h4>
+                        <p>馬達驅動</p>
+                    </div>
+                </div>
+                <p class="center-text">Python 程式透過 ROS Topic 與機器人溝通</p>
+            </div>
+            <div class="slide-number">3 / 7</div>
+        </div>
+        
+        <!-- Slide 4: 目前進度 -->
+        <div class="slide">
+            <h2>✅ 目前進度</h2>
+            <div class="content">
+                <div class="grid-3">
+                    <div class="card done">
+                        <h3>✅ 已完成</h3>
                         <ul>
-                            <li>每小時整合停在 "running"</li>
-                            <li>GitHub 24 小時沒更新</li>
-                            <li>daily/ 累積 5+ 篇文章</li>
-                            <li>系統看似正常但實際僵屍</li>
+                            <li>本機 ROS 環境架設</li>
+                            <li>TB3 網路連線</li>
+                            <li>遠端控制車子移動</li>
+                            <li>LDS-01 雷達讀取</li>
+                            <li>基本 Python + ROS 整合</li>
                         </ul>
                     </div>
-                    <div class="card solution">
-                        <h3>✅ 解法</h3>
+                    <div class="card current">
+                        <h3>🔄 進行中</h3>
                         <ul>
-                            <li>刪除僵住的 CRON</li>
-                            <li>重新建立新的每小時任務</li>
-                            <li>設定 120 秒 timeout</li>
-                            <li>未來加強監控機制</li>
+                            <li>姿勢控制優化</li>
+                            <li>本地模型測試</li>
+                        </ul>
+                    </div>
+                    <div class="card todo">
+                        <h3>📋 待開發</h3>
+                        <ul>
+                            <li>OpenCV 鏡頭辨識</li>
+                            <li>路徑追蹤演算法</li>
+                            <li>障礙偵測與避障</li>
+                            <li>競賽任務整合</li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <div class="slide-number">3 / 8</div>
+            <div class="slide-number">4 / 7</div>
         </div>
         
-        <!-- Slide 4: 挑戰 2 -->
+        <!-- Slide 5: 已實現功能 -->
         <div class="slide">
-            <h2>🚧 挑戰二：Telegram 回應延遲</h2>
+            <h2>🎯 已實現功能</h2>
             <div class="content">
                 <div class="grid-2">
-                    <div class="card problem">
-                        <h3>❌ 問題</h3>
-                        <ul>
-                            <li>14:00 後需要發 2 次才能回</li>
-                            <li>溝通節奏被打斷</li>
-                            <li>讓人覺得「系統怪怪的」</li>
-                        </ul>
+                    <div>
+                        <h3>底層控制</h3>
+                        <div class="card done">
+                            <ul>
+                                <li>rostopic pub /cmd_vel 發送速度指令</li>
+                                <li>直線前進、後退</li>
+                                <li>原地旋轉</li>
+                                <li>讀取雷達資料 /scan</li>
+                            </ul>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <h3>通訊方式</h3>
+                            <div class="card done">
+                                <ul>
+                                    <li>ssh 遠端登入 Raspberry Pi</li>
+                                    <li>ROS master 遠端控制</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card solution">
-                        <h3>✅ 解法</h3>
-                        <ul>
-                            <li>確認 isolated session 隔離</li>
-                            <li>CRON 與 main session 獨立</li>
-                            <li>觀察是否網路/頻道問題</li>
-                            <li>目前已穩定，持續監控</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="slide-number">4 / 8</div>
-        </div>
-        
-        <!-- Slide 5: 挑戰 3 -->
-        <div class="slide">
-            <h2>🚧 挑戰三：標籤太雜</h2>
-            <div class="content">
-                <div class="grid-2">
-                    <div class="card problem">
-                        <h3>❌ 問題</h3>
-                        <ul>
-                            <li>所有標籤都顯示出來</li>
-                            <li>數量多但很多只出現 1-2 次</li>
-                            <li>過濾器反而造成視覺負擔</li>
-                        </ul>
-                    </div>
-                    <div class="card solution">
-                        <h3>✅ 解法</h3>
-                        <ul>
-                            <li>設定門檻：只顯示 ≥3 篇的標籤</li>
-                            <li>動態計算，隨文章增加調整</li>
-                            <li>上方乾淨，點下面文章才看到</li>
-                        </ul>
+                    <div>
+                        <h3>Python 整合</h3>
+                        <div class="card done">
+                            <ul>
+                                <li>rospy 訂閱 /cmd_vel</li>
+                                <li>rospy 發布速度指令</li>
+                                <li>雷達資料讀取處理</li>
+                            </ul>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <h3>程式範例</h3>
+                            <div class="card done">
+                                <ul>
+                                    <li>robot_controller.py（控制範本）</li>
+                                    <li>lidarscan_subscriber.py</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="slide-number">5 / 8</div>
+            <div class="slide-number">5 / 7</div>
         </div>
         
-        <!-- Slide 6: 我們的核心 -->
+        <!-- Slide 6: 未來規劃 -->
         <div class="slide">
-            <h2>💡 我們的核心邏輯</h2>
+            <h2>📅 未來規劃</h2>
             <div class="content">
-                <div class="big-text" style="text-align: center;">
-                    <p style="margin-bottom: 30px;">「世界是可以很簡單的看，<br>很複雜的享受的」</p>
-                    <p>— 黑皮</p>
-                </div>
-                <div class="timeline" style="margin-top: 50px;">
+                <div class="timeline">
                     <div class="timeline-item">
-                        <span class="timeline-time">拆解</span>
-                        <span class="timeline-text">複雜事物 → 簡單元素</span>
+                        <div class="timeline-dot current"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-text">鏡頭驅動與 OpenCV 環境設定</span>
+                            <span class="timeline-time">近期</span>
+                        </div>
                     </div>
                     <div class="timeline-item">
-                        <span class="timeline-time">找規律</span>
-                        <span class="timeline-text">萬變不離其宗</span>
+                        <div class="timeline-dot future"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-text">影像處理：物體偵測 / 車道線追蹤</span>
+                            <span class="timeline-time">中期</span>
+                        </div>
                     </div>
                     <div class="timeline-item">
-                        <span class="timeline-time">享受</span>
-                        <span class="timeline-text">用規律生成新東西</span>
+                        <div class="timeline-dot future"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-text">路徑規劃與障礙避障整合</span>
+                            <span class="timeline-time">中期</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot future"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-text">FIRA AutoRace 任務實測</span>
+                            <span class="timeline-time">競賽前</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="slide-number">6 / 8</div>
+            <div class="slide-number">6 / 7</div>
         </div>
         
-        <!-- Slide 7: 設計哲學 -->
+        <!-- Slide 7: 需要協助 -->
         <div class="slide">
-            <h2>🎨 排版與設計的邏輯</h2>
+            <h2>💡 需要討論</h2>
             <div class="content">
                 <div class="grid-2">
-                    <div class="card idea">
-                        <h3>🧱 結構優先</h3>
+                    <div class="card current">
+                        <h3>🔍 技術問題</h3>
                         <ul>
-                            <li>先有層次，才有美觀</li>
-                            <li>資訊太多時用過濾/分類</li>
-                            <li>手機 vs 電腦不同佈局</li>
+                            <li>OpenCV 影像延遲如何優化？</li>
+                            <li>LDS 與視覺融合時機？</li>
+                            <li>葉小組建議的模型架構？</li>
                         </ul>
                     </div>
-                    <div class="card idea">
-                        <h3>👁️ 視覺引導</h3>
+                    <div class="card current">
+                        <h3>🤝 資源需求</h3>
                         <ul>
-                            <li>顏色用來區分狀態</li>
-                            <li>大小用來表示重要性</li>
-                            <li>留白讓眼睛休息</li>
-                        </ul>
-                    </div>
-                    <div class="card idea">
-                        <h3>🔄 互動回饋</h3>
-                        <ul>
-                            <li>點擊要有反應</li>
-                            <li>狀態變化要明確</li>
-                            <li>操作要可逆/可恢復</li>
-                        </ul>
-                    </div>
-                    <div class="card idea">
-                        <h3>📱 簡約取勝</h3>
-                        <ul>
-                            <li>不重要的就隱藏</li>
-                            <li>門檻式呈現（≥3才顯示）</li>
-                            <li>減少視覺噪音</li>
+                            <li>競賽規則詳細文件</li>
+                            <li>參考跑過的程式碼</li>
+                            <li>其他組的進度參考</li>
                         </ul>
                     </div>
                 </div>
-            </div>
-            <div class="slide-number">7 / 8</div>
-        </div>
-        
-        <!-- Slide 8: 結尾 -->
-        <div class="slide">
-            <div class="content" style="justify-content: center; align-items: center; text-align: center;">
-                <h1 style="font-size: 4em;">🐟</h1>
-                <p class="subtitle" style="margin-top: 30px;">持續迭代，保持好奇</p>
-                <div class="tag-cloud" style="justify-content: center; margin-top: 50px;">
-                    <span class="tag">知識庫</span>
-                    <span class="tag">CRON 監控</span>
-                    <span class="tag">UI/UX</span>
-                    <span class="tag">簡報系統</span>
+                <div style="margin-top: 40px; text-align: center;">
+                    <p class="center-text" style="margin-top: 0;">謝謝老師，歡迎指教！</p>
                 </div>
-                <p style="color: #666; margin-top: 60px;">github.com/Oren2026/Oren_own</p>
             </div>
-            <div class="slide-number">8 / 8</div>
+            <div class="slide-number">7 / 7</div>
         </div>
         
     </div>
