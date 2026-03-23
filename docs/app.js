@@ -89,10 +89,11 @@ function render() {
         return `<button class="tab ${d === activeDate ? 'active' : ''}" onclick="selectDate('${d}')">${label}</button>`;
     }).join('');
     
-    // 渲染標籤雲
+    // 渲染標籤雲（只顯示超過3篇文章的標籤）
     const counts = getTagCounts(activeDate);
     const tagCloud = document.getElementById('tagCloud');
     tagCloud.innerHTML = Object.entries(counts)
+        .filter(([tag, count]) => count >= 3)
         .sort((a,b) => b[1] - a[1])
         .map(([tag, count]) => 
             `<span class="tag ${tag === activeTag ? 'active' : ''}" onclick="selectTag('${tag}')">
