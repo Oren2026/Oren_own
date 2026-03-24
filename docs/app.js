@@ -28,9 +28,8 @@ async function loadAllData() {
                 const response = await fetch(`data/${filename}.json`);
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.articles && Array.isArray(data.articles)) {
-                        // 文章不走 date 欄位，直接用 filename（維持現有 JSON 相容）
-                        allArticles = allArticles.concat(data.articles);
+                    if (Array.isArray(data)) {
+                        allArticles = allArticles.concat(data);
                         dateList.push(filename);
                     }
                 }
