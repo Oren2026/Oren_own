@@ -29,7 +29,9 @@ async function loadAllData() {
                 if (response.ok) {
                     const data = await response.json();
                     if (Array.isArray(data)) {
-                        allArticles = allArticles.concat(data);
+                        // 注入 filename 作為 date 到每篇文章
+                        const withDate = data.map(a => ({...a, date: filename}));
+                        allArticles = allArticles.concat(withDate);
                         dateList.push(filename);
                     }
                 }
