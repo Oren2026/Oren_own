@@ -55,13 +55,7 @@ async function loadAllData() {
 }
 
 function getArticlesByDate(dateFile) {
-    // dateFile 是 YYYYMMDD，拿 JSON 的 date 或 filename 來比
-    return allArticles.filter(a => {
-        const articleDate = a.date || '';
-        // a.date 可能是 YYYYMMDD 或 YYYY-MM-DD
-        const normalized = articleDate.replace(/-/g, '');
-        return normalized === dateFile;
-    });
+    return allArticles.filter(a => a.date === dateFile);
 }
 
 function getTagCounts(dateFile) {
@@ -85,7 +79,7 @@ function render() {
     document.getElementById('todayCount').textContent = getArticlesByDate(todayFile).length;
     document.getElementById('lastUpdate').textContent = dateList[0] ? formatDate(dateList[0]) : '--';
     
-    // 渲染日期頁籤（用 YYYYMMDD 判斷是否為今日）
+    // 渲染日期頁籤
     const dateTabs = document.getElementById('dateTabs');
     dateTabs.innerHTML = dateList.map(f => {
         const isToday = f === todayFile;
@@ -117,10 +111,7 @@ function render() {
     } else {
         articlesDiv.innerHTML = articles.map(a => `
             <div class="article">
-                <div class="article-header">
-                    <span class="article-title">${a.title}</span>
-                    <span class="article-time">${a.time || ''}</span>
-                </div>
+                <div class="article-title">${a.title}</div>
                 <div class="article-tags">
                     ${(a.tags || []).map(t => `<span class="article-tag">${t}</span>`).join('')}
                 </div>
@@ -159,10 +150,7 @@ function search() {
     } else {
         articlesDiv.innerHTML = results.map(a => `
             <div class="article">
-                <div class="article-header">
-                    <span class="article-title">${a.title}</span>
-                    <span class="article-time">${a.date || ''} ${a.time || ''}</span>
-                </div>
+                <div class="article-title">${a.title}</div>
                 <div class="article-tags">
                     ${(a.tags || []).map(t => `<span class="article-tag">${t}</span>`).join('')}
                 </div>
