@@ -18,10 +18,20 @@
                 <p class="subtitle">TurtleBot 3 自動駕駛系統開發</p>
                 <div style="margin-top: 40px;">
                     <span class="tag">ROS</span>
-                    <span class="tag yellow">OpenCV</span>
+                    <span class="tag yellow">OpenCV 4.5.0</span>
                     <span class="tag blue">Python</span>
                 </div>
-                <p style="color: #666; margin-top: 60px;">2026.03.23</p>
+                <div style="margin-top: 50px; width: 400px; max-width: 80%;">
+                    <div style="display: flex; justify-content: space-between; color: #666; font-size: 0.85em; margin-bottom: 8px;">
+                        <span>環境建置</span>
+                        <span>視覺循線 + 障礙規避實測</span>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 10px; height: 12px; overflow: hidden;">
+                        <div style="width: 20%; height: 100%; background: linear-gradient(90deg, #6bffb8, #6b9fff); border-radius: 10px;"></div>
+                    </div>
+                    <p style="color: #6bffb8; margin-top: 12px; font-size: 1.1em;">目前進度約 20%</p>
+                </div>
+                <p style="color: #666; margin-top: 40px;">2026.03.24</p>
             </div>
             <div class="slide-number">1 / 7</div>
         </div>
@@ -97,33 +107,33 @@
         
         <!-- Slide 4: 目前進度 -->
         <div class="slide">
-            <h2>✅ 目前進度</h2>
+            <h2>📊 目前進度</h2>
             <div class="content">
                 <div class="grid-3">
                     <div class="card done">
                         <h3>✅ 已完成</h3>
                         <ul>
-                            <li>本機 ROS 環境架設</li>
-                            <li>TB3 網路連線</li>
-                            <li>遠端控制車子移動</li>
-                            <li>LDS-01 雷達讀取</li>
-                            <li>基本 Python + ROS 整合</li>
+                            <li>ROS 環境架設（本機 + TB3）</li>
+                            <li>網路橋接與 ROS Master 通訊</li>
+                            <li>鍵盤遙控前後移動</li>
+                            <li>OpenCV 4.5.0 安裝</li>
                         </ul>
                     </div>
                     <div class="card current">
-                        <h3>🔄 進行中</h3>
+                        <h3>🔄 硬體確認中</h3>
                         <ul>
-                            <li>姿勢控制優化</li>
-                            <li>本地模型測試</li>
+                            <li>USB 鏡頭主題確認</li>
+                            <li>LDS-01 雷射雷達資料確認</li>
+                            <li>OpenCV 讀取鏡頭測試</li>
                         </ul>
                     </div>
                     <div class="card todo">
                         <h3>📋 待開發</h3>
                         <ul>
-                            <li>OpenCV 鏡頭辨識</li>
-                            <li>路徑追蹤演算法</li>
+                            <li>視覺主題整合</li>
+                            <li>OpenCV 影像處理</li>
                             <li>障礙偵測與避障</li>
-                            <li>競賽任務整合</li>
+                            <li>路徑追蹤實測</li>
                         </ul>
                     </div>
                 </div>
@@ -188,28 +198,28 @@
                     <div class="timeline-item">
                         <div class="timeline-dot current"></div>
                         <div class="timeline-content">
-                            <span class="timeline-text">鏡頭驅動與 OpenCV 環境設定</span>
-                            <span class="timeline-time">近期</span>
+                            <span class="timeline-text">確認鏡頭 / 雷射雷達資料輸出</span>
+                            <span class="timeline-time">現在</span>
                         </div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-dot future"></div>
                         <div class="timeline-content">
-                            <span class="timeline-text">影像處理：物體偵測 / 車道線追蹤</span>
+                            <span class="timeline-text">OpenCV 影像讀取與處理</span>
+                            <span class="timeline-time">短期</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot future"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-text">障礙偵測 + 路徑追蹤整合</span>
                             <span class="timeline-time">中期</span>
                         </div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-dot future"></div>
                         <div class="timeline-content">
-                            <span class="timeline-text">路徑規劃與障礙避障整合</span>
-                            <span class="timeline-time">中期</span>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot future"></div>
-                        <div class="timeline-content">
-                            <span class="timeline-text">FIRA AutoRace 任務實測</span>
+                            <span class="timeline-text">FIRA AutoRace 實測</span>
                             <span class="timeline-time">競賽前</span>
                         </div>
                     </div>
@@ -218,25 +228,24 @@
             <div class="slide-number">6 / 7</div>
         </div>
         
-        <!-- Slide 7: 需要協助 -->
+        <!-- Slide 7: 需要討論 -->
         <div class="slide">
             <h2>💡 需要討論</h2>
             <div class="content">
                 <div class="grid-2">
                     <div class="card current">
-                        <h3>🔍 技術問題</h3>
+                        <h3>🔍 硬體確認</h3>
                         <ul>
-                            <li>OpenCV 影像延遲如何優化？</li>
-                            <li>LDS 與視覺融合時機？</li>
-                            <li>葉小組建議的模型架構？</li>
+                            <li>如何快速確認 LDS-01 雷達有輸出資料？</li>
+                            <li>如何確認 USB 鏡頭主題有在跑？</li>
                         </ul>
                     </div>
                     <div class="card current">
                         <h3>🤝 資源需求</h3>
                         <ul>
-                            <li>競賽規則詳細文件</li>
-                            <li>參考跑過的程式碼</li>
-                            <li>其他組的進度參考</li>
+                            <li>FIRA AutoRace 競賽規則文件</li>
+                            <li>OpenCV 影像處理建議</li>
+                            <li>過去同學的參考程式</li>
                         </ul>
                     </div>
                 </div>
