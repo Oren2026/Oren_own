@@ -71,6 +71,18 @@ function getTagCounts(dateFile) {
     return counts;
 }
 
+// 點擊卡片展開/收合
+function toggleArticle(id) {
+    const cards = document.querySelectorAll('.article');
+    cards.forEach(card => {
+        if (card.dataset.id === String(id)) {
+            card.classList.toggle('expanded');
+        } else {
+            card.classList.remove('expanded');
+        }
+    });
+}
+
 function render() {
     const todayFile = `${new Date().getFullYear()}${String(new Date().getMonth()+1).padStart(2,'0')}${String(new Date().getDate()).padStart(2,'0')}`;
     
@@ -99,7 +111,7 @@ function render() {
             </span>`
         ).join('');
     
-    // 渲染文章
+    // 渲染文章卡片
     let articles = getArticlesByDate(activeDate);
     if (activeTag) {
         articles = articles.filter(a => a.tags && a.tags.includes(activeTag));
@@ -109,13 +121,16 @@ function render() {
     if (articles.length === 0) {
         articlesDiv.innerHTML = '<div class="empty">目前沒有文章</div>';
     } else {
-        articlesDiv.innerHTML = articles.map(a => `
-            <div class="article">
+        articlesDiv.innerHTML = articles.map((a, idx) => `
+            <div class="article" data-id="${idx}" onclick="toggleArticle(${idx})">
+                <div class="article-expand">▼</div>
                 <div class="article-title">${a.title}</div>
                 <div class="article-tags">
                     ${(a.tags || []).map(t => `<span class="article-tag">${t}</span>`).join('')}
                 </div>
-                <div class="article-summary">${a.summary || ''}</div>
+                <div class="article-content">
+                    <div class="article-summary">${a.summary || ''}</div>
+                </div>
             </div>
         `).join('');
     }
@@ -148,16 +163,33 @@ function search() {
     if (results.length === 0) {
         articlesDiv.innerHTML = '<div class="empty">找不到符合的文章</div>';
     } else {
-        articlesDiv.innerHTML = results.map(a => `
-            <div class="article">
+        articlesDiv.innerHTML = results.map((a, idx) => `
+            <div class="article" data-id="search-${idx}" onclick="toggleArticleSearch(${idx})">
+                <div class="article-expand">▼</div>
                 <div class="article-title">${a.title}</div>
                 <div class="article-tags">
                     ${(a.tags || []).map(t => `<span class="article-tag">${t}</span>`).join('')}
                 </div>
-                <div class="article-summary">${a.summary || ''}</div>
+                <div class="article-content">
+                    <div class="article-summary">${a.summary || ''}</div>
+                </div>
             </div>
         `).join('');
+        
+        // 儲存搜尋結果供 toggle 使用
+        window.searchResults = results;
     }
+}
+
+function toggleArticleSearch(idx) {
+    const cards = document.querySelectorAll('.article');
+    cards.forEach((card, i) => {
+        if (i === idx) {
+            card.classList.toggle('expanded');
+        } else {
+            card.classList.remove('expanded');
+        }
+    });
 }
 
 // 鍵盤 Enter 搜尋
