@@ -1,406 +1,391 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ============================================================
+   機器的喃喃 — CSS
+   理解：
+     - .spread 寬度始終為 200%（承載 2 個 page 各 50%）
+     - 桌面：translateX(-currentPage * 50%)，每次滑一整個雙頁跨距
+     - 手機：translateX(-currentPage * 100%)，每次滑一個視口
+     - 兩者 translateX 的%都是相對於.spread自身，行為一致
+   ============================================================ */
 
-        body {
-            background: #1a1a2e;
-            color: #e0e0e0;
-            font-family: Georgia, "Noto Serif TC", serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-        h1 {
-            color: #00d4ff;
-            margin-bottom: 5px;
-            font-size: 1.4em;
-        }
+/* ---- body -------------------------------------------------- */
+body {
+  background: #1a1a2e;
+  color: #e0e0e0;
+  font-family: Georgia, "Noto Serif TC", serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px 16px;
+}
 
-        .subtitle {
-            color: #555;
-            font-size: 0.85em;
-            margin-bottom: 25px;
-            font-style: italic;
-        }
+h1 {
+  color: #00d4ff;
+  font-size: 1.4em;
+  margin-bottom: 6px;
+  text-align: center;
+}
 
-        /* 書本容器 */
-        .book {
-            width: 100%;
-            max-width: 800px;
-            height: 520px;
-            position: relative;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
+.subtitle {
+  color: #555;
+  font-size: 0.85em;
+  font-style: italic;
+  margin-bottom: 28px;
+  text-align: center;
+}
 
-        /* 跨頁（每次滑動一頁） */
-        .spread {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.7s ease;
-            will-change: transform;
-        }
+/* ---- book（視口容器）--------------------------------------- */
+.book {
+  /* 桌面：max-width 書本；手機：撐滿視口 */
+  width: 100%;
+  max-width: 820px;
+  height: 520px;
+  position: relative;
+  overflow: hidden;   /* 裁掉.spread右側多餘的 100% */
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
 
-        /* 左右兩頁 */
-        .page {
-            width: 50%;
-            height: 100%;
-            display: flex;
-            align-items: stretch;
-        }
+/* ---- spread（頁面軌道）------------------------------------- */
+.spread {
+  display: flex;
+  width: 200%;        /* 永遠承載 2 個 page */
+  height: 100%;
+  /* transform 由 JS 控制：translateX(-N*50%) 或 -N*100% */
+  will-change: transform;
+}
 
-        /* 書背陰影 */
-        .page-left .page-inner::after {
-            content: '';
-            position: absolute;
-            top: 0; right: 0;
-            width: 25px; height: 100%;
-            background: linear-gradient(to right, rgba(0,0,0,0.08), transparent);
-            pointer-events: none;
-            z-index: 1;
-        }
+/* ---- page -------------------------------------------------- */
+.page {
+  width: 50%;         /* 各佔一半 = 整個 spread 的 1/2 */
+  height: 100%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: stretch;
+}
 
-        .page-right .page-inner::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 25px; height: 100%;
-            background: linear-gradient(to left, rgba(0,0,0,0.08), transparent);
-            pointer-events: none;
-            z-index: 1;
-        }
+.page-inner {
+  width: 100%;
+  background: #f5f0e8;
+  color: #222;
+  padding: 36px 30px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 20px rgba(0,0,0,0.35);
+}
 
-        @media (max-width: 600px) {
-            .page-left .page-inner::after,
-            .page-right .page-inner::after {
-                display: none;
-            }
-        }
+.page-left .page-inner {
+  border-radius: 10px 0 0 10px;
+  border-right: 1px solid #ddd;
+}
 
-        /* 頁面內容 */
-        .page-inner {
-            width: 100%;
-            height: 100%;
-            background: #f5f0e8;
-            color: #222;
-            padding: 35px 28px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.4);
-            position: relative;
-        }
+.page-right .page-inner {
+  border-radius: 0 10px 10px 0;
+}
 
-        .page-left .page-inner {
-            border-radius: 8px 0 0 8px;
-            border-right: 1px solid #ddd;
-        }
+/* 書背陰影 */
+.page-left .page-inner::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 28px; height: 100%;
+  background: linear-gradient(to right, rgba(0,0,0,0.09), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
 
-        .page-right .page-inner {
-            border-radius: 0 8px 8px 0;
-        }
+.page-right .page-inner::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 28px; height: 100%;
+  background: linear-gradient(to left, rgba(0,0,0,0.09), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
 
-        /* 頁面內容 */
-        .page-inner h2 {
-            color: #1a1a2e;
-            font-size: 1.1em;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 8px;
-            flex-shrink: 0;
-        }
+/* ---- 頁面內容排版 ----------------------------------------- */
+.page-inner h2 {
+  color: #1a1a2e;
+  font-size: 1.1em;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+  flex-shrink: 0;
+}
 
-        .page-inner h3 {
-            color: #00a8cc;
-            font-size: 0.95em;
-            margin: 12px 0 6px 0;
-        }
+.page-inner h3 {
+  color: #00a8cc;
+  font-size: 0.95em;
+  margin: 14px 0 6px 0;
+}
 
-        .page-inner p {
-            font-size: 0.88em;
-            line-height: 1.85;
-            margin-bottom: 10px;
-            text-align: justify;
-        }
+.page-inner p {
+  font-size: 0.88em;
+  line-height: 1.9;
+  margin-bottom: 10px;
+  text-align: justify;
+}
 
-        .page-inner blockquote {
-            font-style: italic;
-            color: #555;
-            border-left: 3px solid #00a8cc;
-            padding-left: 12px;
-            margin: 15px 0;
-        }
+.page-inner blockquote {
+  font-style: italic;
+  color: #555;
+  border-left: 3px solid #00a8cc;
+  padding-left: 12px;
+  margin: 14px 0;
+}
 
-        /* 目錄 */
-        .toc {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+.page-inner .toc {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
-        .chapter {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            padding: 4px 0;
-            border-bottom: 1px dashed #ddd;
-            font-size: 0.85em;
-            min-height: 0;
-        }
+.page-inner .chapter {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 5px 0;
+  border-bottom: 1px dashed #ddd;
+  font-size: 0.9em;
+}
 
-        .chapter-num {
-            color: #00a8cc;
-            font-weight: bold;
-            min-width: 38px;
-            font-family: monospace;
-            flex-shrink: 0;
-        }
+.page-inner .chapter-num {
+  color: #00a8cc;
+  font-weight: bold;
+  min-width: 40px;
+  font-family: monospace;
+  flex-shrink: 0;
+}
 
-        .chapter span:last-child {
-            flex: 1;
-            word-break: break-word;
-            overflow-wrap: break-word;
-        }
+.page-inner .chapter span:last-child {
+  flex: 1;
+  word-break: break-word;
+}
 
-        /* 章節內容 */
-        .chapter-content {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+/* ---- 頁碼 -------------------------------------------------- */
+.page-number {
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: 0.75em;
+  color: #999;
+  flex-shrink: 0;
+}
 
-        .chapter-content h3 {
-            margin-top: 15px;
-            margin-bottom: 4px;
-        }
+.page-left .page-number  { text-align: right; }
+.page-right .page-number { text-align: left; }
 
-        .chapter-content p {
-            margin-bottom: 6px;
-        }
+/* ---- 封面 -------------------------------------------------- */
+.cover {
+  position: absolute;
+  inset: 0;            /* = top:0;right:0;bottom:0;left:0 */
+  background: linear-gradient(135deg, #0d1b2a, #1b263b);
+  color: #fff;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  z-index: 20;
+}
 
-        /* 頁碼 */
-        .page-number {
-            margin-top: auto;
-            padding-top: 15px;
-            font-size: 0.75em;
-            color: #999;
-        }
+.cover h2 {
+  color: #00d4ff;
+  font-size: 2.2em;
+  margin-bottom: 12px;
+  border: none;
+}
 
-        .page-left .page-number { text-align: right; }
-        .page-right .page-number { text-align: left; }
+.cover .author {
+  color: #888;
+  font-size: 0.95em;
+  margin-bottom: 30px;
+}
 
-        /* 封面 */
-        .cover {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0d1b2a, #1b263b);
-            color: #fff;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            z-index: 20;
-            transition: opacity 0.5s;
-            padding: 40px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-        }
+.cover .desc {
+  color: #aaa;
+  font-size: 0.88em;
+  max-width: 420px;
+  line-height: 1.8;
+}
 
-        .cover.hidden {
-            display: none;
-        }
+.cover .hint {
+  position: absolute;
+  bottom: 36px;
+  color: #555;
+  font-size: 0.88em;
+  animation: pulse 2s infinite;
+}
 
-        .cover h2 {
-            color: #00d4ff;
-            font-size: 2em;
-            margin-bottom: 10px;
-            border: none;
-        }
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1;   }
+}
 
-        .cover .author {
-            color: #888;
-            font-size: 0.95em;
-            margin-bottom: 30px;
-        }
+/* ---- 章節標題列 ------------------------------------------- */
+.chapter-title-bar {
+  font-size: 0.9em;
+  color: #888;
+  margin-bottom: 16px;
+  min-height: 24px;
+  text-align: center;
+}
 
-        .cover .desc {
-            color: #aaa;
-            font-size: 0.85em;
-            max-width: 400px;
-            line-height: 1.7;
-        }
+/* ---- 導航按鈕 --------------------------------------------- */
+.nav-buttons {
+  display: flex;
+  gap: 36px;
+  margin-bottom: 14px;
+}
 
-        .cover .hint {
-            position: absolute;
-            bottom: 40px;
-            color: #555;
-            font-size: 0.9em;
-            animation: pulse 2s infinite;
-        }
+.nav-btn {
+  background: rgba(0, 212, 255, 0.08);
+  border: 2px solid #00d4ff;
+  color: #00d4ff;
+  padding: 10px 28px;
+  border-radius: 28px;
+  cursor: pointer;
+  font-size: 1.1em;
+  transition: background 0.25s, color 0.25s;
+  user-select: none;
+  min-width: 60px;
+  min-height: 46px;
+}
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
+.nav-btn:hover {
+  background: #00d4ff;
+  color: #1a1a2e;
+}
 
-        /* 章節標題列 */
-        .chapter-title-bar {
-            font-size: 0.9em;
-            color: #888;
-            margin-bottom: 15px;
-            min-height: 24px;
-            text-align: center;
-        }
+/* ---- 頁碼指示器 ------------------------------------------- */
+.page-indicator {
+  font-size: 0.85em;
+  color: #555;
+  text-align: center;
+}
 
-        /* 導航按鈕 */
-        .nav-buttons {
-            display: flex;
-            gap: 40px;
-            margin-bottom: 12px;
-        }
+/* ============================================================
+   響應式：<= 600px（手機）
+   邏輯：
+     - .book 高度降低
+     - .spread 仍是 200%，但 translateX(-currentPage*100%)
+       在 200% 寬度上等於滑動一個視口
+     - 一次只顯示右頁，左頁用 position:absolute 推到視窗外
+   ============================================================ */
+@media (max-width: 600px) {
 
-        .nav-btn {
-            background: rgba(0, 212, 255, 0.1);
-            border: 2px solid #00d4ff;
-            color: #00d4ff;
-            padding: 12px 32px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 1.2em;
-            transition: all 0.3s;
-            min-width: 64px;
-            min-height: 48px;
-            text-align: center;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: manipulation;
-        }
+  body {
+    padding: 12px 10px;
+  }
 
-        .nav-btn:hover, .nav-btn:active {
-            background: #00d4ff;
-            color: #1a1a2e;
-        }
+  h1 { font-size: 1.05em; }
+  .subtitle { font-size: 0.72em; margin-bottom: 14px; }
 
-        .nav-btn[style*="visibility: hidden"] {
-            opacity: 0.3;
-        }
+  /* 書本：撐滿視口，隱藏溢出 */
+  .book {
+    width: 100%;
+    max-width: none;
+    height: 400px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+  }
 
-        /* 頁碼指示 */
-        .page-indicator {
-            font-size: 0.85em;
-            color: #555;
-            text-align: center;
-        }
+  /* spread 仍為 200%，但用 overflow:hidden 裁切 */
+  .spread {
+    width: 200%;   /* translateX(-100%) = 滑一個視口 */
+    height: 100%;
+    will-change: transform;
+  }
 
-        /* 動畫 */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+  /* 兩頁都是 50%（100% of .spread = 1 viewport width each） */
+  .page {
+    width: 50%;
+    height: 100%;
+    min-height: 0;
+    flex-shrink: 0;
+  }
 
-        .page-inner {
-            animation: fadeIn 0.4s ease;
-        }
+  /* 左頁推到視窗外，永遠只靠右頁顯示 */
+  .page-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+  }
 
-        /* 響應式 */
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
+  .page-inner {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 16px 14px;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
 
-            h1 { font-size: 1.1em; }
-            .subtitle { font-size: 0.75em; margin-bottom: 15px; }
+  .page-left .page-inner {
+    border-radius: 8px 0 0 8px;
+    border-right: 1px solid #ddd;
+  }
 
-            /* 書本：固定高度，overflow hidden */
-            .book {
-                height: 380px;
-                margin-bottom: 12px;
-                overflow: hidden;
-                position: relative;
-            }
+  .page-right .page-inner {
+    border-radius: 0 8px 8px 0;
+    box-shadow: -3px 0 12px rgba(0,0,0,0.25);
+  }
 
-            /* 每次滑動一整個視口寬度 */
-            .spread {
-                display: flex;
-                width: 100vw;
-                height: 100%;
-                will-change: transform;
-            }
+  /* 隱藏左頁頁碼 */
+  .page-left .page-number { display: none; }
+  .page-right .page-number { display: none; }
 
-            /* 兩頁都是 100vw 寬 */
-            .page {
-                width: 100vw;
-                height: 100%;
-                min-height: 0;
-                flex-shrink: 0;
-            }
+  /* 頁面內容 */
+  .page-inner h2 {
+    font-size: 0.92em;
+    margin-bottom: 10px;
+    padding-bottom: 7px;
+  }
+  .page-inner h3 { font-size: 0.84em; margin: 10px 0 4px 0; }
+  .page-inner p  { font-size: 0.8em;  line-height: 1.7; margin-bottom: 7px; }
+  .page-inner blockquote { font-size: 0.8em; margin: 10px 0; }
 
-            /* 左頁藏起來，右頁顯示 */
-            .page-left {
-                display: none !important;
-            }
+  .toc    { gap: 3px; }
+  .chapter {
+    font-size: 0.8em;
+    gap: 7px;
+    padding: 3px 0;
+  }
+  .chapter-num { min-width: 28px; }
 
-            .page-right {
-                width: 100%;
-                height: 100%;
-            }
+  /* 封面 */
+  .cover { border-radius: 8px; padding: 28px 18px; }
+  .cover h2 { font-size: 1.5em; }
+  .cover .author { font-size: 0.82em; margin-bottom: 18px; }
+  .cover .desc   { font-size: 0.78em; }
+  .cover .hint   { font-size: 0.75em; bottom: 18px; }
 
-            .page-inner {
-                width: 100%;
-                height: 100%;
-                min-height: 0;
-                padding: 18px 14px;
-                border-radius: 8px;
-                box-shadow: 0 0 15px rgba(0,0,0,0.35);
-                overflow-y: auto;
-                display: flex;
-                flex-direction: column;
-            }
+  /* 標題列 + 按鈕 */
+  .chapter-title-bar { font-size: 0.78em; margin-bottom: 10px; }
 
-            .page-number { display: none; }
+  .nav-buttons { gap: 24px; margin-bottom: 10px; }
+  .nav-btn {
+    padding: 12px 28px;
+    font-size: 1.2em;
+    min-width: 56px;
+    min-height: 44px;
+    border-radius: 24px;
+  }
 
-            .page-inner h2 {
-                font-size: 0.95em;
-                margin-bottom: 10px;
-                padding-bottom: 6px;
-            }
-            .page-inner h3 { font-size: 0.85em; margin: 10px 0 4px 0; }
-            .page-inner p { font-size: 0.82em; line-height: 1.7; margin-bottom: 8px; }
-            .page-inner blockquote { font-size: 0.82em; margin: 10px 0; }
-
-            .toc { gap: 3px; }
-            .chapter {
-                font-size: 0.82em;
-                gap: 6px;
-                padding: 3px 0;
-            }
-            .chapter-num { min-width: 30px; }
-            .chapter span:last-child { flex: 1; word-break: break-word; }
-
-            .cover {
-                padding: 30px 20px;
-                z-index: 20;
-            }
-            .cover h2 { font-size: 1.5em; }
-            .cover .author { font-size: 0.85em; margin-bottom: 20px; }
-            .cover .desc { font-size: 0.8em; }
-            .cover .hint { font-size: 0.78em; bottom: 20px; }
-
-            .chapter-title-bar { font-size: 0.8em; min-height: 20px; margin-bottom: 10px; }
-
-            .nav-buttons { gap: 25px; margin-bottom: 10px; }
-            .nav-btn {
-                padding: 12px 30px;
-                font-size: 1.2em;
-                min-width: 56px;
-                min-height: 44px;
-            }
-
-            .page-indicator { font-size: 0.8em; }
-        }
+  .page-indicator { font-size: 0.8em; }
+}
