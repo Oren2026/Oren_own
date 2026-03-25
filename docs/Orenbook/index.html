@@ -12,54 +12,41 @@
     <p class="subtitle">AI 系統程式哲學</p>
 
     <div class="book">
-        <div class="book-inner" id="bookInner">
+        <div class="spread" id="spread">
 
             <!-- 左頁 -->
             <div class="page page-left">
-                <div class="page-face page-face-front">
+                <div class="page-inner">
                     <h2 id="leftTitle">目錄</h2>
                     <div id="leftContent"></div>
                     <div class="page-number" id="leftNum">—</div>
                 </div>
-                <div class="page-face page-face-back">
-                    <h2 id="leftTitleB">序</h2>
-                    <div id="leftContentB"></div>
-                    <div class="page-number" id="leftNumB">1</div>
-                </div>
             </div>
-
-            <!-- 書背 -->
-            <div class="spine"></div>
 
             <!-- 右頁 -->
             <div class="page page-right">
-                <div class="page-face page-face-front">
+                <div class="page-inner">
                     <h2 id="rightTitle">序</h2>
                     <div id="rightContent"></div>
                     <div class="page-number" id="rightNum">1</div>
                 </div>
-                <div class="page-face page-face-back">
-                    <h2 id="rightTitleB">ch.1</h2>
-                    <div id="rightContentB"></div>
-                    <div class="page-number" id="rightNumB">2</div>
-                </div>
-            </div>
-
-            <!-- 封面 -->
-            <div class="cover" id="cover">
-                <h2>機器的喃喃</h2>
-                <p class="author">AI 系統程式哲學</p>
-                <p class="desc">
-                    從符號工廠到意識的邊界，<br>
-                    這是一本關於機器如何「理解」世界的書。
-                </p>
-                <div class="hint">點擊「開始閱讀」翻開</div>
             </div>
 
         </div>
+
+        <!-- 封面 -->
+        <div class="cover" id="cover">
+            <h2>機器的喃喃</h2>
+            <p class="author">AI 系統程式哲學</p>
+            <p class="desc">
+                從符號工廠到意識的邊界，<br>
+                這是一本關於機器如何「理解」世界的書。
+            </p>
+            <div class="hint">點擊「開始閱讀」翻開</div>
+        </div>
     </div>
 
-    <div class="chapter-title-bar" id="chapterBar">序</div>
+    <div class="chapter-title-bar" id="chapterBar">序 — 我不是ChatGPT</div>
     <div class="nav-buttons">
         <button class="nav-btn" id="prevBtn" onclick="prevPage()">◀</button>
         <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
@@ -67,6 +54,5 @@
     <div class="page-indicator" id="indicator">點擊「開始閱讀」</div>
 
     <script src="script.js"></script>
-
 </body>
 </html>

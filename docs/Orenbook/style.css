@@ -29,92 +29,78 @@
             width: 100%;
             max-width: 800px;
             height: 520px;
-            perspective: 1500px;
             position: relative;
             margin-bottom: 20px;
+            overflow: hidden;
         }
 
-        /* 書本外觀 */
-        .book-inner {
-            width: 100%;
+        /* 跨頁（同時容納左右兩頁） */
+        .spread {
+            display: flex;
+            width: 200%;
             height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
+            transition: transform 0.7s ease;
+        }
+
+        .spread.turning-next {
+            animation: slideLeft 0.7s ease forwards;
+        }
+
+        .spread.turning-prev {
+            animation: slideRight 0.7s ease forwards;
+        }
+
+        @keyframes slideLeft {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        @keyframes slideRight {
+            from { transform: translateX(-50%); }
+            to { transform: translateX(0); }
         }
 
         /* 左右兩頁 */
         .page {
-            position: absolute;
             width: 50%;
             height: 100%;
-            background: transparent;
-            box-shadow: none;
-            overflow: visible;
+            display: flex;
+            align-items: stretch;
         }
 
-        .page-left {
-            left: 0;
-            transform-origin: right center;
-        }
-
-        .page-right {
-            right: 0;
-            transform-origin: left center;
-        }
-
-        /* 頁面兩面：共同樣式 */
-        .page-face {
-            position: absolute;
+        .page-inner {
             width: 100%;
-            height: 100%;
             background: #f5f0e8;
             color: #222;
             padding: 35px 28px;
             overflow-y: auto;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
             box-shadow: 0 0 20px rgba(0,0,0,0.4);
         }
 
-        /* 左頁的兩面起始角度 */
-        .page-left .page-face-front {
+        .page-left .page-inner {
             border-radius: 8px 0 0 8px;
             border-right: 1px solid #ddd;
-            transform-origin: right center;
         }
 
-        .page-left .page-face-back {
-            border-radius: 8px 0 0 8px;
-            border-right: 1px solid #ddd;
-            transform: rotateY(180deg);
-            backface-visibility: hidden;
-        }
-
-        /* 右頁的兩面起始角度 */
-        .page-right .page-face-front {
+        .page-right .page-inner {
             border-radius: 0 8px 8px 0;
-            transform-origin: left center;
         }
 
-        .page-right .page-face-back {
-            border-radius: 0 8px 8px 0;
-            transform: rotateY(-180deg);
-            backface-visibility: hidden;
-        }
-
-        /* 頁面陰影 */
-        .page-face-front::after {
+        /* 書背陰影 */
+        .page-left .page-inner::after {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0; right: 0;
             width: 25px; height: 100%;
             background: linear-gradient(to right, rgba(0,0,0,0.08), transparent);
             pointer-events: none;
         }
 
-        .page-face-back::after {
+        .page-right .page-inner::after {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0; left: 0;
             width: 25px; height: 100%;
             background: linear-gradient(to left, rgba(0,0,0,0.08), transparent);
@@ -122,29 +108,29 @@
         }
 
         /* 頁面內容 */
-        .page-face h2 {
+        .page-inner h2 {
             color: #1a1a2e;
             font-size: 1.1em;
             margin-bottom: 15px;
             border-bottom: 1px solid #ccc;
             padding-bottom: 8px;
+            flex-shrink: 0;
         }
 
-        .page-face h3 {
-            color: #333;
+        .page-inner h3 {
+            color: #00a8cc;
             font-size: 0.95em;
             margin: 12px 0 6px 0;
-            color: #00a8cc;
         }
 
-        .page-face p {
+        .page-inner p {
             font-size: 0.88em;
             line-height: 1.85;
             margin-bottom: 10px;
             text-align: justify;
         }
 
-        .page-face blockquote {
+        .page-inner blockquote {
             font-style: italic;
             color: #555;
             border-left: 3px solid #00a8cc;
@@ -193,25 +179,14 @@
 
         /* 頁碼 */
         .page-number {
-            position: absolute;
-            bottom: 12px;
+            margin-top: auto;
+            padding-top: 15px;
             font-size: 0.75em;
             color: #999;
         }
 
-        .page-left .page-number { right: 18px; }
-        .page-right .page-number { left: 18px; }
-
-        /* 翻頁動畫 */
-        .book-inner.flipped .page-left {
-            transform: rotateY(-180deg);
-            transition: transform 0.8s ease;
-        }
-
-        .book-inner.flipped .page-right {
-            transform: rotateY(180deg);
-            transition: transform 0.8s ease 0.1s;
-        }
+        .page-left .page-number { text-align: right; }
+        .page-right .page-number { text-align: left; }
 
         /* 封面 */
         .cover {
@@ -226,9 +201,10 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            z-index: 30;
+            z-index: 10;
             transition: opacity 0.5s;
             padding: 40px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
 
         .cover.hidden {
@@ -307,22 +283,21 @@
             color: #555;
         }
 
-        /* 動畫 hint */
+        /* 動畫 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .page-face-front, .page-face-back {
+        .page-inner {
             animation: fadeIn 0.4s ease;
         }
 
         /* 響應式 */
         @media (max-width: 600px) {
             .book { height: 420px; }
-            .page { padding: 0; }
-            .page-face { padding: 20px 15px; }
-            .page h2 { font-size: 0.95em; }
-            .page p { font-size: 0.8em; }
+            .page-inner { padding: 20px 15px; }
+            .page-inner h2 { font-size: 0.95em; }
+            .page-inner p { font-size: 0.8em; }
             .cover h2 { font-size: 1.5em; }
         }

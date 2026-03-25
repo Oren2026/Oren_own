@@ -246,94 +246,79 @@ const PAGES = [
         ];
 
         let currentSpread = 0;
-        let isFlipped = false;
+        let isReading = false;
+        let isAnimating = false;
 
-        const bookInner = document.getElementById("bookInner");
+        const spread = document.getElementById("spread");
         const cover = document.getElementById("cover");
         const prevBtn = document.getElementById("prevBtn");
         const nextBtn = document.getElementById("nextBtn");
         const indicator = document.getElementById("indicator");
         const chapterBar = document.getElementById("chapterBar");
 
-        // DOM elements for page faces
-        const leftFront = {
-            title: document.getElementById("leftTitle"),
-            content: document.getElementById("leftContent"),
-            num: document.getElementById("leftNum")
-        };
-        const rightFront = {
-            title: document.getElementById("rightTitle"),
-            content: document.getElementById("rightContent"),
-            num: document.getElementById("rightNum")
-        };
+        const leftTitle = document.getElementById("leftTitle");
+        const leftContent = document.getElementById("leftContent");
+        const leftNum = document.getElementById("leftNum");
+        const rightTitle = document.getElementById("rightTitle");
+        const rightContent = document.getElementById("rightContent");
+        const rightNum = document.getElementById("rightNum");
 
         function updatePage() {
             const page = PAGES[currentSpread];
+            leftTitle.textContent = page.left.title;
+            leftContent.innerHTML = page.left.content;
+            rightTitle.textContent = page.right.title;
+            rightContent.innerHTML = page.right.content;
+            leftNum.textContent = currentSpread * 2 + 1;
+            rightNum.textContent = currentSpread * 2 + 2;
 
-            // Front faces always show current spread content
-            leftFront.title.textContent = page.left.title;
-            leftFront.content.innerHTML = page.left.content;
-            rightFront.title.textContent = page.right.title;
-            rightFront.content.innerHTML = page.right.content;
-
-            // Page numbers
-            leftFront.num.textContent = currentSpread * 2 + 1;
-            rightFront.num.textContent = currentSpread * 2 + 2;
-
-            // Chapter bar
-            const chapterName = page.left.title.replace(/^ch\.\d+\s*/, "").replace(/^序$/, "序 — 我不是ChatGPT");
+            const chapterName = page.left.title
+                .replace(/^ch\.\d+\s*/, "")
+                .replace(/^序$/, "序 — 我不是ChatGPT");
             chapterBar.textContent = chapterName;
 
-            // Nav buttons
             prevBtn.style.visibility = currentSpread === 0 ? "hidden" : "visible";
             nextBtn.style.visibility = currentSpread >= PAGES.length - 1 ? "hidden" : "visible";
-
-            // Indicator
             indicator.textContent = `${currentSpread + 1} / ${PAGES.length}`;
         }
 
         function nextPage() {
-            if (currentSpread >= PAGES.length - 1) return;
-
-            if (!isFlipped) {
-                // First flip: cover disappears, pages flip
+            if (isAnimating || currentSpread >= PAGES.length - 1) return;
+            if (!isReading) {
                 cover.classList.add("hidden");
-                bookInner.classList.add("flipped");
-                isFlipped = true;
-                setTimeout(() => {
-                    currentSpread = 1;
-                    updatePage();
-                }, 400);
-            } else {
-                currentSpread++;
+                isReading = true;
+                currentSpread = 1;
                 updatePage();
+                return;
             }
+            isAnimating = true;
+            currentSpread++;
+            spread.classList.add("turning-next");
+            setTimeout(() => {
+                spread.classList.remove("turning-next");
+                updatePage();
+                isAnimating = false;
+            }, 700);
         }
 
         function prevPage() {
-            if (currentSpread <= 0) return;
-
-            if (isFlipped && currentSpread === 1) {
-                // Go back to cover
-                bookInner.classList.remove("flipped");
-                setTimeout(() => {
-                    cover.classList.remove("hidden");
-                    currentSpread = 0;
-                    updatePage();
-                }, 400);
-                isFlipped = false;
-            } else {
-                currentSpread--;
+            if (isAnimating || currentSpread <= 0) return;
+            if (isReading && currentSpread === 1) {
+                cover.classList.remove("hidden");
+                isReading = false;
+                currentSpread = 0;
                 updatePage();
+                return;
             }
-        }
-
-        function startReading() {
-            cover.classList.add("hidden");
+            if (currentSpread === 0) return;
+            isAnimating = true;
+            currentSpread--;
+            spread.classList.add("turning-prev");
             setTimeout(() => {
-                bookInner.classList.add("flipped");
-                isFlipped = true;
-            }, 300);
+                spread.classList.remove("turning-prev");
+                updatePage();
+                isAnimating = false;
+            }, 700);
         }
 
         // Keyboard navigation
