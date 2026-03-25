@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📖 知識之書 - Oren 黑輪</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="book-shell">
+
+    <div class="book-header">
+        <h1>📖 知識之書</h1>
+        <div class="subtitle">Oren 黑輪的興趣探索札記</div>
+    </div>
+
+    <div class="book-body">
+
+        <!-- 左側目錄 -->
+        <div class="book-toc">
+            <div class="toc-header">目錄</div>
+            <div class="toc-search">
+                <input type="text" id="tocSearch" placeholder="搜尋章節..." oninput="filterTOC(this.value)">
+            </div>
+            <div class="toc-sections" id="tocSections"></div>
+        </div>
+
+        <!-- 右側書頁 -->
+        <div class="book-pages">
+            <div class="book-progress">
+                <div class="book-progress-fill" id="progressFill"></div>
+            </div>
+            <div class="pages-viewport">
+                <div class="page-content" id="pageContent"></div>
+            </div>
+            <div class="page-number" id="pageNumber"></div>
+            <div class="page-nav">
+                <button class="page-nav-btn" id="btnPrev" onclick="prevPage()">← 上一頁</button>
+                <div class="page-nav-center" id="navCenter"></div>
+                <button class="page-nav-btn" id="btnNext" onclick="nextPage()">下一頁 →</button>
+            </div>
+            <div class="keyboard-hint">
+                <kbd>←</kbd> <kbd>→</kbd> 鍵或點擊按鈕翻頁
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="book.js"></script>
+</body>
+</html>
