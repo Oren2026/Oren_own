@@ -10,26 +10,9 @@
 
 ---
 
-## 📊 當前興趣主題（2026-03-25）
+## 📊 興趣主題
 
-### 優先探索 P（由 Cron 每 15 分鐘輪流搜尋）
-
-| 主題 | 說明 |
-|------|------|
-| 虛擬電廠/V2G | 電動車與電網的雙向互動 |
-| 固態變壓器 (SST) | 功率電子與未來電網基礎設施 |
-| 第四代核分裂反應爐 | Natrium、熔鹽堆等新一代核能 |
-| 功率半導體 (SiC/GaN) | 寬能隙半導體，電網效率關鍵 |
-| DC 直流配電架構 | 建築與電網層級的直流化 |
-| 電網級儲能系統 | 大型儲能與電網穩定 |
-| 量子計算 | 運算能力的下一次跳躍 |
-| 太空太陽能電廠 | 軌道電站與微波送電 |
-| 電動航空器/eVTOL | 都市空中交通 |
-| AI + 精神健康 | 人工智慧在心理健康的應用 |
-
-### 隨機探索 R（依序滾動）
-
-涵蓋：數位主權、算力政治、海洋能源、細胞培養肉、意識上傳、區塊鏈應用等 40+ 主題
+詳見 `memory/interests/interests-list.md`（由 Cron 動態管理）。
 
 ---
 
@@ -38,11 +21,11 @@
 ```
 Cron Job（每15分鐘）
     ↓
-讀取興趣清單第一個 P 主題
+python3 scripts/tasks/search_interests.py --get-topic
     ↓
 web_search 濃縮摘要 50 字
     ↓
-寫入 /docs/knowledges/data/YYYYMMDD.json
+python3 scripts/tasks/search_interests.py --append "標題" "摘要" "tags"
     ↓
 Cron Job（每小時）
     ↓
@@ -57,18 +40,16 @@ git push → GitHub Pages
 oren_own/
 ├── docs/
 │   ├── knowledges/
-│   │   ├── data/           ← 每日 JSON 知識庫
-│   │   │   ├── 20260323.json
-│   │   │   ├── 20260324.json
-│   │   │   └── 20260325.json
+│   │   ├── data/           ← 每日 JSON（YYYYMMDD.json）
 │   │   ├── index.html      ← 知識庫前端
-│   │   ├── style.css
-│   │   └── app.js
+│   │   └── app.js / style.css
 │   └── slides/             ← 簡報系統
 ├── memory/
 │   └── interests/
-│       └── interests-list.md  ← 興趣主題清單（Cron 讀取）
-└── databackup/             ← 每日備份
+│       └── interests-list.md  ← 興趣主題（Cron 動態讀取）
+└── scripts/
+    ├── base/                  ← 通用工具（json_append、git_push）
+    └── tasks/                 ← Cron 任務腳本
 ```
 
 ---
@@ -81,24 +62,13 @@ oren_own/
 
 ---
 
-## ⚙️ CRON 排程
+## ⚙️ Cron 排程
 
 | 任務 | 頻率 | 功能 |
 |------|------|------|
-| 搜尋興趣主題 | 每 15 分鐘 | 讀取 P 主題 → 搜尋 → 寫入 JSON |
+| 搜尋興趣主題 | 每 15 分鐘 | 取主題 → 搜尋 → 寫入 JSON |
 | 整點push | 每小時 | git push 到 GitHub Pages |
 | 調整興趣主題權重 | 每 4 小時 | 分析討論新增 R 主題 |
-
----
-
-## 📝 資料筆數
-
-| 日期 | 筆數 |
-|------|------|
-| 2026-03-23 | 1 筆 |
-| 2026-03-24 | 70 筆 |
-| 2026-03-25 | 17 筆 |
-| **總計** | **88 筆** |
 
 ---
 
