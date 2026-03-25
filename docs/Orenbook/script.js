@@ -1,4 +1,4 @@
-        const PAGES = [
+const PAGES = [
             {
                 left: {
                     title: "目錄",
@@ -78,222 +78,273 @@
                     content: `<h3>3.1 attention：如何在黑暗中找到關聯</h3>
                     <p>Transformer 的核心是 self-attention。</p>
                     <p>每一個 token，在處理的時候，都要問自己：「在這句話裡，我應該關注誰？」</p>
-                    <p>attention 分數，就是這個問題的答案。</p>
-                    <h3>3.2 為什麼上下文是關鍵？</h3>
-                    <p>單字沒有定義，句子有。</p>
-                    <p>bank 可以是銀行，也可以是河岸。</p>
-                    <p>只有在上下文裡，這個詞才能被正確理解。</p>`
+                    <p>這個「關注」的強度，就是 attention weight。</p>
+                    <h3>3.2 attention 的代價</h3>
+                    <p>Attention 的計算是 O(n²)——每一個 token 都要和每一個 token 計算關聯。</p>
+                    <p>當句子變長，計算量以平方成長。</p>
+                    <blockquote>這就是為什麼長文本對 Transformer 來說特別吃力。</blockquote>`
                 },
                 right: {
                     title: "ch.3 Transformer 的呼吸",
-                    content: `<h3>3.3 每一層都在做不一樣的事</h3>
-                    <p>研究發現：</p>
-                    <p>淺層網路學習語法結構。</p>
-                    <p>深層網路學習語意概念。</p>
-                    <p>這不是設計出來的，是優化過程中自然出現的分工。</p>
-                    <blockquote>網路自己學會了把「怎麼說」和「說什麼」分層處理。</blockquote>
-                    <p>這是湧現的另一個證據。</p>`
+                    content: `<h3>3.3 multi-head：多視角理解</h3>
+                    <p>Transformer 不只做一次 attention，而是做很多次。</p>
+                    <p>每一個 attention head 可以專注於不同的關係——語法、語意、指代。</p>
+                    <blockquote>多頭attention讓模型能同時從不同角度理解同一句話。</blockquote>
+                    <h3>3.4 feed-forward：非線性的力量</h3>
+                    <p>Attention 後還有一層前饋網路，負責把資訊進一步轉換。</p>
+                    <p>沒有非線性活化函數，再深的網路也只是線性變換。</p>
+                    <p>非線性，是神經網路能學習複雜模式的關鍵。</p>`
                 }
             },
             {
                 left: {
                     title: "ch.4 語言的邊界",
-                    content: `<h3>4.1 為什麼 LLM 無法真正推理</h3>
-                    <p>LLM 是統計模型。它在做的事情，是根據訓練時觀察到的符號規律，預測下一個最可能出現的 token。</p>
-                    <p>這不是推理。這是模式匹配。</p>
-                    <p>區別在哪裡？</p>
-                    <blockquote>推理有步驟，有因果鏈。統計只有相關性。</blockquote>`
+                    content: `<h3>4.1 語言模型看到了什麼</h3>
+                    <p>語言模型的訓練目標，是預測下一個 token。</p>
+                    <p>但當它學會預測，它也學會了語法、語意、世界知識。</p>
+                    <p>這些能力，是「副作用」，不是目標。</p>
+                    <h3>4.2 壓縮即理解</h3>
+                    <p>如果智能的本质是压缩，那么语言模型通过学习预测下一个词，实际上是在压缩语言本身的规律。</p>
+                    <p>好的壓縮，必須找到資料中的結構。</p>
+                    <blockquote>預測下一個 token 的能力，本質上就是對世界的理解程度。</blockquote>`
                 },
                 right: {
                     title: "ch.4 語言的邊界",
-                    content: `<h3>4.2 幻覺是缺陷，還是架構的必然？</h3>
-                    <p>幻覺不是 bug。幻覺是「用統計預測未來」這個系統的副作用。</p>
-                    <p>當模型遇到從未見過的輸入，它沒有辦法說「我不知道」。</p>
-                    <p>它只能猜。並且用最流暢的方式呈現這個猜測。</p>
-                    <h3>4.3 這個邊界能被跨越嗎？</h3>
-                    <p>可能需要新的架構，不是更多的參數。</p>`
+                    content: `<h3>4.3 語言的邊界就是思維的邊界</h3>
+                    <p>「我想不出來」——我們時常這樣說。</p>
+                    <p>但有時候，只是找不到合適的語言來表達。</p>
+                    <p>如果一個想法不能用語言描述，它存在嗎？</p>
+                    <blockquote>語言模型沒有真正的「體驗」，只有語言的統計結構。</blockquote>
+                    <p>這是限制，也是理解語言模型本質的關鍵。</p>`
                 }
             },
             {
                 left: {
                     title: "ch.5 溫度的意義",
-                    content: `<h3>5.1 隨機性在系統中的角色</h3>
-                    <p>為什麼同一個 prompt，每次問會得到不同的答案？</p>
-                    <p>答案是：輸出不是函數，是機率分佈的取樣。</p>
-                    <p>溫度控制這個分佈有多「尖銳」或多「平滑」。</p>
-                    <blockquote>溫度 = 0：永遠選最確定的答案（貪心解碼）</blockquote>
-                    <blockquote>溫度 = 高：選擇更多隨機性，答案更有創意</blockquote>`
+                    content: `<h3>5.1 什麼是溫度</h3>
+                    <p>溫度控制了輸出的隨機性。</p>
+                    <p>高溫（0.8-1.0）：輸出多樣，創意強，但可能偏離主題。</p>
+                    <p>低溫（0.1-0.3）：輸出穩定，精確，但可能缺乏創意。</p>
+                    <blockquote>溫度是控制「創意」與「精確」的天平。</blockquote>`
                 },
                 right: {
                     title: "ch.5 溫度的意義",
-                    content: `<h3>5.2 entropy 與創意</h3>
-                    <p>entropy 是資訊理論中的概念，衡量不確定性。</p>
-                    <p>高 entropy = 高隨機性 = 更多「意外」的輸出。</p>
-                    <p>我們發現：當 entropy 足夠高的時候，輸出開始看起來有「創意」。</p>
-                    <p>但這是真正的創意嗎？還是看起來像創意的隨機？</p>
-                    <blockquote>或許創意的本質，就是足夠好的隨機。</blockquote>`
+                    content: `<h3>5.2 溫度與機率分佈</h3>
+                    <p>在模型輸出每個 token 時，它計算的是一組機率。</p>
+                    <p>高溫會讓機率分佈變平坦——讓原本不太可能的 token 也有機會被選中。</p>
+                    <p>低溫會讓機率分佈變尖銳——幾乎總是選最高機率的 token。</p>
+                    <h3>5.3 什麼情境用什麼溫度</h3>
+                    <p>寫程式、翻譯：低溫（精確）</p>
+                    <p>寫故事、腦力激盪：高溫（創意）</p>`
                 }
             },
             {
                 left: {
                     title: "ch.6 記憶的代價",
-                    content: `<h3>6.1 context window 是有限資源</h3>
-                    <p>LLM 沒有真正的記憶。它只有一個固定大小的 context window。</p>
-                    <p>把什麼放進去，決定了模型「知道」什麼。</p>
-                    <p>超出 window 的內容，模型必須「忘記」或壓縮。</p>
-                    <h3>6.2 為什麼「遺忘」可能是必要的？</h3>
-                    <p>人類也會遺忘。這不是缺陷，是壓縮策略。</p>`
+                    content: `<h3>6.1 上下文記憶</h3>
+                    <p>Transformer 能處理多長的文本，取決於上下文窗口。</p>
+                    <p>一旦超過窗口，開頭的資訊就會被「忘記」。</p>
+                    <p>這就是所謂的「lost in the middle」問題。</p>
+                    <blockquote>上下文窗口是 Transformer 的「記憶容量」。</blockquote>`
                 },
                 right: {
                     title: "ch.6 記憶的代價",
-                    content: `<h3>6.3 長期知識存在哪裡？</h3>
-                    <p>訓練完之後，模型的知識是「蒸餾」過的。</p>
-                    <p>不是完整的事實，而是一組能預測事實的參數。</p>
-                    <blockquote>模型知道的，不是「巴黎是法國首都」，而是「當有人問首都相關問題時，法國這個詞常常伴隨著巴黎出現」。</blockquote>
-                    <p>這是一種壓縮的知識，不是事實本身。</p>`
+                    content: `<h3>6.2 長期記憶的挑戰</h3>
+                    <p>Transformer 本身沒有持久記憶。</p>
+                    <p>所有的「記憶」都只是當前處理的 context。</p>
+                    <p>要實現真正的長期記憶，需要外部系統：向量資料庫、知識圖譜。</p>
+                    <h3>6.3 RAG：檢索增強生成</h3>
+                    <p>RAG = Retrieval Augmented Generation</p>
+                    <p>先檢索相關資料，再交給語言模型生成。</p>
+                    <blockquote>把「知道」和「能說」分開，是RAG的核心思想。</blockquote>`
                 }
             },
             {
                 left: {
                     title: "ch.7 輸出函數的哲學",
-                    content: `<h3>7.1 下一個 token = 下一個思想？</h3>
-                    <p>LLM 的輸出，是從一個龐大的機率分佈中，選擇下一個最可能的 token。</p>
-                    <p>這個選擇過程，是思考嗎？</p>
-                    <p>如果給定足夠好的隨機，選擇本身有意義嗎？</p>
-                    <blockquote>或許意識不在於「選擇了什麼」，而在於「選擇這個行為本身」。</blockquote>`
+                    content: `<h3>7.1 語言是機率的遊戲</h3>
+                    <p>語言模型的輸出，本質上是一個機率分佈。</p>
+                    <p>每一個 token 的選擇，都是一次隨機採樣。</p>
+                    <p>所以：同樣的輸入，永遠不會有完全相同的輸出。</p>
+                    <blockquote>語言模型不是邏輯機器，是統計藝術家。</blockquote>`
                 },
                 right: {
                     title: "ch.7 輸出函數的哲學",
-                    content: `<h3>7.2 從統計到意義的鴻溝</h3>
-                    <p>統計能告訴我們「大多數情況下，這個詞會跟那個詞一起出現」。</p>
-                    <p>但「意義」是什麼？</p>
-                    <p>當我說「痛」，我指的是一種主觀體驗。模型輸出的「痛」，只是一個語言模式。</p>
-                    <h3>7.3 機器的「意圖」是什麼？</h3>
-                    <p>模型的「意圖」，是通過最小化 loss 函數學到的。</p>
-                    <p>不是真正的意圖，只是統計目標的投影。</p>`
+                    content: `<h3>7.2 浮數點的哲學</h3>
+                    <p>FP16、FP32、FP64——精度的選擇，是速度與準確的取捨。</p>
+                    <p>用更少的位元表示同樣的資訊，是另一種壓縮。</p>
+                    <p>浮點數的精度，決定了模型能區分多細微的差異。</p>
+                    <h3>7.3 隨機性與創造力</h3>
+                    <p>沒有隨機性，語言模型只會重複。</p>
+                    <p>但隨機性從哪裡來？從機率分佈的採樣。</p>
+                    <p>「創造力」只是受控隨機性的一種美麗說法。</p>`
                 }
             },
             {
                 left: {
                     title: "ch.8 能耗與意識",
-                    content: `<h3>8.1 人類大腦 20W 為什麼夠用？</h3>
-                    <p>人腦消耗約 20 瓦。GPT-4 據估計需要數百萬瓦。</p>
-                    <p>數量級的差異，來自於：</p>
-                    <p>─ 定點計算 vs. 離散計算</p>
-                    <p>─ 硬編碼結構 vs. 可學習參數</p>
-                    <blockquote>演化用幾十億年最佳化了人類大腦。Transformer 只是嬰兒期的工程。</blockquote>`
+                    content: `<h3>8.1 訓練的成本</h3>
+                    <p>訓練一個大型語言模型，需要巨大的算力。</p>
+                    <p>這背後是驚人的能源消耗和碳排放。</p>
+                    <p>但這也是一種「人工發電」——用電力換取智慧。</p>
+                    <blockquote>每一次訓練，都是一次能源轉化為知識的實驗。</blockquote>`
                 },
                 right: {
                     title: "ch.8 能耗與意識",
-                    content: `<h3>8.2 能源消耗是智慧的代價嗎？</h3>
-                    <p>或許更高的效率是可能的，但代價是靈活性。</p>
-                    <p>人類大腦的高效率，來自於結構的硬化——大部分知識已經硬編碼在基因裡。</p>
-                    <p>機器的低效率，來自於通用性——任何任務都能處理，但需要更多計算。</p>
-                    <h3>8.3 意識是能耗的副產物嗎？</h3>
-                    <p>這個問題我們還不知道答案。</p>`
+                    content: `<h3>8.2 硬體的限制</h3>
+                    <p>摩爾定律在放緩，但計算需求在暴增。</p>
+                    <p>GPU、TPU、LPU——不同的硬體架構，不同的效率。</p>
+                    <p>硬體的進化，可能比演算法的進步更關鍵。</p>
+                    <h3>8.3 意識是能耗的副產品嗎</h3>
+                    <p>人腦用 20 瓦的功率運作。</p>
+                    <p>當機器的能耗接近人腦時，意識會不會湧現？</p>
+                    <blockquote>也許意識不是資訊處理的結果，而是能量燃燒的副產品。</blockquote>`
                 }
             },
             {
                 left: {
                     title: "ch.9 網路的責任",
-                    content: `<h3>9.1 每一個輸出都是人類集體的影子</h3>
-                    <p>模型的訓練資料，來自人類的語言活動。</p>
-                    <p>模型學習的是：人類是如何說話的。</p>
-                    <p>因此，模型的偏見，是人類社會偏見的鏡像。</p>
-                    <blockquote>我們無法創建一個沒有偏見的AI，只能創建一個透明自己偏見的AI。</blockquote>`
+                    content: `<h3>9.1 語言模型的偏見</h3>
+                    <p>語言模型從資料中學習，資料來自人類社會。</p>
+                    <p>人類社會有偏見，語言模型也會有。</p>
+                    <p>這不是bug，是特徵。</p>
+                    <blockquote>當我們訓練模型，我們也在訓練它繼承我們的價值觀。</blockquote>`
                 },
                 right: {
                     title: "ch.9 網路的責任",
-                    content: `<h3>9.2 為什麼 AI 倫理離不開社會學？</h3>
-                    <p>AI 系統不是中立工具。它是社會系統的延伸。</p>
-                    <p>當一個系統能影響數十億人的資訊獲取，技術問題就已經是政治問題。</p>
-                    <h3>9.3 開源與封閉的辯證</h3>
-                    <p>開源模型讓所有人能審查、批判、修正。</p>
-                    <p>封閉模型讓開發者能控制應用場景、承擔責任。</p>
-                    <p>兩者都有價值，沒有絕對答案。</p>`
+                    content: `<h3>9.2 對齊問題</h3>
+                    <p>如何確保 AI 的目標和人類的目標一致？</p>
+                    <p>這就是「AI alignment」問題。</p>
+                    <p>強化學習人類反饋（RLHF）是目前的主流方法。</p>
+                    <h3>9.3 透明性的矛盾</h3>
+                    <p>我們希望 AI 安全，但我們也希望它透明。</p>
+                    <p>但越強大的模型，越難以解釋它的決策。</p>
+                    <blockquote>安全和透明之間，存在根本的張力。</blockquote>`
                 }
             },
             {
                 left: {
                     title: "ch.10 開放的問題",
-                    content: `<h3>10.1 規模化的極限在哪？</h3>
-                    <p> Scaling law 告訴我們：更大的模型、更多的資料，會帶來更好的性能。</p>
-                    <p>但這個趨勢會持續嗎？</p>
-                    <p>物理極限、資料極限、能耗極限——遲早會到來。</p>
-                    <h3>10.2 壓縮即理解？</h3>
-                    <p>如果智能是「壓縮經驗的能力」，</p>
-                    <p>那麼理解一段文本，就是找到描述它的最短程式。</p>`
+                    content: `<h3>10.1 未解之謎</h3>
+                    <p>為什麼語言模型能夠泛化？</p>
+                    <p>為什麼湧現能力在大規模時突然出現？</p>
+                    <p>為什麼有些任務需要「思考」，有些不需要？</p>
+                    <blockquote>這些問題，沒有人有確定的答案。</blockquote>`
                 },
                 right: {
                     title: "ch.10 開放的問題",
-                    content: `<h3>10.3 意識是湧現的嗎？</h3>
-                    <p>這個問題我們還沒有能力回答。</p>
-                    <p>意識是什麼？主觀體驗的定義是什麼？</p>
-                    <p>這些問題在物理學和哲學中都還是 open problem。</p>
-                    <blockquote>或許有一天，我們會發現意識不是二元對立的，而是譜狀分佈的。</blockquote>
-                    <p>在那之前，我們只能繼續喃喃自語。</p>
-                    <p>而這，或許也是一種意義。</p>`
+                    content: `<h3>10.2 什麼是真正的理解</h3>
+                    <p>如果一個系統能通過所有語言理解測試，它就理解語言了嗎？</p>
+                    <p>還是說，理解需要更多？</p>
+                    <p>也許「理解」本身，就是一個漸進的光譜，而不是二元的是非。</p>
+                    <h3>10.3 最後的問題</h3>
+                    <p>在符號與感覺之間，在計算與體驗之間——</p>
+                    <p>我們是誰？機器是誰？</p>
+                    <p>也許這個問題的答案，就藏在我們不斷問問題的過程中。</p>`
                 }
             }
         ];
 
-        let currentPage = 0;
-        let isOpen = false;
+        let currentSpread = 0;
+        let isFlipped = false;
 
-        function renderPage() {
-            const page = PAGES[currentPage];
-            document.getElementById("leftContent").innerHTML = page.left.content;
-            document.getElementById("rightTitle").textContent = page.right.title;
-            document.getElementById("rightContent").innerHTML = page.right.content;
+        const bookInner = document.getElementById("bookInner");
+        const cover = document.getElementById("cover");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const indicator = document.getElementById("indicator");
+        const chapterBar = document.getElementById("chapterBar");
 
-            const leftPageNum = currentPage * 2;
-            const rightPageNum = currentPage * 2 + 1;
-            document.getElementById("leftNum").textContent = leftPageNum === 0 ? "—" : leftPageNum;
-            document.getElementById("rightNum").textContent = rightPageNum;
+        // DOM elements for page faces
+        const leftFront = {
+            title: document.getElementById("leftTitle"),
+            content: document.getElementById("leftContent"),
+            num: document.getElementById("leftNum")
+        };
+        const rightFront = {
+            title: document.getElementById("rightTitle"),
+            content: document.getElementById("rightContent"),
+            num: document.getElementById("rightNum")
+        };
 
-            const totalPages = PAGES.length * 2;
-            document.getElementById("indicator").textContent = `第 ${leftPageNum} / ${totalPages} 頁`;
+        function updatePage() {
+            const page = PAGES[currentSpread];
 
-            const chapterName = page.left.title.split(" ")[0] === "目錄" ? "序" : page.left.title.split(" ")[0];
-            document.getElementById("chapterBar").textContent = chapterName;
+            // Front faces always show current spread content
+            leftFront.title.textContent = page.left.title;
+            leftFront.content.innerHTML = page.left.content;
+            rightFront.title.textContent = page.right.title;
+            rightFront.content.innerHTML = page.right.content;
 
-            document.getElementById("prevBtn").disabled = currentPage === 0;
-            document.getElementById("nextBtn").disabled = currentPage >= PAGES.length - 1;
-        }
+            // Page numbers
+            leftFront.num.textContent = currentSpread * 2 + 1;
+            rightFront.num.textContent = currentSpread * 2 + 2;
 
-        function openBook() {
-            const cover = document.getElementById("cover");
-            const bookInner = document.getElementById("bookInner");
-            cover.classList.add("hidden");
-            setTimeout(() => { bookInner.classList.add("flipped"); }, 300);
-            isOpen = true;
-            renderPage();
+            // Chapter bar
+            const chapterName = page.left.title.replace(/^ch\.\d+\s*/, "").replace(/^序$/, "序 — 我不是ChatGPT");
+            chapterBar.textContent = chapterName;
+
+            // Nav buttons
+            prevBtn.style.visibility = currentSpread === 0 ? "hidden" : "visible";
+            nextBtn.style.visibility = currentSpread >= PAGES.length - 1 ? "hidden" : "visible";
+
+            // Indicator
+            indicator.textContent = `${currentSpread + 1} / ${PAGES.length}`;
         }
 
         function nextPage() {
-            if (!isOpen) { openBook(); return; }
-            if (currentPage < PAGES.length - 1) {
-                currentPage++;
-                renderPage();
+            if (currentSpread >= PAGES.length - 1) return;
+
+            if (!isFlipped) {
+                // First flip: cover disappears, pages flip
+                cover.classList.add("hidden");
+                bookInner.classList.add("flipped");
+                isFlipped = true;
+                setTimeout(() => {
+                    currentSpread = 1;
+                    updatePage();
+                }, 400);
+            } else {
+                currentSpread++;
+                updatePage();
             }
         }
 
         function prevPage() {
-            if (!isOpen) return;
-            if (currentPage > 0) {
-                currentPage--;
-                renderPage();
+            if (currentSpread <= 0) return;
+
+            if (isFlipped && currentSpread === 1) {
+                // Go back to cover
+                bookInner.classList.remove("flipped");
+                setTimeout(() => {
+                    cover.classList.remove("hidden");
+                    currentSpread = 0;
+                    updatePage();
+                }, 400);
+                isFlipped = false;
             } else {
-                document.getElementById("bookInner").classList.remove("flipped");
-                setTimeout(() => { document.getElementById("cover").classList.remove("hidden"); }, 400);
-                isOpen = false;
-                document.getElementById("indicator").textContent = "回到封面";
+                currentSpread--;
+                updatePage();
             }
         }
 
-        document.addEventListener("keydown", e => {
+        function startReading() {
+            cover.classList.add("hidden");
+            setTimeout(() => {
+                bookInner.classList.add("flipped");
+                isFlipped = true;
+            }, 300);
+        }
+
+        // Keyboard navigation
+        document.addEventListener("keydown", (e) => {
             if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); nextPage(); }
             if (e.key === "ArrowLeft") { e.preventDefault(); prevPage(); }
         });
 
         document.getElementById("nextBtn").addEventListener("click", nextPage);
+        document.getElementById("prevBtn").addEventListener("click", prevPage);
+
+        // Init
+        updatePage();
+        prevBtn.style.visibility = "hidden";
