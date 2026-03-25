@@ -279,7 +279,9 @@ const PAGES = [
 
             prevBtn.style.visibility = currentSpread === 0 ? "hidden" : "visible";
             nextBtn.style.visibility = currentSpread >= PAGES.length - 1 ? "hidden" : "visible";
-            indicator.textContent = `${currentSpread + 1} / ${PAGES.length}`;
+            const totalPages = PAGES.length * 2;
+            const currentLeftPage = currentSpread * 2 + 1;
+            indicator.textContent = `${currentLeftPage} / ${totalPages}`;
         }
 
         function nextPage() {
