@@ -3,104 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FIRA AutoRace - TurtleBot 3 進度匯報</title>
+    <title>🚀 2026 火箭大事</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .rocket-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .rocket-card:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+        .rocket-card .date {
+            color: #ff6b6b;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+        }
+        .rocket-card h3 {
+            margin: 0 0 8px 0;
+            color: #fff;
+        }
+        .rocket-card p {
+            color: #aaa;
+            font-size: 0.95em;
+            margin: 0;
+        }
+        .countdown-box {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid #e94560;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .countdown-box .days {
+            font-size: 4em;
+            font-weight: bold;
+            color: #e94560;
+            line-height: 1;
+        }
+        .countdown-box .label {
+            color: #888;
+            font-size: 1.2em;
+            margin-top: 5px;
+        }
+        .countdown-box .target {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+        .tag-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        .tag {
+            background: rgba(233,69,96,0.2);
+            border: 1px solid #e94560;
+            color: #e94560;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+        }
+        .interactive-hint {
+            color: #666;
+            font-size: 0.85em;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .quiz-box {
+            background: rgba(233,69,96,0.1);
+            border: 1px solid #e94560;
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        .quiz-box:hover {
+            background: rgba(233,69,96,0.15);
+        }
+        .quiz-box .question {
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .quiz-option {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            color: #ccc;
+            transition: all 0.3s;
+        }
+        .quiz-option:hover {
+            background: rgba(233,69,96,0.2);
+            border-color: #e94560;
+        }
+        .quiz-result {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(100,255,150,0.1);
+            border-radius: 10px;
+            color: #6bffb8;
+        }
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .dot.active {
+            background: #e94560;
+            transform: scale(1.2);
+        }
+        .dot:hover {
+            background: rgba(255,255,255,0.5);
+        }
+    </style>
 </head>
 <body>
     <div class="progress-bar" id="progress"></div>
-    
+
     <div class="slideshow" id="slideshow">
-        
+
         <!-- Slide 1: 標題 -->
         <div class="slide active">
             <div class="content" style="justify-content: center; align-items: center; text-align: center;">
-                <h1>🤖 FIRA AutoRace 機器人</h1>
-                <p class="subtitle">TurtleBot 3 自動駕駛系統開發</p>
-                <div style="margin-top: 40px;">
-                    <span class="tag">ROS</span>
-                    <span class="tag yellow">OpenCV 4.5.0</span>
-                    <span class="tag blue">Python</span>
+                <h1 style="font-size: 2.5em;">🚀 2026 火箭大事</h1>
+                <p class="subtitle" style="font-size: 1.3em; color: #888;">Starship × Artemis × 月球競賽</p>
+                <div class="countdown-box" style="margin-top: 30px;">
+                    <div class="days" id="countdown">--</div>
+                    <div class="label">天</div>
+                    <div class="target">距離 Starship Flight 12 預計發射</div>
                 </div>
-                <div style="margin-top: 50px; width: 400px; max-width: 80%;">
-                    <div style="display: flex; justify-content: space-between; color: #666; font-size: 0.85em; margin-bottom: 8px;">
-                        <span>環境建置</span>
-                        <span>視覺循線 + 障礙規避實測</span>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.1); border-radius: 10px; height: 12px; overflow: hidden;">
-                        <div style="width: 20%; height: 100%; background: linear-gradient(90deg, #6bffb8, #6b9fff); border-radius: 10px;"></div>
-                    </div>
-                    <p style="color: #6bffb8; margin-top: 12px; font-size: 1.1em;">目前進度約 20%</p>
+                <div class="tag-row" style="justify-content: center;">
+                    <span class="tag">SpaceX</span>
+                    <span class="tag">NASA</span>
+                    <span class="tag">Artemis</span>
+                    <span class="tag">月球</span>
                 </div>
-                <p style="color: #666; margin-top: 40px;">2026.03.24</p>
-            </div>
-            <div class="slide-number">1 / 3</div>
-        </div>
-        
-        <!-- Slide 2: 目前進度 -->
-        <div class="slide">
-            <h2>📊 目前進度</h2>
-            <div class="content">
-                <div class="grid-3">
-                    <div class="card done">
-                        <h3>✅ 已完成</h3>
-                        <ul>
-                            <li>ROS 環境架設（本機 + TB3）</li>
-                            <li>網路橋接與 ROS Master 通訊</li>
-                            <li>鍵盤遙控前後移動</li>
-                            <li>OpenCV 4.5.0 安裝</li>
-                        </ul>
-                    </div>
-                    <div class="card current">
-                        <h3>🔄 硬體確認中</h3>
-                        <ul>
-                            <li>USB 鏡頭主題確認</li>
-                            <li>LDS-01 雷射雷達資料確認</li>
-                            <li>OpenCV 讀取鏡頭測試</li>
-                        </ul>
-                    </div>
-                    <div class="card todo">
-                        <h3>📋 待開發</h3>
-                        <ul>
-                            <li>視覺主題整合</li>
-                            <li>OpenCV 影像處理</li>
-                            <li>障礙偵測與避障</li>
-                            <li>路徑追蹤實測</li>
-                        </ul>
-                    </div>
+                <p class="interactive-hint">← → 或點擊 切換　｜　點擊預覽卡可快速跳轉</p>
+                <div class="progress-dots">
+                    <div class="dot active" onclick="showSlide(0)"></div>
+                    <div class="dot" onclick="showSlide(1)"></div>
+                    <div class="dot" onclick="showSlide(2)"></div>
+                    <div class="dot" onclick="showSlide(3)"></div>
                 </div>
             </div>
-            <div class="slide-number">2 / 3</div>
+            <div class="slide-number">1 / 4</div>
         </div>
-        
-        <!-- Slide 3: 硬體與軟體確認 -->
-        <div class="slide">
-            <h2>🔍 硬體與軟體確認</h2>
-            <div class="content">
-                <div class="grid-2">
-                    <div class="card current">
-                        <h3>🔧 硬體確認</h3>
-                        <ul>
-                            <li>如何快速確認 LDS-01 雷射雷達有輸出資料？</li>
-                            <li>如何確認 USB 鏡頭主題有在跑？</li>
-                        </ul>
-                    </div>
-                    <div class="card current">
-                        <h3>💻 軟體確認</h3>
-                        <ul>
-                            <li>OpenCV 讀取 USB 鏡頭的流程？</li>
-                            <li>建議的 ROS 視覺主題命名？</li>
-                        </ul>
-                    </div>
-                </div>
 
+        <!-- Slide 2: Starship Flight 12 -->
+        <div class="slide">
+            <h2>⭐ Starship Flight 12</h2>
+            <div class="content">
+                <div class="rocket-card">
+                    <div class="date">預計 2026 年 4 月</div>
+                    <h3>V3 新世代 Starship 首次點火</h3>
+                    <p>SpaceX 已於 3/16 完成靜態點火測試，10 引擎同步點火成功。這是 V3 版本首次實測，為 4 月發射做準備。</p>
+                    <div class="tag-row">
+                        <span class="tag">靜態點火</span>
+                        <span class="tag">V3 版本</span>
+                        <span class="tag">Booster 19</span>
+                    </div>
+                </div>
+                <div class="rocket-card">
+                    <div class="date">2026 進度回顧</div>
+                    <h3>Flight 10 + 11 連續成功</h3>
+                    <p>Block 2 版本最後兩次飛行均成功，驗證了再入與水面著陸技術。Flight 12 將首次使用完整 V3 配置。</p>
+                </div>
+                <div class="rocket-card">
+                    <div class="date">為什麼重要</div>
+                    <h3>月球任務的關鍵拼圖</h3>
+                    <p>NASA Artemis 計劃選擇 Starship 作為月球登陸器，Flight 12 的成功與否直接影響 2027 年 Artemis III 時程。</p>
+                </div>
+                <div class="progress-dots">
+                    <div class="dot" onclick="showSlide(0)"></div>
+                    <div class="dot active" onclick="showSlide(1)"></div>
+                    <div class="dot" onclick="showSlide(2)"></div>
+                    <div class="dot" onclick="showSlide(3)"></div>
+                </div>
             </div>
-            <div class="slide-number">3 / 3</div>
+            <div class="slide-number">2 / 4</div>
         </div>
-        
+
+        <!-- Slide 3: Artemis 計劃 -->
+        <div class="slide">
+            <h2>🌙 Artemis 月球計劃</h2>
+            <div class="content">
+                <div class="rocket-card">
+                    <div class="date">2026 下半年</div>
+                    <h3>Artemis II — 首次載人繞月</h3>
+                    <p>4 名太空人將搭乘獵戶座飛船，進行為期約 10 天的繞月任務。這是自阿波羅以來人類首次重返月球軌道。</p>
+                    <div class="tag-row">
+                        <span class="tag">獵戶座飛船</span>
+                        <span class="tag">SLS 火箭</span>
+                        <span class="tag">載人</span>
+                    </div>
+                </div>
+                <div class="rocket-card">
+                    <div class="date">2027（預計）</div>
+                    <h3>Artemis III — 月球南極登陸</h3>
+                    <p>使用 SpaceX Starship 作為登陸器，太空人將登陸月球南極，尋找水冰資源。預計停留約一週。</p>
+                    <div class="tag-row">
+                        <span class="tag">月球南極</span>
+                        <span class="tag">水冰</span>
+                        <span class="tag">Starship</span>
+                    </div>
+                </div>
+                <div class="rocket-card">
+                    <div class="date">2026 最新</div>
+                    <h3>NASA 擴大 SpaceX 任務範圍</h3>
+                    <p>2026/03/19 報導：NASA 降低波音角色，擴大 Starship 在月球任務中的職責，包含為 Gateway 太空站進行推進劑補注。</p>
+                </div>
+                <div class="progress-dots">
+                    <div class="dot" onclick="showSlide(0)"></div>
+                    <div class="dot" onclick="showSlide(1)"></div>
+                    <div class="dot active" onclick="showSlide(2)"></div>
+                    <div class="dot" onclick="showSlide(3)"></div>
+                </div>
+            </div>
+            <div class="slide-number">3 / 4</div>
+        </div>
+
+        <!-- Slide 4: 互動測驗 -->
+        <div class="slide">
+            <h2>🧠 互動測驗</h2>
+            <div class="content">
+                <div class="quiz-box" onclick="checkAnswer()">
+                    <div class="question">SpaceX V3 Starship 的首次點火測試是什麼時候？</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-correct="false">2026/02/28</div>
+                        <div class="quiz-option" data-correct="true">2026/03/16</div>
+                        <div class="quiz-option" data-correct="false">2026/04/01</div>
+                        <div class="quiz-option" data-correct="false">2026/03/01</div>
+                    </div>
+                    <div class="quiz-result" id="quiz-result">
+                        ✅ 正確！3/16 的靜態點火測試是 V3 版本首次 10 引擎同步點火。
+                    </div>
+                </div>
+                <div style="margin-top: 30px;">
+                    <div class="rocket-card" style="cursor: default;">
+                        <div class="date">其他 2026 亮點</div>
+                        <h3>🚀 ESA Themis 火箭 + 🚀 Firefly 月球登陸</h3>
+                        <p>ESA 的 Themis 可重用火箭示範機將進行首次測試飛行；Firefly 也預計執行第二次月球登陸任務。</p>
+                        <div class="tag-row">
+                            <span class="tag">ESA Themis</span>
+                            <span class="tag">Firefly</span>
+                            <span class="tag">可重用火箭</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress-dots">
+                    <div class="dot" onclick="showSlide(0)"></div>
+                    <div class="dot" onclick="showSlide(1)"></div>
+                    <div class="dot" onclick="showSlide(2)"></div>
+                    <div class="dot active" onclick="showSlide(3)"></div>
+                </div>
+            </div>
+            <div class="slide-number">4 / 4</div>
+        </div>
+
     </div>
-    
+
     <div class="nav-hint">← → 或點擊 切換頁面</div>
-    
+
     <script src="slides.js"></script>
+    <script>
+        // Countdown to April 9, 2026
+        function updateCountdown() {
+            const target = new Date('2026-04-09T17:30:00 CST');
+            const now = new Date();
+            const diff = target - now;
+            const days = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+            document.getElementById('countdown').textContent = days;
+        }
+        updateCountdown();
+
+        // Quiz interaction
+        function checkAnswer() {
+            const result = document.getElementById('quiz-result');
+            if (result.style.display === 'block') {
+                result.style.display = 'none';
+                return;
+            }
+            result.style.display = 'block';
+        }
+    </script>
 </body>
 </html>
