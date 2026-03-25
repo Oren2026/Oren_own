@@ -213,9 +213,7 @@
         }
 
         .cover.hidden {
-            opacity: 0;
-            pointer-events: none;
-            z-index: 5;
+            display: none;
         }
 
         .cover h2 {
@@ -312,28 +310,40 @@
 
         /* 響應式 */
         @media (max-width: 600px) {
-            body { padding: 12px; }
-            .book {
-                height: 420px;
-                margin-bottom: 15px;
-                -webkit-overflow: hidden;
-                overflow: hidden;
+            body {
+                padding: 10px;
             }
 
-            /* 手機版：單頁，spread 每次滑動一整個視口 */
+            h1 { font-size: 1.1em; }
+            .subtitle { font-size: 0.75em; margin-bottom: 15px; }
+
+            /* 書本：固定高度，overflow hidden */
+            .book {
+                height: 380px;
+                margin-bottom: 12px;
+                overflow: hidden;
+                position: relative;
+            }
+
+            /* 每次滑動一整個視口寬度 */
             .spread {
+                display: flex;
                 width: 100%;
                 height: 100%;
+                will-change: transform;
             }
 
+            /* 兩頁都是 100% 寬 */
             .page {
                 width: 100%;
                 height: 100%;
-                min-height: 0; /* 允許 flex child 收縮 */
+                min-height: 0;
+                flex-shrink: 0;
             }
 
+            /* 左頁藏起來，右頁顯示 */
             .page-left {
-                display: none;
+                display: none !important;
             }
 
             .page-right {
@@ -345,27 +355,52 @@
                 width: 100%;
                 height: 100%;
                 min-height: 0;
-                padding: 20px 16px;
+                padding: 18px 14px;
                 border-radius: 8px;
-                box-shadow: 0 0 15px rgba(0,0,0,0.3);
+                box-shadow: 0 0 15px rgba(0,0,0,0.35);
                 overflow-y: auto;
                 display: flex;
                 flex-direction: column;
             }
 
-            .page-left .page-number { display: none; }
+            .page-number { display: none; }
 
-            .page-inner h2 { font-size: 0.95em; margin-bottom: 10px; }
-            .page-inner h3 { font-size: 0.85em; }
-            .page-inner p { font-size: 0.82em; line-height: 1.75; }
-            .toc { gap: 2px; }
-            .chapter { font-size: 0.82em; gap: 6px; padding: 3px 0; }
-            .chapter-num { min-width: 32px; }
+            .page-inner h2 {
+                font-size: 0.95em;
+                margin-bottom: 10px;
+                padding-bottom: 6px;
+            }
+            .page-inner h3 { font-size: 0.85em; margin: 10px 0 4px 0; }
+            .page-inner p { font-size: 0.82em; line-height: 1.7; margin-bottom: 8px; }
+            .page-inner blockquote { font-size: 0.82em; margin: 10px 0; }
+
+            .toc { gap: 3px; }
+            .chapter {
+                font-size: 0.82em;
+                gap: 6px;
+                padding: 3px 0;
+            }
+            .chapter-num { min-width: 30px; }
+            .chapter span:last-child { flex: 1; word-break: break-word; }
+
+            .cover {
+                padding: 30px 20px;
+                z-index: 20;
+            }
             .cover h2 { font-size: 1.5em; }
+            .cover .author { font-size: 0.85em; margin-bottom: 20px; }
             .cover .desc { font-size: 0.8em; }
-            .cover .hint { font-size: 0.8em; bottom: 25px; }
-            .nav-buttons { gap: 30px; }
-            .nav-btn { padding: 14px 36px; font-size: 1.3em; }
-            .chapter-title-bar { font-size: 0.85em; }
-            .page-indicator { font-size: 0.85em; }
+            .cover .hint { font-size: 0.78em; bottom: 20px; }
+
+            .chapter-title-bar { font-size: 0.8em; min-height: 20px; margin-bottom: 10px; }
+
+            .nav-buttons { gap: 25px; margin-bottom: 10px; }
+            .nav-btn {
+                padding: 12px 30px;
+                font-size: 1.2em;
+                min-width: 56px;
+                min-height: 44px;
+            }
+
+            .page-indicator { font-size: 0.8em; }
         }
