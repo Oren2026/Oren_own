@@ -56,9 +56,7 @@ oren_own/
 
 ## 🌐 網站
 
-**知識庫**：https://Oren2026.github.io/Oren_own/docs/knowledges/
-
-**JSON 資料**：`https://Oren2026.github.io/Oren_own/docs/knowledges/data/YYYYMMDD.json`
+**簡報**：https://Oren2026.github.io/Oren_own/docs/slides/
 
 ---
 
