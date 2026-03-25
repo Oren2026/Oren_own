@@ -293,7 +293,14 @@ li::before {
 /* ========== Mobile Responsive ========== */
 @media (max-width: 768px) {
     .slide {
-        padding: 50px 20px 80px 20px;
+        padding: 50px 20px 100px 20px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        height: 100vh;
+    }
+
+    .slide .content {
+        overflow-y: visible;
     }
 
     h1 { font-size: 1.8em; }
