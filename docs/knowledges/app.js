@@ -9,6 +9,11 @@ function formatDate(filename) {
     return `${filename.substring(0,4)}-${filename.substring(4,6)}-${filename.substring(6,8)}`;
 }
 
+// 通知依賴方（crypto.js）資料已載完
+function notifyDataReady() {
+    window.allArticlesLoaded = true;
+}
+
 // 從 URL 讀取所有 JSON 檔案
 async function loadAllData() {
     allArticles = [];
@@ -200,5 +205,5 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Enter') search();
         });
     }
-    loadAllData();
+    loadAllData().then(() => notifyDataReady());
 });
