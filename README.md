@@ -39,17 +39,20 @@ git push → GitHub Pages
 ```
 oren_own/
 ├── docs/
-│   ├── knowledges/
+│   ├── knowledges/        ← 知識庫 + 加密貨幣模組
 │   │   ├── data/           ← 每日 JSON（YYYYMMDD.json）
 │   │   ├── index.html      ← 知識庫前端
+│   │   ├── crypto.js       ← 加密貨幣模組
 │   │   └── app.js / style.css
-│   └── slides/             ← 簡報系統
+│   ├── slides/             ← 簡報系統
+│   └── Orenbook/           ← 《機器的喃喃》
 ├── memory/
 │   └── interests/
 │       └── interests-list.md  ← 興趣主題（Cron 動態讀取）
 └── scripts/
     ├── base/                  ← 通用工具（json_append、git_push）
-    └── tasks/                 ← Cron 任務腳本
+    ├── tasks/                 ← Cron 任務腳本
+    └── fetch_crypto_price.py  ← 加密貨幣行情（Cron 每 10 分鐘）
 ```
 
 ---
@@ -60,15 +63,18 @@ oren_own/
 
 **簡報**：https://Oren2026.github.io/Oren_own/docs/slides/
 
+**Orenbook**：《機器的喃喃》— AI 系統程式哲學：https://Oren2026.github.io/Oren_own/docs/Orenbook/
+
 ---
 
 ## ⚙️ Cron 排程
 
 | 任務 | 頻率 | 功能 |
 |------|------|------|
+| 抓取加密貨幣價格 | 每 10 分鐘 | TAO/FET → price.json |
 | 搜尋興趣主題 | 每 15 分鐘 | 取主題 → 搜尋 → 寫入 JSON |
 | 整點push | 每小時 | git push 到 GitHub Pages |
-| 調整興趣主題權重 | 每 4 小時 | 分析討論新增 R 主題 |
+| 新增主題 | 每 4 小時 | 低於 20 條則新增 R 主題 |
 
 ---
 
