@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TDK 2026 | 讓世界看見雲林</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <h1>🏆 TDK 2026 比賽規劃</h1>
+    <p class="subtitle">第30屆 TDK 盃全國大專校院創思設計與製作競賽</p>
+    <span class="badge">📍 國立雲林科技大學</span>
+  </header>
+
+  <main class="container">
+    <!-- Info Cards -->
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>比賽主題</h3>
+        <div class="value">讓世界看見雲林</div>
+      </div>
+      <div class="info-card">
+        <h3>主辦單位</h3>
+        <div class="value">雲林科技大學機械工程系</div>
+      </div>
+      <div class="info-card">
+        <h3>目前進度</h3>
+        <div class="value warning" id="progress-percent">0%</div>
+      </div>
+      <div class="info-card">
+        <h3>最後更新</h3>
+        <div class="value success" id="last-updated">載入中...</div>
+      </div>
+    </div>
+
+    <!-- Alert -->
+    <div class="alert warning">
+      <span class="alert-icon">⚠️</span>
+      <div class="alert-text">
+        <div class="alert-title">注意：部分零件可能缺貨</div>
+        <div>TurtleBot 3 Burger 和 RealSense D455 目前部分通路顯示缺貨，建議儘早確認貨源。</div>
+      </div>
+    </div>
+
+    <!-- Progress Section -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">📋</span>
+        <h2>專案進度</h2>
+      </div>
+      <div class="section-content">
+        <ul class="task-list">
+          <li class="task-item">
+            <span class="check done">✓</span>
+            <span class="task-text done">建立比賽資料夾架構</span>
+          </li>
+          <li class="task-item">
+            <span class="check done">✓</span>
+            <span class="task-text done">制定採購清單</span>
+          </li>
+          <li class="task-item">
+            <span class="check pending"></span>
+            <span class="task-text">研究比賽規則</span>
+          </li>
+          <li class="task-item">
+            <span class="check pending"></span>
+            <span class="task-text">評估技術需求</span>
+          </li>
+          <li class="task-item">
+            <span class="check pending"></span>
+            <span class="task-text">設計系統架構</span>
+          </li>
+          <li class="task-item">
+            <span class="check pending"></span>
+            <span class="task-text">採購材料</span>
+          </li>
+          <li class="task-item">
+            <span class="check pending"></span>
+            <span class="task-text">機構組裝</span>
+          </li>
+          <li class="task-item">
+            <span class="check pending"></span>
+            <span class="task-text">系統整合與測試</span>
+          </li>
+        </ul>
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+          </div>
+          <div class="progress-text">
+            <span>進度</span>
+            <span id="progress-text">2/8 完成</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Budget Section -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">💰</span>
+        <h2>採購預算</h2>
+      </div>
+      <div class="section-content">
+        <table class="budget-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>金額 (NT$)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>核心平台（TurtleBot 3 + Raspberry Pi 4 + SD卡）</td>
+              <td>24,100</td>
+            </tr>
+            <tr>
+              <td>電源系統（LiPo 電池、降壓模組、平衡充）</td>
+              <td>1,760</td>
+            </tr>
+            <tr>
+              <td>感測器（RealSense、超音波、IMU）</td>
+              <td>10,470</td>
+            </tr>
+            <tr>
+              <td>機構材料（3D列印線材、伺服馬達、螺絲套組）</td>
+              <td>3,200</td>
+            </tr>
+            <tr>
+              <td>其他（傳輸線、烙鐵、束線帶）</td>
+              <td>760</td>
+            </tr>
+            <tr class="total-row">
+              <td>總計</td>
+              <td>NT$ 40,290</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Folders Section -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">📁</span>
+        <h2>專案資料</h2>
+      </div>
+      <div class="section-content">
+        <ul class="folder-list">
+          <li class="folder-item">
+            <span class="folder-icon">📚</span>
+            <div class="folder-info">
+              <a href="01-研究資料/00_比賽規則摘要.md" class="folder-name">01-研究資料</a>
+              <p class="folder-desc">比賽規則摘要、研究文件</p>
+            </div>
+          </li>
+          <li class="folder-item">
+            <span class="folder-icon">⚙️</span>
+            <div class="folder-info">
+              <a href="02-系統架構/00_系統架構規劃.md" class="folder-name">02-系統架構</a>
+              <p class="folder-desc">技術架構設計</p>
+            </div>
+          </li>
+          <li class="folder-item">
+            <span class="folder-icon">🛒</span>
+            <div class="folder-info">
+              <a href="03-採購清單/00_預計採購清單.md" class="folder-name">03-採購清單</a>
+              <p class="folder-desc">材料採購規劃與預算</p>
+            </div>
+          </li>
+          <li class="folder-item">
+            <span class="folder-icon">📝</span>
+            <div class="folder-info">
+              <a href="04-技術文檔/00_開發日誌.md" class="folder-name">04-技術文檔</a>
+              <p class="folder-desc">技術文件、開發日誌</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Links Section -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">🔗</span>
+        <h2>相關連結</h2>
+      </div>
+      <div class="section-content">
+        <ul class="folder-list">
+          <li class="folder-item">
+            <span class="folder-icon">🌐</span>
+            <div class="folder-info">
+              <a href="https://web02.yuntech.edu.tw/~tdk_4hhoerjt/" target="_blank" class="folder-name">
+                官方網站 ↗
+              </a>
+              <p class="folder-desc">TDK 盃官方網站（雲林科技大學）</p>
+            </div>
+          </li>
+          <li class="folder-item">
+            <span class="folder-icon">📂</span>
+            <div class="folder-info">
+              <a href="https://github.com/Oren2026/Oren_own/tree/main/docs/TDK_2026" target="_blank" class="folder-name">
+                GitHub 原始碼 ↗
+              </a>
+              <p class="folder-desc">查看所有原始文件和版本歷史</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Next Steps -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">🎯</span>
+        <h2>下一步</h2>
+      </div>
+      <div class="section-content">
+        <ul class="task-list">
+          <li class="task-item">
+            <span class="check pending"></span>
+            <span class="task-text">確認實驗室是否有可借用設備</span>
+          </li>
+          <li class="task-item">
+            <span class="check pending"></span>
+            <span class="task-text">聯繫通路確認 TurtleBot 3 貨源</span>
+          </li>
+          <li class="task-item">
+            <span class="check pending"></span>
+            <span class="task-text">下週採購第一批材料</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>TDK 2026 比賽規劃 | 最後更新：<span id="footer-updated">載入中...</span></p>
+    <p style="margin-top: 0.5rem;">由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+  </footer>
+
+  <!-- Refresh Button -->
+  <button class="refresh-btn" id="refresh-btn" title="重新整理">↻</button>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.getElementById('footer-updated').textContent = document.getElementById('last-updated').textContent;
+  </script>
+</body>
+</html>
