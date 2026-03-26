@@ -15,66 +15,26 @@
     }
     .doc-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
     .doc-header .subtitle { opacity: 0.85; }
-    .back-link {
-      display: inline-block;
-      margin-top: 1rem;
-      color: white;
-      text-decoration: none;
-      opacity: 0.8;
-    }
+    .back-link { display: inline-block; margin-top: 1rem; color: white; text-decoration: none; opacity: 0.8; }
     .back-link:hover { opacity: 1; text-decoration: underline; }
-    .doc-content {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
+    .doc-content { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
     .section { margin-bottom: 2rem; }
-    .section h2 {
-      font-size: 1.2rem;
-      color: var(--primary);
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--border);
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    th, td {
-      padding: 0.75rem 1rem;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
+    .section h2 { font-size: 1.2rem; color: var(--primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
     th { background: var(--bg); font-weight: 600; }
-    .status-done { color: var(--success); }
-    .status-pending { color: var(--secondary); }
-    .tag {
-      display: inline-block;
-      background: var(--primary);
-      color: white;
-      padding: 0.15rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.8rem;
-    }
-    .tag.done { background: var(--success); }
-    .track-flow {
-      background: white;
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      box-shadow: var(--shadow);
-    }
-    .track-flow ol {
-      padding-left: 1.5rem;
-    }
-    .track-flow li {
-      margin-bottom: 0.75rem;
-      padding-left: 0.5rem;
-    }
+    .track-flow { background: white; border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
+    .track-flow ol { padding-left: 1.5rem; }
+    .track-flow li { margin-bottom: 0.75rem; }
     .track-flow li::marker { color: var(--primary); font-weight: bold; }
+    .mission-table { margin-top: 1rem; }
+    .mission-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+    .mission-row:last-child { border-bottom: none; }
+    .mission-row .icon { font-size: 1.5rem; flex-shrink: 0; }
+    .mission-row .info { flex: 1; }
+    .mission-row .name { font-weight: 600; }
+    .mission-row .desc { font-size: 0.85rem; color: var(--text-light); margin-top: 0.2rem; }
+    .mission-row .status { flex-shrink: 0; font-size: 0.85rem; }
   </style>
 </head>
 <body>
@@ -85,13 +45,11 @@
   </header>
 
   <main class="doc-content">
-    <!-- 賽道總覽 -->
     <div class="section">
       <h2>🏁 賽道總覽</h2>
       <p>賽道為封閉式迴圈設計，採逆時針方向行進。兩側有黃線（左側）與白線（右側）供車道跟隨使用。</p>
     </div>
 
-    <!-- 任務流程 -->
     <div class="section">
       <h2>📍 任務流程（依行進順序）</h2>
       <div class="track-flow">
@@ -109,100 +67,30 @@
       </div>
     </div>
 
-    <!-- 任務關卡詳解 -->
     <div class="section">
       <h2>🎯 任務關卡</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>關卡</th>
-            <th>視覺特徵</th>
-            <th>觸發行為</th>
-            <th>狀態</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>🚦 交通號誌</td>
-            <td>紅/黃/綠三色燈泡，HSV 顏色偵測</td>
-            <td>紅燈停、綠燈行、黃燈減速</td>
-            <td><span class="tag done">✅ 已完成</span></td>
-          </tr>
-          <tr>
-            <td>↩️ 圓環/交叉路口</td>
-            <td>藍色圓形箭頭標誌（直行/轉向）</td>
-            <td>根據箭頭方向選擇出口</td>
-            <td><span class="tag">🚧 框架完成</span></td>
-          </tr>
-          <tr>
-            <td>🚧 障礙/減速</td>
-            <td>青藍色橫向標記</td>
-            <td>觸發減速或繞行決策</td>
-            <td><span class="tag">🚧 框架完成</span></td>
-          </tr>
-          <tr>
-            <td>🅿️ 停車</td>
-            <td>白色虛線車格 + 藍色 P 標誌</td>
-            <td>進入停車格並鎖定</td>
-            <td><span class="tag">🚧 框架完成</span></td>
-          </tr>
-          <tr>
-            <td>🚞 平交道柵欄</td>
-            <td>紅白條紋柵欄</td>
-            <td>確認柵欄升起才通過</td>
-            <td><span class="tag">🚧 框架完成</span></td>
-          </tr>
-          <tr>
-            <td>〰️ S 彎道</td>
-            <td>連續彎道，黃白車道線</td>
-            <td>PID 控制穩定通過</td>
-            <td><span class="tag">🚧 框架完成</span></td>
-          </tr>
-          <tr>
-            <td>🚇 隧道/暗區</td>
-            <td>大面積黑色區域，低光源</td>
-            <td>切換 LiDAR 里程計純追蹤</td>
-            <td><span class="tag">🚧 框架完成</span></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="track-flow">
+        <div id="mission-list" style="padding: 0.5rem 0;">
+          <!-- JS renders here from data/*.json -->
+        </div>
+      </div>
     </div>
 
-    <!-- 地面標線 -->
     <div class="section">
       <h2>🛣️ 地面標線規則</h2>
       <table>
-        <thead>
-          <tr>
-            <th>顏色</th>
-            <th>位置</th>
-            <th>意義</th>
-          </tr>
-        </thead>
+        <thead><tr><th>顏色</th><th>位置</th><th>意義</th></tr></thead>
         <tbody>
-          <tr>
-            <td><strong style="color:#eab308;">黃線</strong></td>
-            <td>行進方向左側</td>
-            <td>車道左邊界</td>
-          </tr>
-          <tr>
-            <td><strong style="color:#94a3b8;">白線</strong></td>
-            <td>行進方向右側</td>
-            <td>車道右邊界</td>
-          </tr>
-          <tr>
-            <td><strong style="color:#ef4444;">紅線</strong></td>
-            <td>起點/終點</td>
-            <td>起終點線</td>
-          </tr>
+          <tr><td><strong style="color:#eab308;">黃線</strong></td><td>行進方向左側</td><td>車道左邊界</td></tr>
+          <tr><td><strong style="color:#94a3b8;">白線</strong></td><td>行進方向右側</td><td>車道右邊界</td></tr>
+          <tr><td><strong style="color:#ef4444;">紅線</strong></td><td>起點/終點</td><td>起終點線</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- 技術重點 -->
     <div class="section">
       <h2>⚙️ 技術重點</h2>
-      <ul style="padding-left: 1.5rem; line-height: 1.8;">
+      <ul style="padding-left:1.5rem; line-height:1.8;">
         <li><strong>HSV 顏色空間</strong>：紅/黃/綠燈號偵測，比 BGR 更穩定</li>
         <li><strong>霍夫圓變換</strong>：在顏色遮罩中找圓形，確認是否為真實燈號</li>
         <li><strong>透視轉換</strong>：將視角轉為 top-down，擠出消失點</li>
@@ -212,10 +100,45 @@
       </ul>
     </div>
 
-    <div style="text-align: center; padding: 2rem 0; color: var(--text-light); font-size: 0.85rem;">
+    <div style="text-align:center; padding:2rem 0; color:var(--text-light); font-size:0.85rem;">
       <p>最後更新：2026-03-26 | TB3 2026 FIRA AutoRace</p>
-      <p>由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+      <p>由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
     </div>
   </main>
+
+  <script>
+    const MISSION_ICONS = {
+      traffic_light:'🚦',intersection:'↩️',construction:'🚧',
+      parking:'🅿️',level_crossing:'🚞',s_curve:'〰️',tunnel:'🚇',lane:'🚗'
+    };
+    const MISSION_NAMES = {
+      traffic_light:'交通號誌',intersection:'圓環/交叉路口',construction:'障礙/減速',
+      parking:'停車',level_crossing:'平交道柵欄',s_curve:'S 彎道',tunnel:'隧道/暗區',lane:'PID 循線'
+    };
+
+    async function init() {
+      try {
+        const ids = ['traffic_light','intersection','construction','parking','level_crossing','s_curve','tunnel','lane'];
+        const missions = await Promise.allSettled(ids.map(id => fetch(`../data/${id}.json`).then(r=>r.json()).catch(()=>null)));
+        const list = document.getElementById('mission-list');
+        let html = '';
+        missions.filter(r=>r.status==='fulfilled'&&r.value).forEach(r=>{
+          const m = r.value;
+          if(m.category==='base') return;
+          const allDone = (m.subConcepts||[]).every(s=>s.status==='done');
+          const icon = MISSION_ICONS[m.id]||'❓';
+          const name = m.name?.zh || MISSION_NAMES[m.id] || m.id;
+          const label = allDone ? '✅ 已完成' : '🚧 施工中';
+          html += `<div class="mission-row">
+            <span class="icon">${icon}</span>
+            <div class="info"><div class="name">${name}</div><div class="desc">${m.description||''}</div></div>
+            <span class="status">${label}</span>
+          </div>`;
+        });
+        list.innerHTML = html || '<p style="color:var(--text-light);padding:1rem;">載入中...</p>';
+      } catch(e) { console.error(e); }
+    }
+    init();
+  </script>
 </body>
 </html>
