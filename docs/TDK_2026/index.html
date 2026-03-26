@@ -11,6 +11,7 @@
   <header class="header">
     <h1>🏆 TDK 2026 比賽規劃</h1>
     <p class="subtitle">第30屆 TDK 盃全國大專校院創思設計與製作競賽</p>
+    <p class="subtitle" style="font-size: 1.3rem; margin-top: 0.5rem;">🌾 讓世界看見雲林</p>
     <span class="badge">📍 國立雲林科技大學</span>
   </header>
 
@@ -23,11 +24,11 @@
       </div>
       <div class="info-card">
         <h3>主辦單位</h3>
-        <div class="value">雲林科技大學機械工程系</div>
+        <div class="value">雲林科技大學機械系</div>
       </div>
       <div class="info-card">
         <h3>目前進度</h3>
-        <div class="value warning" id="progress-percent">0%</div>
+        <div class="value warning" id="progress-percent">20%</div>
       </div>
       <div class="info-card">
         <h3>最後更新</h3>
@@ -39,10 +40,57 @@
     <div class="alert warning">
       <span class="alert-icon">⚠️</span>
       <div class="alert-text">
-        <div class="alert-title">注意：部分零件可能缺貨</div>
-        <div>TurtleBot 3 Burger 和 RealSense D455 目前部分通路顯示缺貨，建議儘早確認貨源。</div>
+        <div class="alert-title">重要提醒：這不是 TurtleBot 3 比賽！</div>
+        <div>本屆 TDK 需要自行設計與製作機器人，主題與雲林農業相關（文蛤分級、柳丁採收等）。</div>
       </div>
     </div>
+
+    <!-- Mission Section -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">🎯</span>
+        <h2>主要關卡</h2>
+      </div>
+      <div class="section-content">
+        <ul class="folder-list">
+          <li class="folder-item">
+            <span class="folder-icon">🌉</span>
+            <div class="folder-info">
+              <span class="folder-name">西螺大橋</span>
+              <p class="folder-desc">通過橋樑結構障礙</p>
+            </div>
+          </li>
+          <li class="folder-item">
+            <span class="folder-icon">☕</span>
+            <div class="folder-info">
+              <span class="folder-name">古坑咖啡雲科店</span>
+              <p class="folder-desc">咖啡盤放置、主視覺圖卡辨識</p>
+            </div>
+          </li>
+          <li class="folder-item">
+            <span class="folder-icon">🍊</span>
+            <div class="folder-info">
+              <span class="folder-name">古坑柳丁園</span>
+              <p class="folder-desc">柳丁摘取功能（強制要求）</p>
+            </div>
+          </li>
+          <li class="folder-item">
+            <span class="folder-icon">🐚</span>
+            <div class="folder-info">
+              <span class="folder-name">文蛤分級（自動組）</span>
+              <p class="folder-desc">3.5cm（灰色）及 1.5cm（黑色）文蛤，使用 3cm 篩網過篩</p>
+            </div>
+          </li>
+          <li class="folder-item">
+            <span class="folder-icon">🏔️</span>
+            <div class="folder-info">
+              <span class="folder-name">西螺七崁群英會</span>
+              <p class="folder-desc">英雄台台階挑戰、貴賓布偶攜帶任務</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
 
     <!-- Progress Section -->
     <section class="section">
@@ -58,11 +106,15 @@
           </li>
           <li class="task-item">
             <span class="check done">✓</span>
-            <span class="task-text done">制定採購清單</span>
+            <span class="task-text done">根據官方公告整理比賽資訊</span>
           </li>
           <li class="task-item">
             <span class="check pending"></span>
-            <span class="task-text">研究比賽規則</span>
+            <span class="task-text">下載並研究官方規則 PDF</span>
+          </li>
+          <li class="task-item">
+            <span class="check pending"></span>
+            <span class="task-text">確認參賽組別（自動組/遙控組）</span>
           </li>
           <li class="task-item">
             <span class="check pending"></span>
@@ -78,7 +130,7 @@
           </li>
           <li class="task-item">
             <span class="check pending"></span>
-            <span class="task-text">機構組裝</span>
+            <span class="task-text">機構製作與組裝</span>
           </li>
           <li class="task-item">
             <span class="check pending"></span>
@@ -91,7 +143,7 @@
           </div>
           <div class="progress-text">
             <span>進度</span>
-            <span id="progress-text">2/8 完成</span>
+            <span id="progress-text">2/9 完成</span>
           </div>
         </div>
       </div>
@@ -101,7 +153,7 @@
     <section class="section">
       <div class="section-header">
         <span class="icon">💰</span>
-        <h2>採購預算</h2>
+        <h2>預估採購預算</h2>
       </div>
       <div class="section-content">
         <table class="budget-table">
@@ -113,31 +165,42 @@
           </thead>
           <tbody>
             <tr>
-              <td>核心平台（TurtleBot 3 + Raspberry Pi 4 + SD卡）</td>
-              <td>24,100</td>
+              <td>移動底盤（馬達、輪子、底盤）</td>
+              <td>7,000</td>
             </tr>
             <tr>
-              <td>電源系統（LiPo 電池、降壓模組、平衡充）</td>
-              <td>1,760</td>
+              <td>感測器（相機、超音波、IMU、循線）</td>
+              <td>8,950</td>
             </tr>
             <tr>
-              <td>感測器（RealSense、超音波、IMU）</td>
-              <td>10,470</td>
+              <td>機構材料（3D列印線材、螺絲、鋁材）</td>
+              <td>3,300</td>
             </tr>
             <tr>
-              <td>機構材料（3D列印線材、伺服馬達、螺絲套組）</td>
-              <td>3,200</td>
+              <td>主控制（STM32/ESP32、Arduino、RPi）</td>
+              <td>3,000</td>
             </tr>
             <tr>
-              <td>其他（傳輸線、烙鐵、束線帶）</td>
-              <td>760</td>
+              <td>電源系統（鋰電池、平衡充、降壓）</td>
+              <td>2,260</td>
+            </tr>
+            <tr>
+              <td>機構控制（伺服馬達、舵機驅動）</td>
+              <td>1,510</td>
+            </tr>
+            <tr>
+              <td>其他（工具、線材）</td>
+              <td>960</td>
             </tr>
             <tr class="total-row">
               <td>總計</td>
-              <td>NT$ 40,290</td>
+              <td>NT$ 26,980</td>
             </tr>
           </tbody>
         </table>
+        <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
+          💡 預估總預算約 NT$ 27,000（不含重複購買备用零件）
+        </p>
       </div>
     </section>
 
@@ -153,7 +216,7 @@
             <span class="folder-icon">📚</span>
             <div class="folder-info">
               <a href="01-研究資料/00_比賽規則摘要.md" class="folder-name">01-研究資料</a>
-              <p class="folder-desc">比賽規則摘要、研究文件</p>
+              <p class="folder-desc">比賽規則摘要、官方公告</p>
             </div>
           </li>
           <li class="folder-item">
@@ -195,7 +258,16 @@
               <a href="https://web02.yuntech.edu.tw/~tdk_4hhoerjt/" target="_blank" class="folder-name">
                 官方網站 ↗
               </a>
-              <p class="folder-desc">TDK 盃官方網站（雲林科技大學）</p>
+              <p class="folder-desc">TDK 盃官方網站（國立雲林科技大學）</p>
+            </div>
+          </li>
+          <li class="folder-item">
+            <span class="folder-icon">📝</span>
+            <div class="folder-info">
+              <a href="https://forms.gle/HfAcE9nVc7vU1FocA" target="_blank" class="folder-name">
+                線上報名表單 ↗
+              </a>
+              <p class="folder-desc">需同時郵寄紙本報名表</p>
             </div>
           </li>
           <li class="folder-item">
@@ -221,15 +293,19 @@
         <ul class="task-list">
           <li class="task-item">
             <span class="check pending"></span>
-            <span class="task-text">確認實驗室是否有可借用設備</span>
+            <span class="task-text">下載官方規則 PDF</span>
           </li>
           <li class="task-item">
             <span class="check pending"></span>
-            <span class="task-text">聯繫通路確認 TurtleBot 3 貨源</span>
+            <span class="task-text">確認參賽組別（自動組或遙控組）</span>
           </li>
           <li class="task-item">
             <span class="check pending"></span>
-            <span class="task-text">下週採購第一批材料</span>
+            <span class="task-text">實地勘察或索取練習場地資訊</span>
+          </li>
+          <li class="task-item">
+            <span class="check pending"></span>
+            <span class="task-text">評估實驗室現有設備</span>
           </li>
         </ul>
       </div>
