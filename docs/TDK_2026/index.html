@@ -5,80 +5,280 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TDK 2026 | 讓世界看見雲林</title>
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* ── Modal ── */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal.open { display: flex; }
+    .modal-content {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: var(--card-bg);
+      z-index: 1;
+    }
+    .modal-header h2 { font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+      padding: 0 0.25rem;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 1.25rem; }
+    .modal-body h3 { font-size: 0.95rem; color: var(--text-light); margin-bottom: 0.5rem; font-weight: normal; }
+    .modal-body ul { padding-left: 1.25rem; margin-top: 0.75rem; }
+    .modal-body li { margin-bottom: 0.4rem; line-height: 1.6; }
+    .modal-body .task-list-modal { margin-top: 1rem; }
+    .modal-body .task-list-modal .task-item { padding: 0.4rem 0; }
+
+    /* ── Mission Cards (grid) ── */
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .mission-card {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .mission-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37,99,235,0.15);
+    }
+    .mission-card .mission-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .mission-card .mission-name { font-weight: 600; margin-bottom: 0.25rem; }
+    .mission-card .mission-desc { font-size: 0.85rem; color: var(--text-light); line-height: 1.5; }
+    .mission-card .mission-arrow { font-size: 0.85rem; color: var(--primary); margin-top: 0.5rem; }
+
+    /* ── Quick Links ── */
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+    }
+    .quick-link {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .quick-link:hover { background: white; border-color: var(--primary); color: var(--primary); }
+    .quick-link .ql-icon { font-size: 1.1rem; }
+    .quick-link .ql-label { flex: 1; }
+    .quick-link .ql-arrow { font-size: 0.8rem; opacity: 0.5; }
+
+    /* ── Score Mini Cards ── */
+    .score-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 0.75rem;
+    }
+    .score-mini {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .score-mini .score-num {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .score-mini .score-label {
+      font-size: 0.75rem;
+      color: var(--text-light);
+    }
+    .score-mini .score-note {
+      font-size: 0.7rem;
+      color: var(--accent);
+    }
+
+    /* ── Progress Accordion ── */
+    .accordion-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .accordion-item:last-child { border-bottom: none; }
+    .accordion-header {
+      padding: 0.85rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .accordion-header:hover .accordion-title { color: var(--primary); }
+    .accordion-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .accordion-title { flex: 1; font-weight: 600; font-size: 0.95rem; transition: color 0.2s; }
+    .accordion-arrow { font-size: 0.8rem; color: var(--text-light); transition: transform 0.3s; }
+    .accordion-item.open .accordion-arrow { transform: rotate(180deg); }
+    .accordion-body {
+      display: none;
+      padding: 0 0 0.75rem 2rem;
+    }
+    .accordion-item.open .accordion-body { display: block; }
+
+    /* ── New progress items ── */
+    .progress-category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0 0.25rem;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Badge ── */
+    .badge-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+    }
+    .badge-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-light);
+    }
+  </style>
 </head>
 <body>
   <header class="header">
-    <h1>🏆 TDK 2026 比賽規劃</h1>
+    <h1>🏆 TDK 2026</h1>
     <p class="subtitle">第30屆 TDK 盃全國大專校院創思設計與製作競賽</p>
     <p class="subtitle" style="font-size: 1.3rem; margin-top: 0.5rem;">🌾 讓世界看見雲林</p>
-    <span class="badge">📍 國立雲林科技大學</span>
+    <div class="badge-row">
+      <span class="badge">🎮 遙控組</span>
+      <span class="badge">📍 國立雲林科技大學</span>
+      <span class="badge">📅 2026-05</span>
+    </div>
   </header>
 
   <main class="container">
-    <!-- Info Cards -->
-    <div class="info-grid">
+
+    <!-- Status Cards -->
+    <div class="info-grid" style="margin-top: 1.5rem;">
       <div class="info-card">
-        <h3>比賽主題</h3>
-        <div class="value">讓世界看見雲林</div>
+        <h3>競賽組別</h3>
+        <div class="value">🎮 遙控組</div>
       </div>
       <div class="info-card">
-        <h3>主辦單位</h3>
-        <div class="value">雲林科技大學機械系</div>
+        <h3>競賽主題</h3>
+        <div class="value">🌾 雲林在地風貌</div>
       </div>
       <div class="info-card">
-        <h3>目前進度</h3>
-        <div class="value warning">研究中</div>
+        <h3>機構設計進度</h3>
+        <div class="value warning" id="mech-status">研究中</div>
       </div>
       <div class="info-card">
         <h3>最後更新</h3>
-        <div class="value success" id="last-updated">載入中...</div>
+        <div class="value success" id="last-updated">2026-03-27</div>
       </div>
     </div>
 
-    <!-- Mission Section -->
+    <!-- Missions Section -->
     <section class="section">
       <div class="section-header">
         <span class="icon">🎯</span>
-        <h2>主要關卡</h2>
+        <h2>四大關卡</h2>
       </div>
       <div class="section-content">
-        <ul class="folder-list">
-          <li class="folder-item">
-            <span class="folder-icon">🌉</span>
-            <div class="folder-info">
-              <span class="folder-name">西螺大橋</span>
-              <p class="folder-desc">通過橋樑結構障礙</p>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">☕</span>
-            <div class="folder-info">
-              <span class="folder-name">古坑咖啡雲科店</span>
-              <p class="folder-desc">咖啡盤放置、主視覺圖卡辨識</p>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">🍊</span>
-            <div class="folder-info">
-              <span class="folder-name">古坑柳丁園 <span class="tag done" style="font-size:0.7rem;">強制</span></span>
-              <p class="folder-desc">柳丁摘取功能（強制要求）</p>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">🐚</span>
-            <div class="folder-info">
-              <span class="folder-name">文蛤分級（自動組）</span>
-              <p class="folder-desc">3.5cm（灰色）及 1.5cm（黑色）文蛤，使用 3cm 篩網過篩</p>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">🏔️</span>
-            <div class="folder-info">
-              <span class="folder-name">西螺七崁群英會</span>
-              <p class="folder-desc">英雄台台階挑戰、貴賓布偶攜帶任務</p>
-            </div>
-          </li>
-        </ul>
+        <div class="mission-grid">
+          <div class="mission-card" onclick="openMission(0)">
+            <div class="mission-icon">🌿</div>
+            <div class="mission-name">成龍濕地生態守護</div>
+            <div class="mission-desc">扶正 3 個倒下的裝置藝術 + 將尖叫雞、天鵝娃娃送往救護站</div>
+            <div class="mission-arrow">點我看詳情 →</div>
+          </div>
+          <div class="mission-card" onclick="openMission(1)">
+            <div class="mission-icon">🐚</div>
+            <div class="mission-name">文蛤分級</div>
+            <div class="mission-desc">掃文蛤進篩選區，透過不同孔徑篩網分級</div>
+            <div class="mission-arrow">點我看詳情 →</div>
+          </div>
+          <div class="mission-card" onclick="openMission(2)">
+            <div class="mission-icon">🌾</div>
+            <div class="mission-name">稻草卷堆放</div>
+            <div class="mission-desc">將散落的稻草卷堆成三角形結構</div>
+            <div class="mission-arrow">點我看詳情 →</div>
+          </div>
+          <div class="mission-card" onclick="openMission(3)">
+            <div class="mission-icon">🏮</div>
+            <div class="mission-name">北港迎媽祖</div>
+            <div class="mission-desc">文旦、柳丁、砂糖橘放入供桌水果盤 + 擲筊動作</div>
+            <div class="mission-arrow">點我看詳情 →</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Score Highlights -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">⭐</span>
+        <h2>評分重點（創意獎）</h2>
+      </div>
+      <div class="section-content">
+        <div class="score-mini-grid">
+          <div class="score-mini">
+            <div class="score-num">40</div>
+            <div class="score-label">機構設計創意</div>
+            <div class="score-note">⭐ 最大項</div>
+          </div>
+          <div class="score-mini">
+            <div class="score-num">25</div>
+            <div class="score-label">結構設計創意</div>
+          </div>
+          <div class="score-mini">
+            <div class="score-num">20</div>
+            <div class="score-label">設計概念創意</div>
+          </div>
+          <div class="score-mini">
+            <div class="score-num">15</div>
+            <div class="score-label">造型與運動美感</div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -89,201 +289,363 @@
         <h2>專案進度</h2>
       </div>
       <div class="section-content">
-        <ul class="task-list">
-          <li class="task-item">
-            <span class="check done">✓</span>
-            <span class="task-text done">建立比賽資料夾架構</span>
-          </li>
-          <li class="task-item">
-            <span class="check done">✓</span>
-            <span class="task-text done">根據官方公告整理比賽資訊</span>
-          </li>
-          <li class="task-item">
-            <span class="check done">✓</span>
-            <span class="task-text done">採購清單建立</span>
-          </li>
-          <li class="task-item">
-            <span class="check done">✓</span>
-            <span class="task-text done">老師建議落实（電源+RPI5）</span>
-          </li>
-          <li class="task-item">
-            <span class="check done">✓</span>
-            <span class="task-text done">文件轉為 HTML 格式</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">下載並研究官方規則 PDF</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">確認參賽組別（自動組/遙控組）</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">設計系統架構</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">採購材料</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">機構製作與組裝</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">系統整合與測試</span>
-          </li>
-        </ul>
-        <div class="progress-container">
+        <div class="progress-container" style="margin-bottom: 1rem;">
           <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill" style="width: 45%"></div>
+            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
           </div>
           <div class="progress-text">
-            <span>進度</span>
-            <span id="progress-text">5/11 完成</span>
+            <span>機械準備度</span>
+            <span id="progress-text">🚧 載入中...</span>
+          </div>
+        </div>
+
+        <!-- Accordion -->
+        <div class="accordion" id="progress-accordion">
+          <!-- 🤖 機構設計 -->
+          <div class="accordion-item open" data-category="mech">
+            <div class="accordion-header" onclick="toggleAccordion(this.parentElement)">
+              <span class="accordion-icon">🤖</span>
+              <span class="accordion-title">🤖 機構設計</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <div class="progress-category-header">🔧 爪手機構</div>
+              <ul class="task-list">
+                <li class="task-item">
+                  <span class="check pending" id="task-1a"></span>
+                  <span class="task-text" id="task-1a-text">🌿 托盤式底爪 — 濕地候鳥救護</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-1b"></span>
+                  <span class="task-text" id="task-1b-text">🌿 弧形夾指 — 扶正裝置藝術</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-2"></span>
+                  <span class="task-text" id="task-2-text">🐚 推板 — 文蛤分級</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-3"></span>
+                  <span class="task-text" id="task-3-text">🌾 弧形夾爪 — 稻草卷堆放</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-4"></span>
+                  <span class="task-text" id="task-4-text">🏮 水果夾持機構 — 文旦 / 柳丁 / 砂糖橘</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- ⚡ 控制系統 -->
+          <div class="accordion-item" data-category="ctrl">
+            <div class="accordion-header" onclick="toggleAccordion(this.parentElement)">
+              <span class="accordion-icon">⚡</span>
+              <span class="accordion-title">⚡ 控制系統</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ul class="task-list">
+                <li class="task-item">
+                  <span class="check pending" id="task-ctrl-1"></span>
+                  <span class="task-text" id="task-ctrl-1-text">訊號定義與接線圖</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-ctrl-2"></span>
+                  <span class="task-text" id="task-ctrl-2-text">遙控器對頻與測試</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-ctrl-3"></span>
+                  <span class="task-text" id="task-ctrl-3-text">機構與控制整合</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 🔬 機器功能測試 -->
+          <div class="accordion-item" data-category="test">
+            <div class="accordion-header" onclick="toggleAccordion(this.parentElement)">
+              <span class="accordion-icon">🔬</span>
+              <span class="accordion-title">🔬 機器功能測試</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ul class="task-list">
+                <li class="task-item">
+                  <span class="check pending" id="task-test-1"></span>
+                  <span class="task-text" id="task-test-1-text">關卡 1 功能測試（濕地 / 候鳥）</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-test-2"></span>
+                  <span class="task-text" id="task-test-2-text">關卡 2 功能測試（文蛤分級）</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-test-3"></span>
+                  <span class="task-text" id="task-test-3-text">關卡 3 功能測試（稻草堆疊）</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-test-4"></span>
+                  <span class="task-text" id="task-test-4-text">關卡 4 功能測試（水果 + 擲筊）</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-test-5"></span>
+                  <span class="task-text" id="task-test-5-text">連續任務流程演練</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 🚀 比賽完善度 -->
+          <div class="accordion-item" data-category="ready">
+            <div class="accordion-header" onclick="toggleAccordion(this.parentElement)">
+              <span class="accordion-icon">🚀</span>
+              <span class="accordion-title">🚀 比賽完善度</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ul class="task-list">
+                <li class="task-item">
+                  <span class="check pending" id="task-ready-1"></span>
+                  <span class="task-text" id="task-ready-1-text">穩定性強化</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-ready-2"></span>
+                  <span class="task-text" id="task-ready-2-text">備用方案準備</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-ready-3"></span>
+                  <span class="task-text" id="task-ready-3-text">實地場地演練</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Updates Section -->
-    <section class="section">
-      <div class="section-header">
-        <span class="icon">🆕</span>
-        <h2>更新內容</h2>
-      </div>
-      <div class="section-content">
-        <ul class="folder-list">
-          <li class="folder-item">
-            <span class="folder-icon">📋</span>
-            <div class="folder-info">
-              <a href="05-更新內容/00_更新記錄.html" class="folder-name">2026-03-26｜老師建議：電源+RPI5</a>
-              <p class="folder-desc">電源升級鉛酸12V 10Ah+7Ah、控制器升級RPI 5、預算NT$29,930</p>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Budget Section -->
-    <section class="section">
-      <div class="section-header">
-        <span class="icon">💰</span>
-        <h2>預估採購預算</h2>
-      </div>
-      <div class="section-content">
-        <table class="budget-table">
-          <thead>
-            <tr>
-              <th>項目</th>
-              <th>金額（NT$）</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>移動底盤（馬達、輪子、底盤）</td><td>7,000</td></tr>
-            <tr><td>感測器（相機、超音波、IMU、循線）</td><td>8,950</td></tr>
-            <tr><td>機構材料（3D列印線材、螺絲、鋁材）</td><td>3,900</td></tr>
-            <tr><td>機構控制（伺服馬達、舵機驅動）</td><td>1,510</td></tr>
-            <tr><td>主控制（Raspberry Pi 5 8GB）</td><td>4,100</td></tr>
-            <tr><td>電源系統（鉛酸電池）</td><td>3,510</td></tr>
-            <tr><td>其他（工具、線材）</td><td>960</td></tr>
-            <tr class="total-row"><td>總計</td><td>NT$ 29,930</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Folders Section -->
+    <!-- Quick Links -->
     <section class="section">
       <div class="section-header">
         <span class="icon">📁</span>
         <h2>專案資料</h2>
       </div>
       <div class="section-content">
-        <ul class="folder-list">
-          <li class="folder-item">
-            <span class="folder-icon">📚</span>
-            <div class="folder-info">
-              <a href="01-研究資料/00_比賽規則摘要.html" class="folder-name">01-研究資料</a>
-              <p class="folder-desc">比賽規則摘要、官方公告</p>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">⚙️</span>
-            <div class="folder-info">
-              <a href="02-系統架構/00_系統架構規劃.html" class="folder-name">02-系統架構</a>
-              <p class="folder-desc">技術架構設計</p>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">🛒</span>
-            <div class="folder-info">
-              <a href="03-採購清單/00_預計採購清單.html" class="folder-name">03-採購清單</a>
-              <p class="folder-desc">材料採購規劃與預算</p>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">📝</span>
-            <div class="folder-info">
-              <a href="04-技術文檔/00_開發日誌.html" class="folder-name">04-技術文檔</a>
-              <p class="folder-desc">開發日誌</p>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">🆕</span>
-            <div class="folder-info">
-              <a href="05-更新內容/00_更新記錄.html" class="folder-name">05-更新內容</a>
-              <p class="folder-desc">所有異動記錄</p>
-            </div>
-          </li>
-        </ul>
+        <div class="quick-links">
+          <a href="01-研究資料/00_比賽規則摘要.html" class="quick-link">
+            <span class="ql-icon">📚</span>
+            <span class="ql-label">研究資料</span>
+            <span class="ql-arrow">→</span>
+          </a>
+          <a href="02-系統架構/00_系統架構規劃.html" class="quick-link">
+            <span class="ql-icon">⚙️</span>
+            <span class="ql-label">系統架構</span>
+            <span class="ql-arrow">→</span>
+          </a>
+          <a href="03-採購清單/00_預計採購清單.html" class="quick-link">
+            <span class="ql-icon">🛒</span>
+            <span class="ql-label">採購清單</span>
+            <span class="ql-arrow">→</span>
+          </a>
+          <a href="04-技術文檔/00_開發日誌.html" class="quick-link">
+            <span class="ql-icon">📝</span>
+            <span class="ql-label">開發日誌</span>
+            <span class="ql-arrow">→</span>
+          </a>
+          <a href="05-更新內容/00_更新記錄.html" class="quick-link">
+            <span class="ql-icon">🆕</span>
+            <span class="ql-label">更新記錄</span>
+            <span class="ql-arrow">→</span>
+          </a>
+        </div>
       </div>
     </section>
 
-    <!-- Links Section -->
+    <!-- Related Links -->
     <section class="section">
       <div class="section-header">
         <span class="icon">🔗</span>
         <h2>相關連結</h2>
       </div>
       <div class="section-content">
-        <ul class="folder-list">
-          <li class="folder-item">
-            <span class="folder-icon">🌐</span>
-            <div class="folder-info">
-              <a href="https://web02.yuntech.edu.tw/~tdk_4hhoerjt/" target="_blank" class="folder-name">官方網站 ↗</a>
-              <p class="folder-desc">TDK 盃官方網站</p>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">📝</span>
-            <div class="folder-info">
-              <a href="https://forms.gle/HfAcE9nVc7vU1FocA" target="_blank" class="folder-name">線上報名表單 ↗</a>
-              <p class="folder-desc">需同時郵寄紙本報名表</p>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">📂</span>
-            <div class="folder-info">
-              <a href="https://github.com/Oren2026/Oren_own/tree/main/docs/TDK_2026" target="_blank" class="folder-name">GitHub 原始碼 ↗</a>
-              <p class="folder-desc">所有原始文件</p>
-            </div>
-          </li>
-        </ul>
+        <div class="quick-links">
+          <a href="https://web02.yuntech.edu.tw/~tdk_4hhoerjt/" target="_blank" class="quick-link">
+            <span class="ql-icon">🌐</span>
+            <span class="ql-label">官方網站</span>
+            <span class="ql-arrow">↗</span>
+          </a>
+          <a href="https://forms.gle/HfAcE9nVc7vU1FocA" target="_blank" class="quick-link">
+            <span class="ql-icon">📝</span>
+            <span class="ql-label">線上報名</span>
+            <span class="ql-arrow">↗</span>
+          </a>
+          <a href="https://github.com/Oren2026/Oren_own/tree/main/docs/TDK_2026" target="_blank" class="quick-link">
+            <span class="ql-icon">📂</span>
+            <span class="ql-label">GitHub</span>
+            <span class="ql-arrow">↗</span>
+          </a>
+        </div>
       </div>
     </section>
+
   </main>
 
+  <!-- Mission Modal -->
+  <div class="modal" id="mission-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">—</h2>
+        <button class="modal-close" onclick="closeMission()">×</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
   <footer class="footer">
-    <p>TDK 2026 比賽規劃 | 最後更新：<span id="footer-updated">載入中...</span></p>
+    <p>TDK 2026 | 最後更新：<span id="footer-updated">2026-03-27</span></p>
     <p style="margin-top: 0.5rem;">由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
   </footer>
 
   <button class="refresh-btn" id="refresh-btn" title="重新整理">↻</button>
+
   <script src="assets/js/main.js"></script>
   <script>
+    // ── Mission Data ──
+    const missions = [
+      {
+        icon: '🌿',
+        title: '成龍濕地生態守護',
+        subtitle: '第 1 關｜雲林口湖鄉成龍濕地',
+        description: '成龍濕地是由荒廢農地轉變而來的候鳥棲息樂園。本關模擬生態修復與候鳥救護場景。',
+        tasks: [
+          { id: 'task-1a', text: '托盤式底爪 — 從下方承托並搬運候鳥娃娃（尖叫雞、天鵝）', done: false },
+          { id: 'task-1b', text: '弧形夾指 — 扶正倒下的 3 個直立桿狀裝置藝術', done: false },
+        ],
+        keyPoint: '關鍵：爪手從下方「托住」而非從側面「夾」，適用於軟質布偶與直立桿狀物。',
+        requirements: ['機構需具備垂直升降能力（桿可能高於機器人）', '托盤邊緣需有防滑設計'],
+      },
+      {
+        icon: '🐚',
+        title: '文蛤分級',
+        subtitle: '第 2 關｜雲林沿海養殖場',
+        description: '模擬文蛤養殖的篩選分級作業。透過不同孔徑篩網，讓文蛤依大小自動分開。',
+        tasks: [
+          { id: 'task-2', text: '推板機構 — 將集中的文蛤均勻掃入篩選區', done: false },
+        ],
+        keyPoint: '關鍵：大面積平板推掃，不是精密夾取。力道均勻、不噴飛。',
+        requirements: ['推板寬度覆蓋整個掃區', '推板高度配合篩網邊緣'],
+      },
+      {
+        icon: '🌾',
+        title: '稻草卷堆放',
+        subtitle: '第 3 關｜雲林稻田',
+        description: '將散落田間的稻草卷搬運並堆疊成三角形結構，考驗搬運與幾何堆疊能力。',
+        tasks: [
+          { id: 'task-3', text: '弧形夾爪 — 夾持圓柱體稻草卷，內側需贴合圓弧', done: false },
+        ],
+        keyPoint: '關鍵：堆疊時需精準對位，第 2、3 層偏離會導致倒塌。輕放不放飛。',
+        requirements: ['夾爪內側圓弧半徑配合稻草卷', '機構剛性足夠，堆疊時不晃'],
+      },
+      {
+        icon: '🏮',
+        title: '北港迎媽祖',
+        subtitle: '第 4 關｜北港朝天宮',
+        description: '模擬信徒向媽祖獻上供品的場景。水果尺寸各異，需精準放入定點容器，並完成擲筊動作。',
+        tasks: [
+          { id: 'task-4', text: '水果夾持機構 — 應對文旦（最大）、柳丁、砂糖橘（最小）三種尺寸', done: false },
+        ],
+        keyPoint: '文旦較重，夾持力學上吸盤比夾爪穩定（但也可靠弧形夾指處理）。',
+        requirements: ['機構需能適應 3 種水果尺寸差異', '擲筊為純舵機動作，雙爪開合時間差控制'],
+      },
+    ];
+
+    // ── Modal Logic ──
+    function openMission(index) {
+      const m = missions[index];
+      document.getElementById('modal-title').innerHTML = `<span style="font-size:1.3rem">${m.icon}</span> ${m.title}`;
+      
+      let html = `<p style="color:var(--text-light);font-size:0.9rem;margin-bottom:0.5rem;">${m.subtitle}</p>`;
+      html += `<p>${m.description}</p>`;
+      
+      html += `<h3 style="margin-top:1rem;">所需機構</h3><ul>`;
+      m.tasks.forEach(t => {
+        const checked = t.done ? 'done' : 'pending';
+        const lineThrough = t.done ? 'style="text-decoration:line-through;color:var(--text-light)"' : '';
+        html += `<li class="task-item"><span class="check ${checked}"></span><span class="task-text" ${lineThrough}>${t.text}</span></li>`;
+      });
+      html += `</ul>`;
+      
+      html += `<div style="background:var(--bg);border-radius:8px;padding:1rem;margin-top:1rem;border-left:4px solid var(--primary);">`;
+      html += `<strong>💡 ${m.keyPoint}</strong></div>`;
+      
+      html += `<h3 style="margin-top:1rem;">設計要求</h3><ul>`;
+      m.requirements.forEach(r => { html += `<li>${r}</li>`; });
+      html += `</ul>`;
+
+      document.getElementById('modal-body').innerHTML = html;
+      document.getElementById('mission-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMission() {
+      document.getElementById('mission-modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Close on backdrop click
+    document.getElementById('mission-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeMission();
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeMission();
+    });
+
+    // ── Accordion Logic ──
+    function toggleAccordion(item) {
+      item.classList.toggle('open');
+    }
+
+    // ── Progress Logic ──
+    function updateProgress() {
+      const allTasks = document.querySelectorAll('.accordion .task-item');
+      let done = 0;
+      allTasks.forEach(t => {
+        const check = t.querySelector('.check');
+        if (check.classList.contains('done')) done++;
+      });
+      const total = allTasks.length;
+      const pct = total > 0 ? Math.round(done / total * 100) : 0;
+      const fill = document.getElementById('progress-fill');
+      const text = document.getElementById('progress-text');
+      if (fill) fill.style.width = pct + '%';
+      if (text) {
+        text.textContent = pct === 100 ? `✅ 完成（${done}/${total}）` : `🚧 ${done}/${total} 完成`;
+      }
+
+      // Mech status
+      const mechTasks = document.querySelectorAll('[data-category="mech"] .task-item');
+      const mechDone = Array.from(mechTasks).filter(t => t.querySelector('.check.done').length > 0).length;
+      const mechStatus = document.getElementById('mech-status');
+      if (mechStatus) {
+        if (mechDone === mechTasks.length && mechTasks.length > 0) {
+          mechStatus.textContent = '✅ 完成';
+          mechStatus.className = 'value success';
+        } else if (mechDone > 0) {
+          mechStatus.textContent = `🔧 ${mechDone}/${mechTasks.length} 完成`;
+          mechStatus.className = 'value warning';
+        } else {
+          mechStatus.textContent = '研究中';
+          mechStatus.className = 'value warning';
+        }
+      }
+    }
+
+    // ── Init ──
     document.getElementById('footer-updated').textContent = document.getElementById('last-updated').textContent;
+    updateProgress();
+
+    document.getElementById('refresh-btn').addEventListener('click', function() {
+      location.reload();
+    });
   </script>
 </body>
 </html>
