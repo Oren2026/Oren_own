@@ -1,0 +1,18 @@
+/* architecture/tech/ — 系統架構 & 技術文檔共用 */
+
+.arch-box { background: var(--bg); border-radius: var(--radius); padding: 1.5rem; font-family: 'Courier New', monospace; font-size: 0.85rem; overflow-x: auto; white-space: pre; line-height: 1.4; }
+
+.node-card { background: white; border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); border-left: 4px solid var(--border); margin-bottom: 0.5rem; }
+.node-card.progress { border-left-color: var(--accent); }
+.node-card.done { border-left-color: var(--success); }
+.node-card.todo { border-left-color: var(--secondary); }
+.node-card h3 { font-size: 1rem; margin-bottom: 0.25rem; }
+
+.status { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.8rem; }
+.status.done { background: #d1fae5; color: #059669; }
+.status.progress { background: #fef3c7; color: #d97706; }
+.status.todo { background: #f1f5f9; color: #64748b; }
+
+details { margin-top: 0.5rem; }
+details summary { cursor: pointer; font-size: 0.85rem; color: var(--text-light); padding: 0.25rem 0; }
+details ul { padding-left: 1.25rem; margin-top: 0.5rem; }
