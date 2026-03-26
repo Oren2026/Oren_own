@@ -5,6 +5,7 @@
 | 專案 | 說明 | 網頁 | 原始碼 |
 |------|------|------|--------|
 | **TDK_2026** | 第30屆 TDK 機器人大賽規劃 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/TDK_2026/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/TDK_2026) |
+| **TB3_2026** | FIRA AutoRace × TurtleBot 3 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/TB3_2026/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/TB3_2026) |
 | **Orenbook** | 知識管理系統 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/Orenbook/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/Orenbook) |
 | **knowledges** | 每日知識文章 JSON 格式 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/knowledges/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/knowledges) |
 | **slides** | 簡報相關 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/slides/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/slides) |

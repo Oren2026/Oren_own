@@ -39,6 +39,7 @@ git push → GitHub Pages
 | 專案 | 說明 | 網頁 | 原始碼 |
 |------|------|------|--------|
 | **TDK_2026** | 第30屆 TDK 機器人大賽規劃 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/TDK_2026/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/TDK_2026) |
+| **TB3_2026** | FIRA AutoRace × TurtleBot 3 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/TB3_2026/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/TB3_2026) |
 | **knowledges** | 每日知識文章 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/knowledges/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/knowledges) |
 | **slides** | 簡報系統 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/slides/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/slides) |
 | **Orenbook** | 《機器的喃喃》— AI 程式哲學 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/Orenbook/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/Orenbook) |
