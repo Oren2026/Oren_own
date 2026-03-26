@@ -34,36 +34,23 @@ git push → GitHub Pages
 
 ---
 
-## 📁 資料夾結構
+## 📁 專案一覽
 
-```
-oren_own/
-├── docs/
-│   ├── knowledges/        ← 知識庫 + 加密貨幣模組
-│   │   ├── data/           ← 每日 JSON（YYYYMMDD.json）
-│   │   ├── index.html      ← 知識庫前端
-│   │   ├── crypto.js       ← 加密貨幣模組
-│   │   └── app.js / style.css
-│   ├── slides/             ← 簡報系統
-│   └── Orenbook/           ← 《機器的喃喃》
-├── memory/
-│   └── interests/
-│       └── interests-list.md  ← 興趣主題（Cron 動態讀取）
-└── scripts/
-    ├── base/                  ← 通用工具（json_append、git_push）
-    ├── tasks/                 ← Cron 任務腳本
-    └── fetch_crypto_price.py  ← 加密貨幣行情（Cron 每 10 分鐘）
-```
+| 專案 | 說明 | 網頁 | 原始碼 |
+|------|------|------|--------|
+| **TDK_2026** | 第30屆 TDK 機器人大賽規劃 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/TDK_2026/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/TDK_2026) |
+| **knowledges** | 每日知識文章 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/knowledges/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/knowledges) |
+| **slides** | 簡報系統 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/slides/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/slides) |
+| **Orenbook** | 《機器的喃喃》— AI 程式哲學 | [🌐 網頁](https://Oren2026.github.io/Oren_own/docs/Orenbook/) | [📂 GitHub](https://github.com/Oren2026/Oren_own/tree/main/docs/Orenbook) |
 
 ---
 
-## 🌐 網站
+## 🌐 快速連結
 
-**知識庫**：https://Oren2026.github.io/Oren_own/docs/knowledges/
-
-**簡報**：https://Oren2026.github.io/Oren_own/docs/slides/
-
-**Orenbook**：《機器的喃喃》— AI 系統程式哲學：https://Oren2026.github.io/Oren_own/docs/Orenbook/
+- **TDK_2026**：https://Oren2026.github.io/Oren_own/docs/TDK_2026/
+- **知識庫**：https://Oren2026.github.io/Oren_own/docs/knowledges/
+- **簡報**：https://Oren2026.github.io/Oren_own/docs/slides/
+- **Orenbook**：https://Oren2026.github.io/Oren_own/docs/Orenbook/
 
 ---
 
