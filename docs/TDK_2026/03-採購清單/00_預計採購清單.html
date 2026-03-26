@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>採購清單 | TDK 2026</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    body { background: var(--bg); }
+    .doc-header {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    .doc-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .doc-header .subtitle { opacity: 0.85; }
+    .back-link { display: inline-block; margin-top: 1rem; color: white; text-decoration: none; opacity: 0.8; }
+    .back-link:hover { opacity: 1; text-decoration: underline; }
+    .doc-content { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+    .section { margin-bottom: 2rem; }
+    .section h2 { font-size: 1.2rem; color: var(--primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); font-size: 0.9rem; }
+    th, td { padding: 0.6rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: var(--bg); font-weight: 600; }
+    .total-row { background: #ecfdf5; font-weight: 700; }
+    .total-row td { color: #059669; font-size: 1.05rem; }
+    .updated-box { background: #dbeafe; border: 1px solid #2563eb; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
+    .updated-box strong { color: #2563eb; }
+    .remark { font-size: 0.8rem; color: var(--text-light); }
+  </style>
+</head>
+<body>
+  <header class="doc-header">
+    <h1>🛒 TDK 2026 採購清單</h1>
+    <p class="subtitle">預算估計 | 更新日期：2026-03-26</p>
+    <a href="../index.html" class="back-link">← 返回儀表板</a>
+  </header>
+
+  <main class="doc-content">
+    <div class="updated-box">
+      <strong>📌 老師建議更新（2026-03-26）：</strong>
+      <ul style="margin: 0.5rem 0 0 1.5rem; padding: 0;">
+        <li>電源系統容量不足，需加大</li>
+        <li>建議使用鉛酸電池（而非 LiPo）</li>
+        <li>主控制器不應太小——升級為 Raspberry Pi 5</li>
+      </ul>
+    </div>
+
+    <!-- 移動底盤 -->
+    <div class="section">
+      <h2>🚗 移動底盤</h2>
+      <table>
+        <thead><tr><th>品項</th><th>數量</th><th>預估單價</th><th>小計</th><th>備註</th></tr></thead>
+        <tbody>
+          <tr><td>直流減速馬達（帶編碼器）</td><td>4</td><td>NT$800</td><td>NT$3,200</td><td>驅動輪子</td></tr>
+          <tr><td>馬達驅動模組 L298N</td><td>2</td><td>NT$150</td><td>NT$300</td><td>馬達控制</td></tr>
+          <tr><td>麥克林輪 / 橡膠輪 4"</td><td>4</td><td>NT$400</td><td>NT$1,600</td><td>移動輪子</td></tr>
+          <tr><td>鋁合金底盤框架</td><td>1</td><td>NT$1,500</td><td>NT$1,500</td><td>機械結構</td></tr>
+          <tr><td>馬達支架</td><td>4</td><td>NT$100</td><td>NT$400</td><td>固定馬達</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 電源系統（更新版） -->
+    <div class="section">
+      <h2>🔋 電源系統 <span style="color: var(--success); font-size: 0.85rem;">▲ 已更新：加大容量、鉛酸電池</span></h2>
+      <table>
+        <thead><tr><th>品項</th><th>數量</th><th>預估單價</th><th>小計</th><th>備註</th></tr></thead>
+        <tbody>
+          <tr><td>鉛酸電池 12V 10Ah</td><td>1</td><td>NT$1,500</td><td>NT$1,500</td><td>馬達供電（加大容量）</td></tr>
+          <tr><td>鉛酸電池 12V 7Ah</td><td>1</td><td>NT$900</td><td>NT$900</td><td>控制系統供電</td></tr>
+          <tr><td>降壓模組 DC-DC 5V/5A</td><td>2</td><td>NT$120</td><td>NT$240</td><td>SBC / 感測器供電</td></tr>
+          <tr><td>降壓模組 DC-DC 6V/5A</td><td>1</td><td>NT$120</td><td>NT$120</td><td>馬達供電調壓</td></tr>
+          <tr><td>鉛酸電池充电器</td><td>1</td><td>NT$600</td><td>NT$600</td><td>鉛酸專用</td></tr>
+          <tr><td>電源開關 / 保險絲</td><td>1</td><td>NT$150</td><td>NT$150</td><td>安全保護</td></tr>
+        </tbody>
+      </table>
+      <p class="remark" style="margin-top: 0.5rem;">▲ 電源系統總計：NT$3,510（原 NT$2,260）</p>
+    </div>
+
+    <!-- 感測器 -->
+    <div class="section">
+      <h2>📡 感測器</h2>
+      <table>
+        <thead><tr><th>品項</th><th>數量</th><th>預估單價</th><th>小計</th><th>備註</th></tr></thead>
+        <tbody>
+          <tr><td>深度相機（RealSense D435i 或替代）</td><td>1</td><td>NT$8,000</td><td>NT$8,000</td><td>視覺辨識</td></tr>
+          <tr><td>超音波感測器 HC-SR04</td><td>4</td><td>NT$80</td><td>NT$320</td><td>障礙檢測</td></tr>
+          <tr><td>IMU 模組 MPU6050</td><td>1</td><td>NT$150</td><td>NT$150</td><td>姿態檢測</td></tr>
+          <tr><td>紅外線循線感測器</td><td>4</td><td>NT$60</td><td>NT$240</td><td>循線導航</td></tr>
+          <tr><td>顏色感測器 TCS34725</td><td>2</td><td>NT$120</td><td>NT$240</td><td>文蛤顏色辨識</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 機構控制 -->
+    <div class="section">
+      <h2>🤖 機構控制</h2>
+      <table>
+        <thead><tr><th>品項</th><th>數量</th><th>預估單價</th><th>小計</th><th>備註</th></tr></thead>
+        <tbody>
+          <tr><td>伺服馬達 MG996R</td><td>4</td><td>NT$300</td><td>NT$1,200</td><td>夾爪控制</td></tr>
+          <tr><td>伺服馬達 SG90</td><td>2</td><td>NT$80</td><td>NT$160</td><td>輕量機構</td></tr>
+          <tr><td>舵機驅動板 PCA9685</td><td>1</td><td>NT$150</td><td>NT$150</td><td>16路舵機控制</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 機構材料 -->
+    <div class="section">
+      <h2>🔩 機構材料</h2>
+      <table>
+        <thead><tr><th>品項</th><th>數量</th><th>預估單價</th><th>小計</th><th>備註</th></tr></thead>
+        <tbody>
+          <tr><td>3D 列印線材 PLA+（1.75mm）</td><td>5 卷</td><td>NT$500</td><td>NT$2,500</td><td>文蛤、機構零件</td></tr>
+          <tr><td>螺絲/螺帽套組 M3/M4</td><td>1</td><td>NT$500</td><td>NT$500</td><td>組裝用</td></tr>
+          <tr><td>鋁條 / 鋁板</td><td>若干</td><td>NT$800</td><td>NT$800</td><td>結構加強</td></tr>
+          <tr><td>杜邦線（公/母）40P</td><td>1</td><td>NT$100</td><td>NT$100</td><td>接線用</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 主控制（更新版） -->
+    <div class="section">
+      <h2>💻 主控制 <span style="color: var(--success); font-size: 0.85rem;">▲ 已更新：升級 RPI 5</span></h2>
+      <table>
+        <thead><tr><th>品項</th><th>數量</th><th>預估單價</th><th>小計</th><th>備註</th></tr></thead>
+        <tbody>
+          <tr><td>Raspberry Pi 5 8GB <span style="color: var(--success); font-size: 0.8rem;">▲ 升級</span></td><td>1</td><td>NT$2,800</td><td>NT$2,800</td><td>主控制器（視覺處理）</td></tr>
+          <tr><td>STM32F4 開發板</td><td>1</td><td>NT$600</td><td>NT$600</td><td>即時馬達控制</td></tr>
+          <tr><td>Arduino UNO R3</td><td>1</td><td>NT$300</td><td>NT$300</td><td>副控制器 / 感測器整合</td></tr>
+          <tr><td>64GB microSD 卡</td><td>1</td><td>NT$400</td><td>NT$400</td><td>系統碟（RPI 5 需要）</td></tr>
+        </tbody>
+      </table>
+      <p class="remark" style="margin-top: 0.5rem;">▲ 主控制總計：NT$4,100（原 NT$3,000）</p>
+    </div>
+
+    <!-- 其他 -->
+    <div class="section">
+      <h2>🔧 其他</h2>
+      <table>
+        <thead><tr><th>品項</th><th>數量</th><th>預估單價</th><th>小計</th><th>備註</th></tr></thead>
+        <tbody>
+          <tr><td>USB-C 傳輸線</td><td>2</td><td>NT$80</td><td>NT$160</td><td>供電 / 傳輸</td></tr>
+          <tr><td>烙鐵 / 焊錫</td><td>1</td><td>NT$500</td><td>NT$500</td><td>基本工具</td></tr>
+          <tr><td>束線帶 / 魔布</td><td>1</td><td>NT$100</td><td>NT$100</td><td>整理線材</td></tr>
+          <tr><td>延長線 / 接頭</td><td>若干</td><td>NT$200</td><td>NT$200</td><td>接線用</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 預算總表 -->
+    <div class="section">
+      <h2>💰 預估總預算</h2>
+      <table>
+        <thead><tr><th>項目</th><th>原估（NT$）</th><th>更新估（NT$）</th><th>差異</th></tr></thead>
+        <tbody>
+          <tr><td>移動底盤</td><td>7,000</td><td>7,000</td><td>—</td></tr>
+          <tr><td>感測器</td><td>8,950</td><td>8,950</td><td>—</td></tr>
+          <tr><td>機構材料</td><td>3,300</td><td>3,900</td><td>+600</td></tr>
+          <tr><td>機構控制</td><td>1,510</td><td>1,510</td><td>—</td></tr>
+          <tr><td>其他</td><td>960</td><td>960</td><td>—</td></tr>
+          <tr><td>主控制</td><td>3,000</td><td>4,100</td><td>+1,100</td></tr>
+          <tr><td><strong>電源系統</strong></td><td><strong>2,260</strong></td><td><strong>3,510</strong></td><td><strong>+1,250</strong></td></tr>
+          <tr class="total-row"><td>總計</td><td>26,980</td><td>29,930</td><td>+2,950</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top: 1rem; font-size: 0.9rem;">💡 更新後預估總預算約 <strong>NT$ 30,000</strong>（含备用零件）</p>
+    </div>
+
+    <!-- 優先採購 -->
+    <div class="section">
+      <h2>⭐ 優先採購順序</h2>
+      <ol style="padding-left: 1.5rem; line-height: 1.8;">
+        <li><strong>馬達 × 4</strong> — 核心移動能力</li>
+        <li><strong>馬達驅動模組</strong> — 馬達控制</li>
+        <li><strong>Raspberry Pi 5</strong> — 主控制器</li>
+        <li><strong>STM32</strong> — 即時控制</li>
+        <li><strong>鉛酸電池 12V 10Ah</strong> — 馬達供電</li>
+        <li><strong>降壓模組</strong> — 電力分配</li>
+      </ol>
+    </div>
+
+    <!-- 替代方案 -->
+    <div class="section">
+      <h2>🔄 替代方案</h2>
+      <table>
+        <thead><tr><th>項目</th><th>替代方案</th><th>預估價格</th><th>備註</th></tr></thead>
+        <tbody>
+          <tr><td>RealSense D435i</td><td>Logitech C920 + 超音波測距</td><td>NT$3,000</td><td>無深度資訊</td></tr>
+          <tr><td>Raspberry Pi 5</td><td>Raspberry Pi 4 8GB</td><td>NT$2,000</td><td>效能較低</td></tr>
+          <tr><td>鋁合金底盤</td><td>雷射切割壓克力</td><td>NT$800</td><td>較輕但不耐撞</td></tr>
+          <tr><td>12V 10Ah 鉛酸</td><td>LiPo 3S 5000mAh</td><td>NT$1,200</td><td>較輕但容量相對小</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="text-align: center; padding: 2rem 0; color: var(--text-light); font-size: 0.85rem;">
+      <p>最後更新：2026-03-26 | TDK 2026 第30屆</p>
+      <p>由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+    </div>
+  </main>
+</body>
+</html>

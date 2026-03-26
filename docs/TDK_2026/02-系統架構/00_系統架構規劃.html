@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系統架構規劃 | TDK 2026</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    body { background: var(--bg); }
+    .doc-header {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    .doc-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .doc-header .subtitle { opacity: 0.85; }
+    .back-link { display: inline-block; margin-top: 1rem; color: white; text-decoration: none; opacity: 0.8; }
+    .back-link:hover { opacity: 1; text-decoration: underline; }
+    .doc-content { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+    .section { margin-bottom: 2.5rem; }
+    .section h2 { font-size: 1.2rem; color: var(--primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: var(--bg); font-weight: 600; }
+    .arch-box { background: white; border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); font-family: 'Courier New', monospace; font-size: 0.85rem; overflow-x: auto; white-space: pre; line-height: 1.5; margin-bottom: 1rem; }
+    .warning-box { background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
+    .status { display: inline-block; font-size: 0.8rem; padding: 0.15rem 0.5rem; border-radius: 4px; }
+    .status.todo { background: #f1f5f9; color: #64748b; }
+    .status.progress { background: #fef3c7; color: #d97706; }
+    .status.done { background: #d1fae5; color: #059669; }
+    code { background: #f1f5f9; padding: 0.15rem 0.4rem; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <header class="doc-header">
+    <h1>⚙️ 系統架構規劃</h1>
+    <p class="subtitle">TDK 2026 | 讓世界看見雲林 | 2026-03-26 更新</p>
+    <a href="../index.html" class="back-link">← 返回儀表板</a>
+  </header>
+
+  <main class="doc-content">
+    <div class="warning-box">
+      <strong>⚠️ 重要聲明：這不是 TurtleBot 3 比賽！</strong><br>
+      TDK 盃需要自行設計與製作機器人，主題與雲林農業相關。
+    </div>
+
+    <div class="section">
+      <h2>🎯 核心任務分析</h2>
+      <table>
+        <thead><tr><th>關卡</th><th>說明</th><th>需要的技術</th></tr></thead>
+        <tbody>
+          <tr><td>🌉 西螺大橋</td><td>通過橋樑結構障礙</td><td>移動底盤、爬坡能力</td></tr>
+          <tr><td>☕ 古坑咖啡雲科店</td><td>咖啡盤放置、圖卡辨識</td><td>視覺辨識、精確定位</td></tr>
+          <tr><td>🍊 古坑柳丁園</td><td>從樹上摘取柳丁（強制）</td><td>機構設計、夾爪控制</td></tr>
+          <tr><td>🐚 文蛤分級（自動組）</td><td>不同尺寸文蛤過篩分類</td><td>視覺辨識、物料分揀機構</td></tr>
+          <tr><td>🏔️ 西螺七崁群英會</td><td>台階挑戰、攜帶布偶</td><td>穩定移動、承載機構</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>🏗️ 整體架構</h2>
+      <div class="arch-box">┌─────────────────────────────────────────┐
+│              主控制系統（RPI 5）            │
+│         （視覺處理 + 任務決策）              │
+├──────────────┬──────────────┬──────────────┤
+│   視覺模組    │   移動模組    │   機構控制模組 │
+│  深度相機     │  直流馬達驅動  │  伺服馬達控制 │
+│  顏色感測器   │  履帶/麥克林  │  夾爪/篩選機構│
+└──────────────┴──────────────┴──────────────┘</div>
+    </div>
+
+    <div class="section">
+      <h2>🔧 預計技術需求</h2>
+      <table>
+        <thead><tr><th>類別</th><th>項目</th><th>說明</th><th>狀態</th></tr></thead>
+        <tbody>
+          <tr><td>移動底盤</td><td>履帶或麥克林輪底盤</td><td>通過橋樑斜坡、穩定室內導航</td><td><span class="status todo">📋 待選</span></td></tr>
+          <tr><td>視覺系統</td><td>深度相機</td><td>物體辨識和定位</td><td><span class="status progress">🚧 規劃中</span></td></tr>
+          <tr><td>機構設計</td><td>夾爪 + 篩選機構</td><td>柳丁摘取、文蛤分級</td><td><span class="status todo">📋 待設計</span></td></tr>
+          <tr><td>控制系統</td><td>Raspberry Pi 5 + MCU</td><td>視覺處理 + 馬達控制分工</td><td><span class="status progress">🚧 規劃中</span></td></tr>
+          <tr><td>電源系統</td><td>鉛酸電池（加大容量）</td><td>老師建議加大容量</td><td><span class="status progress">🚧 更新中</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>🛠️ 預計零件需求</h2>
+      <table>
+        <thead><tr><th>類別</th><th>零件</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td>移動底盤</td><td>直流減速馬達（帶編碼器）× 4</td><td>輪子驅動</td></tr>
+          <tr><td>移動底盤</td><td>麥克林輪 / 橡膠輪 4"</td><td>移動輪子</td></tr>
+          <tr><td>控制</td><td>Raspberry Pi 5 8GB</td><td>主控制器（視覺處理）</td></tr>
+          <tr><td>控制</td><td>STM32 / ESP32</td><td>即時馬達控制</td></tr>
+          <tr><td>視覺</td><td>深度相機（RealSense D435i）</td><td>物體辨識、定位</td></tr>
+          <tr><td>機構</td><td>MG996R 伺服馬達 × 4</td><td>夾爪控制</td></tr>
+          <tr><td>機構</td><td>PCA9685 舵機驅動板</td><td>多路舵機控制</td></tr>
+          <tr><td>電源</td><td>鉛酸電池 12V 10Ah 以上</td><td>馬達供電（加大容量）</td></tr>
+          <tr><td>電源</td><td>降壓模組 DC-DC</td><td>各電壓輸出</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>📝 待確認事項</h2>
+      <ul>
+        <li>官方規則 PDF（需下載確認）</li>
+        <li>場地尺寸詳細規格</li>
+        <li>機器人尺寸與重量限制</li>
+        <li>感測器限制清單</li>
+        <li>比賽日期與時程</li>
+      </ul>
+    </div>
+
+    <div style="text-align: center; padding: 2rem 0; color: var(--text-light); font-size: 0.85rem;">
+      <p>最後更新：2026-03-26 | TDK 2026 第30屆</p>
+      <p>由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+    </div>
+  </main>
+</body>
+</html>

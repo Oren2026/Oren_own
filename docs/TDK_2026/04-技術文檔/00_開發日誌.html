@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>開發日誌 | TDK 2026</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    body { background: var(--bg); }
+    .doc-header {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    .doc-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .doc-header .subtitle { opacity: 0.85; }
+    .back-link { display: inline-block; margin-top: 1rem; color: white; text-decoration: none; opacity: 0.8; }
+    .back-link:hover { opacity: 1; text-decoration: underline; }
+    .doc-content { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    .log-entry { background: white; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 1.5rem; overflow: hidden; }
+    .log-header { background: var(--bg); padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .log-header h2 { font-size: 1.1rem; }
+    .log-date { font-size: 0.85rem; color: var(--text-light); background: white; padding: 0.25rem 0.75rem; border-radius: 20px; border: 1px solid var(--border); }
+    .log-body { padding: 1.25rem; }
+    .log-body h3 { font-size: 1rem; color: var(--primary); margin-bottom: 0.75rem; }
+    .log-body ul { padding-left: 1.25rem; margin-bottom: 1rem; }
+    .log-body li { margin-bottom: 0.4rem; line-height: 1.6; }
+    .tag { display: inline-block; font-size: 0.75rem; padding: 0.1rem 0.4rem; border-radius: 4px; }
+    .tag.done { background: #d1fae5; color: #059669; }
+    .tag.updated { background: #dbeafe; color: #2563eb; }
+  </style>
+</head>
+<body>
+  <header class="doc-header">
+    <h1>📝 開發日誌</h1>
+    <p class="subtitle">TDK 2026 第30屆</p>
+    <a href="../index.html" class="back-link">← 返回儀表板</a>
+  </header>
+
+  <main class="doc-content">
+
+    <!-- 2026-03-26 -->
+    <div class="log-entry">
+      <div class="log-header">
+        <h2>2026-03-26</h2>
+        <span class="log-date">今天</span>
+      </div>
+      <div class="log-body">
+        <h3>老師建議更新</h3>
+        <ul>
+          <li>電源系統太小、容量不足 → 加大至 12V 10Ah + 7Ah 鉛酸電池</li>
+          <li>建議使用鉛酸電池（相較 LiPo 更穩定、容量更大）</li>
+          <li>主控制器不應太小 → 升級 Raspberry Pi 4 → <strong>Raspberry Pi 5 8GB</strong></li>
+          <li>更新後總預算：NT$ 29,930（原 NT$ 26,980）</li>
+        </ul>
+
+        <h3>文件更新</h3>
+        <ul>
+          <li>文件从 .md 转为 HTML（共用品式）</li>
+          <li>採購清單更新（電源系統 + 主控制）</li>
+          <li>index.html 更新預算與連結</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 專案初始化 -->
+    <div class="log-entry">
+      <div class="log-header">
+        <h2>2026-03-26（專案初始化）</h2>
+        <span class="log-date">Earlier</span>
+      </div>
+      <div class="log-body">
+        <h3>專案建立</h3>
+        <ul>
+          <li>建立 TDK_2026 資料夾架構（01~04）</li>
+          <li>根據官方公告整理比賽資訊</li>
+          <li>確認參賽組別：自動組 vs 遙控組（待確認）</li>
+          <li>初步採購清單建立</li>
+        </ul>
+
+        <h3>主要關卡確認</h3>
+        <ul>
+          <li>西螺大橋（橋樑障礙）</li>
+          <li>古坑咖啡雲科店（圖卡辨識）</li>
+          <li>古坑柳丁園（柳丁摘取 — 強制）</li>
+          <li>文蛤分級（自動組限定）</li>
+          <li>西螺七崁群英會（台階挑戰、布偶任務）</li>
+        </ul>
+
+        <h3>技術方向</h3>
+        <ul>
+          <li>自行設計與製作機器人（非 TurtleBot 3）</li>
+          <li>RPI 5 + STM32 分工控制</li>
+          <li>深度相機用於視覺辨識</li>
+          <li>直流馬達驅動 + 履帶/麥克林底盤</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="text-align: center; padding: 2rem 0; color: var(--text-light); font-size: 0.85rem;">
+      <p>最後更新：2026-03-26 | TDK 2026 第30屆</p>
+      <p>由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+    </div>
+  </main>
+</body>
+</html>
