@@ -45,15 +45,6 @@ git push → GitHub Pages
 
 ---
 
-## 🌐 快速連結
-
-- **TDK_2026**：https://Oren2026.github.io/Oren_own/docs/TDK_2026/
-- **知識庫**：https://Oren2026.github.io/Oren_own/docs/knowledges/
-- **簡報**：https://Oren2026.github.io/Oren_own/docs/slides/
-- **Orenbook**：https://Oren2026.github.io/Oren_own/docs/Orenbook/
-
----
-
 ## ⚙️ Cron 排程
 
 | 任務 | 頻率 | 功能 |

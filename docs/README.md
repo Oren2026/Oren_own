@@ -11,14 +11,6 @@
 
 ---
 
-## 快速連結
-
-### 🌐 TDK 2026 比賽規劃
-- **網頁版**：https://Oren2026.github.io/Oren_own/docs/TDK_2026/
-- **GitHub**：https://github.com/Oren2026/Oren_own/tree/main/docs/TDK_2026
-
----
-
 ## 更新日誌
 
 - **2026-03-26**：新增 TDK_2026 資料夾，開始第30屆 TDK 機器人大賽規劃
