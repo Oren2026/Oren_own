@@ -9,33 +9,78 @@
 <body>
   <header class="header" style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);">
     <h1>⚙️ 系統架構規劃</h1>
-    <p class="subtitle">TurtleBot 3 × ROS × OpenCV | 2026-03-26</p>
+    <p class="subtitle">TurtleBot 3 × ROS × OpenCV</p>
     <a href="../index.html" style="display:inline-block;margin-top:1rem;color:white;opacity:0.85;">← 返回儀表板</a>
   </header>
 
   <main class="container">
+
     <div class="section">
-      <div class="section-header"><span class="icon">🏗️</span><h2>核心架構</h2></div>
+      <div class="section-header"><span class="icon">🏗️</span><h2>節點架構</h2></div>
       <div class="section-content">
         <pre class="arch-box">core_node_controller（主控制器）
   ├── roslaunch 動態啟閉各 detect_* 節點
   ├── 訂閱 /mission（狀態報告）
-  └── 任務混合層（core_node_mission）— 規劃中</pre>
+  └── 任務混合層（core_node_mission）— 規劃中
+
+各偵測節點（detect_*.py）
+  ├── 讀取 Camera Image
+  ├── 輸出 /detect/xxx（各自 topic）
+  └── 由 core_node_controller 統一調度</pre>
       </div>
     </div>
 
     <div class="section">
-      <div class="section-header"><span class="icon">📦</span><h2>節點流程（點擊查看詳情）</h2></div>
+      <div class="section-header"><span class="icon">📦</span><h2>偵測節點索引</h2></div>
       <div class="section-content">
-        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">點擊任一節點可查看對應的 <code>detect_*.launch</code>、ROS Topic 及實作狀態。</p>
-        <div class="mission-grid" id="node-grid"></div>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">
+          點擊任一節點可查看實作狀態與輸出 topic。完整實作記錄見 <a href="../tech/開發日誌.html">開發日誌</a>。
+        </p>
+        <div class="mission-grid" id="mission-grid"></div>
       </div>
     </div>
 
     <div class="section">
-      <div class="section-header"><span class="icon">🛠️</span><h2>節點詳解（讀取自 data/*.json）</h2></div>
-      <div class="section-content" id="node-detail"></div>
+      <div class="section-header"><span class="icon">🔗</span><h2>Topic 流向</h2></div>
+      <div class="section-content">
+        <pre class="arch-box">┌─────────────┐     Image      ┌──────────────────┐
+│  Camera     │ ──────────────▶│  detect_*.py     │
+│  (USB Cam)  │                │                  │
+└─────────────┘                │  輸出: /detect/* │
+                               └────────┬─────────┘
+                                        │ 訂閱
+                               ┌────────▼─────────┐
+                               │ core_node_*      │
+                               │ （控制器）        │
+                               └────────┬─────────┘
+                                        │ cmd_vel
+                               ┌────────▼─────────┐
+                               │ /cmd_vel         │
+                               │ （速度控制）      │
+                               └──────────────────┘</pre>
+      </div>
     </div>
+
+    <div class="section">
+      <div class="section-header"><span class="icon">📁</span><h2>Launch 對應</h2></div>
+      <div class="section-content">
+        <table>
+          <thead><tr><th>節點</th><th>Launch 檔</th><th>輸出 Topic</th><th>狀態</th></tr></thead>
+          <tbody>
+            <tr><td>traffic_light</td><td><code>detect_traffic_light.launch</code></td><td><code>/detect/traffic_light</code></td><td><span class="status todo">規劃中</span></td></tr>
+            <tr><td>intersection</td><td><code>detect_intersection.launch</code></td><td><code>/detect/intersection</code></td><td><span class="status todo">規劃中</span></td></tr>
+            <tr><td>construction</td><td><code>detect_construction.launch</code></td><td><code>/detect/construction</code></td><td><span class="status todo">規劃中</span></td></tr>
+            <tr><td>parking</td><td><code>detect_parking.launch</code></td><td><code>/detect/parking</code></td><td><span class="status todo">規劃中</span></td></tr>
+            <tr><td>level_crossing</td><td><code>detect_level_crossing.launch</code></td><td><code>/detect/level_crossing</code></td><td><span class="status todo">規劃中</span></td></tr>
+            <tr><td>s_curve</td><td><code>detect_s_curve.launch</code></td><td><code>/detect/s_curve</code></td><td><span class="status todo">規劃中</span></td></tr>
+            <tr><td>tunnel</td><td><code>detect_tunnel.launch</code></td><td><code>/detect/tunnel</code></td><td><span class="status todo">規劃中</span></td></tr>
+            <tr><td>lane</td><td><code>detect_lane.launch</code></td><td><code>/detect/lane</code></td><td><span class="status todo">規劃中</span></td></tr>
+            <tr><td colspan="2">core_node_controller</td><td><code>/mission</code></td><td><span class="status progress">骨架完成</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </main>
 
   <div class="modal" id="mission-modal">
@@ -55,42 +100,7 @@
   <script src="../assets/js/main.js"></script>
   <script>
     fetchAllMissions('../').then(function(missions) {
-      renderMissionGrid(missions, 'node-grid');
-      var detail = document.getElementById('node-detail');
-      if (!detail) return;
-      var html = missions
-        .filter(function(m) { return m.category !== 'base'; })
-        .sort(function(a, b) { return MISSION_IDS.indexOf(a.id) - MISSION_IDS.indexOf(b.id); })
-        .map(function(m) {
-          var s = computeMissionStatus(m);
-          var icon = MISSION_ICONS[m.id] || '❓';
-          var subDone = (m.subConcepts || []).filter(function(x) { return x.status === 'done'; }).length;
-          var subTotal = (m.subConcepts || []).length;
-          var subs = (m.subConcepts || []).map(function(sub) {
-            return '<li>' + (sub.status === 'done' ? '✅' : '⬜') + ' <strong>' + (sub.name && sub.name.zh || sub.id) + '</strong>：' + (sub.description || '') + '</li>';
-          }).join('');
-          var outputs = (m.outputs || []).map(function(o) {
-            return '<li><code>' + o.topic + '</code>（' + o.type + '）— ' + (o.note || '—') + '</li>';
-          }).join('');
-          return '<div class="node-card ' + s + '" style="margin-bottom:1rem;">' +
-            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">' +
-            '<h3>' + icon + ' ' + (m.name && m.name.zh || m.id) + '</h3>' +
-            '<span class="status ' + s + '">' + (s === 'done' ? '✅ 已完成' : '🚧 施工中') + '</span></div>' +
-            '<p style="font-size:0.9rem;color:var(--text-light);margin-bottom:0.5rem;">' + (m.description || '—') + '</p>' +
-            '<p style="font-size:0.8rem;color:var(--text-light);margin-bottom:0.5rem;">子項目：' + subDone + '/' + subTotal + '</p>' +
-            (subs ? '<details style="margin-top:0.5rem;"><summary style="cursor:pointer;font-size:0.85rem;">實作細節</summary><ul style="margin-top:0.5rem;padding-left:1.25rem;">' + subs + '</ul></details>' : '') +
-            (outputs ? '<details style="margin-top:0.5rem;"><summary style="cursor:pointer;font-size:0.85rem;">輸出 Topic</summary><ul style="margin-top:0.5rem;padding-left:1.25rem;">' + outputs + '</ul></details>' : '') +
-            '</div>';
-        }).join('');
-      html += '<div class="node-card progress" style="margin-bottom:1rem;">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">' +
-        '<h3>⚙️ core_node_controller</h3><span class="status progress">🚧 骨架完成</span></div>' +
-        '<p style="font-size:0.9rem;color:var(--text-light);">roslaunch 動態調度骨架，接收 /mission 切換狀態</p></div>';
-      html += '<div class="node-card todo" style="margin-bottom:1rem;">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">' +
-        '<h3>🎯 core_node_mission</h3><span class="status todo">📋 規劃中</span></div>' +
-        '<p style="font-size:0.9rem;color:var(--text-light);">協調各偵測節點輸出</p></div>';
-      detail.innerHTML = html;
+      renderMissionGrid(missions, 'mission-grid');
     });
   </script>
 </body>

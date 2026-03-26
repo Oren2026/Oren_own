@@ -14,6 +14,7 @@
   </header>
 
   <main class="container">
+
     <div class="section">
       <div class="section-header"><span class="icon">🏁</span><h2>賽道總覽</h2></div>
       <div class="section-content">
@@ -41,14 +42,7 @@
     </div>
 
     <div class="section">
-      <div class="section-header"><span class="icon">🎯</span><h2>任務關卡</h2></div>
-      <div class="section-content">
-        <div class="mission-grid" id="mission-grid"></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-header"><span class="icon">🛣️</span><h2>地面標線規則</h2></div>
+      <div class="section-header"><span class="icon">🛣️</span><h2>地面標線</h2></div>
       <div class="section-content">
         <table>
           <thead><tr><th>顏色</th><th>位置</th><th>意義</th></tr></thead>
@@ -62,39 +56,43 @@
     </div>
 
     <div class="section">
-      <div class="section-header"><span class="icon">⚙️</span><h2>技術重點</h2></div>
+      <div class="section-header"><span class="icon">⚙️</span><h2>核心技術</h2></div>
       <div class="section-content">
-        <ul style="padding-left:1.5rem;line-height:1.8;">
-          <li><strong>HSV 顏色空間</strong>：紅/黃/綠燈號偵測，比 BGR 更穩定</li>
-          <li><strong>霍夫圓變換</strong>：在顏色遮罩中找圓形，確認是否為真實燈號</li>
-          <li><strong>透視轉換</strong>：將視角轉為 top-down，擠出消失點</li>
-          <li><strong>滑動視窗</strong>：找出左側黃線、右側白線，計算中心線</li>
-          <li><strong>PID 控制</strong>：偏離中心線輸出 steering angle</li>
-          <li><strong>光照變化應對</strong>：隧道區曝光補償可能失效，需有備援機制</li>
-        </ul>
+        <table>
+          <thead><tr><th>技術</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td><strong>HSV 顏色空間</strong></td><td>紅/黃/綠燈號偵測，比 BGR 更穩定</td></tr>
+            <tr><td><strong>霍夫圓變換</strong></td><td>在顏色遮罩中找圓形，確認是否為真實燈號</td></tr>
+            <tr><td><strong>透視轉換</strong></td><td>將視角轉為 top-down，擠出消失點</td></tr>
+            <tr><td><strong>滑動視窗</strong></td><td>找出左側黃線、右側白線，計算中心線</td></tr>
+            <tr><td><strong>PID 控制</strong></td><td>偏離中心線輸出 steering angle</td></tr>
+            <tr><td><strong>光照補償</strong></td><td>隧道區曝光補償，須有備援機制</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
-  </main>
 
-  <div class="modal" id="mission-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="modal-title">—</h2>
-        <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="section">
+      <div class="section-header"><span class="icon">🎯</span><h2>各關卡說明</h2></div>
+      <div class="section-content">
+        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">詳細實作狀態請見 <a href="../architecture/系統架構規劃.html">系統架構</a> 頁面。</p>
+        <div class="info-grid">
+          <div class="info-card"><h3>🚦</h3><div class="value">交通號誌</div><div class="desc">辨識紅/黃/綠燈，控制停與行</div></div>
+          <div class="info-card"><h3>↩️</h3><div class="value">圓環路口</div><div class="desc">識別方向箭頭，決策出口</div></div>
+          <div class="info-card"><h3>🚧</h3><div class="value">障礙區</div><div class="desc">檢測障礙物，減速或繞行</div></div>
+          <div class="info-card"><h3>🅿️</h3><div class="value">停車區</div><div class="desc">定點停入車格</div></div>
+          <div class="info-card"><h3>🚞</h3><div class="value">平交道</div><div class="desc">識別柵欄與火車，等待通行</div></div>
+          <div class="info-card"><h3>〰️</h3><div class="value">S 型彎道</div><div class="desc">跟隨彎道中心線行進</div></div>
+          <div class="info-card"><h3>🚇</h3><div class="value">隧道</div><div class="desc">暗區行駛，光照補償失效時備援</div></div>
+          <div class="info-card"><h3>🚗</h3><div class="value">車道跟隨</div><div class="desc">基礎車道線偵測 + PID 控制</div></div>
+        </div>
       </div>
-      <div class="modal-body" id="modal-body"></div>
     </div>
-  </div>
+
+  </main>
 
   <footer class="footer">
     <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
   </footer>
-
-  <script src="../assets/js/main.js"></script>
-  <script>
-    fetchAllMissions('../').then(function(missions) {
-      renderMissionGrid(missions, 'mission-grid');
-    });
-  </script>
 </body>
 </html>
