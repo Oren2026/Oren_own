@@ -11,7 +11,7 @@
   <header class="header">
     <h1>🤖 TB3 2026 - FIRA AutoRace</h1>
     <p class="subtitle">TurtleBot 3 Burger × ROS × OpenCV</p>
-    <span class="badge">🎯 狀態機任務系統</span>
+    <span class="badge">🎯 任務狀態機系統</span>
   </header>
 
   <main class="container">
@@ -27,7 +27,7 @@
       </div>
       <div class="info-card">
         <h3>視覺處理</h3>
-        <div class="value">OpenCV</div>
+        <div class="value">OpenCV + HSV</div>
       </div>
       <div class="info-card">
         <h3>最後更新</h3>
@@ -39,39 +39,49 @@
     <section class="section">
       <div class="section-header">
         <span class="icon">🎯</span>
-        <h2>任務關卡</h2>
+        <h2>任務關卡（賽道圖分析版）</h2>
       </div>
       <div class="section-content">
         <div class="mission-grid">
           <div class="mission-card active">
-            <div class="mission-icon">🚗</div>
-            <div class="mission-name">車道置中</div>
-            <div class="mission-status">進行中</div>
-          </div>
-          <div class="mission-card">
             <div class="mission-icon">🚦</div>
-            <div class="mission-name">紅綠燈辨識</div>
-            <div class="mission-status">待開發</div>
+            <div class="mission-name">交通號誌</div>
+            <div class="mission-status">✅ 已完成</div>
           </div>
           <div class="mission-card">
-            <div class="mission-icon">↪️</div>
-            <div class="mission-name">左右轉辨識</div>
-            <div class="mission-status">待開發</div>
+            <div class="mission-icon">↩️</div>
+            <div class="mission-name">圓環/交叉路口</div>
+            <div class="mission-status">🚧 框架</div>
           </div>
           <div class="mission-card">
             <div class="mission-icon">🚧</div>
-            <div class="mission-name">路障辨識</div>
-            <div class="mission-status">待開發</div>
-          </div>
-          <div class="mission-card">
-            <div class="mission-icon">🚇</div>
-            <div class="mission-name">山洞穿梭</div>
-            <div class="mission-status">待開發</div>
+            <div class="mission-name">障礙/減速</div>
+            <div class="mission-status">🚧 框架</div>
           </div>
           <div class="mission-card">
             <div class="mission-icon">🅿️</div>
             <div class="mission-name">停車</div>
-            <div class="mission-status">待開發</div>
+            <div class="mission-status">🚧 框架</div>
+          </div>
+          <div class="mission-card">
+            <div class="mission-icon">🚞</div>
+            <div class="mission-name">平交道柵欄</div>
+            <div class="mission-status">🚧 框架</div>
+          </div>
+          <div class="mission-card">
+            <div class="mission-icon">〰️</div>
+            <div class="mission-name">S 彎道</div>
+            <div class="mission-status">🚧 框架</div>
+          </div>
+          <div class="mission-card">
+            <div class="mission-icon">🚇</div>
+            <div class="mission-name">隧道/暗區</div>
+            <div class="mission-status">🚧 框架</div>
+          </div>
+          <div class="mission-card">
+            <div class="mission-icon">🚗</div>
+            <div class="mission-name">PID 循線（基底）</div>
+            <div class="mission-status">🚧 框架</div>
           </div>
         </div>
       </div>
@@ -81,41 +91,21 @@
     <section class="section">
       <div class="section-header">
         <span class="icon">⚙️</span>
-        <h2>系統架構 - 狀態機任務系統</h2>
+        <h2>系統架構</h2>
       </div>
       <div class="section-content">
-        <div class="arch-diagram">任務管理器 (task_manager.py)
-  └── 任務清單 (mission_list.py)
-        │
-        ├── Step 1: 車道置中
-        │     ├── 視覺：車道線偵測
-        │     ├── 控制：PID 車道居中
-        │     └── 觸發：完成後開啟 Step 2
-        │
-        ├── Step 2: 紅綠燈辨識
-        │     ├── 視覺：紅綠燈顏色偵測
-        │     ├── 控制：停車/前行決策
-        │     └── 觸發：完成後開啟 Step 3
-        │
-        ├── Step 3: 左右轉辨識
-        │     ├── 視覺：轉向標誌偵測
-        │     ├── 控制：轉向動作執行
-        │     └── 觸發：完成後開啟 Step 4
-        │
-        ├── Step 4: 路障辨識
-        │     ├── 視覺：障礙物偵測
-        │     ├── 控制：繞行決策
-        │     └── 觸發：完成後開啟 Step 5
-        │
-        ├── Step 5: 山洞穿梭
-        │     ├── 視覺：狹窄區域偵測
-        │     ├── 控制：路徑通過
-        │     └── 觸發：完成後開啟 Step 6
-        │
-        └── Step 6: 停車
-              ├── 視覺：停車位置偵測
-              ├── 控制：精準停車
-              └── 完成！</div>
+        <div class="arch-diagram">core_node_controller（主控制器）
+  ├── roslaunch 動態啟閉各 detect_* 節點
+  ├── 訂閱 /mission（狀態報告）
+  │
+  └── 核心協調層（core_node_mission）— 規劃中
+
+detect_traffic_light（已完整實作）
+  ├── HSV 顏色過濾（紅/黃/綠）
+  ├── 霍夫圓變換確認燈號
+  ├── dynamic_reconfigure 動態調參
+  ├── 直接發 /cmd_vel + /mission
+  └── 狀態：✅ 已完成</div>
       </div>
     </section>
 
@@ -132,40 +122,44 @@
             <span class="task-text done">建立專案資料夾架構</span>
           </li>
           <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">研究 FIRA AutoRace 官方規則</span>
+            <span class="check done">✓</span>
+            <span class="task-text done">研究 FIRA AutoRace 官方規則（賽道圖分析）</span>
+          </li>
+          <li class="task-item">
+            <span class="check done">✓</span>
+            <span class="task-text done">core_node_controller 骨架建立</span>
+          </li>
+          <li class="task-item">
+            <span class="check done">✓</span>
+            <span class="task-text done">detect_traffic_light 節點完成</span>
+          </li>
+          <li class="task-item">
+            <span class="check done">✓</span>
+            <span class="task-text done">detect_* 節點框架結構確認</span>
           </li>
           <li class="task-item">
             <span class="check pending"></span>
-            <span class="task-text">測試鏡頭參數（rqt）</span>
+            <span class="task-text">core_node_mission 協調層（規劃中）</span>
           </li>
           <li class="task-item">
             <span class="check pending"></span>
-            <span class="task-text">實作狀態機任務系統框架</span>
+            <span class="task-text">detect_intersection 完成</span>
           </li>
           <li class="task-item">
             <span class="check pending"></span>
-            <span class="task-text">車道置中模組開發</span>
+            <span class="task-text">detect_construction 完成</span>
           </li>
           <li class="task-item">
             <span class="check pending"></span>
-            <span class="task-text">紅綠燈辨識模組開發</span>
+            <span class="task-text">detect_parking 完成</span>
           </li>
           <li class="task-item">
             <span class="check pending"></span>
-            <span class="task-text">左右轉辨識模組開發</span>
+            <span class="task-text">detect_level 完成</span>
           </li>
           <li class="task-item">
             <span class="check pending"></span>
-            <span class="task-text">路障辨識模組開發</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">山洞穿梭模組開發</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">停車模組開發</span>
+            <span class="task-text">detect_tunnel 完成</span>
           </li>
           <li class="task-item">
             <span class="check pending"></span>
@@ -178,11 +172,11 @@
         </ul>
         <div class="progress-container">
           <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            <div class="progress-fill" id="progress-fill" style="width: 38%"></div>
           </div>
           <div class="progress-text">
             <span>進度</span>
-            <span id="progress-text">1/12 完成</span>
+            <span id="progress-text">5/13 完成</span>
           </div>
         </div>
       </div>
@@ -199,21 +193,28 @@
           <li class="folder-item">
             <span class="folder-icon">📚</span>
             <div class="folder-info">
-              <a href="01-研究資料/00_比賽規則摘要.md" class="folder-name">01-研究資料</a>
-              <p class="folder-desc">FIRA AutoRace 規則、研究文件</p>
+              <a href="01-研究資料/00_比賽規則摘要.html" class="folder-name">01-研究資料</a>
+              <p class="folder-desc">FIRA AutoRace 規則、賽道圖分析</p>
             </div>
           </li>
           <li class="folder-item">
             <span class="folder-icon">⚙️</span>
             <div class="folder-info">
-              <a href="02-系統架構/00_系統架構規劃.md" class="folder-name">02-系統架構</a>
-              <p class="folder-desc">狀態機設計、模組規劃</p>
+              <a href="02-系統架構/00_系統架構規劃.html" class="folder-name">02-系統架構</a>
+              <p class="folder-desc">節點結構、系統架構規劃</p>
+            </div>
+          </li>
+          <li class="folder-item">
+            <span class="folder-icon">📦</span>
+            <div class="folder-info">
+              <span class="folder-name">03-採購清單</span>
+              <p class="folder-desc">材料採購（待更新）</p>
             </div>
           </li>
           <li class="folder-item">
             <span class="folder-icon">📝</span>
             <div class="folder-info">
-              <a href="04-技術文檔/00_開發日誌.md" class="folder-name">04-技術文檔</a>
+              <a href="04-技術文檔/00_開發日誌.html" class="folder-name">04-技術文檔</a>
               <p class="folder-desc">開發日誌、技術筆記</p>
             </div>
           </li>
