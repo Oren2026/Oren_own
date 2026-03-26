@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>更新內容 | TDK 2026</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    body { background: var(--bg); }
+    .doc-header {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    .doc-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .doc-header .subtitle { opacity: 0.85; }
+    .back-link { display: inline-block; margin-top: 1rem; color: white; text-decoration: none; opacity: 0.8; }
+    .back-link:hover { opacity: 1; text-decoration: underline; }
+    .doc-content { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    .update-entry {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .update-header {
+      background: var(--bg);
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .update-header h2 { font-size: 1.1rem; }
+    .update-date {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      background: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+    .update-body { padding: 1.25rem; }
+    .update-body h3 { font-size: 1rem; color: var(--primary); margin-bottom: 0.75rem; }
+    .update-body ul { padding-left: 1.25rem; margin-bottom: 0.75rem; }
+    .update-body li { margin-bottom: 0.4rem; line-height: 1.6; }
+    .update-body p { line-height: 1.6; margin-bottom: 0.75rem; }
+    .tag { display: inline-block; font-size: 0.75rem; padding: 0.1rem 0.4rem; border-radius: 4px; }
+    .tag.hw { background: #dbeafe; color: #2563eb; }
+    .tag.doc { background: #f1f5f9; color: #64748b; }
+    .files-changed { background: var(--bg); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; }
+    .files-changed strong { color: var(--text-light); }
+  </style>
+</head>
+<body>
+  <header class="doc-header">
+    <h1>📋 TDK 2026 更新內容</h1>
+    <p class="subtitle">所有異動記錄</p>
+    <a href="../index.html" class="back-link">← 返回儀表板</a>
+  </header>
+
+  <main class="doc-content">
+
+    <!-- 2026-03-26 老師建議 -->
+    <div class="update-entry">
+      <div class="update-header">
+        <h2>老師建議：電源系統升級 + RPI 5</h2>
+        <span class="update-date">2026-03-26</span>
+      </div>
+      <div class="update-body">
+        <p><span class="tag hw">硬體更新</span></p>
+        <h3>更動說明</h3>
+        <ul>
+          <li>🔋 <strong>電源系統容量不足</strong> → 升級為 12V 10Ah + 7Ah <strong>鉛酸電池</strong>（老師建議）</li>
+          <li>💻 <strong>主控制器不應太小</strong> → 升級為 <strong>Raspberry Pi 5 8GB</strong>（原 RPI 4）</li>
+          <li>📈 <strong>總預算調整</strong>：NT$ 26,980 → NT$ 29,930（+NT$ 2,950）</li>
+        </ul>
+        <h3>採購清單更動</h3>
+        <ul>
+          <li>LiPo 11.1V 1800mAh × 2 → 鉛酸 12V 10Ah × 1 + 鉛酸 12V 7Ah × 1</li>
+          <li>LiPo 平衡充 → 鉛酸电池充电器</li>
+          <li>Raspberry Pi 4 4GB → Raspberry Pi 5 8GB</li>
+          <li>16GB microSD → 64GB microSD</li>
+        </ul>
+        <div class="files-changed">
+          <strong>更新檔案：</strong>03-採購清單、02-系統架構、index.html
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer style="text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.85rem;">
+    <p>TDK 2026 第30屆 | 由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+  </footer>
+</body>
+</html>

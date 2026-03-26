@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <!-- Header -->
   <header class="header">
     <h1>🏆 TDK 2026 比賽規劃</h1>
     <p class="subtitle">第30屆 TDK 盃全國大專校院創思設計與製作競賽</p>
@@ -35,17 +34,6 @@
         <div class="value success" id="last-updated">載入中...</div>
       </div>
     </div>
-
-    <!-- 重要提醒 -->
-    <section class="section">
-      <div class="section-header" style="background: #fef3c7;">
-        <span class="icon">⚠️</span>
-        <h2 style="color: #d97706;">重要提醒：這不是 TurtleBot 3 比賽！</h2>
-      </div>
-      <div class="section-content">
-        <p>TDK 盃需要<strong>自行設計與製作機器人</strong>，主題與雲林農業相關（文蛤分級、柳丁採收等），非使用市售平台。</p>
-      </div>
-    </section>
 
     <!-- Mission Section -->
     <section class="section">
@@ -112,7 +100,11 @@
           </li>
           <li class="task-item">
             <span class="check done">✓</span>
-            <span class="task-text done">採購清單建立與老師建議更新</span>
+            <span class="task-text done">採購清單建立</span>
+          </li>
+          <li class="task-item">
+            <span class="check done">✓</span>
+            <span class="task-text done">老師建議落实（電源+RPI5）</span>
           </li>
           <li class="task-item">
             <span class="check done">✓</span>
@@ -145,28 +137,31 @@
         </ul>
         <div class="progress-container">
           <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill" style="width: 40%"></div>
+            <div class="progress-fill" id="progress-fill" style="width: 45%"></div>
           </div>
           <div class="progress-text">
             <span>進度</span>
-            <span id="progress-text">4/10 完成</span>
+            <span id="progress-text">5/11 完成</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 老師建議更新 -->
-    <section class="section" style="border-left: 4px solid #f59e0b;">
-      <div class="section-header" style="background: #fef3c7;">
-        <span class="icon">📌</span>
-        <h2 style="color: #d97706;">老師建議更新（2026-03-26）</h2>
+    <!-- Updates Section -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">🆕</span>
+        <h2>更新內容</h2>
       </div>
       <div class="section-content">
-        <ul style="line-height: 1.8;">
-          <li>🔋 <strong>電源系統太小、容量不足</strong> → 升級為 12V 10Ah + 7Ah 鉛酸電池</li>
-          <li>🔋 <strong>老師建議使用鉛酸電池</strong>（相較 LiPo 更穩定、容量更大）</li>
-          <li>💻 <strong>主控制器不應太小</strong> → 升級為 Raspberry Pi 5 8GB（原 RPI 4）</li>
-          <li>📈 <strong>總預算調整</strong>：NT$ 26,980 → NT$ 29,930（+NT$ 2,950）</li>
+        <ul class="folder-list">
+          <li class="folder-item">
+            <span class="folder-icon">📋</span>
+            <div class="folder-info">
+              <a href="05-更新內容/00_更新記錄.html" class="folder-name">2026-03-26｜老師建議：電源+RPI5</a>
+              <p class="folder-desc">電源升級鉛酸12V 10Ah+7Ah、控制器升級RPI 5、預算NT$29,930</p>
+            </div>
+          </li>
         </ul>
       </div>
     </section>
@@ -182,24 +177,20 @@
           <thead>
             <tr>
               <th>項目</th>
-              <th>原估（NT$）</th>
-              <th>更新估（NT$）</th>
+              <th>金額（NT$）</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>移動底盤（馬達、輪子、底盤）</td><td>7,000</td><td>7,000</td></tr>
-            <tr><td>感測器（相機、超音波、IMU、循線）</td><td>8,950</td><td>8,950</td></tr>
-            <tr><td>機構材料（3D列印線材、螺絲、鋁材）</td><td>3,300</td><td>3,900</td></tr>
-            <tr><td>機構控制（伺服馬達、舵機驅動）</td><td>1,510</td><td>1,510</td></tr>
-            <tr><td>主控制（STM32/Arduino/RPI 5）</td><td>3,000</td><td class="success">4,100 ▲</td></tr>
-            <tr><td>電源系統（鉛酸電池、充电器）</td><td>2,260</td><td class="success">3,510 ▲</td></tr>
-            <tr><td>其他（工具、線材）</td><td>960</td><td>960</td></tr>
-            <tr class="total-row"><td>總計</td><td>26,980</td><td>29,930</td></tr>
+            <tr><td>移動底盤（馬達、輪子、底盤）</td><td>7,000</td></tr>
+            <tr><td>感測器（相機、超音波、IMU、循線）</td><td>8,950</td></tr>
+            <tr><td>機構材料（3D列印線材、螺絲、鋁材）</td><td>3,900</td></tr>
+            <tr><td>機構控制（伺服馬達、舵機驅動）</td><td>1,510</td></tr>
+            <tr><td>主控制（Raspberry Pi 5 8GB）</td><td>4,100</td></tr>
+            <tr><td>電源系統（鉛酸電池）</td><td>3,510</td></tr>
+            <tr><td>其他（工具、線材）</td><td>960</td></tr>
+            <tr class="total-row"><td>總計</td><td>NT$ 29,930</td></tr>
           </tbody>
         </table>
-        <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-light);">
-          💡 更新後預估總預算約 <strong>NT$ 30,000</strong>
-        </p>
       </div>
     </section>
 
@@ -222,21 +213,28 @@
             <span class="folder-icon">⚙️</span>
             <div class="folder-info">
               <a href="02-系統架構/00_系統架構規劃.html" class="folder-name">02-系統架構</a>
-              <p class="folder-desc">技術架構設計、RPI 5 控制方案</p>
+              <p class="folder-desc">技術架構設計</p>
             </div>
           </li>
           <li class="folder-item">
             <span class="folder-icon">🛒</span>
             <div class="folder-info">
               <a href="03-採購清單/00_預計採購清單.html" class="folder-name">03-採購清單</a>
-              <p class="folder-desc">材料採購規劃與預算（已更新）</p>
+              <p class="folder-desc">材料採購規劃與預算</p>
+            </div>
+          </li>
+          <li class="folder-item">
+            <span class="folder-icon">🆕</span>
+            <div class="folder-info">
+              <a href="05-更新內容/00_更新記錄.html" class="folder-name">05-更新內容</a>
+              <p class="folder-desc">所有異動記錄</p>
             </div>
           </li>
           <li class="folder-item">
             <span class="folder-icon">📝</span>
             <div class="folder-info">
               <a href="04-技術文檔/00_開發日誌.html" class="folder-name">04-技術文檔</a>
-              <p class="folder-desc">開發日誌、技術文件</p>
+              <p class="folder-desc">開發日誌</p>
             </div>
           </li>
         </ul>
@@ -255,7 +253,7 @@
             <span class="folder-icon">🌐</span>
             <div class="folder-info">
               <a href="https://web02.yuntech.edu.tw/~tdk_4hhoerjt/" target="_blank" class="folder-name">官方網站 ↗</a>
-              <p class="folder-desc">TDK 盃官方網站（國立雲林科技大學）</p>
+              <p class="folder-desc">TDK 盃官方網站</p>
             </div>
           </li>
           <li class="folder-item">
@@ -269,7 +267,7 @@
             <span class="folder-icon">📂</span>
             <div class="folder-info">
               <a href="https://github.com/Oren2026/Oren_own/tree/main/docs/TDK_2026" target="_blank" class="folder-name">GitHub 原始碼 ↗</a>
-              <p class="folder-desc">查看所有原始文件和版本歷史</p>
+              <p class="folder-desc">所有原始文件</p>
             </div>
           </li>
         </ul>
@@ -282,9 +280,7 @@
     <p style="margin-top: 0.5rem;">由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
   </footer>
 
-  <!-- Refresh Button -->
   <button class="refresh-btn" id="refresh-btn" title="重新整理">↻</button>
-
   <script src="assets/js/main.js"></script>
   <script>
     document.getElementById('footer-updated').textContent = document.getElementById('last-updated').textContent;
