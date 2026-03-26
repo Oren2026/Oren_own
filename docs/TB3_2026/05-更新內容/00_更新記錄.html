@@ -39,19 +39,17 @@
   <main class="doc-content">
     <div class="update-entry">
       <div class="update-header">
-        <h2>權重混合系統概念建立、文件轉HTML</h2>
+        <h2>文件轉HTML、mission grid + modal系統建立</h2>
         <span class="update-date">2026-03-26</span>
       </div>
       <div class="update-body">
         <p><span class="tag sys">系統更新</span></p>
         <ul>
-          <li>提出 <code>core_node_mission</code> 協調層概念（細節待公布）</li>
-          <li><code>detect_traffic_light</code> 節點完成（HSV + 霍夫圓變換）</li>
-          <li><code>core_node_controller</code> 骨架建立（roslaunch 動態調度）</li>
-          <li>確認 5 項已完成：專案架構、規則研究、controller骨架、detect節點框架</li>
-          <li>文件從 .md 轉為 .html（共用品式）</li>
-          <li>index.html 極簡化（實驗新架構）</li>
-          <li>賽道圖分析：確認 8 個關卡（交通號誌、圓環、障礙、停車、平交道、S彎道、隧道）</li>
+          <li>index.html 極簡化實驗，保留 mission grid 視覺化 + ✅🚧 狀態標記</li>
+          <li>加入 mission modal 系統：點擊格子可查看該關卡詳情</li>
+          <li>交通號誌 code 分析完畢，但尚未通過實際測試 → 維持 🚧 施工中</li>
+          <li>討論結論：需先理解 HSV 偵測邏輯並完成實際測試，才更新為 ✅</li>
+          <li>未來擴展：若 index 因 mission grid 變複雜，考慮遷移到獨立 missions.json</li>
         </ul>
       </div>
     </div>

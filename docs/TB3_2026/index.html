@@ -102,11 +102,11 @@
       </div>
       <div class="section-content">
         <div class="mission-grid">
-          <!-- 交通號誌：已完成 -->
-          <div class="mission-card completed" onclick="openModal('traffic_light')" style="cursor:pointer;">
+          <!-- 交通號誌：施工中（待實際通過測試） -->
+          <div class="mission-card active" onclick="openModal('traffic_light')" style="cursor:pointer;">
             <div class="mission-icon">🚦</div>
             <div class="mission-name">交通號誌</div>
-            <div class="mission-status">✅ 已完成</div>
+            <div class="mission-status">🚧 施工中</div>
           </div>
           <!-- 其餘：施工中 -->
           <div class="mission-card active" onclick="openModal('intersection')" style="cursor:pointer;">
@@ -157,11 +157,11 @@
       <div class="section-content">
         <div class="progress-container">
           <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill" style="width: 38%"></div>
+            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
           </div>
           <div class="progress-text">
             <span></span>
-            <span id="progress-text">🚧 施工中（1/8 關卡完成）</span>
+            <span id="progress-text">🚧 籌備中（0/8 關卡完成）</span>
           </div>
         </div>
       </div>

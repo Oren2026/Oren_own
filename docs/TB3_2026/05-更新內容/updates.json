@@ -2,8 +2,8 @@
   {
     "id": "20260326-01",
     "date": "2026-03-26",
-    "title": "權重混合系統概念建立、文件轉HTML",
-    "summary": "提出core_node_mission協調層概念，detect_traffic_light完成，文件從md轉html，確認5項已完成",
+    "title": "文件轉HTML、mission grid + modal系統建立",
+    "summary": "index極簡化，mission grid可點擊開modal，偵錯交通號誌代碼邏輯，確認code需實際測試驗證",
     "category": "系統更新"
   }
 ]
