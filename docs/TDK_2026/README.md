@@ -80,6 +80,15 @@ TDK_2026/
 
 ---
 
+## 🌐 網頁版本
+
+**本專案有可互動的網頁版本，歡迎分享給隊友：**
+
+- 📍 **網頁版**：https://Oren2026.github.io/Oren_own/TDK_2026/
+- 📂 **GitHub**：https://github.com/Oren2026/Oren_own/tree/main/docs/TDK_2026
+
+---
+
 ## 相關連結
 
 - 🌐 [官方網站](https://web02.yuntech.edu.tw/~tdk_4hhoerjt/)
