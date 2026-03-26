@@ -2,8 +2,15 @@
   {
     "id": "20260326-01",
     "date": "2026-03-26",
-    "title": "JSON集中資料架構重構",
-    "summary": "建立data/集中管理所有mission狀態，廢除01~05編號資料夾，index改由JS讀取data/*.json渲染mission grid",
+    "title": "JSON集中資料架構 + index極簡化實驗",
+    "summary": "廢除01~05編號，改為research/architecture/tech/updates/；新增data/集中管理mission狀態；index改為JS讀取data/*.json渲染mission grid（✅🚧圖示）；建立更新驅動機制",
+    "category": "系統更新"
+  },
+  {
+    "id": "20260326-02",
+    "date": "2026-03-26",
+    "title": "research/architecture改為動態讀取data/*.json",
+    "summary": "研究資料與系統架構頁面的mission狀態，改為JS動態讀取data/*.json，確保三視圖一致",
     "category": "系統更新"
   }
 ]

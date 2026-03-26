@@ -5,199 +5,155 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>開發日誌 | TB3 2026</title>
   <link rel="stylesheet" href="../assets/css/style.css">
-  <style>
-    body { background: var(--bg); }
-    .doc-header {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: white;
-      padding: 2rem 1rem;
-      text-align: center;
-    }
-    .doc-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
-    .doc-header .subtitle { opacity: 0.85; }
-    .back-link {
-      display: inline-block;
-      margin-top: 1rem;
-      color: white;
-      text-decoration: none;
-      opacity: 0.8;
-    }
-    .back-link:hover { opacity: 1; text-decoration: underline; }
-    .doc-content {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-    .log-entry {
-      background: white;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      margin-bottom: 1.5rem;
-      overflow: hidden;
-    }
-    .log-header {
-      background: var(--bg);
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .log-header h2 {
-      font-size: 1.1rem;
-      color: var(--text);
-    }
-    .log-date {
-      font-size: 0.85rem;
-      color: var(--text-light);
-      background: white;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-    }
-    .log-body {
-      padding: 1.25rem;
-    }
-    .log-body h3 {
-      font-size: 1rem;
-      color: var(--primary);
-      margin-bottom: 0.75rem;
-    }
-    .log-body ul {
-      padding-left: 1.25rem;
-      margin-bottom: 1rem;
-    }
-    .log-body li {
-      margin-bottom: 0.4rem;
-      line-height: 1.6;
-    }
-    .tag {
-      display: inline-block;
-      font-size: 0.75rem;
-      padding: 0.1rem 0.4rem;
-      border-radius: 4px;
-      margin-right: 0.25rem;
-    }
-    .tag.done { background: #d1fae5; color: #059669; }
-    .tag.progress { background: #fef3c7; color: #d97706; }
-    .tag.new { background: #dbeafe; color: #2563eb; }
-    .tag.plan { background: #f1f5f9; color: #64748b; }
-    .task-checklist {
-      list-style: none;
-      padding: 0;
-    }
-    .task-checklist li {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      margin-bottom: 0.4rem;
-    }
-    .task-checklist li::before {
-      content: '☐';
-      font-size: 1rem;
-      flex-shrink: 0;
-    }
-    .task-checklist li.done::before { content: '☑'; color: var(--success); }
-  </style>
 </head>
 <body>
-  <header class="doc-header">
+  <header class="header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
     <h1>📝 開發日誌</h1>
     <p class="subtitle">TB3 2026 FIRA AutoRace</p>
-    <a href="../index.html" class="back-link">← 返回儀表板</a>
+    <a href="../index.html" class="back-link" style="display:inline-block;margin-top:1rem;color:white;opacity:0.85;">← 返回儀表板</a>
   </header>
 
-  <main class="doc-content">
+  <main class="container">
 
-    <!-- 2026-03-26 -->
-    <div class="log-entry">
-      <div class="log-header">
-        <h2>2026-03-26</h2>
-        <span class="log-date">今天</span>
+    <!-- Mission Grid -->
+    <div class="section">
+      <div class="section-header">
+        <span class="icon">🎯</span>
+        <h2>任務關卡進度</h2>
       </div>
-      <div class="log-body">
-        <h3>系統架構確認</h3>
-        <ul>
-          <li>確認 <code>core_node_controller</code> 骨架：<code>roslaunch</code> 動態啟閉各 <code>detect_*</code> 節點</li>
-          <li>確認 Mission 枚舉：<code>Idle, TrafficLight, Intersection, Construction, Parking, LevelCrossing, Tunnel</code></li>
-          <li>確認控制流程：<code>/mission</code> topic → <code>cbReceiveMode</code> → <code>fnControlNode</code> → <code>fnLaunch</code></li>
-        </ul>
-
-        <h3>系統協調層規劃</h3>
-        <ul>
-          <li>提出新型控制方案，協調各偵測節點輸出</li>
-          <li>實作位置：<code>core_node_mission</code></li>
-        </ul>
-
-        <h3>detect_traffic_light 實作確認</h3>
-        <ul>
-          <li>完整 HSV 顏色過濾（紅/黃/綠）+ 霍夫圓變換</li>
-          <li>動態參數調整（<code>dynamic_reconfigure</code>）</li>
-          <li>綠燈時直接發 <code>/cmd_vel</code> 前進 + 發 <code>/mission</code> 切換到 Intersection</li>
-          <li>狀態：✅ 已完成</li>
-        </ul>
-
-        <h3>專案文件更新</h3>
-        <ul>
-          <li>從賽道圖分析出 8 個任務關卡（交通號誌、圓環、障礙、停車、平交道、S彎道、隧道）</li>
-          <li>將各文件從 Markdown 轉為 HTML，便於網頁觀看</li>
-          <li>CSS/JS 放在 <code>assets/</code> 共用層</li>
-        </ul>
+      <div class="section-content">
+        <div class="mission-grid" id="mission-grid">
+          <!-- JS renders from data/*.json -->
+        </div>
       </div>
     </div>
 
-    <!-- 2026-03-26 較早記錄 -->
-    <div class="log-entry">
-      <div class="log-header">
-        <h2>2026-03-26（專案初始化）</h2>
-        <span class="log-date">Earlier</span>
+    <!-- Timeline -->
+    <div class="section">
+      <div class="section-header">
+        <span class="icon">📅</span>
+        <h2>開發時間線</h2>
       </div>
-      <div class="log-body">
-        <h3>專案建立</h3>
-        <ul>
-          <li>建立 TB3_2026 資料夾架構</li>
-          <li>建立網頁儀表板（index.html）</li>
-          <li>定義 6 個任務關卡（車道置中、紅綠燈、左右轉、路障、山洞、停車）</li>
-          <li>採用狀態機（State Machine）架構</li>
-          <li>確認 TurtleBot 3 Burger + ROS + OpenCV 技術堆疊</li>
-        </ul>
-
-        <h3>系統架構確認</h3>
-        <ul>
-          <li>任務清單.py 統一管理各 step 的開關</li>
-          <li>切換條件：視覺辨識成功 / 感測器訊號</li>
-        </ul>
+      <div class="section-content" id="timeline">
+        <!-- JS renders from data/*.json -->
       </div>
     </div>
 
-    <!-- 開發進度總覽 -->
-    <div class="log-entry">
-      <div class="log-header">
-        <h2>📊 開發進度總覽</h2>
-      </div>
-      <div class="log-body">
-        <ul class="task-checklist">
-          <li class="done">建立專案資料夾架構</li>
-          <li class="done">研究 FIRA AutoRace 官方規則（賽道圖分析）</li>
-          <li class="done">core_node_controller 骨架建立</li>
-          <li class="done">detect_traffic_light 節點完成</li>
-          <li class="done">detect_* 節點框架結構確認</li>
-          <li>core_node_mission 協調層（規劃中）</li>
-          <li>detect_intersection 完成</li>
-          <li>detect_construction 完成</li>
-          <li>detect_parking 完成</li>
-          <li>detect_level 完成</li>
-          <li>detect_tunnel 完成</li>
-          <li>任務堆疊整合測試</li>
-          <li>完整流程測試</li>
-        </ul>
-      </div>
-    </div>
-
-    <div style="text-align: center; padding: 2rem 0; color: var(--text-light); font-size: 0.85rem;">
-      <p>最後更新：2026-03-26 | TB3 2026 FIRA AutoRace</p>
-      <p>由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
-    </div>
   </main>
+
+  <!-- Modal -->
+  <div class="modal" id="mission-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">—</h2>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
+  </footer>
+
+  <script>
+    const MISSION_ICONS = {
+      traffic_light:'🚦',intersection:'↩️',construction:'🚧',
+      parking:'🅿️',level_crossing:'🚞',s_curve:'〰️',tunnel:'🚇',lane:'🚗'
+    };
+    const MISSION_IDS = [
+      'traffic_light','intersection','construction',
+      'parking','level_crossing','s_curve','tunnel','lane'
+    ];
+
+    function computeStatus(m) {
+      if (!m.subConcepts || !m.subConcepts.length) return m.status || 'todo';
+      return m.subConcepts.every(s => s.status === 'done') ? 'done' : 'todo';
+    }
+
+    async function init() {
+      const results = await Promise.allSettled(
+        MISSION_IDS.map(id => fetch(`../data/${id}.json`).then(r=>r.json()).catch(()=>null))
+      );
+      const missions = results.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);
+      const map = {};
+      missions.forEach(m => { map[m.id] = m; });
+
+      // Render mission grid
+      const grid = document.getElementById('mission-grid');
+      grid.innerHTML = missions
+        .filter(m => m.category !== 'base')
+        .sort((a,b) => MISSION_IDS.indexOf(a.id) - MISSION_IDS.indexOf(b.id))
+        .map(m => {
+          const s = computeStatus(m);
+          const icon = MISSION_ICONS[m.id] || '❓';
+          const label = s === 'done' ? '✅ 已完成' : '🚧 施工中';
+          return `<div class="mission-card ${s==='done'?'completed':'active'}" onclick="openModal('${m.id}')" style="cursor:pointer;">
+            <div class="mission-icon">${icon}</div>
+            <div class="mission-name">${m.name?.zh||m.id}</div>
+            <div class="mission-status">${label}</div>
+          </div>`;
+        }).join('');
+
+      // Render timeline (subConcepts breakdown)
+      const tl = document.getElementById('timeline');
+      tl.innerHTML = missions
+        .filter(m => m.category !== 'base')
+        .sort((a,b) => MISSION_IDS.indexOf(a.id) - MISSION_IDS.indexOf(b.id))
+        .map(m => {
+          const s = computeStatus(m);
+          const icon = MISSION_ICONS[m.id] || '❓';
+          const label = s === 'done' ? '✅' : '🚧';
+          const subs = (m.subConcepts||[]).map(sub =>
+            `<li style="margin-bottom:0.3rem;">${sub.status==='done'?'✅':'⬜'} <strong>${sub.name?.zh||sub.id}</strong>：${sub.description||'—'}</li>`
+          ).join('');
+          return `<div class="node-card ${s}" style="margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+              <h3>${icon} ${m.name?.zh||m.id}</h3>
+              <span class="status ${s}">${label}</span>
+            </div>
+            ${m.description?`<p style="font-size:0.9rem;color:var(--text-light);margin-bottom:0.5rem;">${m.description}</p>`:''}
+            ${subs?`<details style="margin-top:0.5rem;"><summary style="cursor:pointer;font-size:0.85rem;color:var(--text-light);">子項目展開</summary><ul style="margin-top:0.5rem;padding-left:1.25rem;">${subs}</ul></details>`:''}
+          </div>`;
+        }).join('');
+    }
+
+    async function openModal(id) {
+      const results = await Promise.allSettled(
+        MISSION_IDS.map(i => fetch(`../data/${i}.json`).then(r=>r.json()).catch(()=>null))
+      );
+      const missions = results.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);
+      const m = missions.find(x=>x.id===id);
+      if (!m) return;
+
+      const s = computeStatus(m);
+      document.getElementById('modal-title').textContent = `${MISSION_ICONS[id]||''} ${m.name?.zh||id}`;
+      const body = document.getElementById('modal-body');
+      const subs = (m.subConcepts||[]).map(sub =>
+        `<li>${sub.status==='done'?'✅':'⬜'} <strong>${sub.name?.zh||sub.id}</strong>：${sub.description||'—'}</li>`
+      ).join('');
+      const outputs = (m.outputs||[]).map(o =>
+        `<li><code>${o.topic}</code>（${o.type}）— ${o.note||'—'}</li>`
+      ).join('');
+      body.innerHTML = `
+        <p><span class="modal-status ${s}">${s==='done'?'✅ 已完成':'🚧 施工中'}</span></p>
+        ${m.description?`<p style="margin-top:0.75rem;">${m.description}</p>`:''}
+        ${subs?`<div class="modal-section"><h3>實作細節</h3><ul>${subs}</ul></div>`:''}
+        ${outputs?`<div class="modal-section"><h3>輸出 Topic</h3><ul>${outputs}</ul></div>`:''}
+        ${(m.files||[]).length?`<div class="modal-section"><h3>對應檔案</h3><ul>${m.files.map(f=>`<li><code>${f}</code></li>`).join('')}</ul></div>`:''}
+      `;
+      document.getElementById('mission-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('mission-modal').classList.remove('open');
+    }
+
+    document.getElementById('mission-modal')?.addEventListener('click', e => {
+      if (e.target === document.getElementById('mission-modal')) closeModal();
+    });
+
+    init();
+  </script>
 </body>
 </html>
