@@ -1,0 +1,37 @@
+{
+  "id": "traffic_light",
+  "name": { "zh": "交通號誌", "en": "Traffic Light" },
+  "category": "mission",
+  "description": "使用 HSV 顏色空間過濾辨識紅/黃/綠燈，搭配霍夫圓變換確認燈號。",
+  "status": "todo",
+  "subConcepts": [
+    {
+      "id": "hsv_filter",
+      "name": { "zh": "HSV 顏色過濾", "en": "HSV Mask" },
+      "status": "todo",
+      "description": "RGB 轉 HSV，針對紅/黃/綠各自定義閾值，產生二值化遮罩",
+      "files": ["detect_traffic_light.py"]
+    },
+    {
+      "id": "hough_circle",
+      "name": { "zh": "霍夫圓變換", "en": "Hough Circle Transform" },
+      "status": "todo",
+      "description": "在顏色遮罩中找圓形，過濾非燈號雜訊",
+      "files": ["detect_traffic_light.py"]
+    },
+    {
+      "id": "mission_switch",
+      "name": { "zh": "Mission 切換", "en": "Mission Switch" },
+      "status": "todo",
+      "description": "綠燈 count ≥ 5 時發 /mission(Intersection)，同時前進",
+      "files": ["detect_traffic_light.py"]
+    }
+  ],
+  "outputs": [
+    { "topic": "/cmd_vel", "type": "Twist", "note": "直接控車" },
+    { "topic": "/mission", "type": "UInt8", "note": "任務切換" },
+    { "topic": "/detect/traffic_light/compressed", "type": "CompressedImage", "note": "視覺化" }
+  ],
+  "files": ["detect_traffic_light.py"],
+  "testStatus": "untested"
+}

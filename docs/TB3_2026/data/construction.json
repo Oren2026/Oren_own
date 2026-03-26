@@ -1,0 +1,29 @@
+{
+  "id": "construction",
+  "name": { "zh": "障礙/減速區", "en": "Construction Zone" },
+  "category": "mission",
+  "description": "偵測青藍色橫向標記，觸發減速或繞行。",
+  "status": "todo",
+  "subConcepts": [
+    {
+      "id": "color_marker_detection",
+      "name": { "zh": "青藍色標記偵測", "en": "Cyan Marker Detection" },
+      "status": "todo",
+      "description": "辨識施工區的青藍色橫向標記"
+    },
+    {
+      "id": "speed_control",
+      "name": { "zh": "減速控制", "en": "Speed Reduction" },
+      "status": "todo",
+      "description": "偵測到標記時觸發減速"
+    },
+    {
+      "id": "obstacle_avoidance",
+      "name": { "zh": "繞行決策", "en": "Detour Decision" },
+      "status": "todo",
+      "description": "必要時執行繞行動作"
+    }
+  ],
+  "files": ["detect_construction.py"],
+  "testStatus": "untested"
+}

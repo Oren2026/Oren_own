@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>更新內容 | TB3 2026</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+  <header class="doc-header">
+    <h1>🆕 TB3 2026 更新記錄</h1>
+    <p class="subtitle">所有異動歷史</p>
+    <a href="../index.html" class="back-link">← 返回儀表板</a>
+  </header>
+
+  <main class="doc-content">
+    <div class="update-entry">
+      <div class="update-header">
+        <h2>JSON 集中資料架構重構</h2>
+        <span class="update-date">2026-03-26</span>
+      </div>
+      <div class="update-body">
+        <p><span class="tag sys">系統更新</span></p>
+        <ul>
+          <li>廢除 01~05 編號資料夾，改為 research/、architecture/、tech/、updates/</li>
+          <li>新增 <code>data/</code> 目錄：每個 Mission 一個 JSON，集中管理狀態</li>
+          <li>index.html 完全由 JS 讀取 <code>data/*.json</code> 渲染 Mission Grid</li>
+          <li>subConcept 全完成 → Mission 才完成，邏輯一致性由 JSON 保證</li>
+          <li>CSS 加入 modal 樣式（集中管理，inline 樣式移除）</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer style="text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.85rem;">
+    <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+  </footer>
+</body>
+</html>

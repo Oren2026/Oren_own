@@ -1,0 +1,29 @@
+{
+  "id": "s_curve",
+  "name": { "zh": "S 彎道", "en": "S-Curve" },
+  "category": "mission",
+  "description": "連續 S 型彎道，挑戰 PID 車道維持穩定性。",
+  "status": "todo",
+  "subConcepts": [
+    {
+      "id": "lane_following",
+      "name": { "zh": "車道維持", "en": "Lane Following" },
+      "status": "todo",
+      "description": "PID 控制維持車子在彎道中央行駛"
+    },
+    {
+      "id": "sharp_turn",
+      "name": { "zh": "急彎處理", "en": "Sharp Turn Handling" },
+      "status": "todo",
+      "description": "連續變向時的轉向控制優化"
+    },
+    {
+      "id": "speed_control",
+      "name": { "zh": "速度控制", "en": "Speed Control" },
+      "status": "todo",
+      "description": "彎道減速，避免脫離車道"
+    }
+  ],
+  "files": ["detect_lane.py"],
+  "testStatus": "untested"
+}
