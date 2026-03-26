@@ -5,127 +5,135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>系統架構規劃 | TB3 2026</title>
   <link rel="stylesheet" href="../assets/css/style.css">
-  <style>
-    body { background: var(--bg); }
-    .doc-header {
-      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-      color: white;
-      padding: 2rem 1rem;
-      text-align: center;
-    }
-    .doc-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
-    .doc-header .subtitle { opacity: 0.85; }
-    .back-link { display: inline-block; margin-top: 1rem; color: white; text-decoration: none; opacity: 0.8; }
-    .back-link:hover { opacity: 1; text-decoration: underline; }
-    .doc-content { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
-    .section { margin-bottom: 2.5rem; }
-    .section h2 { font-size: 1.2rem; color: var(--primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
-    .arch-box { background: white; border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); font-family: 'Courier New', monospace; font-size: 0.85rem; overflow-x: auto; white-space: pre; line-height: 1.5; margin-bottom: 1rem; }
-    .node-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
-    table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
-    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
-    th { background: var(--bg); font-weight: 600; }
-    code { background: #f1f5f9; padding: 0.15rem 0.4rem; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 0.85rem; }
-  </style>
 </head>
 <body>
-  <header class="doc-header">
+  <header class="header" style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);">
     <h1>⚙️ 系統架構規劃</h1>
-    <p class="subtitle">TurtleBot 3 × ROS × OpenCV | 2026-03-26 更新</p>
-    <a href="../index.html" class="back-link">← 返回儀表板</a>
+    <p class="subtitle">TurtleBot 3 × ROS × OpenCV | 2026-03-26</p>
+    <a href="../index.html" class="back-link" style="display:inline-block;margin-top:1rem;color:white;opacity:0.85;">← 返回儀表板</a>
   </header>
 
-  <main class="doc-content">
+  <main class="container">
 
+    <!-- 核心架構 -->
     <div class="section">
-      <h2>🏗️ 核心架構</h2>
-      <div class="arch-box">core_node_controller（主控制器）
+      <div class="section-header">
+        <span class="icon">🏗️</span>
+        <h2>核心架構</h2>
+      </div>
+      <div class="section-content">
+        <div class="arch-box">core_node_controller（主控制器）
   ├── roslaunch 動態啟閉各 detect_* 節點
   ├── 訂閱 /mission（狀態報告）
   └── 任務混合層（core_node_mission）— 規劃中</div>
+      </div>
     </div>
 
+    <!-- 節點狀態 -->
     <div class="section">
-      <h2>📦 節點狀態（讀取自 data/*.json）</h2>
-      <div id="node-list">
+      <div class="section-header">
+        <span class="icon">📦</span>
+        <h2>節點狀態（讀取自 data/*.json）</h2>
+      </div>
+      <div class="section-content" id="node-list">
         <!-- JS renders from data/*.json -->
       </div>
     </div>
 
+    <!-- 技術堆疊 -->
     <div class="section">
-      <h2>🚦 detect_traffic_light 實作細節</h2>
-      <table>
-        <thead><tr><th>方法</th><th>功能</th></tr></thead>
-        <tbody>
-          <tr><td><code>fnMaskRed/Yellow/GreenTrafficLight</code></td><td>HSV 顏色空間過濾，產生二值化遮罩圖</td></tr>
-          <tr><td><code>fnFindCircleOfTrafficLight</code></td><td>霍夫圓變換（Hough Circle Transform）確認真實燈號</td></tr>
-          <tr><td><code>fnFindTrafficLight</code></td><td>調度三色偵測，決定目前燈號</td></tr>
-          <tr><td><code>cbGetImage</code></td><td>接收 /image_input，轉 OpenCV 格式</td></tr>
-          <tr><td><code>cbGetDetectTrafficLightParam</code></td><td>dynamic_reconfigure 動態調整 HSV 閾值</td></tr>
-        </tbody>
-      </table>
+      <div class="section-header">
+        <span class="icon">🛠️</span>
+        <h2>技術堆疊</h2>
+      </div>
+      <div class="section-content">
+        <table>
+          <thead><tr><th>項目</th><th>技術</th></tr></thead>
+          <tbody>
+            <tr><td>硬體平台</td><td>TurtleBot 3 Burger</td></tr>
+            <tr><td>SBC</td><td>Raspberry Pi 3</td></tr>
+            <tr><td>控制系統</td><td>ROS</td></tr>
+            <tr><td>視覺處理</td><td>OpenCV</td></tr>
+            <tr><td>語言</td><td>Python / C++</td></tr>
+            <tr><td>圖像調整</td><td>rqt_image_view</td></tr>
+            <tr><td>參數動態調整</td><td>dynamic_reconfigure</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="section">
-      <h2>🛠️ 技術堆疊</h2>
-      <table>
-        <thead><tr><th>項目</th><th>技術</th></tr></thead>
-        <tbody>
-          <tr><td>硬體平台</td><td>TurtleBot 3 Burger</td></tr>
-          <tr><td>SBC</td><td>Raspberry Pi 3</td></tr>
-          <tr><td>控制系統</td><td>ROS</td></tr>
-          <tr><td>視覺處理</td><td>OpenCV</td></tr>
-          <tr><td>語言</td><td>Python / C++</td></tr>
-          <tr><td>圖像調整</td><td>rqt_image_view</td></tr>
-          <tr><td>參數動態調整</td><td>dynamic_reconfigure</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div style="text-align:center; padding:2rem 0; color:var(--text-light); font-size:0.85rem;">
-      <p>最後更新：2026-03-26 | TB3 2026 FIRA AutoRace</p>
-      <p>由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
-    </div>
   </main>
+
+  <footer class="footer">
+    <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
+  </footer>
 
   <script>
     const MISSION_ICONS = {
       traffic_light:'🚦',intersection:'↩️',construction:'🚧',
       parking:'🅿️',level_crossing:'🚞',s_curve:'〰️',tunnel:'🚇',lane:'🚗'
     };
-    async function init() {
-      try {
-        const ids = ['traffic_light','intersection','construction','parking','level_crossing','s_curve','tunnel','lane'];
-        const missions = await Promise.allSettled(ids.map(id => fetch(`../data/${id}.json`).then(r=>r.json()).catch(()=>null)));
-        const list = document.getElementById('node-list');
-        let html = '';
-        missions.filter(r=>r.status==='fulfilled'&&r.value).forEach(r=>{
-          const m = r.value;
-          const allDone = (m.subConcepts||[]).every(s=>s.status==='done');
-          const icon = MISSION_ICONS[m.id]||'❓';
-          const name = m.name?.zh || m.id;
-          const status = allDone ? 'done' : 'progress';
-          const label = allDone ? '✅ 已完成' : '🚧 施工中';
-          html += `<div class="node-card ${status}">
-            <h3>${icon} ${name}</h3>
-            <p>${m.description||'—'}</p>
-            <span class="status ${status}">${label}</span>
-          </div>`;
-        });
-        // Add controller node (always in progress)
-        html += `<div class="node-card progress">
-          <h3>⚙️ core_node_controller</h3>
-          <p>roslaunch 動態調度骨架，接收 /mission 切換狀態</p>
-          <span class="status progress">🚧 骨架完成</span>
-        </div>
-        <div class="node-card todo">
-          <h3>🎯 core_node_mission</h3>
-          <p>協調各偵測節點輸出（規劃中）</p>
-          <span class="status todo">📋 規劃中</span>
-        </div>`;
-        list.innerHTML = html;
-      } catch(e) { console.error(e); }
+
+    function computeStatus(mission) {
+      if (!mission.subConcepts || !mission.subConcepts.length) return mission.status || 'todo';
+      return mission.subConcepts.every(s => s.status === 'done') ? 'done' : 'progress';
     }
+
+    async function init() {
+      const ids = ['traffic_light','intersection','construction','parking','level_crossing','s_curve','tunnel','lane'];
+      const results = await Promise.allSettled(
+        ids.map(id => fetch(`../data/${id}.json`).then(r=>r.json()).catch(()=>null))
+      );
+      const missions = results.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);
+
+      const container = document.getElementById('node-list');
+
+      const nodeCards = missions
+        .filter(m => m.category !== 'base')
+        .map(m => {
+          const status = computeStatus(m);
+          const label = status === 'done' ? '✅ 已完成' : '🚧 施工中';
+          const icon = MISSION_ICONS[m.id] || '❓';
+          const subDone = (m.subConcepts||[]).filter(s=>s.status==='done').length;
+          const subTotal = (m.subConcepts||[]).length;
+          const methods = (m.subConcepts||[]).map(s =>
+            `<li><strong>${s.name?.zh||s.id}</strong>：${s.status==='done'?'✅':'⬜'}</li>`
+          ).join('');
+          const outputs = (m.outputs||[]).map(o =>
+            `<li><code>${o.topic}</code>（${o.type}）— ${o.note||'—'}</li>`
+          ).join('');
+          return `
+            <div class="node-card ${status}" style="margin-bottom:1rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                <h3>${icon} ${m.name?.zh||m.id}</h3>
+                <span class="status ${status}">${label}</span>
+              </div>
+              <p style="font-size:0.9rem;color:var(--text-light);margin-bottom:0.5rem;">${m.description||''}</p>
+              ${subTotal>0?`<p style="font-size:0.85rem;margin-bottom:0.5rem;">子項目：${subDone}/${subTotal}</p>`:''}
+              ${methods?`<div style="margin-bottom:0.5rem;"><strong>實作細節：</strong><ul>${methods}</ul></div>`:''}
+              ${outputs?`<div><strong>輸出：</strong><ul>${outputs}</ul></div>`:''}
+            </div>`;
+        }).join('');
+
+      const fixedCards = `
+        <div class="node-card progress" style="margin-bottom:1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+            <h3>⚙️ core_node_controller</h3>
+            <span class="status progress">🚧 骨架完成</span>
+          </div>
+          <p style="font-size:0.9rem;color:var(--text-light);">roslaunch 動態調度骨架，接收 /mission 切換狀態</p>
+        </div>
+        <div class="node-card todo" style="margin-bottom:1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+            <h3>🎯 core_node_mission</h3>
+            <span class="status todo">📋 規劃中</span>
+          </div>
+          <p style="font-size:0.9rem;color:var(--text-light);">協調各偵測節點輸出（規劃中）</p>
+        </div>`;
+
+      container.innerHTML = nodeCards + fixedCards;
+    }
+
     init();
   </script>
 </body>
