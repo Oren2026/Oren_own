@@ -5,140 +5,96 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>比賽規則摘要 | TB3 2026</title>
   <link rel="stylesheet" href="../assets/css/style.css">
-  <style>
-    body { background: var(--bg); }
-    .doc-header {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      color: white;
-      padding: 2rem 1rem;
-      text-align: center;
-    }
-    .doc-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
-    .doc-header .subtitle { opacity: 0.85; }
-    .back-link { display: inline-block; margin-top: 1rem; color: white; text-decoration: none; opacity: 0.8; }
-    .back-link:hover { opacity: 1; text-decoration: underline; }
-    .doc-content { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-    .section { margin-bottom: 2rem; }
-    .section h2 { font-size: 1.2rem; color: var(--primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
-    table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
-    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
-    th { background: var(--bg); font-weight: 600; }
-    .track-flow { background: white; border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
-    .track-flow ol { padding-left: 1.5rem; }
-    .track-flow li { margin-bottom: 0.75rem; }
-    .track-flow li::marker { color: var(--primary); font-weight: bold; }
-    .mission-table { margin-top: 1rem; }
-    .mission-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
-    .mission-row:last-child { border-bottom: none; }
-    .mission-row .icon { font-size: 1.5rem; flex-shrink: 0; }
-    .mission-row .info { flex: 1; }
-    .mission-row .name { font-weight: 600; }
-    .mission-row .desc { font-size: 0.85rem; color: var(--text-light); margin-top: 0.2rem; }
-    .mission-row .status { flex-shrink: 0; font-size: 0.85rem; }
-  </style>
 </head>
 <body>
-  <header class="doc-header">
+  <header class="header" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
     <h1>📋 FIRA AutoRace 比賽規則摘要</h1>
     <p class="subtitle">從賽道圖分析得出 | 2026-03-26</p>
-    <a href="../index.html" class="back-link">← 返回儀表板</a>
+    <a href="../index.html" style="display:inline-block;margin-top:1rem;color:white;opacity:0.85;">← 返回儀表板</a>
   </header>
 
-  <main class="doc-content">
+  <main class="container">
     <div class="section">
-      <h2>🏁 賽道總覽</h2>
-      <p>賽道為封閉式迴圈設計，採逆時針方向行進。兩側有黃線（左側）與白線（右側）供車道跟隨使用。</p>
-    </div>
-
-    <div class="section">
-      <h2>📍 任務流程（依行進順序）</h2>
-      <div class="track-flow">
-        <ol>
-          <li><strong>起點線（紅線）</strong> — 機器人出發位置，方向朝左</li>
-          <li><strong>交通號誌</strong> — 起點左側三色號誌燈，測試紅燈停、綠燈行</li>
-          <li><strong>圓環/交叉路口</strong> — 藍色圓形箭頭標誌，決定出口方向；中央有障礙物需繞行</li>
-          <li><strong>減速帶/障礙區</strong> — 左下角三條青藍色橫向標記，觸發減速或繞行</li>
-          <li><strong>停車區</strong> — 底部中段岔路，白色虛線車格（3格），藍色 P 標誌入口</li>
-          <li><strong>窄路與平交道柵欄</strong> — 右下角路幅變窄，紅白相間柵欄，需確認柵欄升起才通過</li>
-          <li><strong>S 型彎道</strong> — 右側連續彎道，挑戰 PID 車道維持穩定性</li>
-          <li><strong>隧道/暗區</strong> — 右上方大面積黑色區域，低光源環境，需切換 LiDAR 里程計</li>
-          <li><strong>返回終點線</strong> — 繞完一圈回到起點</li>
-        </ol>
+      <div class="section-header"><span class="icon">🏁</span><h2>賽道總覽</h2></div>
+      <div class="section-content">
+        <p>賽道為封閉式迴圈設計，採逆時針方向行進。兩側有黃線（左側）與白線（右側）供車道跟隨使用。</p>
       </div>
     </div>
 
     <div class="section">
-      <h2>🎯 任務關卡</h2>
-      <div class="track-flow">
-        <div id="mission-list" style="padding: 0.5rem 0;">
-          <!-- JS renders here from data/*.json -->
+      <div class="section-header"><span class="icon">📍</span><h2>任務流程（依行進順序）</h2></div>
+      <div class="section-content">
+        <div class="track-flow">
+          <ol>
+            <li><strong>起點線（紅線）</strong> — 機器人出發位置，方向朝左</li>
+            <li><strong>交通號誌</strong> — 起點左側三色號誌燈，測試紅燈停、綠燈行</li>
+            <li><strong>圓環/交叉路口</strong> — 藍色圓形箭頭標誌，決定出口方向</li>
+            <li><strong>減速帶/障礙區</strong> — 左下角三條青藍色橫向標記</li>
+            <li><strong>停車區</strong> — 底部中段岔路，白色虛線車格，藍色 P 標誌入口</li>
+            <li><strong>窄路與平交道柵欄</strong> — 右下角紅白相間柵欄</li>
+            <li><strong>S 型彎道</strong> — 右側連續彎道</li>
+            <li><strong>隧道/暗區</strong> — 右上方大面積黑色區域</li>
+            <li><strong>返回終點線</strong> — 繞完一圈回到起點</li>
+          </ol>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <h2>🛣️ 地面標線規則</h2>
-      <table>
-        <thead><tr><th>顏色</th><th>位置</th><th>意義</th></tr></thead>
-        <tbody>
-          <tr><td><strong style="color:#eab308;">黃線</strong></td><td>行進方向左側</td><td>車道左邊界</td></tr>
-          <tr><td><strong style="color:#94a3b8;">白線</strong></td><td>行進方向右側</td><td>車道右邊界</td></tr>
-          <tr><td><strong style="color:#ef4444;">紅線</strong></td><td>起點/終點</td><td>起終點線</td></tr>
-        </tbody>
-      </table>
+      <div class="section-header"><span class="icon">🎯</span><h2>任務關卡</h2></div>
+      <div class="section-content">
+        <div class="mission-grid" id="mission-grid"></div>
+      </div>
     </div>
 
     <div class="section">
-      <h2>⚙️ 技術重點</h2>
-      <ul style="padding-left:1.5rem; line-height:1.8;">
-        <li><strong>HSV 顏色空間</strong>：紅/黃/綠燈號偵測，比 BGR 更穩定</li>
-        <li><strong>霍夫圓變換</strong>：在顏色遮罩中找圓形，確認是否為真實燈號</li>
-        <li><strong>透視轉換</strong>：將視角轉為 top-down，擠出消失點</li>
-        <li><strong>滑動視窗</strong>：找出左側黃線、右側白線，計算中心線</li>
-        <li><strong>PID 控制</strong>：偏離中心線輸出 steering angle</li>
-        <li><strong>光照變化應對</strong>：隧道區曝光補償可能失效，需有備援機制</li>
-      </ul>
+      <div class="section-header"><span class="icon">🛣️</span><h2>地面標線規則</h2></div>
+      <div class="section-content">
+        <table>
+          <thead><tr><th>顏色</th><th>位置</th><th>意義</th></tr></thead>
+          <tbody>
+            <tr><td><strong style="color:#eab308;">黃線</strong></td><td>行進方向左側</td><td>車道左邊界</td></tr>
+            <tr><td><strong style="color:#94a3b8;">白線</strong></td><td>行進方向右側</td><td>車道右邊界</td></tr>
+            <tr><td><strong style="color:#ef4444;">紅線</strong></td><td>起點/終點</td><td>起終點線</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div style="text-align:center; padding:2rem 0; color:var(--text-light); font-size:0.85rem;">
-      <p>最後更新：2026-03-26 | TB3 2026 FIRA AutoRace</p>
-      <p>由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
+    <div class="section">
+      <div class="section-header"><span class="icon">⚙️</span><h2>技術重點</h2></div>
+      <div class="section-content">
+        <ul style="padding-left:1.5rem;line-height:1.8;">
+          <li><strong>HSV 顏色空間</strong>：紅/黃/綠燈號偵測，比 BGR 更穩定</li>
+          <li><strong>霍夫圓變換</strong>：在顏色遮罩中找圓形，確認是否為真實燈號</li>
+          <li><strong>透視轉換</strong>：將視角轉為 top-down，擠出消失點</li>
+          <li><strong>滑動視窗</strong>：找出左側黃線、右側白線，計算中心線</li>
+          <li><strong>PID 控制</strong>：偏離中心線輸出 steering angle</li>
+          <li><strong>光照變化應對</strong>：隧道區曝光補償可能失效，需有備援機制</li>
+        </ul>
+      </div>
     </div>
   </main>
 
-  <script>
-    const MISSION_ICONS = {
-      traffic_light:'🚦',intersection:'↩️',construction:'🚧',
-      parking:'🅿️',level_crossing:'🚞',s_curve:'〰️',tunnel:'🚇',lane:'🚗'
-    };
-    const MISSION_NAMES = {
-      traffic_light:'交通號誌',intersection:'圓環/交叉路口',construction:'障礙/減速',
-      parking:'停車',level_crossing:'平交道柵欄',s_curve:'S 彎道',tunnel:'隧道/暗區',lane:'PID 循線'
-    };
+  <div class="modal" id="mission-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">—</h2>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
 
-    async function init() {
-      try {
-        const ids = ['traffic_light','intersection','construction','parking','level_crossing','s_curve','tunnel','lane'];
-        const missions = await Promise.allSettled(ids.map(id => fetch(`../data/${id}.json`).then(r=>r.json()).catch(()=>null)));
-        const list = document.getElementById('mission-list');
-        let html = '';
-        missions.filter(r=>r.status==='fulfilled'&&r.value).forEach(r=>{
-          const m = r.value;
-          if(m.category==='base') return;
-          const allDone = (m.subConcepts||[]).every(s=>s.status==='done');
-          const icon = MISSION_ICONS[m.id]||'❓';
-          const name = m.name?.zh || MISSION_NAMES[m.id] || m.id;
-          const label = allDone ? '✅ 已完成' : '🚧 施工中';
-          html += `<div class="mission-row">
-            <span class="icon">${icon}</span>
-            <div class="info"><div class="name">${name}</div><div class="desc">${m.description||''}</div></div>
-            <span class="status">${label}</span>
-          </div>`;
-        });
-        list.innerHTML = html || '<p style="color:var(--text-light);padding:1rem;">載入中...</p>';
-      } catch(e) { console.error(e); }
-    }
-    init();
+  <footer class="footer">
+    <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
+  </footer>
+
+  <script src="../assets/js/main.js"></script>
+  <script>
+    fetchAllMissions('../').then(function(missions) {
+      renderMissionGrid(missions, 'mission-grid');
+    });
   </script>
 </body>
 </html>

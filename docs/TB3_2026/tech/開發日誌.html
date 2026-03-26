@@ -10,43 +10,28 @@
   <header class="header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
     <h1>📝 開發日誌</h1>
     <p class="subtitle">TB3 2026 FIRA AutoRace</p>
-    <a href="../index.html" class="back-link" style="display:inline-block;margin-top:1rem;color:white;opacity:0.85;">← 返回儀表板</a>
+    <a href="../index.html" style="display:inline-block;margin-top:1rem;color:white;opacity:0.85;">← 返回儀表板</a>
   </header>
 
   <main class="container">
-
-    <!-- Mission Grid -->
     <div class="section">
-      <div class="section-header">
-        <span class="icon">🎯</span>
-        <h2>任務關卡進度</h2>
-      </div>
+      <div class="section-header"><span class="icon">🎯</span><h2>任務關卡進度</h2></div>
       <div class="section-content">
-        <div class="mission-grid" id="mission-grid">
-          <!-- JS renders from data/*.json -->
-        </div>
+        <div class="mission-grid" id="mission-grid"></div>
       </div>
     </div>
 
-    <!-- Timeline -->
     <div class="section">
-      <div class="section-header">
-        <span class="icon">📅</span>
-        <h2>開發時間線</h2>
-      </div>
-      <div class="section-content" id="timeline">
-        <!-- JS renders from data/*.json -->
-      </div>
+      <div class="section-header"><span class="icon">🛠️</span><h2>節點進度明細</h2></div>
+      <div class="section-content" id="timeline"></div>
     </div>
-
   </main>
 
-  <!-- Modal -->
   <div class="modal" id="mission-modal">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-title">—</h2>
-        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <button class="modal-close" onclick="closeModal()">×</button>
       </div>
       <div class="modal-body" id="modal-body"></div>
     </div>
@@ -56,104 +41,33 @@
     <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
   </footer>
 
+  <script src="../assets/js/main.js"></script>
   <script>
-    const MISSION_ICONS = {
-      traffic_light:'🚦',intersection:'↩️',construction:'🚧',
-      parking:'🅿️',level_crossing:'🚞',s_curve:'〰️',tunnel:'🚇',lane:'🚗'
-    };
-    const MISSION_IDS = [
-      'traffic_light','intersection','construction',
-      'parking','level_crossing','s_curve','tunnel','lane'
-    ];
-
-    function computeStatus(m) {
-      if (!m.subConcepts || !m.subConcepts.length) return m.status || 'todo';
-      return m.subConcepts.every(s => s.status === 'done') ? 'done' : 'todo';
-    }
-
-    async function init() {
-      const results = await Promise.allSettled(
-        MISSION_IDS.map(id => fetch(`../data/${id}.json`).then(r=>r.json()).catch(()=>null))
-      );
-      const missions = results.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);
-      const map = {};
-      missions.forEach(m => { map[m.id] = m; });
-
-      // Render mission grid
-      const grid = document.getElementById('mission-grid');
-      grid.innerHTML = missions
-        .filter(m => m.category !== 'base')
-        .sort((a,b) => MISSION_IDS.indexOf(a.id) - MISSION_IDS.indexOf(b.id))
-        .map(m => {
-          const s = computeStatus(m);
-          const icon = MISSION_ICONS[m.id] || '❓';
-          const label = s === 'done' ? '✅ 已完成' : '🚧 施工中';
-          return `<div class="mission-card ${s==='done'?'completed':'active'}" onclick="openModal('${m.id}')" style="cursor:pointer;">
-            <div class="mission-icon">${icon}</div>
-            <div class="mission-name">${m.name?.zh||m.id}</div>
-            <div class="mission-status">${label}</div>
-          </div>`;
-        }).join('');
-
-      // Render timeline (subConcepts breakdown)
-      const tl = document.getElementById('timeline');
+    fetchAllMissions('../').then(function(missions) {
+      renderMissionGrid(missions, 'mission-grid');
+      var tl = document.getElementById('timeline');
+      if (!tl) return;
       tl.innerHTML = missions
-        .filter(m => m.category !== 'base')
-        .sort((a,b) => MISSION_IDS.indexOf(a.id) - MISSION_IDS.indexOf(b.id))
-        .map(m => {
-          const s = computeStatus(m);
-          const icon = MISSION_ICONS[m.id] || '❓';
-          const label = s === 'done' ? '✅' : '🚧';
-          const subs = (m.subConcepts||[]).map(sub =>
-            `<li style="margin-bottom:0.3rem;">${sub.status==='done'?'✅':'⬜'} <strong>${sub.name?.zh||sub.id}</strong>：${sub.description||'—'}</li>`
-          ).join('');
-          return `<div class="node-card ${s}" style="margin-bottom:1rem;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-              <h3>${icon} ${m.name?.zh||m.id}</h3>
-              <span class="status ${s}">${label}</span>
-            </div>
-            ${m.description?`<p style="font-size:0.9rem;color:var(--text-light);margin-bottom:0.5rem;">${m.description}</p>`:''}
-            ${subs?`<details style="margin-top:0.5rem;"><summary style="cursor:pointer;font-size:0.85rem;color:var(--text-light);">子項目展開</summary><ul style="margin-top:0.5rem;padding-left:1.25rem;">${subs}</ul></details>`:''}
-          </div>`;
+        .filter(function(m) { return m.category !== 'base'; })
+        .sort(function(a, b) { return MISSION_IDS.indexOf(a.id) - MISSION_IDS.indexOf(b.id); })
+        .map(function(m) {
+          var s = computeMissionStatus(m);
+          var icon = MISSION_ICONS[m.id] || '❓';
+          var subDone = (m.subConcepts || []).filter(function(x) { return x.status === 'done'; }).length;
+          var subTotal = (m.subConcepts || []).length;
+          var subs = (m.subConcepts || []).map(function(sub) {
+            return '<li>' + (sub.status === 'done' ? '✅' : '⬜') + ' <strong>' + (sub.name && sub.name.zh || sub.id) + '</strong>：' + (sub.description || '—') + '</li>';
+          }).join('');
+          return '<div class="node-card ' + s + '" style="margin-bottom:1rem;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">' +
+            '<h3>' + icon + ' ' + (m.name && m.name.zh || m.id) + '</h3>' +
+            '<span class="status ' + s + '">' + (s === 'done' ? '✅ 已完成' : '🚧 施工中') + '</span></div>' +
+            '<p style="font-size:0.9rem;color:var(--text-light);margin-bottom:0.5rem;">' + (m.description || '') + '</p>' +
+            '<p style="font-size:0.8rem;color:var(--text-light);margin-bottom:0.5rem;">子項目：' + subDone + '/' + subTotal + '</p>' +
+            (subs ? '<details style="margin-top:0.5rem;"><summary style="cursor:pointer;font-size:0.85rem;">實作細節</summary><ul style="margin-top:0.5rem;padding-left:1.25rem;">' + subs + '</ul></details>' : '') +
+            '</div>';
         }).join('');
-    }
-
-    async function openModal(id) {
-      const results = await Promise.allSettled(
-        MISSION_IDS.map(i => fetch(`../data/${i}.json`).then(r=>r.json()).catch(()=>null))
-      );
-      const missions = results.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);
-      const m = missions.find(x=>x.id===id);
-      if (!m) return;
-
-      const s = computeStatus(m);
-      document.getElementById('modal-title').textContent = `${MISSION_ICONS[id]||''} ${m.name?.zh||id}`;
-      const body = document.getElementById('modal-body');
-      const subs = (m.subConcepts||[]).map(sub =>
-        `<li>${sub.status==='done'?'✅':'⬜'} <strong>${sub.name?.zh||sub.id}</strong>：${sub.description||'—'}</li>`
-      ).join('');
-      const outputs = (m.outputs||[]).map(o =>
-        `<li><code>${o.topic}</code>（${o.type}）— ${o.note||'—'}</li>`
-      ).join('');
-      body.innerHTML = `
-        <p><span class="modal-status ${s}">${s==='done'?'✅ 已完成':'🚧 施工中'}</span></p>
-        ${m.description?`<p style="margin-top:0.75rem;">${m.description}</p>`:''}
-        ${subs?`<div class="modal-section"><h3>實作細節</h3><ul>${subs}</ul></div>`:''}
-        ${outputs?`<div class="modal-section"><h3>輸出 Topic</h3><ul>${outputs}</ul></div>`:''}
-        ${(m.files||[]).length?`<div class="modal-section"><h3>對應檔案</h3><ul>${m.files.map(f=>`<li><code>${f}</code></li>`).join('')}</ul></div>`:''}
-      `;
-      document.getElementById('mission-modal').classList.add('open');
-    }
-
-    function closeModal() {
-      document.getElementById('mission-modal').classList.remove('open');
-    }
-
-    document.getElementById('mission-modal')?.addEventListener('click', e => {
-      if (e.target === document.getElementById('mission-modal')) closeModal();
     });
-
-    init();
   </script>
 </body>
 </html>

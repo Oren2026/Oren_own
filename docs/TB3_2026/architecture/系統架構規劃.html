@@ -10,60 +10,39 @@
   <header class="header" style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);">
     <h1>⚙️ 系統架構規劃</h1>
     <p class="subtitle">TurtleBot 3 × ROS × OpenCV | 2026-03-26</p>
-    <a href="../index.html" class="back-link" style="display:inline-block;margin-top:1rem;color:white;opacity:0.85;">← 返回儀表板</a>
+    <a href="../index.html" style="display:inline-block;margin-top:1rem;color:white;opacity:0.85;">← 返回儀表板</a>
   </header>
 
   <main class="container">
-
-    <!-- 核心架構 -->
     <div class="section">
-      <div class="section-header">
-        <span class="icon">🏗️</span>
-        <h2>核心架構</h2>
-      </div>
+      <div class="section-header"><span class="icon">🏗️</span><h2>核心架構</h2></div>
       <div class="section-content">
-        <div class="arch-box">core_node_controller（主控制器）
+        <pre class="arch-box">core_node_controller（主控制器）
   ├── roslaunch 動態啟閉各 detect_* 節點
   ├── 訂閱 /mission（狀態報告）
-  └── 任務混合層（core_node_mission）— 規劃中</div>
+  └── 任務混合層（core_node_mission）— 規劃中</pre>
       </div>
     </div>
 
-    <!-- 節點流程 Mission Grid -->
     <div class="section">
-      <div class="section-header">
-        <span class="icon">📦</span>
-        <h2>節點流程（點擊查看詳情）</h2>
-      </div>
+      <div class="section-header"><span class="icon">📦</span><h2>節點流程（點擊查看詳情）</h2></div>
       <div class="section-content">
-        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">
-          點擊任一節點可查看對應的 <code>detect_*.launch</code>、ROS Topic 及實作狀態。
-        </p>
-        <div class="mission-grid" id="node-grid">
-          <!-- JS renders from data/*.json -->
-        </div>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">點擊任一節點可查看對應的 <code>detect_*.launch</code>、ROS Topic 及實作狀態。</p>
+        <div class="mission-grid" id="node-grid"></div>
       </div>
     </div>
 
-    <!-- 節點詳細資訊 -->
     <div class="section">
-      <div class="section-header">
-        <span class="icon">🛠️</span>
-        <h2>節點詳解（讀取自 data/*.json）</h2>
-      </div>
-      <div class="section-content" id="node-detail">
-        <!-- JS renders from data/*.json -->
-      </div>
+      <div class="section-header"><span class="icon">🛠️</span><h2>節點詳解（讀取自 data/*.json）</h2></div>
+      <div class="section-content" id="node-detail"></div>
     </div>
-
   </main>
 
-  <!-- Modal -->
-  <div class="modal" id="node-modal">
+  <div class="modal" id="mission-modal">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-title">—</h2>
-        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <button class="modal-close" onclick="closeModal()">×</button>
       </div>
       <div class="modal-body" id="modal-body"></div>
     </div>
@@ -73,128 +52,46 @@
     <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
   </footer>
 
+  <script src="../assets/js/main.js"></script>
   <script>
-    const MISSION_ICONS = {
-      traffic_light:'🚦',intersection:'↩️',construction:'🚧',
-      parking:'🅿️',level_crossing:'🚞',s_curve:'〰️',tunnel:'🚇',lane:'🚗'
-    };
-    const MISSION_IDS = [
-      'traffic_light','intersection','construction',
-      'parking','level_crossing','s_curve','tunnel','lane'
-    ];
-
-    function computeStatus(m) {
-      if (!m.subConcepts || !m.subConcepts.length) return m.status || 'todo';
-      return m.subConcepts.every(s => s.status === 'done') ? 'done' : 'todo';
-    }
-
-    async function init() {
-      const results = await Promise.allSettled(
-        MISSION_IDS.map(id => fetch(`../data/${id}.json`).then(r=>r.json()).catch(()=>null))
-      );
-      const missions = results.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);
-      const map = {};
-      missions.forEach(m => { map[m.id] = m; });
-
-      // Mission grid (same style as index)
-      const grid = document.getElementById('node-grid');
-      grid.innerHTML = missions
-        .filter(m => m.category !== 'base')
-        .sort((a,b) => MISSION_IDS.indexOf(a.id) - MISSION_IDS.indexOf(b.id))
-        .map(m => {
-          const s = computeStatus(m);
-          const icon = MISSION_ICONS[m.id] || '❓';
-          const label = s === 'done' ? '✅ 已完成' : '🚧 施工中';
-          return `<div class="mission-card ${s==='done'?'completed':'active'}" onclick="openModal('${m.id}')" style="cursor:pointer;">
-            <div class="mission-icon">${icon}</div>
-            <div class="mission-name">${m.name?.zh||m.id}</div>
-            <div class="mission-status">${label}</div>
-          </div>`;
+    fetchAllMissions('../').then(function(missions) {
+      renderMissionGrid(missions, 'node-grid');
+      var detail = document.getElementById('node-detail');
+      if (!detail) return;
+      var html = missions
+        .filter(function(m) { return m.category !== 'base'; })
+        .sort(function(a, b) { return MISSION_IDS.indexOf(a.id) - MISSION_IDS.indexOf(b.id); })
+        .map(function(m) {
+          var s = computeMissionStatus(m);
+          var icon = MISSION_ICONS[m.id] || '❓';
+          var subDone = (m.subConcepts || []).filter(function(x) { return x.status === 'done'; }).length;
+          var subTotal = (m.subConcepts || []).length;
+          var subs = (m.subConcepts || []).map(function(sub) {
+            return '<li>' + (sub.status === 'done' ? '✅' : '⬜') + ' <strong>' + (sub.name && sub.name.zh || sub.id) + '</strong>：' + (sub.description || '') + '</li>';
+          }).join('');
+          var outputs = (m.outputs || []).map(function(o) {
+            return '<li><code>' + o.topic + '</code>（' + o.type + '）— ' + (o.note || '—') + '</li>';
+          }).join('');
+          return '<div class="node-card ' + s + '" style="margin-bottom:1rem;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">' +
+            '<h3>' + icon + ' ' + (m.name && m.name.zh || m.id) + '</h3>' +
+            '<span class="status ' + s + '">' + (s === 'done' ? '✅ 已完成' : '🚧 施工中') + '</span></div>' +
+            '<p style="font-size:0.9rem;color:var(--text-light);margin-bottom:0.5rem;">' + (m.description || '—') + '</p>' +
+            '<p style="font-size:0.8rem;color:var(--text-light);margin-bottom:0.5rem;">子項目：' + subDone + '/' + subTotal + '</p>' +
+            (subs ? '<details style="margin-top:0.5rem;"><summary style="cursor:pointer;font-size:0.85rem;">實作細節</summary><ul style="margin-top:0.5rem;padding-left:1.25rem;">' + subs + '</ul></details>' : '') +
+            (outputs ? '<details style="margin-top:0.5rem;"><summary style="cursor:pointer;font-size:0.85rem;">輸出 Topic</summary><ul style="margin-top:0.5rem;padding-left:1.25rem;">' + outputs + '</ul></details>' : '') +
+            '</div>';
         }).join('');
-
-      // Detailed node list
-      const detail = document.getElementById('node-detail');
-      const rows = missions
-        .filter(m => m.category !== 'base')
-        .sort((a,b) => MISSION_IDS.indexOf(a.id) - MISSION_IDS.indexOf(b.id))
-        .map(m => {
-          const s = computeStatus(m);
-          const icon = MISSION_ICONS[m.id] || '❓';
-          const subDone = (m.subConcepts||[]).filter(s=>s.status==='done').length;
-          const subTotal = (m.subConcepts||[]).length;
-          const subs = (m.subConcepts||[]).map(sub =>
-            `<li style="margin-bottom:0.3rem;">${sub.status==='done'?'✅':'⬜'} <strong>${sub.name?.zh||sub.id}</strong>：${sub.description||''}</li>`
-          ).join('');
-          const outputs = (m.outputs||[]).map(o =>
-            `<li><code>${o.topic}</code>（${o.type}）— ${o.note||'—'}</li>`
-          ).join('');
-          return `
-            <div class="node-card ${s}" style="margin-bottom:1rem;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-                <h3>${icon} ${m.name?.zh||m.id}</h3>
-                <span class="status ${s}">${s==='done'?'✅ 已完成':'🚧 施工中'}</span>
-              </div>
-              <p style="font-size:0.9rem;color:var(--text-light);margin-bottom:0.5rem;">${m.description||'—'}</p>
-              <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:0.5rem;">子項目：${subDone}/${subTotal}</p>
-              ${subs?`<details style="margin-top:0.5rem;"><summary style="cursor:pointer;font-size:0.85rem;">實作細節</summary><ul style="margin-top:0.5rem;padding-left:1.25rem;">${subs}</ul></details>`:''}
-              ${outputs?`<details style="margin-top:0.5rem;"><summary style="cursor:pointer;font-size:0.85rem;">輸出 Topic</summary><ul style="margin-top:0.5rem;padding-left:1.25rem;">${outputs}</ul></details>`:''}
-            </div>`;
-        }).join('');
-
-      const fixedRows = `
-        <div class="node-card progress" style="margin-bottom:1rem;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-            <h3>⚙️ core_node_controller</h3>
-            <span class="status progress">🚧 骨架完成</span>
-          </div>
-          <p style="font-size:0.9rem;color:var(--text-light);">roslaunch 動態調度骨架，接收 /mission 切換狀態</p>
-        </div>
-        <div class="node-card todo" style="margin-bottom:1rem;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-            <h3>🎯 core_node_mission</h3>
-            <span class="status todo">📋 規劃中</span>
-          </div>
-          <p style="font-size:0.9rem;color:var(--text-light);">協調各偵測節點輸出</p>
-        </div>`;
-
-      detail.innerHTML = rows + fixedRows;
-    }
-
-    async function openModal(id) {
-      const results = await Promise.allSettled(
-        MISSION_IDS.map(i => fetch(`../data/${i}.json`).then(r=>r.json()).catch(()=>null))
-      );
-      const missions = results.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);
-      const m = missions.find(x=>x.id===id);
-      if (!m) return;
-
-      const s = computeStatus(m);
-      document.getElementById('modal-title').textContent = `${MISSION_ICONS[id]||''} ${m.name?.zh||id}`;
-      const subs = (m.subConcepts||[]).map(sub =>
-        `<li>${sub.status==='done'?'✅':'⬜'} <strong>${sub.name?.zh||sub.id}</strong>：${sub.description||'—'}</li>`
-      ).join('');
-      const outputs = (m.outputs||[]).map(o =>
-        `<li><code>${o.topic}</code>（${o.type}）— ${o.note||'—'}</li>`
-      ).join('');
-      document.getElementById('modal-body').innerHTML = `
-        <p><span class="modal-status ${s}">${s==='done'?'✅ 已完成':'🚧 施工中'}</span></p>
-        <p style="margin-top:0.75rem;">${m.description||''}</p>
-        ${subs?`<div class="modal-section"><h3>實作細節</h3><ul>${subs}</ul></div>`:''}
-        ${outputs?`<div class="modal-section"><h3>輸出 Topic</h3><ul>${outputs}</ul></div>`:''}
-        ${(m.files||[]).length?`<div class="modal-section"><h3>對應檔案</h3><ul>${m.files.map(f=>`<li><code>${f}</code></li>`).join('')}</ul></div>`:''}
-      `;
-      document.getElementById('node-modal').classList.add('open');
-    }
-
-    function closeModal() {
-      document.getElementById('node-modal').classList.remove('open');
-    }
-
-    document.getElementById('node-modal')?.addEventListener('click', e => {
-      if (e.target === document.getElementById('node-modal')) closeModal();
+      html += '<div class="node-card progress" style="margin-bottom:1rem;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">' +
+        '<h3>⚙️ core_node_controller</h3><span class="status progress">🚧 骨架完成</span></div>' +
+        '<p style="font-size:0.9rem;color:var(--text-light);">roslaunch 動態調度骨架，接收 /mission 切換狀態</p></div>';
+      html += '<div class="node-card todo" style="margin-bottom:1rem;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">' +
+        '<h3>🎯 core_node_mission</h3><span class="status todo">📋 規劃中</span></div>' +
+        '<p style="font-size:0.9rem;color:var(--text-light);">協調各偵測節點輸出</p></div>';
+      detail.innerHTML = html;
     });
-
-    init();
   </script>
 </body>
 </html>

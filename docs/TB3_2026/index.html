@@ -14,132 +14,59 @@
   </header>
 
   <main class="container">
-    <!-- Info Cards -->
     <div class="info-grid">
-      <div class="info-card">
-        <h3>硬體平台</h3>
-        <div class="value">TurtleBot 3 Burger</div>
-      </div>
-      <div class="info-card">
-        <h3>控制系統</h3>
-        <div class="value">ROS</div>
-      </div>
-      <div class="info-card">
-        <h3>視覺處理</h3>
-        <div class="value">OpenCV + HSV</div>
-      </div>
-      <div class="info-card">
-        <h3>最後更新</h3>
-        <div class="value success" id="last-updated">載入中...</div>
+      <div class="info-card"><h3>硬體平台</h3><div class="value">TurtleBot 3 Burger</div></div>
+      <div class="info-card"><h3>控制系統</h3><div class="value">ROS</div></div>
+      <div class="info-card"><h3>視覺處理</h3><div class="value">OpenCV + HSV</div></div>
+      <div class="info-card"><h3>最後更新</h3><div class="value success" id="last-updated">載入中...</div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-header"><span class="icon">🎯</span><h2>任務關卡</h2></div>
+      <div class="section-content">
+        <div class="mission-grid" id="mission-grid"></div>
       </div>
     </div>
 
-    <!-- Mission Grid (JS renders here) -->
-    <section class="section">
-      <div class="section-header">
-        <span class="icon">🎯</span>
-        <h2>任務關卡</h2>
-      </div>
-      <div class="section-content">
-        <div class="mission-grid" id="mission-grid">
-          <!-- Rendered by JS from data/*.json -->
-          <div class="loading">載入中...</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Progress Bar -->
-    <section class="section">
-      <div class="section-header">
-        <span class="icon">📋</span>
-        <h2>開發進度</h2>
-      </div>
+    <div class="section">
+      <div class="section-header"><span class="icon">📋</span><h2>開發進度</h2></div>
       <div class="section-content">
         <div class="progress-container">
-          <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
-          </div>
-          <div class="progress-text">
-            <span></span>
-            <span id="progress-text">🚧 載入中...</span>
-          </div>
+          <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+          <div class="progress-text"><span></span><span id="progress-text">🚧 載入中...</span></div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- Folders -->
-    <section class="section">
-      <div class="section-header">
-        <span class="icon">📁</span>
-        <h2>專案資料</h2>
-      </div>
+    <div class="section">
+      <div class="section-header"><span class="icon">📁</span><h2>專案資料</h2></div>
       <div class="section-content">
         <ul class="folder-list">
-          <li class="folder-item">
-            <span class="folder-icon">📚</span>
-            <div class="folder-info">
-              <a href="research/比賽規則摘要.html" class="folder-name">研究資料</a>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">⚙️</span>
-            <div class="folder-info">
-              <a href="architecture/系統架構規劃.html" class="folder-name">系統架構</a>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">🆕</span>
-            <div class="folder-info">
-              <a href="updates/更新記錄.html" class="folder-name">更新內容</a>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">📝</span>
-            <div class="folder-info">
-              <a href="tech/開發日誌.html" class="folder-name">技術文檔</a>
-            </div>
-          </li>
+          <li class="folder-item"><span class="folder-icon">📚</span><div class="folder-info"><a href="research/比賽規則摘要.html" class="folder-name">研究資料</a></div></li>
+          <li class="folder-item"><span class="folder-icon">⚙️</span><div class="folder-info"><a href="architecture/系統架構規劃.html" class="folder-name">系統架構</a></div></li>
+          <li class="folder-item"><span class="folder-icon">🆕</span><div class="folder-info"><a href="updates/更新記錄.html" class="folder-name">更新內容</a></div></li>
+          <li class="folder-item"><span class="folder-icon">📝</span><div class="folder-info"><a href="tech/開發日誌.html" class="folder-name">技術文檔</a></div></li>
         </ul>
       </div>
-    </section>
+    </div>
 
-    <!-- Links -->
-    <section class="section">
-      <div class="section-header">
-        <span class="icon">🔗</span>
-        <h2>相關連結</h2>
-      </div>
+    <div class="section">
+      <div class="section-header"><span class="icon">🔗</span><h2>相關連結</h2></div>
       <div class="section-content">
         <ul class="folder-list">
-          <li class="folder-item">
-            <span class="folder-icon">🌐</span>
-            <div class="folder-info">
-              <a href="https://idminer.com.tw/product/autorace-ros-training/" target="_blank" class="folder-name">比賽資訊 ↗</a>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">🤖</span>
-            <div class="folder-info">
-              <a href="https://idminer.com.tw/" target="_blank" class="folder-name">硬件資訊 ↗</a>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">📂</span>
-            <div class="folder-info">
-              <a href="https://github.com/Oren2026/Oren_own/tree/main/docs/TB3_2026" target="_blank" class="folder-name">GitHub ↗</a>
-            </div>
-          </li>
+          <li class="folder-item"><span class="folder-icon">🌐</span><div class="folder-info"><a href="https://idminer.com.tw/product/autorace-ros-training/" target="_blank" class="folder-name">比賽資訊 ↗</a></div></li>
+          <li class="folder-item"><span class="folder-icon">🤖</span><div class="folder-info"><a href="https://idminer.com.tw/" target="_blank" class="folder-name">硬件資訊 ↗</a></div></li>
+          <li class="folder-item"><span class="folder-icon">📂</span><div class="folder-info"><a href="https://github.com/Oren2026/Oren_own/tree/main/docs/TB3_2026" target="_blank" class="folder-name">GitHub ↗</a></div></li>
         </ul>
       </div>
-    </section>
+    </div>
   </main>
 
-  <!-- Modal -->
   <div class="modal" id="mission-modal">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-title">—</h2>
-        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <button class="modal-close" onclick="closeModal()">×</button>
       </div>
       <div class="modal-body" id="modal-body"></div>
     </div>
@@ -147,14 +74,26 @@
 
   <footer class="footer">
     <p>TB3 2026 FIRA AutoRace | <span id="footer-updated">載入中...</span></p>
-    <p style="margin-top: 0.5rem;">由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+    <p style="margin-top:0.5rem;">由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
   </footer>
 
   <button class="refresh-btn" id="refresh-btn" title="重新整理">↻</button>
-
   <script src="assets/js/main.js"></script>
   <script>
-    document.getElementById('footer-updated').textContent = document.getElementById('last-updated').textContent;
+    initLastUpdated();
+    initRefreshButton();
+    fetchAllMissions('./').then(function(missions) {
+      renderMissionGrid(missions, 'mission-grid');
+      var done = missions.filter(function(m) { return m.category !== 'base' && computeMissionStatus(m) === 'done'; }).length;
+      var total = missions.filter(function(m) { return m.category !== 'base'; }).length;
+      var fill = document.getElementById('progress-fill');
+      var text = document.getElementById('progress-text');
+      if (fill && text) {
+        var pct = total > 0 ? Math.round(done / total * 100) : 0;
+        fill.style.width = pct + '%';
+        text.textContent = (done === total && total > 0) ? '✅ 全部完成（' + done + '/' + total + '）' : '🚧 施工中（' + done + '/' + total + ' 關卡完成）';
+      }
+    });
   </script>
 </body>
 </html>
