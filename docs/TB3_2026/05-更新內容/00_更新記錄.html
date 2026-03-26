@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>更新內容 | TB3 2026</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    body { background: var(--bg); }
+    .doc-header {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    .doc-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .doc-header .subtitle { opacity: 0.85; }
+    .back-link { display: inline-block; margin-top: 1rem; color: white; text-decoration: none; opacity: 0.8; }
+    .back-link:hover { opacity: 1; text-decoration: underline; }
+    .doc-content { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    .update-entry { background: white; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 1.5rem; overflow: hidden; }
+    .update-header { background: var(--bg); padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .update-header h2 { font-size: 1.1rem; }
+    .update-date { font-size: 0.85rem; color: var(--text-light); background: white; padding: 0.25rem 0.75rem; border-radius: 20px; border: 1px solid var(--border); }
+    .update-body { padding: 1.25rem; }
+    .update-body ul { padding-left: 1.25rem; }
+    .update-body li { margin-bottom: 0.4rem; line-height: 1.6; }
+    .tag { display: inline-block; font-size: 0.75rem; padding: 0.1rem 0.4rem; border-radius: 4px; }
+    .tag.sys { background: #dbeafe; color: #2563eb; }
+  </style>
+</head>
+<body>
+  <header class="doc-header">
+    <h1>🆕 TB3 2026 更新記錄</h1>
+    <p class="subtitle">所有異動歷史</p>
+    <a href="../index.html" class="back-link">← 返回儀表板</a>
+  </header>
+
+  <main class="doc-content">
+    <div class="update-entry">
+      <div class="update-header">
+        <h2>權重混合系統概念建立、文件轉HTML</h2>
+        <span class="update-date">2026-03-26</span>
+      </div>
+      <div class="update-body">
+        <p><span class="tag sys">系統更新</span></p>
+        <ul>
+          <li>提出 <code>core_node_mission</code> 協調層概念（細節待公布）</li>
+          <li><code>detect_traffic_light</code> 節點完成（HSV + 霍夫圓變換）</li>
+          <li><code>core_node_controller</code> 骨架建立（roslaunch 動態調度）</li>
+          <li>確認 5 項已完成：專案架構、規則研究、controller骨架、detect節點框架</li>
+          <li>文件從 .md 轉為 .html（共用品式）</li>
+          <li>index.html 極簡化（實驗新架構）</li>
+          <li>賽道圖分析：確認 8 個關卡（交通號誌、圓環、障礙、停車、平交道、S彎道、隧道）</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer style="text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.85rem;">
+    <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+  </footer>
+</body>
+</html>

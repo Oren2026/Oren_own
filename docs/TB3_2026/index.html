@@ -7,9 +7,8 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <!-- Header -->
   <header class="header">
-    <h1>🤖 TB3 2026 - FIRA AutoRace</h1>
+    <h1>🤖 TB3 2026</h1>
     <p class="subtitle">TurtleBot 3 Burger × ROS × OpenCV</p>
     <span class="badge">🎯 任務狀態機系統</span>
   </header>
@@ -35,154 +34,78 @@
       </div>
     </div>
 
-    <!-- Mission Section -->
+    <!-- Mission Grid -->
     <section class="section">
       <div class="section-header">
         <span class="icon">🎯</span>
-        <h2>任務關卡（賽道圖分析版）</h2>
+        <h2>任務關卡</h2>
       </div>
       <div class="section-content">
         <div class="mission-grid">
-          <div class="mission-card active">
+          <div class="mission-card completed">
             <div class="mission-icon">🚦</div>
             <div class="mission-name">交通號誌</div>
             <div class="mission-status">✅ 已完成</div>
           </div>
-          <div class="mission-card">
+          <div class="mission-card active">
             <div class="mission-icon">↩️</div>
             <div class="mission-name">圓環/交叉路口</div>
-            <div class="mission-status">🚧 框架</div>
+            <div class="mission-status">🚧 施工中</div>
           </div>
-          <div class="mission-card">
+          <div class="mission-card active">
             <div class="mission-icon">🚧</div>
             <div class="mission-name">障礙/減速</div>
-            <div class="mission-status">🚧 框架</div>
+            <div class="mission-status">🚧 施工中</div>
           </div>
-          <div class="mission-card">
+          <div class="mission-card active">
             <div class="mission-icon">🅿️</div>
             <div class="mission-name">停車</div>
-            <div class="mission-status">🚧 框架</div>
+            <div class="mission-status">🚧 施工中</div>
           </div>
-          <div class="mission-card">
+          <div class="mission-card active">
             <div class="mission-icon">🚞</div>
             <div class="mission-name">平交道柵欄</div>
-            <div class="mission-status">🚧 框架</div>
+            <div class="mission-status">🚧 施工中</div>
           </div>
-          <div class="mission-card">
+          <div class="mission-card active">
             <div class="mission-icon">〰️</div>
             <div class="mission-name">S 彎道</div>
-            <div class="mission-status">🚧 框架</div>
+            <div class="mission-status">🚧 施工中</div>
           </div>
-          <div class="mission-card">
+          <div class="mission-card active">
             <div class="mission-icon">🚇</div>
             <div class="mission-name">隧道/暗區</div>
-            <div class="mission-status">🚧 框架</div>
+            <div class="mission-status">🚧 施工中</div>
           </div>
-          <div class="mission-card">
+          <div class="mission-card active">
             <div class="mission-icon">🚗</div>
             <div class="mission-name">PID 循線（基底）</div>
-            <div class="mission-status">🚧 框架</div>
+            <div class="mission-status">🚧 施工中</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Architecture Section -->
-    <section class="section">
-      <div class="section-header">
-        <span class="icon">⚙️</span>
-        <h2>系統架構</h2>
-      </div>
-      <div class="section-content">
-        <div class="arch-diagram">core_node_controller（主控制器）
-  ├── roslaunch 動態啟閉各 detect_* 節點
-  ├── 訂閱 /mission（狀態報告）
-  │
-  └── 核心協調層（core_node_mission）— 規劃中
-
-detect_traffic_light（已完整實作）
-  ├── HSV 顏色過濾（紅/黃/綠）
-  ├── 霍夫圓變換確認燈號
-  ├── dynamic_reconfigure 動態調參
-  ├── 直接發 /cmd_vel + /mission
-  └── 狀態：✅ 已完成</div>
-      </div>
-    </section>
-
-    <!-- Progress Section -->
+    <!-- Progress Bar -->
     <section class="section">
       <div class="section-header">
         <span class="icon">📋</span>
         <h2>開發進度</h2>
       </div>
       <div class="section-content">
-        <ul class="task-list">
-          <li class="task-item">
-            <span class="check done">✓</span>
-            <span class="task-text done">建立專案資料夾架構</span>
-          </li>
-          <li class="task-item">
-            <span class="check done">✓</span>
-            <span class="task-text done">研究 FIRA AutoRace 官方規則（賽道圖分析）</span>
-          </li>
-          <li class="task-item">
-            <span class="check done">✓</span>
-            <span class="task-text done">core_node_controller 骨架建立</span>
-          </li>
-          <li class="task-item">
-            <span class="check done">✓</span>
-            <span class="task-text done">detect_traffic_light 節點完成</span>
-          </li>
-          <li class="task-item">
-            <span class="check done">✓</span>
-            <span class="task-text done">detect_* 節點框架結構確認</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">core_node_mission 協調層（規劃中）</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">detect_intersection 完成</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">detect_construction 完成</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">detect_parking 完成</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">detect_level 完成</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">detect_tunnel 完成</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">任務堆疊整合測試</span>
-          </li>
-          <li class="task-item">
-            <span class="check pending"></span>
-            <span class="task-text">完整流程測試</span>
-          </li>
-        </ul>
         <div class="progress-container">
           <div class="progress-bar">
             <div class="progress-fill" id="progress-fill" style="width: 38%"></div>
           </div>
           <div class="progress-text">
-            <span>進度</span>
-            <span id="progress-text">5/13 完成</span>
+            <span></span>
+            <span id="progress-text">🚧 施工中（1/8 關卡完成）</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Folders Section -->
+    <!-- Folders -->
     <section class="section">
       <div class="section-header">
         <span class="icon">📁</span>
@@ -194,35 +117,37 @@ detect_traffic_light（已完整實作）
             <span class="folder-icon">📚</span>
             <div class="folder-info">
               <a href="01-研究資料/00_比賽規則摘要.html" class="folder-name">01-研究資料</a>
-              <p class="folder-desc">FIRA AutoRace 規則、賽道圖分析</p>
             </div>
           </li>
           <li class="folder-item">
             <span class="folder-icon">⚙️</span>
             <div class="folder-info">
               <a href="02-系統架構/00_系統架構規劃.html" class="folder-name">02-系統架構</a>
-              <p class="folder-desc">節點結構、系統架構規劃</p>
             </div>
           </li>
           <li class="folder-item">
             <span class="folder-icon">📦</span>
             <div class="folder-info">
               <span class="folder-name">03-採購清單</span>
-              <p class="folder-desc">材料採購（待更新）</p>
+            </div>
+          </li>
+          <li class="folder-item">
+            <span class="folder-icon">🆕</span>
+            <div class="folder-info">
+              <a href="05-更新內容/00_更新記錄.html" class="folder-name">04-更新內容</a>
             </div>
           </li>
           <li class="folder-item">
             <span class="folder-icon">📝</span>
             <div class="folder-info">
-              <a href="04-技術文檔/00_開發日誌.html" class="folder-name">04-技術文檔</a>
-              <p class="folder-desc">開發日誌、技術筆記</p>
+              <a href="04-技術文檔/00_開發日誌.html" class="folder-name">05-技術文檔</a>
             </div>
           </li>
         </ul>
       </div>
     </section>
 
-    <!-- Links Section -->
+    <!-- Links -->
     <section class="section">
       <div class="section-header">
         <span class="icon">🔗</span>
@@ -234,28 +159,18 @@ detect_traffic_light（已完整實作）
             <span class="folder-icon">🌐</span>
             <div class="folder-info">
               <a href="http://www.fira.net/" target="_blank" class="folder-name">FIRA 官網 ↗</a>
-              <p class="folder-desc">FIRA 世界機器人大賽</p>
             </div>
           </li>
           <li class="folder-item">
             <span class="folder-icon">🤖</span>
             <div class="folder-info">
               <a href="https://www.turtlebot.com/" target="_blank" class="folder-name">TurtleBot 3 官網 ↗</a>
-              <p class="folder-desc">硬體平台資訊</p>
-            </div>
-          </li>
-          <li class="folder-item">
-            <span class="folder-icon">🔧</span>
-            <div class="folder-info">
-              <a href="https://www.ros.org/" target="_blank" class="folder-name">ROS 官網 ↗</a>
-              <p class="folder-desc">機器人作業系統</p>
             </div>
           </li>
           <li class="folder-item">
             <span class="folder-icon">📂</span>
             <div class="folder-info">
-              <a href="https://github.com/Oren2026/Oren_own/tree/main/docs/TB3_2026" target="_blank" class="folder-name">GitHub 原始碼 ↗</a>
-              <p class="folder-desc">查看所有原始文件</p>
+              <a href="https://github.com/Oren2026/Oren_own/tree/main/docs/TB3_2026" target="_blank" class="folder-name">GitHub ↗</a>
             </div>
           </li>
         </ul>
@@ -264,13 +179,14 @@ detect_traffic_light（已完整實作）
   </main>
 
   <footer class="footer">
-    <p>TB3 2026 FIRA AutoRace | 最後更新：<span id="footer-updated">載入中...</span></p>
+    <p>TB3 2026 FIRA AutoRace | <span id="footer-updated">載入中...</span></p>
     <p style="margin-top: 0.5rem;">由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
   </footer>
 
-  <!-- Refresh Button -->
   <button class="refresh-btn" id="refresh-btn" title="重新整理">↻</button>
-
   <script src="assets/js/main.js"></script>
+  <script>
+    document.getElementById('footer-updated').textContent = document.getElementById('last-updated').textContent;
+  </script>
 </body>
 </html>
