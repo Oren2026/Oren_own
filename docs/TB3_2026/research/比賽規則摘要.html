@@ -5,38 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>比賽規則摘要 | TB3 2026</title>
   <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    .track-img { width: 100%; max-width: 800px; display: block; margin: 0 auto 1.5rem; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+    .mission-flow { list-style: none; padding: 0; counter-reset: step; }
+    .mission-flow li { counter-increment: step; padding: 0.75rem 0.75rem 0.75rem 3rem; border-left: 3px solid var(--border); margin-bottom: 0.5rem; position: relative; font-size: 0.95rem; }
+    .mission-flow li::before { content: counter(step); position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
+    .mission-flow li:first-child { border-left-color: var(--danger); }
+    .mission-flow li:first-child::before { background: var(--danger); }
+    .mission-flow .miss-name { font-weight: 600; margin-right: 0.5rem; }
+    .mission-flow .miss-icon { margin-right: 0.25rem; }
+    .track-note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 1rem; font-size: 0.9rem; margin-top: 1rem; }
+  </style>
 </head>
 <body>
   <header class="header" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
     <h1>📋 FIRA AutoRace 比賽規則摘要</h1>
-    <p class="subtitle">從賽道圖分析得出 | 2026-03-26</p>
+    <p class="subtitle">2026-03-26</p>
     <a href="../index.html" style="display:inline-block;margin-top:1rem;color:white;opacity:0.85;">← 返回儀表板</a>
   </header>
 
   <main class="container">
 
     <div class="section">
-      <div class="section-header"><span class="icon">🏁</span><h2>賽道總覽</h2></div>
+      <div class="section-header"><span class="icon">🗺️</span><h2>賽道圖</h2></div>
       <div class="section-content">
-        <p>賽道為封閉式迴圈設計，採逆時針方向行進。兩側有黃線（左側）與白線（右側）供車道跟隨使用。</p>
+        <img src="../assets/images/track-map.jpg" alt="FIRA AutoRace 賽道圖" class="track-img">
+        <p style="text-align:center;font-size:0.85rem;color:var(--text-light);">▲ 終點線位於上方紅色實線。行進方向：逆時針。</p>
       </div>
     </div>
 
     <div class="section">
-      <div class="section-header"><span class="icon">📍</span><h2>任務流程（依行進順序）</h2></div>
+      <div class="section-header"><span class="icon">🏁</span><h2>逆時針行進流程</h2></div>
       <div class="section-content">
-        <div class="track-flow">
-          <ol>
-            <li><strong>起點線（紅線）</strong> — 機器人出發位置，方向朝左</li>
-            <li><strong>交通號誌</strong> — 起點左側三色號誌燈，測試紅燈停、綠燈行</li>
-            <li><strong>圓環/交叉路口</strong> — 藍色圓形箭頭標誌，決定出口方向</li>
-            <li><strong>減速帶/障礙區</strong> — 左下角三條青藍色橫向標記</li>
-            <li><strong>停車區</strong> — 底部中段岔路，白色虛線車格，藍色 P 標誌入口</li>
-            <li><strong>窄路與平交道柵欄</strong> — 右下角紅白相間柵欄</li>
-            <li><strong>S 型彎道</strong> — 右側連續彎道</li>
-            <li><strong>隧道/暗區</strong> — 右上方大面積黑色區域</li>
-            <li><strong>返回終點線</strong> — 繞完一圈回到起點</li>
-          </ol>
+        <p style="margin-bottom:1rem;">依逆時針方向，機器人從上方紅線起點出發，依次經過：</p>
+        <ol class="mission-flow">
+          <li><span class="miss-name">🚦 交通號誌</span>起點左側三色號誌燈，紅燈停、綠燈行</li>
+          <li><span class="miss-name">🚧 障礙區</span>左側三個紅色三角障礙標誌</li>
+          <li><span class="miss-name">〰️ S 型彎道</span>左側連續彎道，跟隨黃白車道線行進</li>
+          <li><span class="miss-name">🅿️ 停車區</span>底部岔路，白色虛線車格，藍色 P 標誌入口，定點停入</li>
+          <li><span class="miss-name">↩️ 圓環/路口</span>藍色圓形箭頭標誌，識別方向並決策出口</li>
+          <li><span class="miss-name">🚞 平交道</span>右下角紅白相間柵欄，識別並等待通行</li>
+          <li><span class="miss-name">〰️ M 型急彎</span>右下角鋸齒狀 M 型區域，狹窄彎道控制</li>
+          <li><span class="miss-name">🚇 隧道</span>右上方大面積黑色區域，光照補償失效時需備援機制</li>
+          <li><span class="miss-name">🏁 返回終點線</span>繞完一圈回到上方紅線</li>
+        </ol>
+        <div class="track-note">
+          ⚠️ 賽道中央左側有一個內部迴圈（禁制標誌＋方向箭頭），為高階關卡，基礎版本先繞外圈即可。
         </div>
       </div>
     </div>
@@ -49,7 +63,8 @@
           <tbody>
             <tr><td><strong style="color:#eab308;">黃線</strong></td><td>行進方向左側</td><td>車道左邊界</td></tr>
             <tr><td><strong style="color:#94a3b8;">白線</strong></td><td>行進方向右側</td><td>車道右邊界</td></tr>
-            <tr><td><strong style="color:#ef4444;">紅線</strong></td><td>起點/終點</td><td>起終點線</td></tr>
+            <tr><td><strong style="color:#ef4444;">紅線</strong></td><td>起點/終點（上方）</td><td>起終點線</td></tr>
+            <tr><td style="color:#06b6d4;">青藍色條</td><td>左側垂直路段</td><td>減速帶/斑馬線</td></tr>
           </tbody>
         </table>
       </div>
@@ -63,10 +78,11 @@
           <tbody>
             <tr><td><strong>HSV 顏色空間</strong></td><td>紅/黃/綠燈號偵測，比 BGR 更穩定</td></tr>
             <tr><td><strong>霍夫圓變換</strong></td><td>在顏色遮罩中找圓形，確認是否為真實燈號</td></tr>
-            <tr><td><strong>透視轉換</strong></td><td>將視角轉為 top-down，擠出消失點</td></tr>
-            <tr><td><strong>滑動視窗</strong></td><td>找出左側黃線、右側白線，計算中心線</td></tr>
+            <tr><td><strong>透視轉換 (Perspective Transform)</strong></td><td>將視角轉為 top-down，擠出消失點</td></tr>
+            <tr><td><strong>滑動視窗 (Sliding Window)</strong></td><td>找出左側黃線、右側白線，計算中心線</td></tr>
             <tr><td><strong>PID 控制</strong></td><td>偏離中心線輸出 steering angle</td></tr>
-            <tr><td><strong>光照補償</strong></td><td>隧道區曝光補償，須有備援機制</td></tr>
+            <tr><td><strong>光源補償</strong></td><td>隧道區曝光補償，須有備援機制</td></tr>
+            <tr><td><strong>障礙物偵測 (Haar / YOLO)</strong></td><td>紅色三角標誌辨識</td></tr>
           </tbody>
         </table>
       </div>
@@ -75,16 +91,16 @@
     <div class="section">
       <div class="section-header"><span class="icon">🎯</span><h2>各關卡說明</h2></div>
       <div class="section-content">
-        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">詳細實作狀態請見 <a href="../architecture/系統架構規劃.html">系統架構</a> 頁面。</p>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">詳細實作狀態見 <a href="../architecture/系統架構規劃.html">系統架構</a> 頁面。</p>
         <div class="info-grid">
           <div class="info-card"><h3>🚦</h3><div class="value">交通號誌</div><div class="desc">辨識紅/黃/綠燈，控制停與行</div></div>
-          <div class="info-card"><h3>↩️</h3><div class="value">圓環路口</div><div class="desc">識別方向箭頭，決策出口</div></div>
-          <div class="info-card"><h3>🚧</h3><div class="value">障礙區</div><div class="desc">檢測障礙物，減速或繞行</div></div>
-          <div class="info-card"><h3>🅿️</h3><div class="value">停車區</div><div class="desc">定點停入車格</div></div>
-          <div class="info-card"><h3>🚞</h3><div class="value">平交道</div><div class="desc">識別柵欄與火車，等待通行</div></div>
-          <div class="info-card"><h3>〰️</h3><div class="value">S 型彎道</div><div class="desc">跟隨彎道中心線行進</div></div>
-          <div class="info-card"><h3>🚇</h3><div class="value">隧道</div><div class="desc">暗區行駛，光照補償失效時備援</div></div>
-          <div class="info-card"><h3>🚗</h3><div class="value">車道跟隨</div><div class="desc">基礎車道線偵測 + PID 控制</div></div>
+          <div class="info-card"><h3>〰️</h3><div class="value">障礙區</div><div class="desc">三個紅色三角標誌，分散在左側與隧道內</div></div>
+          <div class="info-card"><h3>〰️</h3><div class="value">S/M 型彎道</div><div class="desc">狹窄彎道跟車道線行進</div></div>
+          <div class="info-card"><h3>🅿️</h3><div class="value">停車區</div><div class="desc">底部岔路，定點停入雙車格</div></div>
+          <div class="info-card"><h3>↩️</h3><div class="value">圓環路口</div><div class="desc">藍色圓形箭頭，識別方向決策出口</div></div>
+          <div class="info-card"><h3>🚞</h3><div class="value">平交道</div><div class="desc">右下角紅白柵欄，等待通行</div></div>
+          <div class="info-card"><h3>🚇</h3><div class="value">隧道</div><div class="desc">右上黑色區域，光照失效時備援</div></div>
+          <div class="info-card"><h3>🚗</h3><div class="value">車道跟隨</div><div class="desc">基礎：黃白線偵測 + PID 控制</div></div>
         </div>
       </div>
     </div>
