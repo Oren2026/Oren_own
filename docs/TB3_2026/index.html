@@ -5,6 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TB3 2026 | FIRA AutoRace</title>
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal.open { display: flex; }
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h2 { font-size: 1.2rem; margin: 0; }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+      padding: 0;
+      line-height: 1;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 1.5rem; }
+    .modal-body h3 { font-size: 1rem; color: var(--primary); margin-bottom: 0.75rem; }
+    .modal-body p, .modal-body li { line-height: 1.7; margin-bottom: 0.5rem; }
+    .modal-body ul { padding-left: 1.25rem; }
+    .modal-section { margin-bottom: 1.5rem; }
+    .modal-code {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .modal-status { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.8rem; }
+    .modal-status.done { background: #d1fae5; color: #059669; }
+    .modal-status.todo { background: #f1f5f9; color: #64748b; }
+  </style>
 </head>
 <body>
   <header class="header">
@@ -42,42 +102,44 @@
       </div>
       <div class="section-content">
         <div class="mission-grid">
-          <div class="mission-card completed">
+          <!-- 交通號誌：已完成 -->
+          <div class="mission-card completed" onclick="openModal('traffic_light')" style="cursor:pointer;">
             <div class="mission-icon">🚦</div>
             <div class="mission-name">交通號誌</div>
             <div class="mission-status">✅ 已完成</div>
           </div>
-          <div class="mission-card active">
+          <!-- 其餘：施工中 -->
+          <div class="mission-card active" onclick="openModal('intersection')" style="cursor:pointer;">
             <div class="mission-icon">↩️</div>
             <div class="mission-name">圓環/交叉路口</div>
             <div class="mission-status">🚧 施工中</div>
           </div>
-          <div class="mission-card active">
+          <div class="mission-card active" onclick="openModal('construction')" style="cursor:pointer;">
             <div class="mission-icon">🚧</div>
             <div class="mission-name">障礙/減速</div>
             <div class="mission-status">🚧 施工中</div>
           </div>
-          <div class="mission-card active">
+          <div class="mission-card active" onclick="openModal('parking')" style="cursor:pointer;">
             <div class="mission-icon">🅿️</div>
             <div class="mission-name">停車</div>
             <div class="mission-status">🚧 施工中</div>
           </div>
-          <div class="mission-card active">
+          <div class="mission-card active" onclick="openModal('level')" style="cursor:pointer;">
             <div class="mission-icon">🚞</div>
             <div class="mission-name">平交道柵欄</div>
             <div class="mission-status">🚧 施工中</div>
           </div>
-          <div class="mission-card active">
+          <div class="mission-card active" onclick="openModal('scurve')" style="cursor:pointer;">
             <div class="mission-icon">〰️</div>
             <div class="mission-name">S 彎道</div>
             <div class="mission-status">🚧 施工中</div>
           </div>
-          <div class="mission-card active">
+          <div class="mission-card active" onclick="openModal('tunnel')" style="cursor:pointer;">
             <div class="mission-icon">🚇</div>
             <div class="mission-name">隧道/暗區</div>
             <div class="mission-status">🚧 施工中</div>
           </div>
-          <div class="mission-card active">
+          <div class="mission-card active" onclick="openModal('lane')" style="cursor:pointer;">
             <div class="mission-icon">🚗</div>
             <div class="mission-name">PID 循線（基底）</div>
             <div class="mission-status">🚧 施工中</div>
@@ -178,15 +240,108 @@
     </section>
   </main>
 
+  <!-- Modal -->
+  <div class="modal" id="mission-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">🚦 交通號誌</h2>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- 動態填入 -->
+      </div>
+    </div>
+  </div>
+
   <footer class="footer">
     <p>TB3 2026 FIRA AutoRace | <span id="footer-updated">載入中...</span></p>
     <p style="margin-top: 0.5rem;">由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
   </footer>
 
   <button class="refresh-btn" id="refresh-btn" title="重新整理">↻</button>
+
   <script src="assets/js/main.js"></script>
   <script>
     document.getElementById('footer-updated').textContent = document.getElementById('last-updated').textContent;
+
+    // Modal Data
+    const missions = {
+      traffic_light: {
+        title: "🚦 交通號誌",
+        status: "done",
+        statusLabel: "✅ 已完成",
+        sections: [
+          {
+            heading: "任務說明",
+            content: "使用 HSV 顏色空間過濾辨識紅/黃/綠燈號，搭配霍夫圓變換（Hough Circle Transform）確認是否為真實燈泡。綠燈時直接發送 /cmd_vel 前進，紅燈時發送 /mission 切換下一關。"
+          },
+          {
+            heading: "技術細節",
+            content: null,
+            list: [
+              "HSV 顏色閾值（可透過 dynamic_reconfigure 動態調整）",
+              "霍夫圓變換（HoughCircle）過濾雜訊",
+              "三色輪流偵測，count 機制確認燈號穩定",
+              "綠燈 count ≥ 5 → 發 /mission(Intersection) + /cmd_vel 前進"
+            ]
+          },
+          {
+            heading: "輸出 Topic",
+            content: null,
+            list: [
+              "/cmd_vel（Twist）— 直接控車",
+              "/mission（UInt8）— mission 切換",
+              "/detect/traffic_light/compressed（CompressedImage）— 視覺化"
+            ]
+          },
+          {
+            heading: "核心程式碼概念",
+            code: "fnMaskRedTrafficLight()   → HSV 二值化遮罩\nfnMaskYellowTrafficLight()\nfnMaskGreenTrafficLight()\nfnFindCircleOfTrafficLight(mask, color) → HoughCircle\nfnFindTrafficLight() → 調度三色偵測"
+          }
+        ]
+      },
+      intersection: { title: "↩️ 圓環/交叉路口", status: "todo", statusLabel: "🚧 施工中" },
+      construction: { title: "🚧 障礙/減速", status: "todo", statusLabel: "🚧 施工中" },
+      parking: { title: "🅿️ 停車", status: "todo", statusLabel: "🚧 施工中" },
+      level: { title: "🚞 平交道柵欄", status: "todo", statusLabel: "🚧 施工中" },
+      scurve: { title: "〰️ S 彎道", status: "todo", statusLabel: "🚧 施工中" },
+      tunnel: { title: "🚇 隧道/暗區", status: "todo", statusLabel: "🚧 施工中" },
+      lane: { title: "🚗 PID 循線（基底）", status: "todo", statusLabel: "🚧 施工中" }
+    };
+
+    function openModal(id) {
+      const m = missions[id];
+      if (!m) return;
+
+      document.getElementById('modal-title').textContent = m.title;
+
+      const body = document.getElementById('modal-body');
+      if (m.status === 'todo') {
+        body.innerHTML = `<p><span class="modal-status todo">${m.statusLabel}</span></p><p style="margin-top:1rem; color:var(--text-light);">此關卡內容尚未更新，請等待後續傳入程式碼。</p>`;
+      } else {
+        let html = `<p><span class="modal-status done">${m.statusLabel}</span></p>`;
+        m.sections.forEach(s => {
+          html += `<div class="modal-section"><h3>${s.heading}</h3>`;
+          if (s.content) html += `<p>${s.content}</p>`;
+          if (s.list) {
+            html += `<ul>${s.list.map(i => `<li>${i}</li>`).join('')}</ul>`;
+          }
+          if (s.code) html += `<pre class="modal-code">${s.code}</pre>`;
+          html += `</div>`;
+        });
+        body.innerHTML = html;
+      }
+
+      document.getElementById('mission-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('mission-modal').classList.remove('open');
+    }
+
+    document.getElementById('mission-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
   </script>
 </body>
 </html>
