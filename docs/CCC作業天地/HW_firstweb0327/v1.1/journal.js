@@ -1,18 +1,17 @@
 /**
  * 網頁日誌系統 v1.1 - journal.js
- * 新增：使用者註冊 / 登入系統
  * 使用 sql.js（WASM SQLite）+ IndexedDB 持久化
  * 密碼使用 SHA-256 雜湊（Web Crypto API）
  */
 
 let db = null;
-let currentUser = null;      // 目前登入的使用者
+let currentUser = null;
 let currentViewId = null;
 let DB_KEY = 'journal_sqlite_db_v1_auth';
 const SESSION_KEY = 'journal_current_user';
 
 // ─────────────────────────────────────────
-// SHA-256 雜湊（密碼用）
+// SHA-256（密碼用 Web Crypto API）
 // ─────────────────────────────────────────
 async function sha256(text) {
   const encoder = new TextEncoder();
@@ -26,10 +25,13 @@ async function sha256(text) {
 // Init
 // ─────────────────────────────────────────
 async function init() {
-  const status = document.getElementById('db-status');
+  const statusEl = document.getElementById('db-status');
+  const authSection = document.getElementById('auth-section');
+  const appSection = document.getElementById('app-section');
+
   try {
-    status.textContent = '⏳ 初始化中...';
-    status.className = 'saving';
+    statusEl.textContent = '⏳ 初始化中...';
+    statusEl.className = 'saving';
 
     const SQL = await initSqlJs({
       locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}`
@@ -37,7 +39,7 @@ async function init() {
 
     db = await loadDB(SQL);
 
-    // 建立資料表
+    // 建立 tables
     db.run(`
       CREATE TABLE IF NOT EXISTS users (
         id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -64,99 +66,65 @@ async function init() {
     // 檢查 session
     const savedUser = sessionStorage.getItem(SESSION_KEY);
     if (savedUser) {
-      const user = JSON.parse(savedUser);
-      // 驗證使用者仍存在於 DB
-      const stmt = db.prepare('SELECT * FROM users WHERE id = ? AND username = ?');
-      stmt.bind([user.id, user.username]);
-      if (stmt.step()) {
-        currentUser = stmt.getAsObject();
-        renderApp(); // 已登入，直接顯示應用
-      } else {
+      try {
+        const user = JSON.parse(savedUser);
+        const stmt = db.prepare('SELECT * FROM users WHERE id = ?');
+        stmt.bind([user.id]);
+        if (stmt.step()) {
+          currentUser = stmt.getAsObject();
+          authSection.style.display = 'none';
+          appSection.style.display = '';
+          document.getElementById('user-display').style.display = '';
+          document.getElementById('user-display').textContent = `👤 ${escHtml(currentUser.username)}`;
+          document.getElementById('btn-logout').style.display = '';
+          renderList();
+        } else {
+          sessionStorage.removeItem(SESSION_KEY);
+          showAuth();
+        }
+        stmt.free();
+      } catch (e) {
         sessionStorage.removeItem(SESSION_KEY);
-        showAuth();  // session 無效，顯示登入
+        showAuth();
       }
-      stmt.free();
     } else {
-      showAuth(); // 未登入，顯示登入
+      showAuth();
     }
 
-    status.textContent = '✅ 已載入';
-    status.className = 'saved';
+    statusEl.textContent = '✅ 已載入';
+    statusEl.className = 'saved';
   } catch (err) {
-    status.textContent = '❌ 初始化失敗';
-    status.className = '';
-    console.error('DB init error:', err);
+    console.error('Init error:', err);
+    statusEl.textContent = '❌ 初始化失敗';
+    statusEl.className = '';
+    // 即使失敗也顯示登入畫面
+    authSection.style.display = '';
+    appSection.style.display = 'none';
   }
 }
 
 // ─────────────────────────────────────────
-// IndexedDB 持久化
-// ─────────────────────────────────────────
-function idbKeyVal(key, val) {
-  return new Promise((resolve, reject) => {
-    const openReq = indexedDB.open('journalDB', 1);
-    openReq.onupgradeneeded = e => {
-      e.target.result.createObjectStore('store');
-    };
-    const handleReq = (req, mode) => {
-      const t = openReq.result.transaction('store', mode);
-      const s = t.objectStore('store');
-      const r = val === undefined ? s.get(key) : s.put(val, key);
-      r.onsuccess = () => resolve(r.result);
-      r.onerror = () => reject(r.error);
-    };
-    openReq.onsuccess = () => {
-      if (val === undefined) {
-        handleReq(openReq, 'readonly');
-      } else {
-        handleReq(openReq, 'readwrite');
-      }
-    };
-    openReq.onerror = () => reject(openReq.error);
-  });
-}
-
-async function loadDB(SQL) {
-  try {
-    const saved = await idbKeyVal(DB_KEY);
-    if (saved) return new SQL.Database(new Uint8Array(saved));
-  } catch (e) { /* ignore */ }
-  return new SQL.Database();
-}
-
-async function saveDB() {
-  if (!db) return;
-  const status = document.getElementById('db-status');
-  status.textContent = '💾 儲存中...';
-  status.className = 'saving';
-  try {
-    const data = db.export();
-    await idbKeyVal(DB_KEY, Array.from(data));
-    status.textContent = '✅ 已儲存';
-    status.className = 'saved';
-  } catch (e) {
-    status.textContent = '❌ 儲存失敗';
-    status.className = '';
-  }
-}
-
-// ─────────────────────────────────────────
-// Auth 邏輯
+// Auth helpers
 // ─────────────────────────────────────────
 function showAuth() {
   document.getElementById('auth-section').style.display = '';
   document.getElementById('app-section').style.display = 'none';
+  document.getElementById('user-display').style.display = 'none';
+  document.getElementById('btn-logout').style.display = 'none';
+  document.getElementById('btn-clear').style.display = 'none';
 }
 
 function renderApp() {
   document.getElementById('auth-section').style.display = 'none';
   document.getElementById('app-section').style.display = '';
+  document.getElementById('user-display').style.display = '';
   document.getElementById('user-display').textContent = `👤 ${escHtml(currentUser.username)}`;
+  document.getElementById('btn-logout').style.display = '';
   renderList();
 }
 
 async function register(username, password) {
-  if (!db) return { ok: false, msg: '資料庫未初始化' };
+  if (!db) return { ok: false, msg: '資料庫未就緒，請稍後再試' };
   if (!username.trim() || !password) return { ok: false, msg: '請填寫帳號與密碼' };
   if (password.length < 4) return { ok: false, msg: '密碼至少 4 個字元' };
 
@@ -174,15 +142,12 @@ async function register(username, password) {
   db.run('INSERT INTO users (username, password_hash) VALUES (?, ?)', [username.trim(), hash]);
   saveDB();
 
-  // 自動登入
-  const newUser = db.exec(
-    `SELECT * FROM users WHERE username = '${username.trim().replace(/'/g, "''")}'`
+  // 取回剛建立的使用者並登入
+  const result = db.exec(
+    `SELECT id, username FROM users WHERE username = '${username.trim().replace(/'/g, "''")}'`
   );
-  if (newUser.length > 0 && newUser[0].values.length > 0) {
-    currentUser = {
-      id: newUser[0].values[0][0],
-      username: newUser[0].values[0][1]
-    };
+  if (result.length > 0 && result[0].values.length > 0) {
+    currentUser = { id: result[0].values[0][0], username: result[0].values[0][1] };
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
   }
 
@@ -190,7 +155,7 @@ async function register(username, password) {
 }
 
 async function login(username, password) {
-  if (!db) return { ok: false, msg: '資料庫未初始化' };
+  if (!db) return { ok: false, msg: '資料庫未就緒，請稍後再試' };
   if (!username.trim() || !password) return { ok: false, msg: '請填寫帳號與密碼' };
 
   const hash = await sha256(password);
@@ -215,16 +180,73 @@ function logout() {
 }
 
 // ─────────────────────────────────────────
-// CRUD（限目前登入使用者）
+// IndexedDB 持久化
+// ─────────────────────────────────────────
+function idbGet(key) {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('journalDB', 1);
+    req.onupgradeneeded = e => { e.target.result.createObjectStore('store'); };
+    req.onsuccess = () => {
+      try {
+        const t = req.result.transaction('store', 'readonly');
+        const r = t.objectStore('store').get(key);
+        r.onsuccess = () => resolve(r.result);
+        r.onerror = () => reject(r.error);
+      } catch (e) { reject(e); }
+    };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function idbPut(key, val) {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('journalDB', 1);
+    req.onupgradeneeded = e => { e.target.result.createObjectStore('store'); };
+    req.onsuccess = () => {
+      try {
+        const t = req.result.transaction('store', 'readwrite');
+        const r = t.objectStore('store').put(val, key);
+        r.onsuccess = () => resolve(r.result);
+        r.onerror = () => reject(r.error);
+      } catch (e) { reject(e); }
+    };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function loadDB(SQL) {
+  try {
+    const saved = await idbGet(DB_KEY);
+    if (saved) return new SQL.Database(new Uint8Array(saved));
+  } catch (e) { /* ignore */ }
+  return new SQL.Database();
+}
+
+async function saveDB() {
+  if (!db) return;
+  const statusEl = document.getElementById('db-status');
+  statusEl.textContent = '💾 儲存中...';
+  statusEl.className = 'saving';
+  try {
+    const data = db.export();
+    await idbPut(DB_KEY, Array.from(data));
+    statusEl.textContent = '✅ 已儲存';
+    statusEl.className = 'saved';
+  } catch (e) {
+    statusEl.textContent = '❌ 儲存失敗';
+    statusEl.className = '';
+  }
+}
+
+// ─────────────────────────────────────────
+// CRUD
 // ─────────────────────────────────────────
 function getAll(query = '') {
   if (!db || !currentUser) return [];
   const q = query.trim();
   let stmt;
   if (q === '') {
-    stmt = db.prepare(
-      'SELECT * FROM entries WHERE user_id = ? ORDER BY created_at DESC'
-    );
+    stmt = db.prepare('SELECT * FROM entries WHERE user_id = ? ORDER BY created_at DESC');
     stmt.bind([currentUser.id]);
   } else {
     stmt = db.prepare(
@@ -283,7 +305,6 @@ function renderList() {
   const rows = getAll(query);
   const container = document.getElementById('journal-list');
   const clearBtn = document.getElementById('btn-clear');
-
   clearBtn.style.display = rows.length > 0 ? 'inline-block' : 'none';
 
   if (rows.length === 0) {
@@ -319,24 +340,17 @@ function renderList() {
 
 function updateStats(count) {
   document.getElementById('stat-count').textContent = count;
-  if (count === 0) {
-    document.getElementById('stat-latest').textContent = '—';
-    return;
-  }
-  const rows = getAll();
-  if (rows.length > 0) {
-    document.getElementById('stat-latest').textContent = rows[0].date || rows[0].created_at.slice(0, 10);
-  }
+  document.getElementById('stat-latest').textContent =
+    count === 0 ? '—' : (getAll()[0]?.date || getAll()[0]?.created_at?.slice(0, 10) || '—');
 }
 
 // ─────────────────────────────────────────
-// UI 互動
+// UI
 // ─────────────────────────────────────────
 function toggleCard(id) {
   document.getElementById(`body-${id}`).classList.toggle('open');
 }
 
-// ── Auth Form ──
 function switchAuthTab(tab) {
   document.getElementById('tab-login').classList.toggle('active', tab === 'login');
   document.getElementById('tab-reg').classList.toggle('active', tab === 'reg');
@@ -350,12 +364,7 @@ async function handleRegister(e) {
   const u = document.getElementById('reg-username').value;
   const p = document.getElementById('reg-password').value;
   const p2 = document.getElementById('reg-password2').value;
-
-  if (p !== p2) {
-    document.getElementById('auth-msg').textContent = '❌ 兩次密碼輸入不同';
-    return;
-  }
-
+  if (p !== p2) { document.getElementById('auth-msg').textContent = '❌ 兩次密碼輸入不同'; return; }
   const result = await register(u, p);
   if (result.ok) {
     renderApp();
@@ -368,7 +377,6 @@ async function handleLogin(e) {
   e.preventDefault();
   const u = document.getElementById('login-username').value;
   const p = document.getElementById('login-password').value;
-
   const result = await login(u, p);
   if (result.ok) {
     renderApp();
@@ -377,9 +385,7 @@ async function handleLogin(e) {
   }
 }
 
-// ── Journal Form ──
 function openForm(id) {
-  const modal = document.getElementById('form-modal');
   const titleInput = document.getElementById('entry-title');
   const dateInput = document.getElementById('entry-date');
   const contentInput = document.getElementById('entry-content');
@@ -387,9 +393,8 @@ function openForm(id) {
   const titleEl = document.getElementById('form-title');
 
   if (id) {
-    const rows = getAll().filter(r => r.id === id);
-    if (rows.length === 0) return;
-    const row = rows[0];
+    const row = getAll().find(r => r.id === id);
+    if (!row) return;
     editId.value = id;
     titleEl.textContent = '✏️ 編輯日誌';
     titleInput.value = row.title;
@@ -403,7 +408,7 @@ function openForm(id) {
     contentInput.value = '';
   }
 
-  modal.classList.add('open');
+  document.getElementById('form-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
   titleInput.focus();
 }
@@ -418,29 +423,21 @@ function saveEntry() {
   const title = document.getElementById('entry-title').value.trim();
   const date = document.getElementById('entry-date').value;
   const content = document.getElementById('entry-content').value;
-
   if (!title) { alert('請輸入標題'); return; }
-
-  if (id) {
-    updateEntry(parseInt(id), title, content, date);
-  } else {
-    insertEntry(title, content, date);
-  }
+  if (id) updateEntry(parseInt(id), title, content, date);
+  else insertEntry(title, content, date);
   closeForm();
 }
 
 function confirmDelete(id) {
   if (!confirm('確定要刪除這篇日誌嗎？')) return;
   deleteEntryById(id);
-  if (currentViewId === id) closeView();
 }
 
-// ── View Modal ──
 function openView(id) {
   currentViewId = id;
-  const rows = getAll().filter(r => r.id === id);
-  if (rows.length === 0) return;
-  const row = rows[0];
+  const row = getAll().find(r => r.id === id);
+  if (!row) return;
   document.getElementById('view-title').textContent = escHtml(row.title);
   document.getElementById('view-meta').textContent =
     `📅 ${row.date || row.created_at.slice(0,10)} · 🕒 建立：${row.created_at.slice(0,16).replace('T',' ')}`;
@@ -471,10 +468,8 @@ function deleteEntry() {
 function clearAll() {
   if (!confirm('⚠️ 確定要清除所有日誌嗎？此操作無法回復！')) return;
   clearAllEntries();
-  closeView();
 }
 
-// ── 匯出 / 匯入 ──
 function exportDB() {
   if (!db) return;
   const data = db.export();
@@ -497,8 +492,7 @@ async function importDB(file) {
         locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${f}`
       });
       db = new SQL.Database(data);
-      await idbKeyVal(DB_KEY, Array.from(data));
-      // 重新檢查 session
+      await idbPut(DB_KEY, Array.from(data));
       logout();
       alert('匯入成功！請重新登入。');
     } catch (err) {
@@ -522,9 +516,13 @@ function escHtml(str) {
 // ─────────────────────────────────────────
 // 啟動
 // ─────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+  // 確保初始狀態正確
+  document.getElementById('auth-section').style.display = 'none';
+  document.getElementById('app-section').style.display = 'none';
+  init();
+});
 
-// ESC / 背景點關閉
 ['form-modal', 'view-modal'].forEach(id => {
   document.getElementById(id).addEventListener('click', function(e) {
     if (e.target === this) {
