@@ -278,23 +278,38 @@
       font-size: 0.95rem;
       background: var(--bg);
       color: var(--text);
-      margin-bottom: 0.75rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .auth-form input:focus { outline: none; border-color: var(--primary); }
-    .auth-form button[type="submit"] {
+    .auth-form input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(15,118,110,0.1);
+    }
+    .auth-field { margin-bottom: 1rem; }
+    .auth-field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 0.4rem;
+    }
+    .auth-submit { margin-top: 1.25rem; }
+    .auth-submit button {
       width: 100%;
-      padding: 0.7rem;
+      padding: 0.75rem;
       background: var(--accent);
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-family: inherit;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 0.5rem;
+      letter-spacing: 0.05em;
+      transition: background 0.2s, transform 0.1s;
     }
-    .auth-form button[type="submit"]:hover { background: #0d5f57; }
+    .auth-submit button:hover { background: #0d5f57; }
+    .auth-submit button:active { transform: scale(0.98); }
     .auth-msg { text-align: center; font-size: 0.9rem; padding: 0.5rem 0; min-height: 1.5rem; color: #991b1b; }
     .auth-hint { font-size: 0.8rem; color: var(--text-light); text-align: center; margin-top: 0.75rem; }
     /* 初始隱藏（JS 會控制顯示） */
@@ -426,15 +441,34 @@
           <button class="auth-tab" id="tab-reg" onclick="switchAuthTab('reg')">註冊</button>
         </div>
         <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
-          <input type="text" id="login-username" placeholder="帳號" autocomplete="username" required>
-          <input type="password" id="login-password" placeholder="密碼" autocomplete="current-password" required>
-          <button type="submit">登入</button>
+          <div class="auth-field">
+            <label>帳號</label>
+            <input type="text" id="login-username" placeholder="輸入帳號" autocomplete="username" required>
+          </div>
+          <div class="auth-field">
+            <label>密碼</label>
+            <input type="password" id="login-password" placeholder="輸入密碼" autocomplete="current-password" required>
+          </div>
+          <div class="auth-submit">
+            <button type="submit">登入</button>
+          </div>
         </form>
         <form id="reg-form" onsubmit="handleRegister(event)">
-          <input type="text" id="reg-username" placeholder="選擇一個帳號名稱" autocomplete="username" required>
-          <input type="password" id="reg-password" placeholder="密碼（至少 4 個字元）" autocomplete="new-password" required>
-          <input type="password" id="reg-password2" placeholder="再輸入一次密碼" autocomplete="new-password" required>
-          <button type="submit">註冊</button>
+          <div class="auth-field">
+            <label>帳號名稱</label>
+            <input type="text" id="reg-username" placeholder="選擇一個帳號名稱" autocomplete="username" required>
+          </div>
+          <div class="auth-field">
+            <label>密碼</label>
+            <input type="password" id="reg-password" placeholder="至少 4 個字元" autocomplete="new-password" required>
+          </div>
+          <div class="auth-field">
+            <label>確認密碼</label>
+            <input type="password" id="reg-password2" placeholder="再輸入一次密碼" autocomplete="new-password" required>
+          </div>
+          <div class="auth-submit">
+            <button type="submit">註冊</button>
+          </div>
         </form>
         <p class="auth-msg" id="auth-msg"></p>
         <p class="auth-hint" id="auth-hint">每位使用者的文章都會出現在公開日誌牆上。</p>
