@@ -329,6 +329,16 @@
 
     /* App section hidden by default */
     #app-section { display: none; }
+    /* Auth visible by default — JS will hide when logged in */
+    #auth-section {
+      display: flex !important;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 2rem;
+      min-height: 60vh;
+      background: #f0fdf4;
+      border: 3px dashed #10b981;
+    }
   </style>
 </head>
 <body>
