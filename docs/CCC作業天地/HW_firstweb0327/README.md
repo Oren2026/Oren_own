@@ -8,10 +8,10 @@
 
 | 版本 | 日期 | 類型 | 說明 | 連結 |
 |------|------|------|------|------|
-| **v2.0** | 2026-03-27 | 🆕 最新 | Node.js + SQLite 後端對照版：bcrypt、JWT、REST API、Express | [→ 說明頁](v2.0/index.html) |
-| **v1.3** | 2026-03-27 | 最新版 | 重構 SQLite 框架：DB class + 參數化查詢 + 安全性提升 | [→ 進入](v1.3/index.html) |
-| **v1.2** | 2026-03-27 | 功能版 | 新增作者過濾功能 + 更新預設文章內容 | [→ 進入](v1.2/index.html) |
-| **v1.1** | 2026-03-27 | 正式版 | 雙面板 Auth Modal + 公開日誌牆 + seed.db | [→ 進入](v1.1/index.html) |
+| **v2.0** | 2026-03-27 | 🆕 最新 | Node.js + SQLite 後端對照版：bcrypt、JWT、REST API、Express | [→ 說明頁](https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v2.0/index.html) |
+| **v1.3** | 2026-03-27 | 最新版 | 重構 SQLite 框架：DB class + 參數化查詢 + 安全性提升 | [→ 進入](https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v1.3/index.html) |
+| **v1.2** | 2026-03-27 | 功能版 | 新增作者過濾功能 + 更新預設文章內容 | [→ 進入](https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v1.2/index.html) |
+| **v1.1** | 2026-03-27 | 正式版 | 雙面板 Auth Modal + 公開日誌牆 + seed.db | [→ 進入](https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v1.1/index.html) |
 | **v1.0** | 2026-03-27 | 初版 | 基本 CRUD + 搜尋 | （已整合至 v1.1） |
 
 ---
