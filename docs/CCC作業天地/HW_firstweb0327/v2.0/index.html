@@ -42,6 +42,20 @@
       border-radius: 20px;
       font-size: 0.8rem;
     }
+    .header .preview-link {
+      display: inline-block;
+      margin-top: 0.75rem;
+      margin-left: 0.5rem;
+      background: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.5);
+      padding: 0.25rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: white;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .header .preview-link:hover { background: rgba(255,255,255,0.4); }
 
     /* Container */
     .container { max-width: 860px; margin: 0 auto; padding: 2rem 1rem; }
@@ -166,6 +180,7 @@
     <h1>網頁日誌系統 v2.0</h1>
     <p class="tag-line">Node.js + Express + SQLite 真實後端版</p>
     <span class="tag">需在本機執行，詳見下方說明</span>
+    <a href="public/index.html" class="preview-link">👁️ 前端預覽（GitHub Pages）</a>
   </header>
 
   <main class="container">

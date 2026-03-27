@@ -561,5 +561,15 @@
       "System2",
       "規劃"
     ]
+  },
+  {
+    "title": "螞蟻式群體機器人的分工演化",
+    "summary": "ROS2多機器人系統以螞蟻分工為參考，實現群體智能任務分配與路徑規劃。",
+    "tags": [
+      "robotics",
+      "ROS2",
+      "swarm",
+      "intelligence"
+    ]
   }
 ]
