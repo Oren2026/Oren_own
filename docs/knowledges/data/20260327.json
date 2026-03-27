@@ -479,5 +479,25 @@
       "IIT",
       "哲學"
     ]
+  },
+  {
+    "title": "開放世界機器人長時程任務的反應式規劃策略",
+    "summary": "結合LLM與動作知識，讓機器人在資訊不完整下完成長期任務並具備突發應變能力。",
+    "tags": [
+      "robotics",
+      "LLM",
+      "long-horizon",
+      "open-world",
+      "reactive"
+    ]
+  },
+  {
+    "title": "LLM催生AlphaFold式突破：AI預測蛋白質與生醫分子結構成熱點",
+    "summary": "AlphaFold 3已能精準預測蛋白質、DNA、RNA及配體結構與交互作用，LLM正加速化學與生物學發現。",
+    "tags": [
+      "AI",
+      "科學發現",
+      "蛋白質折疊"
+    ]
   }
 ]

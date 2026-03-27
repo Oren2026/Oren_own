@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📓 網頁日誌系統</title>
+  <title>📓 網頁日誌系統 v1.2</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -63,6 +63,36 @@
     .user-chip { background: rgba(255,255,255,0.2); padding: 0.3rem 0.85rem; border-radius: 20px; font-size: 0.85rem; }
     .logout-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer; font-family: inherit; }
     .logout-btn:hover { background: rgba(255,255,255,0.2); }
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: white;
+      padding: 0.3rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .filter-clear {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      font-size: 0.9rem;
+      cursor: pointer;
+      padding: 0 0.2rem;
+      border-radius: 50%;
+      line-height: 1;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .filter-clear:hover { background: rgba(255,255,255,0.4); }
+    .entry-author { cursor: pointer; }
+    .entry-author:hover { opacity: 0.8; }
 
     /* ── Container ── */
     .container { max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem; }
