@@ -1,118 +1,76 @@
-# HW：First Web — 網頁日誌系統
+# HW_firstweb0327 — 網頁日誌系統
 
-## 作業說明
-
-使用 **JavaScript + SQLite（sql.js）** 實作一個可新增、編輯、刪除、搜尋的網頁日誌系統。所有資料存在瀏覽器本地（IndexedDB），**不需要任何伺服器**。
+> 授課老師：CCC｜作業日期：2026-03-27
 
 ---
 
-## 📁 檔案結構
+## 📋 改版日誌
+
+| 版本 | 日期 | 類型 | 說明 | 連結 |
+|------|------|------|------|------|
+| **v1.0** | 2026-03-27 | 初始版本 | 初版交付，基本 CRUD + 搜尋 + 匯出入 | [→ 進入](v1.0/index.html) |
+
+---
+
+## 🏗️ 現有架構
 
 ```
 HW_firstweb0327/
-├── README.md          ← 本說明檔
-└── journal/
-    ├── index.html      ← 日誌系統主頁
-    └── journal.js      ← 所有 JS 邏輯（SQLite CRUD + IndexedDB 持久化）
+├── README.md           ← 本檔（改版日誌總覽）
+├── v1.0/              ← 第一版交付
+│   ├── index.html      ← 日誌系統
+│   ├── journal.js       ← SQLite + IndexedDB 邏輯
+│   └── README.md       ← 版本說明
+└── v1.1/              ← （下一版更新後在此新增）
+    └── ...
 ```
 
 ---
 
-## 🚀 使用方式
+## 🚀 如何更新版本
 
-### 方法一：直接開啟（推薦）
+1. 複製當前最高版本資料夾（例如 `v1.0/` → `v1.1/`）
+2. 在新資料夾中修改程式碼
+3. 更新頂層 `README.md` 的改版日誌表格
+4. commit 並 push
 
-1. 點進 `journal/index.html` 即可使用
-2. 缺點：關閉視窗後日誌會消失（因為瀏覽器安全限制不允許本地檔案寫入 IndexedDB）
+### 版本命名規則
 
-> ⚠️ 若看到 `❌ 初始化失敗`，是因為直接以 `file://` 開啟時 IndexedDB 不可用。建議使用方法二。
+- **第二位數更新**（1.0 → 1.1）：細微修改，不影響核心架構
+- **第一位數更新**（1.1 → 2.0）：重大變更，功能或架構有明顯差異
 
-### 方法二：本機 HTTP 伺服器（資料可持久化）
+---
 
-用 Python 啟動一個簡單的 HTTP 伺服器：
+## 📚 各版本功能總覽
+
+### v1.0
+基本功能：
+- ➕ 新增 / ✏️ 編輯 / 🗑️ 刪除日誌
+- 🔍 標題與內容搜尋
+- 📂 展開 / 收合卡片
+- 💾 匯出 / 📂 匯入 SQLite 資料庫
+- 🗑️ 清除全部日誌
+
+技術：sql.js (WASM SQLite) + IndexedDB 持久化
+
+---
+
+## 📖 使用說明
+
+### 如何 запустить（啟動）
+
+每個版本都**需要本機 HTTP 伺服器**才能讓 IndexedDB 正常運作：
 
 ```bash
-# 在 journal/ 的上層資料夾執行：
+# 在 HW_firstweb0327/ 的上一層執行：
 python3 -m http.server 8080
-# 或
-python -m http.server 8080
+# 然後打開 http://localhost:8080/HW_firstweb0327/v1.0/index.html
 ```
 
-然後在瀏覽器打開：
-```
-http://localhost:8080/journal/index.html
-```
+### 為什麼需要伺服器？
 
-> ✅ 這樣資料會正確寫入 IndexedDB，關閉後再打開仍然存在。
-
-### 方法三：VS Code Live Server
-
-在 VS Code 安裝「Live Server」擴充功能 → 對 `index.html` 按右鍵 → `Open with Live Server`
+瀏覽器安全限制不允許 `file://` 協定的網頁寫入 IndexedDB，因此需要 http 環境。
 
 ---
 
-## ✨ 功能說明
-
-| 功能 | 說明 |
-|------|------|
-| ➕ 新增日誌 | 填寫標題、日期、內容後儲存 |
-| ✏️ 編輯 | 點選日誌右側的編輯按鈕 |
-| 🗑️ 刪除 | 點選日誌右側的刪除按鈕 |
-| 🔍 搜尋 | 輸入關鍵字即時過濾標題與內容 |
-| 📂 展開/收合 | 點擊日誌卡片即可展開內容 |
-| 💾 匯出資料庫 | 下載 `.db` 檔備份 |
-| 📂 匯入資料庫 | 上傳 `.db` 檔還原日誌 |
-| 🗑️ 清除全部 | 一鍵刪除所有日誌 |
-
----
-
-## 🔧 技術架構
-
-```
-┌─────────────────────────────────┐
-│        Browser (JavaScript)      │
-├─────────────────────────────────┤
-│  journal.js                      │
-│  ├── sql.js (WASM SQLite)        │  ← SQLite 引擎（WebAssembly）
-│  ├── IndexedDB 持久化            │  ← 關閉視窗資料不消失
-│  └── DOM 操作（Render / Event）  │
-└─────────────────────────────────┘
-         │
-         ▼
-   純前端，無需後端伺服器
-```
-
----
-
-## 📝 SQLite 資料表
-
-```sql
-CREATE TABLE entries (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
-  title      TEXT    NOT NULL,
-  content    TEXT,
-  date       TEXT,
-  created_at TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
-  updated_at TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
-);
-```
-
----
-
-## ⚠️ 注意事項
-
-- 本系統為**純前端**，所有資料存在瀏覽器的 IndexedDB 中
-- 不同瀏覽器或隱私模式下的資料**不相通**
-- 建議定期使用「💾 匯出資料庫」備份
-- 匯出的 `.db` 檔可用任何 SQLite 工具（如 DB Browser for SQLite）開啟
-
----
-
-## 📚 參考資源
-
-- sql.js 文件：https://sql.js.org/
-- sql.js CDN：https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.min.js
-
----
-
-*授課老師：CCC｜作業日期：2026-03-27*
+*授課老師：CCC*
