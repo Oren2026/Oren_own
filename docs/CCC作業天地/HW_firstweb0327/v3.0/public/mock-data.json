@@ -1,0 +1,27 @@
+{
+  "users": [
+    { "id": 1, "username": "admin", "bio": "系統管理者，喜歡研究新技術。", "avatar_color": "#2563eb", "background": "" },
+    { "id": 2, "username": "小美",   "bio": "雲林在地人，業餘生態觀察者。", "avatar_color": "#db2777", "background": "" },
+    { "id": 3, "username": "阿偉",   "bio": "TDK 機器人參賽者，ESP32 愛好者。", "avatar_color": "#d97706", "background": "" },
+    { "id": 4, "username": "妮妮",   "bio": "對能源和 AI 有興趣的學生。", "avatar_color": "#7c3aed", "background": "" }
+  ],
+  "entries": [
+    { "id": 1, "user_id": 1, "username": "admin", "avatar_color": "#2563eb", "title": "📢 系統正式上線公告", "content": "經過一個月的開發，終於把這個雲林地方日誌系統做出來了！", "date": "2026-03-20", "tags": "系統公告,雲林", "created_at": "2026-03-20 10:00:00" },
+    { "id": 2, "user_id": 1, "username": "admin", "avatar_color": "#2563eb", "title": "🔬 SQLite 原理淺談", "content": "SQLite 是一個嵌入式資料庫，沒有獨立的伺服器行程，資料庫本身是一個檔案。", "date": "2026-03-22", "tags": "技術,SQLite,資料庫", "created_at": "2026-03-22 09:30:00" },
+    { "id": 3, "user_id": 2, "username": "小美",   "avatar_color": "#db2777", "title": "🌾 成龍濕地半日遊", "content": "今天天氣很好，下午骑车去成龍濕地繞了一圈，看到了很多水鳥。", "date": "2026-03-15", "tags": "雲林,生態,遊記", "created_at": "2026-03-15 16:20:00" },
+    { "id": 4, "user_id": 2, "username": "小美",   "avatar_color": "#db2777", "title": "💻 CCC作業感想", "content": "這次的網頁日誌作業做得有點辛苦，但也學到很多。", "date": "2026-03-24", "tags": "心得,雲林,技術", "created_at": "2026-03-24 21:10:00" },
+    { "id": 5, "user_id": 2, "username": "小美",   "avatar_color": "#db2777", "title": "🏭 虎尾糖廠之旅", "content": "難得有機會進去糖廠內部參觀，聽說這裡是全台唯一還在運作的糖廠。", "date": "2026-03-18", "tags": "雲林,文化,遊記", "created_at": "2026-03-18 14:00:00" },
+    { "id": 6, "user_id": 3, "username": "阿偉",   "avatar_color": "#d97706", "title": "🤖 TDK 機器人啟動了！", "content": "經過三周的組裝，終於把機器人的硬體部分完成了！", "date": "2026-03-19", "tags": "TDK,機器人,ESP32", "created_at": "2026-03-19 23:45:00" },
+    { "id": 7, "user_id": 3, "username": "阿偉",   "avatar_color": "#d97706", "title": "🦷 爪子機構規劃", "content": "目前最頭痛的是爪子的夾取機構，目標是一次能夾起文蛤。", "date": "2026-03-21", "tags": "TDK,機構設計,機器人", "created_at": "2026-03-21 08:20:00" },
+    { "id": 8, "user_id": 4, "username": "妮妮",   "avatar_color": "#7c3aed", "title": "♻️ 淨灘日誌", "content": "參加了麥仔岸淨灘活動，一共清了一百多公斤的垃圾。", "date": "2026-03-16", "tags": "環保,淨灘,心得", "created_at": "2026-03-16 12:30:00" },
+    { "id": 9, "user_id": 4, "username": "妮妮",   "avatar_color": "#7c3aed", "title": "💭 我的夢想", "content": "最近在想要不要研究所去讀 AI 或機器人相關的領域。", "date": "2026-03-23", "tags": "夢想,心得,AI", "created_at": "2026-03-23 22:00:00" },
+    { "id": 10, "user_id": 4, "username": "妮妮",  "avatar_color": "#7c3aed", "title": "🚗 遙控車初體驗", "content": "第一次用 ESP32 + WiFi 控制遙控車，延遲大約 50ms，還可以接受。", "date": "2026-03-25", "tags": "ESP32,遙控,TDK", "created_at": "2026-03-25 19:15:00" }
+  ],
+  "follows": [
+    { "follower_id": 1, "following_id": 2 },
+    { "follower_id": 1, "following_id": 3 },
+    { "follower_id": 2, "following_id": 4 },
+    { "follower_id": 3, "following_id": 1 },
+    { "follower_id": 4, "following_id": 2 }
+  ]
+}

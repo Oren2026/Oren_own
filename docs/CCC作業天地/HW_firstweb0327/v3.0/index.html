@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📓 網頁日誌系統 v2.1 — Node.js + SQLite</title>
+  <style>
+    :root {
+      --accent:       #0f766e;
+      --accent-dark:  #115e59;
+      --accent-light: #ccfbf1;
+      --bg:           #f8fafc;
+      --card-bg:      #ffffff;
+      --text:         #1e293b;
+      --text-light:   #64748b;
+      --border:       #e2e8f0;
+      --radius:       16px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: white;
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+    .header .icon    { font-size: 4rem; margin-bottom: 0.75rem; }
+    .header h1       { font-size: 2rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .header .tag-line { font-size: 1rem; opacity: 0.85; }
+    .header .tag {
+      display: inline-block;
+      margin-top: 1rem;
+      background: rgba(255,255,255,0.2);
+      padding: 0.25rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+    .header .preview-link {
+      display: inline-block;
+      margin-top: 0.75rem;
+      margin-left: 0.5rem;
+      background: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.5);
+      padding: 0.25rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: white;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .header .preview-link:hover { background: rgba(255,255,255,0.4); }
+
+    /* Container */
+    .container { max-width: 860px; margin: 0 auto; padding: 2rem 1rem; }
+
+    /* Comparison */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .compare-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .compare-card.server {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .compare-header {
+      padding: 1rem 1.5rem;
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .compare-card.server .compare-header { background: var(--accent-light); color: var(--accent); }
+    .compare-card.client .compare-header  { background: var(--bg); color: var(--text-light); }
+    .compare-body { padding: 1.25rem 1.5rem; font-size: 0.9rem; }
+    .compare-body ul { list-style: none; padding: 0; }
+    .compare-body li { padding: 0.3rem 0; display: flex; gap: 0.5rem; }
+    .compare-body li::before { content: '•'; color: var(--text-light); }
+    .compare-body li strong { color: var(--text); }
+
+    /* Setup */
+    .setup {
+      background: #1e293b;
+      color: #e2e8f0;
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.88rem;
+      line-height: 2;
+      margin-bottom: 2rem;
+    }
+    .setup .prompt { color: #6ee7b7; }
+    .setup .comment { color: #64748b; }
+    .setup .cmd { color: #fbbf24; }
+
+    /* Architecture diagram */
+    .arch {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .arch-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); margin-bottom: 1rem; }
+    .arch-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+    .arch-node {
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid #99f6e4;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      font-weight: 600;
+    }
+    .arch-arrow { color: var(--text-light); font-size: 1.2rem; }
+
+    /* Tech grid */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    .tech-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .tech-item .icon  { font-size: 1.5rem; margin-bottom: 0.3rem; }
+    .tech-item .name { font-size: 0.9rem; font-weight: 600; }
+    .tech-item .desc { font-size: 0.75rem; color: var(--text-light); margin-top: 0.2rem; }
+
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .footer { text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.8rem; }
+
+    @media (max-width: 600px) {
+      .compare-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="icon">🚀</div>
+    <h1>網頁日誌系統 v2.1</h1>
+    <p class="tag-line">Node.js + Express + SQLite 真實後端版（v2.1）</p>
+    <span class="tag">需在本機執行 `node server.js`，詳見下方說明</span>
+    <a href="public/index.html" class="preview-link">🌿 試用模式（脫離 server 獨立演示）</a>
+  </header>
+
+  <main class="container">
+
+    <!-- 兩版對照 -->
+    <div class="section-title">版本對照</div>
+    <div class="compare-grid">
+
+      <div class="compare-card server">
+        <div class="compare-header">
+          <span>🚀</span> v2.1 — Node.js 後端版（本頁）
+        </div>
+        <div class="compare-body">
+          <ul>
+            <li><strong>SQLite 跑在 server</strong>，不是你電腦的瀏覽器</li>
+            <li><strong>密碼用 bcrypt</strong>，hash 在後端處理</li>
+            <li><strong>JWT + cookie</strong> 管理登入，無法被 JS 偷走密碼</li>
+            <li><strong>真正的 REST API</strong>，前後端完全分離</li>
+            <li><strong>可擴展</strong>，輕鬆加密、多人同步、真實用戶系統</li>
+            <li>需要在本機執行 <code>node</code> 服務</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="compare-card client">
+        <div class="compare-header">
+          <span>⚡</span> v1.x — 純前端版（sql.js / IndexedDB）
+        </div>
+        <div class="compare-body">
+          <ul>
+            <li><strong>SQLite 在瀏覽器</strong>跑（sql.js / WASM）</li>
+            <li><strong>密碼用 SHA-256</strong>，前端 hash，安全性較低</li>
+            <li><strong>IndexedDB</strong> 存本地，無伺服器依賴</li>
+            <li><strong>GitHub Pages 直接托管</strong>，零成本</li>
+            <li><strong>適合展示</strong>，教學用、小工具</li>
+            <li>所有人的資料存在自己的瀏覽器裡</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 架構圖 -->
+    <div class="arch">
+      <div class="arch-title">v2.1 系統架構</div>
+      <div class="arch-flow">
+        <div class="arch-node">🌐 瀏覽器</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">🔗 fetch /api/...</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">⚡ Express</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">🗄️ SQLite</div>
+      </div>
+    </div>
+
+    <!-- 啟動方式 -->
+    <div class="section-title">啟動方式（本機）</div>
+    <div class="setup">
+      <span class="comment"># 1. 進入 v2.1 目錄</span><br>
+      <span class="prompt">$</span> <span class="cmd">cd HW_firstweb0327/v2.1</span><br><br>
+      <span class="comment"># 2. 安裝依賴（第一次需要）</span><br>
+      <span class="prompt">$</span> <span class="cmd">npm install</span><br><br>
+      <span class="comment"># 3. 啟動 server</span><br>
+      <span class="prompt">$</span> <span class="cmd">npm start</span><br><br>
+      <span class="comment"># 4. 打開瀏覽器</span><br>
+      <span class="prompt">→</span> <span class="cmd">http://localhost:3000</span><br><br>
+      <span class="comment"># 測試帳號（已在 database.sqlite 裡）</span><br>
+      <span class="comment"># admin / 1234</span><br>
+      <span class="comment"># 小美 / 1111</span><br>
+      <span class="comment"># 阿偉 / 2222</span><br>
+      <span class="comment"># 妮妮 / 3334</span>
+    </div>
+
+    <!-- 技術棧 -->
+    <div class="section-title">技術棧</div>
+    <div class="tech-grid">
+      <div class="tech-item"><div class="icon">🟢</div><div class="name">Node.js</div><div class="desc">Runtime</div></div>
+      <div class="tech-item"><div class="icon">⚡</div><div class="name">Express</div><div class="desc">Web Framework</div></div>
+      <div class="tech-item"><div class="icon">🗄️</div><div class="name">SQLite</div><div class="desc">資料庫（本機檔案）</div></div>
+      <div class="tech-item"><div class="icon">🔐</div><div class="name">bcryptjs</div><div class="desc">密碼雜湊</div></div>
+      <div class="tech-item"><div class="icon">🎫</div><div class="name">JWT</div><div class="desc">認證 Token</div></div>
+      <div class="tech-item"><div class="icon">🍪</div><div class="name">Cookie</div><div class="desc">瀏覽器儲存</div></div>
+    </div>
+
+    <!-- 檔案結構 -->
+    <div class="section-title">檔案結構</div>
+    <div class="setup">
+<span class="comment">v2.1/</span>
+<span class="cmd">├── server/</span>              <span class="comment">← Node.js 後端</span>
+<span class="cmd">│   ├── server.js</span>        <span class="comment">Express 主程式</span>
+<span class="cmd">│   ├── db.js</span>            <span class="comment">SQLite 初始化 + 种子数据</span>
+<span class="cmd">│   ├── routes/</span>           <span class="comment">API 路由</span>
+<span class="cmd">│   │   ├── auth.js</span>      <span class="comment">登入/註冊/登出</span>
+<span class="cmd">│   │   └── entries.js</span>   <span class="comment">文章 CRUD</span>
+<span class="cmd">│   └── middleware/</span>       <span class="comment">中介層</span>
+<span class="cmd">│       └── auth.js</span>       <span class="comment">JWT 驗證</span>
+<span class="cmd">├── public/</span>               <span class="comment">← 純前端（⚠️ 需後端）</span>
+<span class="cmd">│   ├── index.html</span>
+<span class="cmd">│   ├── journal.js</span>        <span class="comment">fetch() 呼叫 API</span>
+<span class="cmd">│   └── style.css</span>
+<span class="cmd">├── database.sqlite</span>        <span class="comment">← SQLite 實際檔案</span>
+<span class="cmd">└── package.json</span>
+    </div>
+
+    <!-- API Endpoints -->
+    <div class="section-title">API Endpoints</div>
+    <div class="setup">
+<span class="comment"># 認證</span>
+<span class="cmd">POST /api/auth/register</span>   <span class="comment">{ username, password }</span>
+<span class="cmd">POST /api/auth/login</span>      <span class="comment">{ username, password } → Set-Cookie</span>
+<span class="cmd">POST /api/auth/logout</span>      <span class="comment">Clear-Cookie</span>
+<span class="cmd">GET  /api/auth/me</span>           <span class="comment">→ { user }（需登入）</span>
+
+<span class="comment"># 文章</span>
+<span class="cmd">GET  /api/entries</span>          <span class="comment">列表（?author=&amp;q=）</span>
+<span class="cmd">POST /api/entries</span>           <span class="comment">新增（需登入）</span>
+<span class="cmd">PUT  /api/entries/:id</span>      <span class="comment">編輯（需登入 + 作者）</span>
+<span class="cmd">DELETE /api/entries/:id</span>    <span class="comment">刪除（需登入 + 作者）</span>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <p>📓 網頁日誌系統 v2.1｜HW_firstweb0327｜CCC 老師作業</p>
+    <p style="margin-top:0.3rem;">由 <a href="https://github.com/Oren2026" style="color:var(--accent);">Oren</a> 維護</p>
+  </footer>
+</body>
+</html>

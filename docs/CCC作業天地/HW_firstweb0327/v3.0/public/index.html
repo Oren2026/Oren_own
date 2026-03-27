@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📓 網頁日誌系統 v3.0</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ── Site Header ── -->
+  <header class="site-header" id="site-header">
+    <div class="brand">
+      <span class="brand-icon">📓</span>
+      <div>
+        <h1>網頁日誌系統</h1>
+        <p>JS + SQLite（sql.js）純前端</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="db-status"></span>
+      <div id="header-auth"></div>
+    </div>
+  </header>
+
+  <!-- ── Main Content ── -->
+  <main class="container" id="main-content">
+
+    <!-- ====== 首頁視圖 ====== -->
+    <div id="view-home">
+
+      <div class="welcome-banner">
+        <div>
+          <h2 id="welcome-title">👋 歡迎來到網頁日誌系統</h2>
+          <p id="welcome-sub">這是一個公開日誌牆，所有人的文章都能看到。</p>
+        </div>
+        <button class="btn" id="banner-new-btn" onclick="openEntryForm()">＋ 發表文章</button>
+      </div>
+
+      <div class="demo-users" id="demo-hint" style="display:none;">
+        <span style="font-size:0.85rem;color:var(--text-light);margin-right:0.5rem;">測試帳號：</span>
+        <span class="demo-chip">admin / 1234</span>
+        <span class="demo-chip">小美 / 1111</span>
+        <span class="demo-chip">阿偉 / 2222</span>
+        <span class="demo-chip">妮妮 / 3334</span>
+      </div>
+
+      <div class="stats-row">
+        <span class="stat-chip">📝 總文章：<strong id="stat-total">0</strong></span>
+        <span class="stat-chip">👥 作者：<strong id="stat-authors">0</strong></span>
+        <span class="stat-chip">🆕 最新：<strong id="stat-latest">—</strong></span>
+      </div>
+
+      <div class="toolbar" id="auth-toolbar" style="display:none;">
+        <button class="btn btn-primary" onclick="openEntryForm()">＋ 新增文章</button>
+        <button class="btn btn-secondary" onclick="exportDB()">💾 匯出</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">📂 匯入</button>
+        <input type="file" id="import-file" accept=".db,.sqlite" style="display:none" onchange="importDB(this.files[0])">
+        <!-- v3.0: 我的文章按鈕 -->
+        <button class="btn btn-secondary" id="btn-my-articles" onclick="filterMyArticles()" style="display:none">👤 我的文章</button>
+        <!-- v3.0: 設定按鈕 -->
+        <button class="btn btn-ghost" id="btn-settings" onclick="openSettings()" style="display:none">⚙️ 設定</button>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="🔍 搜尋標題、內容，或輸入 #標籤 名過濾…" oninput="renderEntries()">
+      </div>
+
+      <!-- v3.0: 分頁 UI -->
+      <div class="pagination-ui" id="pagination-ui"></div>
+
+      <div id="entry-list">
+        <div class="empty">
+          <div class="icon">📭</div>
+          <p>還沒有文章，成為第一個發表的人吧！</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== 個人頁視圖 ====== -->
+    <div id="view-profile" style="display:none;">
+      <div class="profile-header" id="profile-header">
+        <div class="profile-avatar" id="profile-avatar">?</div>
+        <div class="profile-info">
+          <h2 id="profile-username">—</h2>
+          <p id="profile-bio" class="profile-bio"></p>
+          <div class="profile-stats">
+            <span><strong id="profile-followers">0</strong> 粉絲</span>
+            <span><strong id="profile-following">0</strong> 追蹤</span>
+          </div>
+        </div>
+        <div class="profile-actions" id="profile-actions"></div>
+      </div>
+
+      <div class="search-bar" style="margin-top:1rem;">
+        <input type="text" id="profile-search-input" placeholder="🔍 搜尋這位作者的文章…" oninput="renderProfileEntries()">
+      </div>
+
+      <div class="pagination-ui" id="profile-pagination-ui"></div>
+
+      <div id="profile-entries">
+        <div class="empty"><div class="icon">📭</div><p>這位作者還沒有發表過文章。</p></div>
+      </div>
+
+      <div style="margin-top:1rem;">
+        <button class="btn btn-ghost" onclick="navigateHome()">← 返回首頁</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       🌟 AUTH MODAL — 雙面板設計
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="auth-brand-icon">📓</div>
+        <div class="auth-brand-tag"><span>🔒</span> 純前端 · SQLite</div>
+        <h2 id="auth-brand-title">你的想法<br>值得被看見</h2>
+        <p>每個人都能在這裡記錄、分享。<br>無需註冊即可瀏覽。</p>
+        <div class="auth-brand-features">
+          <div class="auth-brand-feature"><span class="check-icon">✓</span><span>所有文章公開顯示</span></div>
+          <div class="auth-brand-feature"><span class="check-icon">✓</span><span>資料存在本地瀏覽器</span></div>
+          <div class="auth-brand-feature"><span class="check-icon">✓</span><span>SHA-256 密碼保護</span></div>
+          <div class="auth-brand-feature"><span class="check-icon">✓</span><span>可匯出備份資料庫</span></div>
+        </div>
+      </div>
+      <div class="auth-form-panel">
+        <button class="auth-close" onclick="closeAuth()">×</button>
+        <div class="auth-toggle">
+          <button class="auth-toggle-btn active" id="tab-login" onclick="switchAuth('login')">登入</button>
+          <button class="auth-toggle-btn" id="tab-reg" onclick="switchAuth('reg')">註冊</button>
+        </div>
+        <form id="login-form" onsubmit="handleLogin(event)">
+          <div class="auth-field">
+            <input type="text" id="login-username" placeholder=" " autocomplete="username" required>
+            <label for="login-username">帳號</label>
+          </div>
+          <div class="auth-field">
+            <input type="password" id="login-password" placeholder=" " autocomplete="current-password" required>
+            <label for="login-password">密碼</label>
+          </div>
+          <div class="auth-submit"><button type="submit">登入 →</button></div>
+          <div class="auth-msg" id="auth-msg"></div>
+        </form>
+        <form id="reg-form" style="display:none;" onsubmit="handleRegister(event)">
+          <div class="auth-field">
+            <input type="text" id="reg-username" placeholder=" " autocomplete="username" required>
+            <label for="reg-username">帳號名稱</label>
+          </div>
+          <div class="auth-field">
+            <input type="password" id="reg-password" placeholder=" " autocomplete="new-password" required>
+            <label for="reg-password">密碼</label>
+          </div>
+          <div class="auth-field">
+            <input type="password" id="reg-password2" placeholder=" " autocomplete="new-password" required>
+            <label for="reg-password2">確認密碼</label>
+          </div>
+          <div class="auth-submit"><button type="submit">建立帳號 →</button></div>
+          <div class="auth-msg" id="auth-msg-reg"></div>
+        </form>
+        <p class="auth-hint" id="auth-hint">每位使用者的文章都會出現在公開日誌牆上。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Entry Form Modal ── -->
+  <div class="modal-overlay" id="entry-modal">
+    <div class="form-modal">
+      <div class="form-modal-header">
+        <h2 id="entry-modal-title">＋ 新增文章</h2>
+        <button class="modal-close" onclick="closeEntryForm()">×</button>
+      </div>
+      <div class="form-modal-body">
+        <input type="hidden" id="edit-entry-id">
+        <div class="form-group">
+          <label>標題</label>
+          <input type="text" id="entry-title" placeholder="這篇文章的主題是什麼？" maxlength="100" required>
+        </div>
+        <div class="form-group">
+          <label>日期（選填）</label>
+          <input type="date" id="entry-date">
+        </div>
+        <div class="form-group">
+          <label>標籤（選填，逗號分隔）</label>
+          <input type="text" id="entry-tags" placeholder="例如：雲林,生活,心得">
+        </div>
+        <div class="form-group">
+          <label>內容</label>
+          <textarea id="entry-content" placeholder="寫下你的想法…"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="closeEntryForm()">取消</button>
+          <button class="btn btn-success" onclick="saveEntry()">💾 發表</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── View Modal ── -->
+  <div class="modal-overlay" id="view-modal">
+    <div class="view-modal">
+      <div class="view-modal-header">
+        <h2 id="view-title">—</h2>
+        <button class="modal-x" onclick="closeView()">×</button>
+      </div>
+      <div class="view-modal-body">
+        <div class="view-meta" id="view-meta"></div>
+        <div class="view-tags" id="view-tags"></div>
+        <pre class="view-content" id="view-content"></pre>
+        <div class="view-actions" id="view-actions"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Settings Modal (v3.0) ── -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="form-modal">
+      <div class="form-modal-header">
+        <h2>⚙️ 個人設定</h2>
+        <button class="modal-close" onclick="closeSettings()">×</button>
+      </div>
+      <div class="form-modal-body">
+        <div class="form-group">
+          <label>個人簡介</label>
+          <input type="text" id="setting-bio" placeholder="簡單介紹自己…" maxlength="200">
+        </div>
+        <div class="form-group">
+          <label>主題色彩</label>
+          <div class="color-picker-row">
+            <input type="color" id="setting-color" value="#0f766e" style="width:50px;height:36px;border:none;cursor:pointer;">
+            <span id="setting-color-label" style="font-size:0.85rem;color:var(--text-light);">#0f766e</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>背景圖片 URL（選填）</label>
+          <input type="text" id="setting-bg" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>🌗 主題模式</label>
+          <div class="theme-switcher">
+            <button class="theme-btn active" id="theme-light-btn" onclick="setTheme('light')">☀️ 亮版</button>
+            <button class="theme-btn" id="theme-dark-btn" onclick="setTheme('dark')">🌙 暗版</button>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="closeSettings()">取消</button>
+          <button class="btn btn-primary" onclick="saveSettings()">💾 儲存設定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <p>📓 網頁日誌系統 v3.0｜JS + SQLite（sql.js）｜🌿 試用模式</p>
+    <p style="margin-top:0.3rem;">由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
+  </footer>
+
+  <!-- sql.js 不需要（v3.0 前端使用 fetch API，試用模式由 demo.js 提供） -->
+  <script src="demo.js"></script>
+  <script src="journal.js"></script>
+</body>
+</html>
