@@ -168,7 +168,7 @@
     <div class="icon">📓</div>
     <h1>網頁日誌系統</h1>
     <p>HW_firstweb0327｜CCC 老師作業</p>
-    <span class="tag">JS + SQLite（sql.js）純前端</span>
+    <span class="tag">JS + SQLite（sql.js）→ Node.js｜v1.0–v3.0</span>
   </header>
 
   <main class="container">
@@ -178,16 +178,36 @@
 
     <div class="version-grid">
 
-      <!-- v2.1 最新 -->
+      <!-- v3.0 最新 -->
       <div class="version-card latest">
         <div class="version-icon">🚀</div>
         <div class="version-info">
           <h2>
-            v2.1
+            v3.0
             <span class="badge badge-latest">最新</span>
             <span class="badge badge-date">2026-03-27</span>
           </h2>
-          <p>Node.js + SQLite 後端版。同一個系統，用 Express + bcrypt + JWT REST API 實作。v2.1 加了 Morgan HTTP 日誌、統一錯誤處理（ApiError + errorHandler）、按鈕 Loading 狀態。</p>
+          <p>🌟 追蹤系統 + 亮/暗版主題 + 個人頁。支援一鍵切換亮/暗版、自定義頭像色彩與背景圖、追蹤/取消追蹤作者、獨立個人頁 URL（`/#/profile/:username`）、Hash SPA 路由。前端試用模式可直接在瀏覽器開啟。</p>
+          <div class="version-tags">
+            <span class="tag-chip">🌙 亮/暗版</span>
+            <span class="tag-chip">👥 追蹤系統</span>
+            <span class="tag-chip">👤 個人頁</span>
+            <span class="tag-chip">🎨 自定義色彩</span>
+            <span class="tag-chip">🔗 Hash 路由</span>
+          </div>
+          <a href="https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v3.0/index.html" class="version-link">→ 啟動說明</a>
+        </div>
+      </div>
+
+      <!-- v2.1 -->
+      <div class="version-card">
+        <div class="version-icon small">🟢</div>
+        <div class="version-info">
+          <h2>
+            v2.1
+            <span class="badge badge-date">2026-03-27</span>
+          </h2>
+          <p>Node.js + SQLite 後端版。Morgan HTTP 日誌、統一錯誤處理（ApiError + errorHandler）、按鈕 Loading 狀態。支援試用模式（demo.js），關掉後端也能跑前端。</p>
           <div class="version-tags">
             <span class="tag-chip">🟢 Node.js</span>
             <span class="tag-chip">🪵 Morgan 日誌</span>
@@ -206,7 +226,7 @@
             v2.0
             <span class="badge badge-date">2026-03-27</span>
           </h2>
-          <p>Node.js + SQLite 後端對照版。同一個系統，用 Express + bcrypt + JWT REST API 實作。需在本機執行 `node server.js`。基礎版，無錯誤處理和日誌。</p>
+          <p>Node.js + SQLite 後端對照版。用 Express + bcrypt + JWT REST API 實作。需在本機執行 `node server.js`。基礎版，無錯誤處理和日誌。</p>
           <div class="version-tags">
             <span class="tag-chip">🟢 Node.js</span>
             <span class="tag-chip">🔐 bcrypt</span>
@@ -308,13 +328,23 @@
       </div>
       <div class="tech-item">
         <div class="icon">🔐</div>
-        <div class="name">SHA-256</div>
+        <div class="name">SHA-256 / bcrypt</div>
         <div class="desc">密碼雜湊</div>
       </div>
       <div class="tech-item">
         <div class="icon">🌐</div>
-        <div class="name">純前端</div>
-        <div class="desc">無需伺服器</div>
+        <div class="name">純前端 + Node.js</div>
+        <div class="desc">雙模式支援</div>
+      </div>
+      <div class="tech-item">
+        <div class="icon">🟢</div>
+        <div class="name">Express</div>
+        <div class="desc">REST API（v2+）</div>
+      </div>
+      <div class="tech-item">
+        <div class="icon">🗂️</div>
+        <div class="name">SQLite</div>
+        <div class="desc">真實資料庫</div>
       </div>
     </div>
 

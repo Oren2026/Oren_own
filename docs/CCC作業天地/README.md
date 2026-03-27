@@ -10,11 +10,14 @@
 CCC作業天地/
 ├── index.html              ← 作業列表首頁
 ├── README.md               ← 本說明檔
-└── HW_firstweb0327/       ← 第一次作業：網頁日誌系統
+└── HW_firstweb0327/       ← 第一次作業：網頁日誌系統（v1.0 → v3.0）
     ├── README.md
-    └── journal/
-        ├── index.html      ← 日誌系統
-        └── journal.js      ← SQLite + IndexedDB
+    ├── index.html          ← 版本入口頁
+    ├── assets/             ← 共享 CSS 資源
+    ├── v1.0/ ~ v1.3/       ← 純前端版（sql.js）
+    ├── v2.0/               ← Node.js 後端對照版
+    ├── v2.1/               ← Node.js + 統一錯誤處理
+    └── v3.0/               ← 追蹤系統 + 亮暗版主題
 ```
 
 ---
@@ -23,7 +26,7 @@ CCC作業天地/
 
 | 作業 | 說明 | 狀態 |
 |------|------|------|
-| [HW_firstweb0327](./HW_firstweb0327/) | 網頁日誌系統（JS + SQLite） | ✅ 完成 |
+| [HW_firstweb0327](./HW_firstweb0327/) | 網頁日誌系統（JS + SQLite → Node.js） | ✅ 完成（v1.0–v3.0） |
 
 ---
 
