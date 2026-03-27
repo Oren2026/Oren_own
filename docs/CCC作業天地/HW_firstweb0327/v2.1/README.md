@@ -29,6 +29,22 @@
 
 ## 🚀 啟動方式
 
+### 方式一：脫機演示（不需要 server）⭐
+直接用瀏覽器開啟 `public/index.html` 即可演示！
+
+```
+開啟方式：
+1. https://Oren2026.github.io/Oren_own/docs/CCC作業天地/HW_firstweb0327/v2.1/public/index.html
+2. 或 clone 後直接用瀏覽器打開 v2.1/public/index.html
+```
+
+- ✅ 無需 `npm install` / `node server.js`
+- ✅ 內建試用模式（`demo.js`），fetch 被 mock 回傳靜態 JSON
+- ✅ 可用任意帳號密碼登入（示範用：任意帳號 + 密碼）
+- ⚠️ 資料為唯獨 mock，發文/編輯/刪除僅存在記憶體
+
+### 方式二：本機 server（完整功能）
+
 ```bash
 cd HW_firstweb0327/v2.1
 npm install   # 第一次
