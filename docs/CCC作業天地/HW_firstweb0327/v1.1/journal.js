@@ -176,24 +176,30 @@ function updateHeader() {
 // Auth Modal
 // ─────────────────────────────────────────
 function openAuth(tab) {
-  switchAuthTab(tab || 'login');
+  switchAuth(tab || 'login');
   document.getElementById('auth-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
 function closeAuth() {
   document.getElementById('auth-modal').classList.remove('open');
-  document.getElementById('auth-msg').textContent = '';
+  setMsg('');
+  setMsgReg('');
   document.body.style.overflow = '';
 }
 
-function switchAuthTab(tab) {
+function switchAuth(tab) {
   document.getElementById('tab-login').classList.toggle('active', tab === 'login');
   document.getElementById('tab-reg').classList.toggle('active', tab === 'reg');
-  document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('reg-form').style.display  = tab === 'reg'  ? 'block' : 'none';
-  document.getElementById('auth-msg').textContent = '';
-  document.getElementById('auth-modal-title').textContent = tab === 'login' ? '登入' : '註冊';
+  document.getElementById('login-form').style.display = tab === 'login' ? '' : 'none';
+  document.getElementById('reg-form').style.display  = tab === 'reg'  ? '' : 'none';
+  setMsg('');
+  setMsgReg('');
+  // 品牌區標語切換
+  document.getElementById('auth-brand-title').innerHTML =
+    tab === 'login'
+      ? '你的想法<br>值得被看見'
+      : '加入我們<br>開始記錄一切';
 }
 
 async function handleRegister(e) {
@@ -201,14 +207,14 @@ async function handleRegister(e) {
   const u = document.getElementById('reg-username').value.trim();
   const p = document.getElementById('reg-password').value;
   const p2 = document.getElementById('reg-password2').value;
-  if (!u || !p) { setMsg('❌ 請填寫所有欄位'); return; }
-  if (p !== p2) { setMsg('❌ 兩次密碼不同'); return; }
-  if (p.length < 4) { setMsg('❌ 密碼至少 4 個字元'); return; }
+  if (!u || !p) { setMsgReg('❌ 請填寫所有欄位'); return; }
+  if (p !== p2) { setMsgReg('❌ 兩次密碼不同'); return; }
+  if (p.length < 4) { setMsgReg('❌ 密碼至少 4 個字元'); return; }
 
   const hash = sha256_sync(p); // sync version for DB ops
   const stmt = db.prepare('SELECT id FROM users WHERE username = ?');
   stmt.bind([u]);
-  if (stmt.step()) { stmt.free(); setMsg('❌ 帳號已有人使用'); return; }
+  if (stmt.step()) { stmt.free(); setMsgReg('❌ 帳號已有人使用'); return; }
   stmt.free();
 
   db.run('INSERT INTO users (username, password_hash) VALUES (?, ?)', [u, hash]);
@@ -259,7 +265,8 @@ function sha256_sync(text) {
   return crypto.createHash('sha256').update(text).digest('hex');
 }
 
-function setMsg(txt) { document.getElementById('auth-msg').textContent = txt; }
+function setMsg(txt)  { document.getElementById('auth-msg').textContent = txt; }
+function setMsgReg(txt) { const el = document.getElementById('auth-msg-reg'); if (el) el.textContent = txt; }
 
 // ─────────────────────────────────────────
 // 文章列表（所有人可見）
