@@ -1,25 +1,25 @@
 {
-  "updated_at": "2026-03-27T09:25:21.240913",
+  "updated_at": "2026-03-27T09:35:22.712055",
   "coins": [
     {
       "id": "bittensor",
       "symbol": "TAO",
       "name": "Bittensor",
-      "price": 344.23,
-      "change_24h": -2.73805,
-      "market_cap": 3304145460,
-      "volume_24h": 638662744,
-      "updated_at": "2026-03-27T09:25:20.843646"
+      "price": 344.94,
+      "change_24h": -3.13221,
+      "market_cap": 3310590610,
+      "volume_24h": 633606615,
+      "updated_at": "2026-03-27T09:35:22.384567"
     },
     {
       "id": "fetch-ai",
       "symbol": "FET",
       "name": "Artificial Superintelligence Alliance",
-      "price": 0.244146,
-      "change_24h": -5.08583,
-      "market_cap": 551366517,
-      "volume_24h": 127836070,
-      "updated_at": "2026-03-27T09:25:21.240866"
+      "price": 0.244094,
+      "change_24h": -4.93068,
+      "market_cap": 551275763,
+      "volume_24h": 127736672,
+      "updated_at": "2026-03-27T09:35:22.711996"
     }
   ]
 }

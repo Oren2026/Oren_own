@@ -24,7 +24,6 @@ _最後更新：2026-03-25_
 
 ## 🎲 隨機探索
 
-- R 數位孿生在半導體製程的應用：虛擬工廠與預測性維護
 - R LLM的reasoning chain研究：system 2 thinking 與長鏈推理的工程極限
 - R 機器人競賽中的sim-to-real transfer：現實差距的成因與閉環適應方法
 - R 進化演算法與人工生命：裸露演化（primordial soup）模擬的計算框架
