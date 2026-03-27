@@ -267,8 +267,8 @@ function closeAuthModal() {
 function switchAuthTab(tab) {
   document.getElementById('tab-login').classList.toggle('active', tab === 'login');
   document.getElementById('tab-reg').classList.toggle('active', tab === 'reg');
-  document.getElementById('login-form').style.display = tab === 'login' ? '' : 'none';
-  document.getElementById('reg-form').style.display = tab === 'reg' ? '' : 'none';
+  document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('reg-form').style.display = tab === 'reg' ? 'block' : 'none';
   document.getElementById('auth-msg').textContent = '';
   document.getElementById('auth-modal-title').textContent = tab === 'login' ? '登入' : '註冊';
 }
