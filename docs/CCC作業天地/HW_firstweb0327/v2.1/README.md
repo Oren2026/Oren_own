@@ -1,6 +1,18 @@
-# v2.1 — 網頁日誌系統（Node.js + SQLite）
+# v2.1 / v2.2 — 網頁日誌系統（Node.js + SQLite）
 
-> 更新日期：2026-03-27｜從 v2.0 升級
+> v2.2 更新日期：2026-03-27｜從 v2.1 升級
+
+---
+
+## 🎯 v2.2 更新重點
+
+| 功能 | 說明 |
+|------|------|
+| 📄 **分頁（Pagination）** | `GET /api/entries?page=1&limit=10`，回傳 `{ entries, total, page, limit, totalPages }` |
+| 👤 **我的文章過濾** | 工具列「👤 我的文章」按鈕（登入後可見），使用 `?author=` 參數 |
+| 🏷️ **Tags 標籤** | `entries.tags` TEXT 欄位（逗號分隔），支援新增/編輯/顯示/點擊過濾 |
+| 🔍 **搜尋列** | 可輸入 `#標籤名` 進行標籤過濾，使用 `?tag=` 參數 |
+| ⬅️➡️ **分頁 UI** | 工具列上方顯示「上一頁 / 下一頁」按鈕 + 「第 X 頁，共 Y 頁」 |
 
 ---
 
@@ -63,25 +75,29 @@ v2.1/
 ## 🌐 API Endpoints
 
 ```
-POST /api/auth/register   { username, password }         → 201 { user }
-POST /api/auth/login      { username, password }         → 200 { user } + Set-Cookie
-POST /api/auth/logout     (clear cookie)                 → 200 { ok }
-GET  /api/auth/me         (require login)                → 200 { user }
+POST /api/auth/register   { username, password }                    → 201 { user }
+POST /api/auth/login      { username, password }                    → 200 { user } + Set-Cookie
+POST /api/auth/logout     (clear cookie)                            → 200 { ok }
+GET  /api/auth/me         (require login)                           → 200 { user }
 
-GET    /api/entries?author=&q=  列表                      → 200 { entries }
-POST   /api/entries       { title, content, date }       → 201 { entry }
-PUT    /api/entries/:id   { title, content, date }       → 200 { entry }
-DELETE /api/entries/:id   (require login + owner)         → 204 (no body)
+GET    /api/entries?author=&q=&tag=&page=&limit=  列表（v2.2）        → 200 { entries, total, page, limit, totalPages }
+POST   /api/entries       { title, content, date, tags }             → 201 { entry }
+PUT    /api/entries/:id   { title, content, date, tags }             → 200 { entry }
+DELETE /api/entries/:id   (require login + owner)                   → 204 (no body)
 ```
 
 ---
 
-## vs v2.0 差異對照
+## vs v2.0 / v2.1 差異對照
 
-| 項目 | v2.0 | v2.1 |
-|------|------|------|
-| HTTP 日誌 | 無 | Morgan（每個 request） |
-| 錯誤處理 | 各 route 自己做 | `ApiError` + `errorHandler` |
-| 非同步 | 手動 try/catch | `asyncWrap` 統一包裝 |
-| Loading 狀態 | 無 | 按鈕 disable + ⏳ |
-| DELETE 響應 | 200 { ok } | 204 No Content |
+| 項目 | v2.0 | v2.1 | v2.2 |
+|------|------|------|------|
+| HTTP 日誌 | 無 | Morgan | Morgan |
+| 錯誤處理 | 各 route 自己做 | `ApiError` + `errorHandler` | 同左 |
+| 非同步 | 手動 try/catch | `asyncWrap` | 同左 |
+| Loading 狀態 | 無 | 按鈕 disable + ⏳ | 同左 |
+| DELETE 響應 | 200 { ok } | 204 No Content | 同左 |
+| 分頁 | 無 | 無 | `?page=&limit=` |
+| 我的文章過濾 | 無 | 無 | `?author=` |
+| Tags 標籤 | 無 | 無 | `tags` TEXT 欄位 |
+

@@ -1,10 +1,12 @@
 /**
- * public/journal.js — v2.1 Node.js 版前端
+ * public/journal.js — v2.2
  *
- * v2.1 更新：
- * - 所有寫入操作（登入/註冊/發文/刪除）加入 loading 狀態
- * - 按鈕送出時 disable + 顯示 spinner，避免重複點擊
- * - 204 No Content（刪除成功）時 res.ok 仍為 true 特別處理
+ * v2.2 更新：
+ * - Pagination：GET /api/entries 支援 ?page=&limit=，回傳 { entries, total, page, limit, totalPages }
+ * - 我的文章過濾：工具列新增「我的文章」按鈕（登入後可見），使用 ?author= 查詢參數
+ * - Tags 標籤：entries 表新增 tags 欄位（逗號分隔），支援新增/編輯/顯示/過濾
+ * - 分頁 UI：工具列上方顯示「上一頁 / 下一頁」按鈕 + 「第 X 頁，共 Y 頁」
+ * - 搜尋列支援 tag 過濾（?tag=）
  */
 'use strict';
 
@@ -12,7 +14,10 @@
    全域狀態
    ============================================================ */
 let currentUser  = null;  // { id, username }
-let filterAuthor = null; // null = 顯示全部
+let filterAuthor = null;  // null = 顯示全部
+let currentPage  = 1;
+let totalPages   = 1;
+let totalEntries = 0;
 
 /* ============================================================
    API 工具
@@ -35,12 +40,17 @@ async function api(path, { body, ...rest } = {}) {
 /* ============================================================
    通用 Loading 状态（按鈕 Disable）
    ============================================================ */
-function setBtnLoading(sel, loading, label) {
+function setBtnLoading(sel, loading) {
   const btn = document.querySelector(sel);
   if (!btn) return;
-  btn.disabled = loading;
-  btn.dataset._orig = btn.textContent.trim();
-  btn.textContent = loading ? '⏳ 處理中…' : btn.dataset._orig;
+  if (loading) {
+    btn.dataset._orig = btn.textContent.trim();
+    btn.disabled = true;
+    btn.textContent = '⏳ 處理中…';
+  } else {
+    btn.textContent = btn.dataset._orig || btn.textContent;
+    btn.disabled = false;
+  }
 }
 
 function restoreAllBtns() {
@@ -112,13 +122,34 @@ function setWelcome(title, sub) {
    ============================================================ */
 function filterByAuthor(username) {
   filterAuthor = username;
+  currentPage  = 1;
   updateHeader();
   renderEntries();
 }
 
 function clearAuthorFilter() {
   filterAuthor = null;
+  currentPage  = 1;
   updateHeader();
+  renderEntries();
+}
+
+/* ============================================================
+   我的文章過濾（僅登入者可見）
+   ============================================================ */
+function filterMyArticles() {
+  if (!currentUser) return;
+  filterAuthor = currentUser.username;
+  currentPage  = 1;
+  updateHeader();
+  renderEntries();
+}
+
+/* ============================================================
+   分頁導航
+   ============================================================ */
+function goToPage(p) {
+  currentPage = Math.max(1, Math.min(totalPages, p));
   renderEntries();
 }
 
@@ -198,36 +229,59 @@ async function handleLogin(e) {
 async function logout() {
   try { await api('/auth/logout', { method: 'POST' }); } catch (_) {}
   currentUser = null;
+  filterAuthor = null;
+  currentPage  = 1;
   updateHeader();
   renderEntries();
 }
 
 /* ============================================================
-   文章列表
+   文章列表（含分頁 + Tags）
    ============================================================ */
 async function renderEntries() {
-  const q = document.getElementById('search-input').value;
+  const q    = document.getElementById('search-input').value.trim();
   const params = new URLSearchParams();
   if (filterAuthor) params.set('author', filterAuthor);
   if (q)             params.set('q', q);
+  params.set('page',  currentPage);
+  params.set('limit', 10);
+
   const path = '/entries' + (params.toString() ? '?' + params.toString() : '');
 
-  let entries = [];
+  let entries   = [];
+  let total     = 0;
+  let page      = 1;
+  let limit     = 10;
+  let totalPages = 1;
+
   try {
-    const { entries: data } = await api(path);
-    entries = data || [];
+    const data = await api(path);
+    entries    = data.entries   || [];
+    total      = data.total     || 0;
+    page       = data.page      || 1;
+    limit      = data.limit     || 10;
+    totalPages = data.totalPages|| 1;
   } catch (err) {
     console.error(err);
   }
 
+  totalEntries = total;
+  currentPage  = page;
+  totalPages   = totalPages;
+
   window._cachedEntries = entries;
 
   const el = document.getElementById('entry-list');
-  document.getElementById('stat-total').textContent = entries.length;
+
+  // 更新統計
+  document.getElementById('stat-total').textContent = total;
   document.getElementById('stat-authors').textContent =
     [...new Set(entries.map(e => e.username))].length;
   document.getElementById('stat-latest').textContent =
-    entries.length ? (entries[0].date || entries[0].created_at.slice(0, 10)) : '—';
+    total > 0 ? `第 ${page} / ${totalPages} 頁` : '—';
+
+  // 更新分頁 UI
+  updatePaginationUI(page, totalPages);
 
   if (!entries.length) {
     const hint = filterAuthor
@@ -237,7 +291,19 @@ async function renderEntries() {
     return;
   }
 
-  el.innerHTML = entries.map(e => `
+  el.innerHTML = entries.map(e => {
+    // 解析 tags
+    const tags = e.tags
+      ? e.tags.split(',').map(t => t.trim()).filter(Boolean)
+      : [];
+
+    const tagsHtml = tags.length
+      ? `<div class="entry-tags">${tags.map(t =>
+          `<span class="tag-chip" onclick="filterByTag('${escAttr(t)}')">#${esc(t)}</span>`
+        ).join('')}</div>`
+      : '';
+
+    return `
     <div class="entry-card">
       <div class="entry-header" onclick="openView(${e.id})">
         <div>
@@ -250,6 +316,7 @@ async function renderEntries() {
             <span>📅 ${e.date || e.created_at.slice(0, 10)}</span>
             <span>🕒 ${e.created_at.slice(11, 16)}</span>
           </div>
+          ${tagsHtml}
         </div>
         ${currentUser && currentUser.id === e.user_id ? `
         <div class="entry-actions" onclick="event.stopPropagation()">
@@ -257,11 +324,37 @@ async function renderEntries() {
           <button class="btn btn-danger" onclick="delEntry(${e.id})">🗑️</button>
         </div>` : ''}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 /* ============================================================
-   發文 / 編輯
+   分頁 UI
+   ============================================================ */
+function updatePaginationUI(page, totalPages) {
+  const el = document.getElementById('pagination-ui');
+  if (!el) return;
+
+  el.innerHTML = `
+    <button class="btn btn-ghost" onclick="goToPage(${page - 1})"
+            ${page <= 1 ? 'disabled' : ''}>⬅️ 上一頁</button>
+    <span class="page-indicator">第 ${page} 頁，共 ${totalPages} 頁</span>
+    <button class="btn btn-ghost" onclick="goToPage(${page + 1})"
+            ${page >= totalPages ? 'disabled' : ''}>下一頁 ➡️</button>
+  `;
+}
+
+/* ============================================================
+   Tag 過濾
+   ============================================================ */
+function filterByTag(tag) {
+  document.getElementById('search-input').value = '#' + tag;
+  currentPage = 1;
+  renderEntries();
+}
+
+/* ============================================================
+   發文 / 編輯（含 Tags）
    ============================================================ */
 function openEntryForm(id) {
   if (!currentUser) { openAuth('login'); return; }
@@ -269,16 +362,18 @@ function openEntryForm(id) {
   if (id) {
     const e = window._cachedEntries?.find(x => x.id === id);
     if (!e || e.user_id !== currentUser.id) return;
-    document.getElementById('edit-entry-id').value = id;
-    document.getElementById('entry-title').value   = e.title;
-    document.getElementById('entry-date').value    = e.date || '';
-    document.getElementById('entry-content').value  = e.content || '';
+    document.getElementById('edit-entry-id').value   = id;
+    document.getElementById('entry-title').value    = e.title;
+    document.getElementById('entry-date').value     = e.date || '';
+    document.getElementById('entry-content').value   = e.content || '';
+    document.getElementById('entry-tags').value      = e.tags || '';
     document.getElementById('entry-modal-title').textContent = '✏️ 編輯文章';
   } else {
-    document.getElementById('edit-entry-id').value = '';
-    document.getElementById('entry-title').value   = '';
-    document.getElementById('entry-date').value    = new Date().toISOString().split('T')[0];
-    document.getElementById('entry-content').value  = '';
+    document.getElementById('edit-entry-id').value   = '';
+    document.getElementById('entry-title').value    = '';
+    document.getElementById('entry-date').value     = new Date().toISOString().split('T')[0];
+    document.getElementById('entry-content').value   = '';
+    document.getElementById('entry-tags').value      = '';
     document.getElementById('entry-modal-title').textContent = '＋ 發表文章';
   }
 
@@ -299,14 +394,15 @@ async function saveEntry() {
   const title = document.getElementById('entry-title').value.trim();
   const date  = document.getElementById('entry-date').value;
   const cont  = document.getElementById('entry-content').value;
+  const tags  = document.getElementById('entry-tags').value.trim();
   if (!title) { alert('請輸入標題'); return; }
 
   setBtnLoading('.form-actions .btn-success', true);
   try {
     if (id) {
-      await api(`/entries/${id}`, { method: 'PUT', body: { title, content: cont, date } });
+      await api(`/entries/${id}`, { method: 'PUT', body: { title, content: cont, date, tags } });
     } else {
-      await api('/entries', { method: 'POST', body: { title, content: cont, date } });
+      await api('/entries', { method: 'POST', body: { title, content: cont, date, tags } });
     }
     closeEntryForm();
     renderEntries();
@@ -318,11 +414,12 @@ async function saveEntry() {
 }
 
 /* ============================================================
-   檢視
+   檢視（含 Tags）
    ============================================================ */
 function openView(id) {
   const e = window._cachedEntries?.find(x => x.id === id);
   if (!e) return;
+
   document.getElementById('view-title').textContent = e.title;
   document.getElementById('view-meta').innerHTML =
     `<span class="entry-author" onclick="closeView(); filterByAuthor('${escAttr(e.username)}')">
@@ -330,6 +427,18 @@ function openView(id) {
      </span>
      <span>📅 ${e.date || e.created_at.slice(0, 10)}</span>
      <span>🕒 ${e.created_at.slice(11, 16)}</span>`;
+
+  // Tags in view modal
+  const tags = e.tags
+    ? e.tags.split(',').map(t => t.trim()).filter(Boolean)
+    : [];
+  const viewTagsHtml = tags.length
+    ? `<div class="view-tags">${tags.map(t =>
+        `<span class="tag-chip" onclick="closeView(); filterByTag('${escAttr(t)}')">#${esc(t)}</span>`
+      ).join('')}</div>`
+    : '';
+  document.getElementById('view-tags').innerHTML = viewTagsHtml;
+
   document.getElementById('view-content').textContent = e.content || '(無內容)';
   document.getElementById('view-actions').innerHTML =
     (currentUser && currentUser.id === e.user_id)
@@ -402,8 +511,8 @@ function setStatus(txt, cls) {
   if (el) { el.textContent = txt; el.className = cls || ''; }
 }
 
-function setMsg(txt)    { document.getElementById('auth-msg').textContent = txt; }
-function setMsgReg(txt) { const el = document.getElementById('auth-msg-reg'); if (el) el.textContent = txt; }
+function setMsg(txt)     { document.getElementById('auth-msg').textContent = txt; }
+function setMsgReg(txt)  { const el = document.getElementById('auth-msg-reg'); if (el) el.textContent = txt; }
 
 /* ============================================================
    Boot

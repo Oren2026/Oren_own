@@ -1,7 +1,7 @@
 {
   "name": "journal-system-v2",
-  "version": "2.1.0",
-  "description": "網頁日誌系統 v2.1 — Node.js + SQLite（統一錯誤處理 + Morgan 日誌 + Loading 狀態）",
+  "version": "2.2.0",
+  "description": "網頁日誌系統 v2.2 — Node.js + SQLite（分頁 + Tags + 我的文章 + Loading）",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",

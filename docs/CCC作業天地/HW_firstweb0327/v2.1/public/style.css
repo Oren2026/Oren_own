@@ -649,3 +649,71 @@ body {
   .auth-brand h2 { font-size: 1.3rem; }
   .auth-form-panel { padding: 1.5rem; }
 }
+
+/* ============================================================
+   v2.2 新增樣式：Tags + Pagination + 我的文章
+   ============================================================ */
+
+/* ── Tags 晶片（entry card / view modal）────────── */
+.entry-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.tag-chip {
+  display: inline-block;
+  padding: 1px 8px;
+  background: var(--accent-light);
+  color: var(--accent);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  user-select: none;
+}
+.tag-chip:hover { background: #99f6e4; }
+
+.view-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0.5rem 0;
+}
+
+/* ── 分頁導航列 ─────────────────────────────── */
+.pagination-ui {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 0.75rem;
+  box-shadow: var(--shadow);
+}
+
+.page-indicator {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+.pagination-ui .btn-ghost {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+/* ── 我的文章按鈕（工具列）──────────────────── */
+#auth-toolbar .btn-secondary:first-child {
+  background: var(--accent-light);
+  color: var(--accent);
+  border: 1px solid #99f6e4;
+}
+#auth-toolbar .btn-secondary:first-child:hover {
+  background: #99f6e4;
+}
+

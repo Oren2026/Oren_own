@@ -56,6 +56,8 @@
     </div>
 
     <div class="toolbar" id="auth-toolbar" style="display:none;">
+      <!-- v2.2: 我的文章過濾（登入後可見） -->
+      <button class="btn btn-secondary" onclick="filterMyArticles()">👤 我的文章</button>
       <button class="btn btn-primary" onclick="openEntryForm()">＋ 新增文章</button>
       <button class="btn btn-secondary" onclick="exportDB()">💾 匯出</button>
       <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">📂 匯入</button>
@@ -63,8 +65,11 @@
     </div>
 
     <div class="search-bar">
-      <input type="text" id="search-input" placeholder="🔍 搜尋標題或內容..." oninput="renderEntries()">
+      <input type="text" id="search-input" placeholder="🔍 搜尋標題、內容或 #標籤..." oninput="renderEntries()">
     </div>
+
+    <!-- v2.2: 分頁導航列 -->
+    <div class="pagination-ui" id="pagination-ui"></div>
 
     <div id="entry-list">
       <div class="empty">
@@ -180,6 +185,11 @@
           <label>內容</label>
           <textarea id="entry-content" placeholder="寫下你的想法..."></textarea>
         </div>
+        <!-- v2.2: Tags 標籤輸入 -->
+        <div class="form-group">
+          <label>標籤（選填，逗號分隔多個）</label>
+          <input type="text" id="entry-tags" placeholder="例如：雲林,生活,心得">
+        </div>
         <div class="form-actions">
           <button class="btn btn-secondary" onclick="closeEntryForm()">取消</button>
           <button class="btn btn-success" onclick="saveEntry()">💾 發表</button>
@@ -197,6 +207,8 @@
       </div>
       <div class="view-modal-body">
         <div class="view-meta" id="view-meta"></div>
+        <!-- v2.2: Tags 顯示區 -->
+        <div class="view-tags" id="view-tags"></div>
         <pre class="view-content" id="view-content"></pre>
         <div class="view-actions" id="view-actions"></div>
       </div>
