@@ -1,0 +1,277 @@
+/* ============================================================
+   auth.css — Auth 雙面板 Modal 樣式
+   適用：v1.1 / v1.2
+   ============================================================ */
+
+/* ── Auth 卡片（雙面板） ── */
+.auth-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.35);
+  animation: authSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes authSlideIn {
+  from { opacity: 0; transform: scale(0.88) translateY(30px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+/* ── 左側品牌區 ── */
+.auth-brand {
+  width: 260px;
+  flex-shrink: 0;
+  background: linear-gradient(160deg, #0f766e 0%, #134e4a 50%, #0f3d3a 100%);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-brand::before {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+  top: -60px;
+  right: -60px;
+}
+.auth-brand::after {
+  content: '';
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+  bottom: -40px;
+  left: -40px;
+}
+
+.auth-brand-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  position: relative;
+  z-index: 1;
+}
+
+.auth-brand-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.9);
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(4px);
+  position: relative;
+  z-index: 1;
+}
+
+.auth-brand h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-brand p {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.7;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-brand-features {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-brand-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.8);
+}
+
+.auth-brand-feature .check-icon {
+  width: 18px;
+  height: 18px;
+  background: rgba(16,185,129,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  flex-shrink: 0;
+  color: #6ee7b7;
+}
+
+/* ── 右側表單區 ── */
+.auth-form-panel {
+  flex: 1;
+  padding: 2.5rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.auth-close {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--text-light);
+  cursor: pointer;
+  padding: 0.1rem 0.3rem;
+  border-radius: 6px;
+  line-height: 1;
+  margin-bottom: 1rem;
+  transition: color 0.2s, background 0.2s;
+}
+.auth-close:hover { color: var(--text); background: var(--bg); }
+
+/* ── Tab 切換 ── */
+.auth-toggle {
+  display: flex;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 1.75rem;
+}
+
+.auth-toggle-btn {
+  flex: 1;
+  padding: 0.6rem;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+}
+.auth-toggle-btn.active {
+  background: white;
+  color: var(--accent);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ── 浮動 Label 表單 ── */
+.auth-field {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+.auth-field label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+  color: var(--text-light);
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.34, 1.2, 0.64, 1);
+  background: white;
+  padding: 0 4px;
+}
+.auth-field input {
+  width: 100%;
+  padding: 0.75rem 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: white;
+  color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.auth-field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(15,118,110,0.12);
+}
+/* 浮動 label 聚焦 / 有內容時上移 */
+.auth-field input:focus + label,
+.auth-field input:not(:placeholder-shown) + label {
+  top: 0;
+  font-size: 0.72rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── 送出按鈕 ── */
+.auth-submit { margin-top: 0.5rem; }
+.auth-submit button {
+  width: 100%;
+  padding: 0.85rem;
+  background: linear-gradient(135deg, #0f766e 0%, #0d5f57 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.08em;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 16px rgba(15,118,110,0.3);
+}
+.auth-submit button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15,118,110,0.4);
+}
+.auth-submit button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(15,118,110,0.3);
+}
+
+/* ── 提示訊息 ── */
+.auth-msg {
+  text-align: center;
+  font-size: 0.85rem;
+  padding: 0.6rem;
+  border-radius: 8px;
+  margin-top: 0.75rem;
+  min-height: 0;
+  transition: all 0.2s;
+}
+.auth-msg.error { background: #fee2e2; color: #991b1b; }
+.auth-msg.ok    { background: #d1fae5; color: #065f46; }
+
+/* ── 底部 Hint ── */
+.auth-hint {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-light);
+  margin-top: 1.25rem;
+  line-height: 1.6;
+}
+
+/* ── 響應式：手機以下單欄 ── */
+@media (max-width: 580px) {
+  .auth-card     { flex-direction: column; }
+  .auth-brand    { width: 100%; padding: 1.5rem; }
+  .auth-brand-features { display: none; }
+  .auth-brand h2 { font-size: 1.3rem; }
+  .auth-form-panel { padding: 1.5rem; }
+}

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📓 網頁日誌系統 — HW_firstweb0327</title>
+  <style>
+    :root {
+      --accent: #0f766e;
+      --accent-light: #ccfbf1;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --radius: 16px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--accent) 0%, #115e59 100%);
+      color: white;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+    }
+    .header .icon { font-size: 4rem; margin-bottom: 0.75rem; }
+    .header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .header p { font-size: 1rem; opacity: 0.85; }
+    .header .tag {
+      display: inline-block;
+      margin-top: 1rem;
+      background: rgba(255,255,255,0.2);
+      padding: 0.25rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    /* Container */
+    .container { max-width: 860px; margin: 0 auto; padding: 2rem 1rem; }
+
+    /* Section title */
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Version cards */
+    .version-grid { display: grid; gap: 1rem; margin-bottom: 2.5rem; }
+
+    .version-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .version-card:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+    .version-card.latest {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .version-icon {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .version-icon.small { font-size: 1.8rem; }
+
+    .version-info { flex: 1; }
+    .version-info h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .version-info p { font-size: 0.9rem; color: var(--text-light); line-height: 1.6; }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .badge-latest { background: var(--accent-light); color: var(--accent); }
+    .badge-date { background: var(--bg); border: 1px solid var(--border); color: var(--text-light); }
+
+    .version-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    .tag-chip {
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-light);
+    }
+
+    .version-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin-top: 0.75rem;
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .version-link:hover { text-decoration: underline; }
+
+    /* Tech spec */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+    }
+    .tech-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .tech-item .icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+    .tech-item .name { font-size: 0.9rem; font-weight: 600; }
+    .tech-item .desc { font-size: 0.75rem; color: var(--text-light); margin-top: 0.2rem; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-light);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="icon">📓</div>
+    <h1>網頁日誌系統</h1>
+    <p>HW_firstweb0327｜CCC 老師作業</p>
+    <span class="tag">JS + SQLite（sql.js）純前端</span>
+  </header>
+
+  <main class="container">
+
+    <!-- 版本列表 -->
+    <div class="section-title">選擇版本</div>
+
+    <div class="version-grid">
+
+      <!-- v1.2 最新 -->
+      <div class="version-card latest">
+        <div class="version-icon">🚀</div>
+        <div class="version-info">
+          <h2>
+            v1.2
+            <span class="badge badge-latest">最新</span>
+            <span class="badge badge-date">2026-03-27</span>
+          </h2>
+          <p>從 v1.1 新增「作者過濾」功能。點擊任何文章的作者名稱，即時只看該作者的全部文章。右上角 filter chip 可一鍵清除。</p>
+          <div class="version-tags">
+            <span class="tag-chip">👤 作者過濾</span>
+            <span class="tag-chip">🌍 公開日誌牆</span>
+            <span class="tag-chip">🔐 Auth Modal</span>
+            <span class="tag-chip">💾 seed.db</span>
+          </div>
+          <a href="v1.2/index.html" class="version-link">→ 進入 v1.2</a>
+        </div>
+      </div>
+
+      <!-- v1.1 -->
+      <div class="version-card">
+        <div class="version-icon small">📋</div>
+        <div class="version-info">
+          <h2>
+            v1.1
+            <span class="badge badge-date">2026-03-27</span>
+          </h2>
+          <p>第一個正式版。雙面板 Auth Modal（浮動 label）+ ，所有人都能看到的公開日誌牆。預設 SQLite 資料庫包含 4 位使用者的文章。</p>
+          <div class="version-tags">
+            <span class="tag-chip">🔐 雙面板登入</span>
+            <span class="tag-chip">🌍 公開日誌牆</span>
+            <span class="tag-chip">💾 seed.db</span>
+          </div>
+          <a href="v1.1/index.html" class="version-link">→ 進入 v1.1</a>
+        </div>
+      </div>
+
+      <!-- v1.0 -->
+      <div class="version-card">
+        <div class="version-icon small">📝</div>
+        <div class="version-info">
+          <h2>
+            v1.0
+            <span class="badge badge-date">2026-03-27</span>
+          </h2>
+          <p>初始版本。最基礎的網頁日誌系統，包含 CRUD、搜尋、匯出入功能。沒有使用者系統。</p>
+          <div class="version-tags">
+            <span class="tag-chip">📝 CRUD</span>
+            <span class="tag-chip">🔍 搜尋</span>
+            <span class="tag-chip">💾 匯出入</span>
+          </div>
+          <a href="v1.0/index.html" class="version-link">→ 進入 v1.0</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 技術規格 -->
+    <div class="section-title">技術規格</div>
+    <div class="tech-grid">
+      <div class="tech-item">
+        <div class="icon">⚡</div>
+        <div class="name">sql.js</div>
+        <div class="desc">SQLite (WASM)</div>
+      </div>
+      <div class="tech-item">
+        <div class="icon">🗄️</div>
+        <div class="name">IndexedDB</div>
+        <div class="desc">本地持久化</div>
+      </div>
+      <div class="tech-item">
+        <div class="icon">🔐</div>
+        <div class="name">SHA-256</div>
+        <div class="desc">密碼雜湊</div>
+      </div>
+      <div class="tech-item">
+        <div class="icon">🌐</div>
+        <div class="name">純前端</div>
+        <div class="desc">無需伺服器</div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <p>📓 網頁日誌系統｜HW_firstweb0327｜授課老師：CCC</p>
+    <p style="margin-top:0.3rem;">由 <a href="https://github.com/Oren2026" style="color:var(--accent);">Oren</a> 維護</p>
+  </footer>
+</body>
+</html>
