@@ -406,5 +406,16 @@
       "預測性維護",
       "智慧製造"
     ]
+  },
+  {
+    "title": "LLM推理鏈研究：System 2 Thinking與長CoT工程極限",
+    "summary": "長CoT推理透過SFT可達更高性能，但RL驅動的CoT擴展面臨挑戰，如注意力衰退與上下文長度限制。",
+    "tags": [
+      "AI",
+      "LLM",
+      "Reasoning",
+      "System2",
+      "CoT"
+    ]
   }
 ]
