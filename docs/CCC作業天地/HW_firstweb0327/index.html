@@ -178,13 +178,32 @@
 
     <div class="version-grid">
 
-      <!-- v1.2 最新 -->
+      <!-- v1.3 最新 -->
       <div class="version-card latest">
-        <div class="version-icon">🚀</div>
+        <div class="version-icon">🔧</div>
+        <div class="version-info">
+          <h2>
+            v1.3
+            <span class="badge badge-latest">最新</span>
+            <span class="badge badge-date">2026-03-27</span>
+          </h2>
+          <p>v1.2 框架重構版。DB class 包裝所有 SQL 操作，全面改用參數化查詢（`db.get / db.all / db.run`），徹底杜絕 SQL 注入。DB key 與舊版乾淨切分。</p>
+          <div class="version-tags">
+            <span class="tag-chip">🔧 DB class</span>
+            <span class="tag-chip">🔒 參數化查詢</span>
+            <span class="tag-chip">👤 作者過濾</span>
+            <span class="tag-chip">🌍 公開日誌牆</span>
+          </div>
+          <a href="v1.3/index.html" class="version-link">→ 進入 v1.3</a>
+        </div>
+      </div>
+
+      <!-- v1.2 -->
+      <div class="version-card">
+        <div class="version-icon small">📋</div>
         <div class="version-info">
           <h2>
             v1.2
-            <span class="badge badge-latest">最新</span>
             <span class="badge badge-date">2026-03-27</span>
           </h2>
           <p>從 v1.1 新增「作者過濾」功能。點擊任何文章的作者名稱，即時只看該作者的全部文章。右上角 filter chip 可一鍵清除。</p>
