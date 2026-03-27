@@ -112,6 +112,7 @@ function showAuth() {
   document.getElementById('user-display').style.display = 'none';
   document.getElementById('btn-logout').style.display = 'none';
   document.getElementById('btn-clear').style.display = 'none';
+  switchAuthTab('login'); // 顯示登入表單
 }
 
 function renderApp() {
