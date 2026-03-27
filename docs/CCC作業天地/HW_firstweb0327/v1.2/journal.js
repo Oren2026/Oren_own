@@ -71,7 +71,7 @@ async function init() {
       if (!res.ok) throw new Error('seed.db fetch failed');
       const buf = await res.arrayBuffer();
       db = new SQL.Database(new Uint8Array(buf));
-      await idb('readwrite', DB_KEY, Array.from(db.export());
+      await idb('readwrite', DB_KEY, Array.from(db.export()));
     }
 
     db.run(`
@@ -123,7 +123,7 @@ async function init() {
 // ─────────────────────────────────────────
 async function persist() {
   if (!db) return;
-  try { await idb('readwrite', DB_KEY, Array.from(db.export()); } catch(e) {}
+  try { await idb('readwrite', DB_KEY, Array.from(db.export()))); } catch(e) {}
 }
 
 // ─────────────────────────────────────────
@@ -463,7 +463,7 @@ async function importDB(file) {
         locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${f}`
       });
       db = new SQL.Database(new Uint8Array(e.target.result));
-      await idb('readwrite', DB_KEY, Array.from(db.export());
+      await idb('readwrite', DB_KEY, Array.from(db.export()));
       sessionStorage.removeItem(SESSION);
       currentUser = null;
       filterAuthor = null;
