@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📓 網頁日誌系統</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --radius: 12px;
+      --accent: #0f766e;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--accent) 0%, #115e59 100%);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    .header h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+    .header .subtitle { opacity: 0.85; font-size: 0.95rem; }
+    .header .db-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: var(--border); color: var(--text); }
+    .btn-secondary:hover { background: #cbd5e1; }
+    .btn-danger { background: #fee2e2; color: #991b1b; }
+    .btn-danger:hover { background: #fecaca; }
+    .btn-success { background: #d1fae5; color: #065f46; }
+    .btn-success:hover { background: #a7f3d0; }
+
+    /* Journal List */
+    .journal-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .journal-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .journal-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .journal-card-header {
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .journal-card-header:hover { background: var(--bg); }
+    .journal-card-title { font-weight: 600; font-size: 1rem; }
+    .journal-card-meta { font-size: 0.8rem; color: var(--text-light); margin-top: 0.2rem; }
+    .journal-card-actions { display: flex; gap: 0.4rem; }
+    .journal-card-actions .btn { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
+    .journal-card-body {
+      display: none;
+      padding: 0 1.25rem 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+    .journal-card-body.open { display: block; }
+    .journal-content { margin-top: 0.75rem; white-space: pre-wrap; line-height: 1.8; }
+
+    /* Form Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+    .modal-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--card-bg);
+      z-index: 1;
+    }
+    .modal-header h2 { font-size: 1.1rem; }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+      line-height: 1;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 1.25rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      background: var(--bg);
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .form-group textarea { min-height: 200px; resize: vertical; }
+    .form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
+
+    /* Search */
+    .search-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .search-bar input {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: var(--card-bg);
+      color: var(--text);
+    }
+    .search-bar input:focus { outline: none; border-color: var(--primary); }
+
+    /* Empty */
+    .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-light);
+    }
+    .empty .icon { font-size: 3rem; margin-bottom: 1rem; }
+
+    /* Stats */
+    .stats-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .stat-chip {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.3rem 0.85rem;
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+    .stat-chip strong { color: var(--text); }
+
+    /* Footer */
+    .footer { text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.8rem; }
+
+    /* DB Status */
+    #db-status { font-size: 0.75rem; margin-left: 0.5rem; }
+    .saving { color: #f59e0b; }
+    .saved { color: #10b981; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <h1>📓 網頁日誌系統</h1>
+    <p class="subtitle">JS + SQLite（sql.js）純前端日誌</p>
+    <div>
+      <span class="db-badge" id="db-badge">🗄️ SQLite 資料庫</span>
+      <span id="db-status"></span>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <div class="stats-bar" id="stats-bar">
+      <span class="stat-chip">📝 總篇數：<strong id="stat-count">0</strong></span>
+      <span class="stat-chip">📅 最新：<strong id="stat-latest">—</strong></span>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn btn-primary" onclick="openForm()">＋ 新增日誌</button>
+      <button class="btn btn-secondary" onclick="exportDB()">💾 匯出資料庫</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">📂 匯入資料庫</button>
+      <input type="file" id="import-file" accept=".db,.sqlite" style="display:none" onchange="importDB(this.files[0])">
+      <button class="btn btn-danger" onclick="clearAll()" id="btn-clear" style="display:none">🗑️ 清除全部</button>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="🔍 搜尋標題或內容..." oninput="renderList()">
+    </div>
+
+    <div class="journal-list" id="journal-list">
+      <div class="empty">
+        <div class="icon">📭</div>
+        <p>還沒有日誌，點「＋ 新增日誌」開始吧！</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Form Modal -->
+  <div class="modal-overlay" id="form-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="form-title">＋ 新增日誌</h2>
+        <button class="modal-close" onclick="closeForm()">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="edit-id">
+        <div class="form-group">
+          <label>標題</label>
+          <input type="text" id="entry-title" placeholder="今天想記錄什麼？" maxlength="100" required>
+        </div>
+        <div class="form-group">
+          <label>日期（選填）</label>
+          <input type="date" id="entry-date">
+        </div>
+        <div class="form-group">
+          <label>內容</label>
+          <textarea id="entry-content" placeholder="寫下你的想法..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="closeForm()">取消</button>
+          <button class="btn btn-success" onclick="saveEntry()">💾 儲存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Modal -->
+  <div class="modal-overlay" id="view-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="view-title">—</h2>
+        <button class="modal-close" onclick="closeView()">×</button>
+      </div>
+      <div class="modal-body">
+        <p id="view-meta" style="font-size:0.85rem;color:var(--text-light);margin-bottom:0.5rem;"></p>
+        <hr style="border:none;border-top:1px solid var(--border);margin-bottom:1rem;">
+        <pre id="view-content" class="journal-content"></pre>
+        <div class="form-actions" style="margin-top:1.5rem;">
+          <button class="btn btn-danger" onclick="deleteEntry()">🗑️ 刪除</button>
+          <button class="btn btn-primary" onclick="editCurrentEntry()">✏️ 編輯</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>📓 網頁日誌系統｜JS + SQLite（sql.js）｜純前端，無需伺服器</p>
+    <p style="margin-top:0.3rem;">由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
+  </footer>
+
+  <!-- sql.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.min.js"></script>
+  <script src="journal.js"></script>
+</body>
+</html>
