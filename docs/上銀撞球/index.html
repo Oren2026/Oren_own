@@ -158,7 +158,8 @@
       </div>
       <div class="info-card">
         <h3>安全講習</h3>
-        <div class="value warning" id="safety-status">⏳ 待通知</div>
+        <div class="value" id="safety-status">2026/05/17</div>
+        <div class="value warning" style="font-size:0.9rem;" id="safety-countdown">倒數計算中...</div>
       </div>
       <div class="info-card">
         <h3>複審截止</h3>
@@ -188,8 +189,8 @@
             <div class="t-label">✅ 初審結果公告 — 已通過！</div>
           </div>
           <div class="timeline-item">
-            <div class="t-date">2026/03 - 04</div>
-            <div class="t-label">安全講習與測驗（待通知）</div>
+            <div class="t-date">2026/05/17</div>
+            <div class="t-label">🔔 安全講習與測驗</div>
           </div>
           <div class="timeline-item">
             <div class="t-date">2026/05/22</div>
@@ -531,6 +532,16 @@
     // ── Countdown ──
     function updateCountdowns() {
       const now = new Date();
+
+      // Safety training countdown
+      const safetyDate = new Date('2026-05-17T09:00:00+08:00');
+      const diff0 = safetyDate - now;
+      const days0 = Math.floor(diff0 / (1000 * 60 * 60 * 24));
+      const el0 = document.getElementById('safety-countdown');
+      if (el0) {
+        if (diff0 > 0) el0.textContent = `倒數 ${days0} 天`;
+        else el0.textContent = '⚠️ 已過';
+      }
 
       // Review deadline
       const reviewDate = new Date('2026-05-22T17:30:00+08:00');
