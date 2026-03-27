@@ -24,9 +24,6 @@ _最後更新：2026-03-25_
 
 ## 🎲 隨機探索
 
-- R 機器人競賽中的sim-to-real transfer：現實差距的成因與閉環適應方法
-- R 進化演算法與人工生命：裸露演化（primordial soup）模擬的計算框架
-- R 能源民主化：社區微電網的商業模式與 cooperative 激勵機制設計
 - R 計算神經科學與意識研究：神經元集群的整合資訊理論（IIT）驗證
 - R 開放世界機器人規劃：long-horizon任務在未知環境下的反應式策略
 - R LLM for scientific discovery：AlphaFold式突破在化學與生物學的下一個前沿

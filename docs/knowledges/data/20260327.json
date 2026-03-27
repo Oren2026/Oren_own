@@ -417,5 +417,56 @@
       "System2",
       "CoT"
     ]
+  },
+  {
+    "title": "title",
+    "summary": "summary",
+    "tags": [
+      "tags"
+    ]
+  },
+  {
+    "title": "Sim2real gap",
+    "summary": "summary",
+    "tags": [
+      "tags"
+    ]
+  },
+  {
+    "title": "Sim2real gap domain randomization bridges",
+    "summary": "sim2real domain randomization robotics",
+    "tags": [
+      "sim2real"
+    ]
+  },
+  {
+    "title": "Sim2real gap: domain randomization bridges physics differences",
+    "summary": "sim-to-real,domain randomization,robotics competition,sim2real",
+    "tags": [
+      "sim-to-real",
+      "domain randomization",
+      "robotics"
+    ]
+  },
+  {
+    "title": "數位原始湯創造「計算生命」：自我複製程式從隨機程式碼湯中自發演化",
+    "summary": "自然期刊報導：數萬段隨機碼中可自發產生自我複製程式，模擬赤裸演化過程。arxiv論文證實BF程式變體能在原始湯中自發創造自我複製器。",
+    "tags": [
+      "演化演算法",
+      "人工生命",
+      "計算生命",
+      "原始湯",
+      "數位生命"
+    ]
+  },
+  {
+    "title": "社區微電網與能源民主化",
+    "summary": "社區居民民主參與能源決策，公共擁有權與商業化模式之比較。",
+    "tags": [
+      "能源",
+      "微電網",
+      "民主化",
+      "cooperative"
+    ]
   }
 ]

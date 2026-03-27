@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📓 網頁日誌系統 v1.1</title>
+  <title>📓 網頁日誌系統</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -16,6 +16,7 @@
       --shadow: 0 1px 3px rgba(0,0,0,0.1);
       --radius: 12px;
       --accent: #0f766e;
+      --accent-light: #ccfbf1;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -25,56 +26,90 @@
       line-height: 1.6;
     }
 
-    /* Header */
-    .header {
+    /* ── Header ── */
+    .site-header {
       background: linear-gradient(135deg, var(--accent) 0%, #115e59 100%);
       color: white;
-      padding: 1.5rem 1rem;
-      text-align: center;
-    }
-    .header h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
-    .header .subtitle { opacity: 0.85; font-size: 0.95rem; }
-    .header .top-bar {
+      padding: 1.25rem 1.5rem;
       display: flex;
-      justify-content: center;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .site-header .brand {
+      display: flex;
       align-items: center;
       gap: 0.75rem;
-      flex-wrap: wrap;
-      margin-top: 0.5rem;
     }
-    .header .db-badge {
-      background: rgba(255,255,255,0.2);
-      padding: 0.2rem 0.6rem;
-      border-radius: 20px;
-      font-size: 0.75rem;
-    }
-    .header .user-chip {
-      background: rgba(255,255,255,0.2);
-      padding: 0.2rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-    }
-    .header .btn-logout {
+    .site-header .brand-icon { font-size: 1.8rem; }
+    .site-header .brand h1 { font-size: 1.3rem; font-weight: 700; }
+    .site-header .brand p { font-size: 0.8rem; opacity: 0.8; }
+    .site-header .header-right { display: flex; align-items: center; gap: 0.5rem; }
+    .header-btn {
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.4);
       background: rgba(255,255,255,0.15);
+      color: white;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+    .header-btn:hover { background: rgba(255,255,255,0.25); }
+    .header-btn.primary {
+      background: white;
+      color: var(--accent);
+      border-color: white;
+      font-weight: 600;
+    }
+    .header-btn.primary:hover { background: #f0fdf4; }
+    .user-chip {
+      background: rgba(255,255,255,0.2);
+      padding: 0.3rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+    .logout-btn {
+      background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.3);
       color: white;
-      padding: 0.2rem 0.6rem;
-      border-radius: 20px;
-      font-size: 0.75rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
       cursor: pointer;
       font-family: inherit;
     }
-    .header .btn-logout:hover { background: rgba(255,255,255,0.25); }
+    .logout-btn:hover { background: rgba(255,255,255,0.2); }
 
-    .container { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
+    /* ── Container ── */
+    .container { max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem; }
 
-    /* Toolbar */
-    .toolbar {
+    /* ── Welcome Banner ── */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--accent) 0%, #0d5f57 100%);
+      color: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
       display: flex;
-      gap: 0.5rem;
+      justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
-      margin-bottom: 1rem;
+      gap: 1rem;
     }
+    .welcome-banner h2 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+    .welcome-banner p { font-size: 0.9rem; opacity: 0.85; }
+    .welcome-banner .btn { background: white; color: var(--accent); border: none; padding: 0.5rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; font-family: inherit; }
+    .welcome-banner .btn:hover { background: #f0fdf4; }
+
+    /* ── Toolbar ── */
+    .toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
     .btn {
       padding: 0.5rem 1rem;
       border: none;
@@ -93,128 +128,67 @@
     .btn-danger:hover { background: #fecaca; }
     .btn-success { background: #d1fae5; color: #065f46; }
     .btn-success:hover { background: #a7f3d0; }
-    .btn-ghost {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-light);
-    }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-light); }
     .btn-ghost:hover { background: var(--bg); }
 
-    /* Journal List */
-    .journal-list { display: flex; flex-direction: column; gap: 0.75rem; }
-    .journal-card {
+    /* ── Journal Entry Card ── */
+    .entry-card {
       background: var(--card-bg);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       border: 1px solid var(--border);
+      margin-bottom: 1rem;
       overflow: hidden;
       transition: box-shadow 0.2s;
     }
-    .journal-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .journal-card-header {
+    .entry-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .entry-header {
       padding: 1rem 1.25rem;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       cursor: pointer;
-      user-select: none;
     }
-    .journal-card-header:hover { background: var(--bg); }
-    .journal-card-title { font-weight: 600; font-size: 1rem; }
-    .journal-card-meta { font-size: 0.8rem; color: var(--text-light); margin-top: 0.2rem; }
-    .journal-card-actions { display: flex; gap: 0.4rem; }
-    .journal-card-actions .btn { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
-    .journal-card-body {
+    .entry-header:hover { background: #f8fafc; }
+    .entry-title { font-weight: 600; font-size: 1.05rem; margin-bottom: 0.3rem; }
+    .entry-meta { font-size: 0.8rem; color: var(--text-light); display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    .entry-author {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: var(--accent-light);
+      color: #065f46;
+      padding: 0.1rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .entry-actions { display: flex; gap: 0.3rem; flex-shrink: 0; }
+    .entry-actions .btn { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
+    .entry-body {
       display: none;
       padding: 0 1.25rem 1.25rem;
       border-top: 1px solid var(--border);
     }
-    .journal-card-body.open { display: block; }
-    .journal-content { margin-top: 0.75rem; white-space: pre-wrap; line-height: 1.8; }
+    .entry-body.open { display: block; }
+    .entry-content { margin-top: 0.75rem; white-space: pre-wrap; line-height: 1.9; font-size: 0.95rem; }
+    .entry-author-label { font-size: 0.8rem; color: var(--text-light); margin-bottom: 0.5rem; }
+    .entry-author-label strong { color: var(--accent); }
 
-    /* Form Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      width: 100%;
-      max-width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    }
-    .modal-header {
-      padding: 1.25rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      background: var(--card-bg);
-      z-index: 1;
-    }
-    .modal-header h2 { font-size: 1.1rem; }
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--text-light);
-      line-height: 1;
-    }
-    .modal-close:hover { color: var(--text); }
-    .modal-body { padding: 1.25rem; }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; }
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 0.6rem 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 0.95rem;
-      background: var(--bg);
-      color: var(--text);
-      transition: border-color 0.2s;
-    }
-    .form-group input:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-    .form-group textarea { min-height: 200px; resize: vertical; }
-    .form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
-
-    /* Search */
-    .search-bar {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
+    /* ── Search ── */
+    .search-bar { margin-bottom: 1rem; }
     .search-bar input {
-      flex: 1;
-      padding: 0.5rem 0.75rem;
+      width: 100%;
+      padding: 0.6rem 1rem;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.9rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
       background: var(--card-bg);
-      color: var(--text);
+      font-family: inherit;
     }
     .search-bar input:focus { outline: none; border-color: var(--primary); }
 
-    /* Empty */
+    /* ── Empty ── */
     .empty {
       text-align: center;
       padding: 3rem 1rem;
@@ -222,8 +196,8 @@
     }
     .empty .icon { font-size: 3rem; margin-bottom: 1rem; }
 
-    /* Stats */
-    .stats-bar {
+    /* ── Stats ── */
+    .stats-row {
       display: flex;
       gap: 1rem;
       margin-bottom: 1rem;
@@ -239,65 +213,75 @@
     }
     .stat-chip strong { color: var(--text); }
 
-    /* Footer */
-    .footer { text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.8rem; }
-
-    /* DB Status */
-    #db-status { font-size: 0.75rem; margin-left: 0.5rem; }
-    .saving { color: #f59e0b; }
-    .saved { color: #10b981; }
-
-    /* ──────────── Auth Section ──────────── */
-    #auth-section { display: none; }
-    .auth-container {
-      max-width: 400px;
-      margin: 3rem auto;
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
       background: var(--card-bg);
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-      overflow: hidden;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
-    .auth-tabs {
-      display: flex;
+    .modal-header {
+      padding: 1.25rem;
       border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+    .modal-header h2 { font-size: 1.1rem; }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+      line-height: 1;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 1.5rem; }
+
+    /* ── Auth Modal ── */
+    .auth-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 1.25rem; }
     .auth-tab {
       flex: 1;
-      padding: 1rem;
+      padding: 0.75rem;
       text-align: center;
       cursor: pointer;
       font-weight: 600;
       font-size: 0.95rem;
       color: var(--text-light);
-      background: var(--bg);
+      background: none;
       border: none;
       border-bottom: 2px solid transparent;
-      transition: color 0.2s, border-color 0.2s;
+      margin-bottom: -2px;
       font-family: inherit;
+      transition: color 0.2s, border-color 0.2s;
     }
-    .auth-tab.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-      background: white;
-    }
-    .auth-form-body { padding: 1.5rem; }
-    .auth-form-body input {
+    .auth-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .auth-form input {
       width: 100%;
       padding: 0.65rem 0.85rem;
       border: 1px solid var(--border);
       border-radius: 8px;
       font-family: inherit;
       font-size: 0.95rem;
-      margin-bottom: 0.75rem;
       background: var(--bg);
       color: var(--text);
+      margin-bottom: 0.75rem;
     }
-    .auth-form-body input:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-    .auth-form-body button[type="submit"] {
+    .auth-form input:focus { outline: none; border-color: var(--primary); }
+    .auth-form button[type="submit"] {
       width: 100%;
       padding: 0.7rem;
       background: var(--accent);
@@ -310,106 +294,165 @@
       cursor: pointer;
       margin-top: 0.5rem;
     }
-    .auth-form-body button[type="submit"]:hover { background: #0d5f57; }
+    .auth-form button[type="submit"]:hover { background: #0d5f57; }
+    .auth-msg { text-align: center; font-size: 0.9rem; padding: 0.5rem 0; min-height: 1.5rem; color: #991b1b; }
+    .auth-hint { font-size: 0.8rem; color: var(--text-light); text-align: center; margin-top: 0.75rem; }
     #login-form, #reg-form { display: none; }
-    #auth-msg {
-      text-align: center;
-      padding: 0.75rem;
-      font-size: 0.9rem;
-      color: #991b1b;
-      min-height: 1.5rem;
-    }
-    .auth-note {
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--text-light);
-      margin-top: 0.5rem;
-      padding: 0 1.5rem 1.5rem;
-    }
 
-    /* App section hidden by default */
-    #app-section { display: none; }
+    /* ── Entry Form Modal ── */
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
+    .form-group textarea { min-height: 180px; resize: vertical; }
+    .form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
+
+    /* ── Footer ── */
+    .footer { text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.8rem; }
+
+    /* ── DB Status ── */
+    #db-status { font-size: 0.75rem; margin-left: 0.5rem; opacity: 0.8; }
+    .saving { color: #f59e0b; }
+    .saved { color: #a7f3d0; }
+
+    /* ── Demo Banner ── */
+    .demo-users {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .demo-chip {
+      background: var(--accent-light);
+      border: 1px solid #99f6e4;
+      color: #065f46;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
 
-  <header class="header">
-    <h1>📓 網頁日誌系統</h1>
-    <p class="subtitle">JS + SQLite（sql.js）純前端日誌｜v1.1</p>
-    <div class="top-bar">
-      <span class="db-badge" id="db-badge">🗄️ SQLite 資料庫</span>
+  <!-- ── Site Header ── -->
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-icon">📓</span>
+      <div>
+        <h1>網頁日誌系統</h1>
+        <p>JS + SQLite（sql.js）純前端</p>
+      </div>
+    </div>
+    <div class="header-right">
       <span id="db-status"></span>
-      <span class="user-chip" id="user-display" style="display:none;"></span>
-      <button class="btn-logout" id="btn-logout" style="display:none;" onclick="logout()">登出</button>
+      <div id="header-auth">
+        <!-- 動態填充 -->
+      </div>
     </div>
   </header>
 
-  <!-- ── Auth Section ── -->
-  <div id="auth-section" class="container" style="padding-top: 0;">
-    <div class="auth-container">
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">登入</button>
-        <button class="auth-tab" id="tab-reg" onclick="switchAuthTab('reg')">註冊</button>
+  <!-- ── Main Content ── -->
+  <main class="container" id="main-content">
+
+    <!-- Welcome / New Entry Banner -->
+    <div class="welcome-banner" id="welcome-banner">
+      <div>
+        <h2 id="welcome-title">👋 歡迎來到網頁日誌系統</h2>
+        <p id="welcome-sub">這是一個公開的日誌牆，所有人的文章都能在這裡看到。</p>
       </div>
-      <div class="auth-form-body">
+      <button class="btn" id="banner-new-btn" onclick="openEntryForm()">＋ 發表文章</button>
+    </div>
+
+    <!-- Demo Users Hint -->
+    <div class="demo-users" id="demo-hint" style="display:none;">
+      <span style="font-size:0.85rem;color:var(--text-light);margin-right:0.5rem;">測試帳號：</span>
+      <span class="demo-chip">admin / 1234</span>
+      <span class="demo-chip">小美 / 1111</span>
+      <span class="demo-chip">阿偉 / 2222</span>
+      <span class="demo-chip">妮妮 / 3333</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <span class="stat-chip">📝 總文章：<strong id="stat-total">0</strong></span>
+      <span class="stat-chip">👥 作者：<strong id="stat-authors">0</strong></span>
+      <span class="stat-chip">🆕 最新：<strong id="stat-latest">—</strong></span>
+    </div>
+
+    <!-- Toolbar (only when logged in) -->
+    <div class="toolbar" id="auth-toolbar" style="display:none;">
+      <button class="btn btn-primary" onclick="openEntryForm()">＋ 新增文章</button>
+      <button class="btn btn-secondary" onclick="exportDB()">💾 匯出</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">📂 匯入</button>
+      <input type="file" id="import-file" accept=".db,.sqlite" style="display:none" onchange="importDB(this.files[0])">
+    </div>
+
+    <!-- Search -->
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="🔍 搜尋標題或內容..." oninput="renderEntries()">
+    </div>
+
+    <!-- Entry List -->
+    <div id="entry-list">
+      <div class="empty">
+        <div class="icon">📭</div>
+        <p>還沒有文章，成為第一個發表的人吧！</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── Auth Modal ── -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="auth-modal-title">登入</h2>
+        <button class="modal-close" onclick="closeAuthModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">登入</button>
+          <button class="auth-tab" id="tab-reg" onclick="switchAuthTab('reg')">註冊</button>
+        </div>
         <form id="login-form" onsubmit="handleLogin(event)">
           <input type="text" id="login-username" placeholder="帳號" autocomplete="username" required>
           <input type="password" id="login-password" placeholder="密碼" autocomplete="current-password" required>
           <button type="submit">登入</button>
         </form>
         <form id="reg-form" onsubmit="handleRegister(event)">
-          <input type="text" id="reg-username" placeholder="帳號（選擇一個名稱）" autocomplete="username" required>
+          <input type="text" id="reg-username" placeholder="選擇一個帳號名稱" autocomplete="username" required>
           <input type="password" id="reg-password" placeholder="密碼（至少 4 個字元）" autocomplete="new-password" required>
           <input type="password" id="reg-password2" placeholder="再輸入一次密碼" autocomplete="new-password" required>
           <button type="submit">註冊</button>
         </form>
-        <p id="auth-msg"></p>
+        <p class="auth-msg" id="auth-msg"></p>
+        <p class="auth-hint" id="auth-hint">每位使用者的文章都會出現在公開日誌牆上。</p>
       </div>
-      <p class="auth-note">每位使用者的日誌各自獨立，密碼僅供身份驗證使用。</p>
     </div>
   </div>
 
-  <!-- ── App Section ── -->
-  <main class="container" id="app-section">
-
-    <div class="stats-bar" id="stats-bar">
-      <span class="stat-chip">📝 總篇數：<strong id="stat-count">0</strong></span>
-      <span class="stat-chip">📅 最新：<strong id="stat-latest">—</strong></span>
-    </div>
-
-    <div class="toolbar">
-      <button class="btn btn-primary" onclick="openForm()">＋ 新增日誌</button>
-      <button class="btn btn-secondary" onclick="exportDB()">💾 匯出資料庫</button>
-      <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">📂 匯入</button>
-      <input type="file" id="import-file" accept=".db,.sqlite" style="display:none" onchange="importDB(this.files[0])">
-      <button class="btn btn-danger" onclick="clearAll()" id="btn-clear" style="display:none">🗑️ 清除全部</button>
-    </div>
-
-    <div class="search-bar">
-      <input type="text" id="search-input" placeholder="🔍 搜尋標題或內容..." oninput="renderList()">
-    </div>
-
-    <div class="journal-list" id="journal-list">
-      <div class="empty">
-        <div class="icon">📭</div>
-        <p>還沒有日誌，點「＋ 新增日誌」開始吧！</p>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- Form Modal -->
-  <div class="modal-overlay" id="form-modal">
+  <!-- ── Entry Form Modal ── -->
+  <div class="modal-overlay" id="entry-modal">
     <div class="modal">
       <div class="modal-header">
-        <h2 id="form-title">＋ 新增日誌</h2>
-        <button class="modal-close" onclick="closeForm()">×</button>
+        <h2 id="entry-modal-title">＋ 新增文章</h2>
+        <button class="modal-close" onclick="closeEntryForm()">×</button>
       </div>
       <div class="modal-body">
-        <input type="hidden" id="edit-id">
+        <input type="hidden" id="edit-entry-id">
         <div class="form-group">
           <label>標題</label>
-          <input type="text" id="entry-title" placeholder="今天想記錄什麼？" maxlength="100" required>
+          <input type="text" id="entry-title" placeholder="這篇文章的主題是什麼？" maxlength="100" required>
         </div>
         <div class="form-group">
           <label>日期（選填）</label>
@@ -420,14 +463,14 @@
           <textarea id="entry-content" placeholder="寫下你的想法..."></textarea>
         </div>
         <div class="form-actions">
-          <button class="btn btn-secondary" onclick="closeForm()">取消</button>
-          <button class="btn btn-success" onclick="saveEntry()">💾 儲存</button>
+          <button class="btn btn-secondary" onclick="closeEntryForm()">取消</button>
+          <button class="btn btn-success" onclick="saveEntry()">💾 發表</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- View Modal -->
+  <!-- ── View Entry Modal ── -->
   <div class="modal-overlay" id="view-modal">
     <div class="modal">
       <div class="modal-header">
@@ -437,27 +480,18 @@
       <div class="modal-body">
         <p id="view-meta" style="font-size:0.85rem;color:var(--text-light);margin-bottom:0.5rem;"></p>
         <hr style="border:none;border-top:1px solid var(--border);margin-bottom:1rem;">
-        <pre id="view-content" class="journal-content"></pre>
-        <div class="form-actions" style="margin-top:1.5rem;">
-          <button class="btn btn-danger" onclick="deleteEntry()">🗑️ 刪除</button>
-          <button class="btn btn-primary" onclick="editCurrentEntry()">✏️ 編輯</button>
-        </div>
+        <pre id="view-content" style="white-space:pre-wrap;line-height:1.9;margin-bottom:1rem;"></pre>
+        <div id="view-actions" style="display:flex;gap:0.5rem;"></div>
       </div>
     </div>
   </div>
 
   <footer class="footer">
-    <p>📓 網頁日誌系統 v1.1｜JS + SQLite（sql.js）｜每位使用者資料各自獨立</p>
+    <p>📓 網頁日誌系統｜JS + SQLite（sql.js）｜所有文章公開可見</p>
     <p style="margin-top:0.3rem;">由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
   </footer>
 
-  <!-- sql.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.min.js"></script>
   <script src="journal.js"></script>
-  <script>
-    // 啟動時顯示使用者登入資訊（如果已登入）
-    document.getElementById('btn-logout').style.display = currentUser ? 'inline-block' : 'none';
-    document.getElementById('user-display').style.display = currentUser ? 'inline' : 'none';
-  </script>
 </body>
 </html>
