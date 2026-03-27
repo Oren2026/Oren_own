@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>採購清單 | 上銀撞球 2026</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    body { background: var(--bg); }
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); text-decoration: none; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .back-link:hover { text-decoration: underline; }
+    .page-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 2rem; border-radius: var(--radius); margin-bottom: 2rem; }
+    .page-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .content-card { background: var(--card-bg); border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid var(--border); }
+    th { background: var(--bg); font-weight: 600; color: var(--text-light); font-size: 0.85rem; text-transform: uppercase; }
+    tr:hover { background: var(--bg); }
+    .tag-3d { display: inline-block; background: #dbeafe; color: #1e40af; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.75rem; }
+    .tag-buy { display: inline-block; background: #fef3c7; color: #92400e; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.75rem; }
+    .placeholder { text-align: center; padding: 3rem; color: var(--text-light); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link">← 返回首頁</a>
+    <div class="page-header">
+      <h1>🛒 採購清單</h1>
+      <p>3D 列印優先 + 補助 15,000 元</p>
+    </div>
+
+    <div class="content-card">
+      <h2 style="margin-bottom: 1rem;">📌 採購原則</h2>
+      <ul style="padding-left: 1.2rem; margin-bottom: 1rem;">
+        <li style="margin-bottom: 0.5rem;">🖨️ <strong>優先 3D 列印</strong>：可自行設計的機構零件，優先列印</li>
+        <li style="margin-bottom: 0.5rem;">🛒 <strong>標準件採購</strong>：螺絲、軸承、金屬件等</li>
+        <li>💰 <strong>補助申請</strong>：外島最高 15,000 元（補助核銷後撥款）</li>
+      </ul>
+    </div>
+
+    <div class="content-card">
+      <h2 style="margin-bottom: 1rem;">🔧 機構類（3D 列印）</h2>
+      <div class="placeholder">
+        <div style="font-size:3rem; margin-bottom:1rem; opacity:0.5;">🚧</div>
+        <p>待機構設計確認後填寫</p>
+      </div>
+      <!-- <table>
+        <thead>
+          <tr><th>零件名稱</th><th>材料</th><th>數量</th><th>預估費用</th><th>狀態</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>撞球桿夾持機構</td><td><span class="tag-3d">3D列印</span></td><td>1</td><td>-</td><td>待規劃</td></tr>
+        </tbody>
+      </table> -->
+    </div>
+
+    <div class="content-card">
+      <h2 style="margin-bottom: 1rem;">🔩 標準件（採購）</h2>
+      <div class="placeholder">
+        <div style="font-size:3rem; margin-bottom:1rem; opacity:0.5;">🚧</div>
+        <p>待評估後填寫</p>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <h2 style="margin-bottom: 1rem;">⚠️ 待確認項目</h2>
+      <ul style="padding-left: 1.2rem;">
+        <li>🤖 HIWIN 機械手臂是否已提供？</li>
+        <li>🔌 控制板/電子零件是否已有？</li>
+        <li>📷 視覺設備（攝影機/鏡頭）需求？</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

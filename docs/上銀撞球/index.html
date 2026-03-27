@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上銀撞球 2026 | 第十八屆上銀智慧機器手實作競賽</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* ── Timeline ── */
+    .timeline {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-top: 0.5rem;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-item {
+      position: relative;
+      padding: 0.4rem 0 0.4rem 1.2rem;
+      font-size: 0.9rem;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+    }
+    .timeline-item.done::before { background: var(--success); border-color: var(--success); }
+    .timeline-item.active::before { background: var(--accent); border-color: var(--accent); animation: pulse 2s infinite; }
+    .timeline-item .t-date { font-weight: 600; color: var(--text); }
+    .timeline-item.done .t-date { color: var(--success); }
+    .timeline-item.active .t-date { color: var(--accent); }
+    .timeline-item .t-label { color: var(--text-light); font-size: 0.85rem; }
+
+    /* ── Accordion ── */
+    .accordion-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .accordion-item:last-child { border-bottom: none; }
+    .accordion-header {
+      padding: 0.85rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .accordion-header:hover .accordion-title { color: var(--primary); }
+    .accordion-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .accordion-title { flex: 1; font-weight: 600; font-size: 0.95rem; transition: color 0.2s; }
+    .accordion-arrow { font-size: 0.8rem; color: var(--text-light); transition: transform 0.3s; }
+    .accordion-item.open .accordion-arrow { transform: rotate(180deg); }
+    .accordion-body { display: none; padding: 0 0 0.75rem 2rem; }
+    .accordion-item.open .accordion-body { display: block; }
+
+    /* ── Quick Links ── */
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+    }
+    .quick-link {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .quick-link:hover { background: white; border-color: var(--primary); color: var(--primary); }
+    .quick-link .ql-icon { font-size: 1.1rem; }
+    .quick-link .ql-label { flex: 1; }
+    .quick-link .ql-arrow { font-size: 0.8rem; opacity: 0.5; }
+
+    /* ── Prize Cards ── */
+    .prize-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.75rem;
+    }
+    .prize-card {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .prize-card.gold { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px solid #f59e0b; }
+    .prize-card.silver { background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border: 2px solid #94a3b8; }
+    .prize-card.bronze { background: linear-gradient(135deg, #fff7ed, #fed7aa); border: 2px solid #fb923c; }
+    .prize-card.special { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 2px solid #22c55e; }
+    .prize-rank { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .prize-name { font-weight: 700; font-size: 0.9rem; }
+    .prize-money { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+    .prize-count { font-size: 0.8rem; color: var(--text-light); }
+
+    /* ── Progress ── */
+    .progress-container { margin-bottom: 1rem; }
+    .progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--success) 0%, var(--accent) 100%); border-radius: 4px; transition: width 0.5s ease; }
+    .progress-text { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem; }
+
+    /* ── Task List ── */
+    .task-list { list-style: none; }
+    .task-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; }
+    .task-item .check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+    .task-item .check.done { background: var(--success); border-color: var(--success); color: white; }
+    .task-item .check.pending { background: transparent; border-color: var(--secondary); }
+    .task-item .task-text { flex: 1; }
+    .task-item .task-text.done { color: var(--text-light); text-decoration: line-through; }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+    }
+
+    /* ── Badge row ── */
+    .badge-row { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-top: 0.75rem; }
+    .badge-tag { display: inline-block; font-size: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 20px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>🎱 上銀撞球 2026</h1>
+    <p class="subtitle">第十八屆上銀智慧機器手實作競賽 — 撞球組</p>
+    <div class="badge-row">
+      <span class="badge-tag">🎱 撞球組</span>
+      <span class="badge-tag">🏆 獎金最高 10 萬</span>
+      <span class="badge-tag">📅 決賽 8/19-20</span>
+      <span class="badge-tag">💰 補助最高 15,000</span>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Status Cards -->
+    <div class="info-grid" style="margin-top: 1.5rem;">
+      <div class="info-card">
+        <h3>初審狀態</h3>
+        <div class="value success">✅ 已通過</div>
+      </div>
+      <div class="info-card">
+        <h3>安全講習</h3>
+        <div class="value warning" id="safety-status">⏳ 待通知</div>
+      </div>
+      <div class="info-card">
+        <h3>複審截止</h3>
+        <div class="value" id="review-deadline">2026/05/22</div>
+        <div class="value warning" style="font-size:0.9rem;" id="review-countdown">倒數計算中...</div>
+      </div>
+      <div class="info-card">
+        <h3>決賽倒數</h3>
+        <div class="value" id="finals-countdown">2026/08/19</div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">📅</span>
+        <h2>關鍵時程</h2>
+      </div>
+      <div class="section-content">
+        <div class="timeline">
+          <div class="timeline-item done">
+            <div class="t-date">2026/03/13</div>
+            <div class="t-label">報名截止</div>
+          </div>
+          <div class="timeline-item active">
+            <div class="t-date">2026/03/27</div>
+            <div class="t-label">✅ 初審結果公告 — 已通過！</div>
+          </div>
+          <div class="timeline-item">
+            <div class="t-date">2026/03 - 04</div>
+            <div class="t-label">安全講習與測驗（待通知）</div>
+          </div>
+          <div class="timeline-item">
+            <div class="t-date">2026/05/22</div>
+            <div class="t-label">📹 複審影片繳交截止（17:30）</div>
+          </div>
+          <div class="timeline-item">
+            <div class="t-date">2026/06/05</div>
+            <div class="t-label">決賽入圍公告</div>
+          </div>
+          <div class="timeline-item">
+            <div class="t-date">2026/08/19 - 20</div>
+            <div class="t-label">🏆 決賽</div>
+          </div>
+          <div class="timeline-item">
+            <div class="t-date">2026/09/04</div>
+            <div class="t-label">💸 補助申請截止</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prizes -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">🏆</span>
+        <h2>獎項獎金</h2>
+      </div>
+      <div class="section-content">
+        <div class="prize-grid">
+          <div class="prize-card gold">
+            <div class="prize-rank">🥇</div>
+            <div class="prize-name">冠軍</div>
+            <div class="prize-money">10 萬</div>
+            <div class="prize-count">１隊</div>
+          </div>
+          <div class="prize-card silver">
+            <div class="prize-rank">🥈</div>
+            <div class="prize-name">亞軍</div>
+            <div class="prize-money">8 萬</div>
+            <div class="prize-count">１隊</div>
+          </div>
+          <div class="prize-card bronze">
+            <div class="prize-rank">🥉</div>
+            <div class="prize-name">季軍</div>
+            <div class="prize-money">6 萬</div>
+            <div class="prize-count">並列２隊</div>
+          </div>
+          <div class="prize-card special">
+            <div class="prize-rank">⭐</div>
+            <div class="prize-name">評審特別獎</div>
+            <div class="prize-money">2 萬</div>
+            <div class="prize-count">１隊</div>
+          </div>
+        </div>
+        <div style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-light); background: var(--bg); padding: 0.75rem; border-radius: 8px;">
+          💡 <strong>外島補助</strong>：金門隸屬外島，參賽補助最高 <strong style="color: var(--primary);">15,000 元</strong>（決賽後申請）
+        </div>
+      </div>
+    </section>
+
+    <!-- Competition Format -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">🎯</span>
+        <h2>賽制說明</h2>
+      </div>
+      <div class="section-content">
+        <p style="margin-bottom: 1rem;">決賽名額：<strong>撞球組 8 隊</strong></p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <div style="background:var(--bg); border-radius:8px; padding:1rem;">
+            <div style="font-size:1.2rem; margin-bottom:0.5rem;">🏅</div>
+            <strong>小組賽</strong>
+            <p style="font-size:0.9rem; color:var(--text-light); margin-top:0.25rem;">分為 A、B 兩組<br>各組前兩名晉級四強</p>
+          </div>
+          <div style="background:var(--bg); border-radius:8px; padding:1rem;">
+            <div style="font-size:1.2rem; margin-bottom:0.5rem;">⚔️</div>
+            <strong>四強雙敗淘汰</strong>
+            <p style="font-size:0.9rem; color:var(--text-light); margin-top:0.25rem;">最後一輪勝者奪冠<br>敗者進入季軍賽</p>
+          </div>
+          <div style="background:var(--bg); border-radius:8px; padding:1rem;">
+            <div style="font-size:1.2rem; margin-bottom:0.5rem;">📹</div>
+            <strong>複審：任務影片</strong>
+            <p style="font-size:0.9rem; color:var(--text-light); margin-top:0.25rem;">線上繳交指定任務影片<br>截止 5/22 17:30</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">📋</span>
+        <h2>專案進度</h2>
+      </div>
+      <div class="section-content">
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+          </div>
+          <div class="progress-text">
+            <span>總完成度</span>
+            <span id="progress-text">🚧 0%</span>
+          </div>
+        </div>
+
+        <div class="accordion" id="progress-accordion">
+
+          <!-- 🤖 機構設計 -->
+          <div class="accordion-item open">
+            <div class="accordion-header" onclick="toggleAccordion(this.parentElement)">
+              <span class="accordion-icon">🤖</span>
+              <span class="accordion-title">機構設計</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ul class="task-list">
+                <li class="task-item">
+                  <span class="check pending" id="task-mech-1"></span>
+                  <span class="task-text" id="task-mech-1-text">🔍 確認 HIWIN 機械手臂規格</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-mech-2"></span>
+                  <span class="task-text" id="task-mech-2-text">🎱 撞球桿夾持機構設計（3D列印）</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-mech-3"></span>
+                  <span class="task-text" id="task-mech-3-text">⚖️ 桿頭角度調整機構</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-mech-4"></span>
+                  <span class="task-text" id="task-mech-4-text">🗄️ 底座與固定機構</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-mech-5"></span>
+                  <span class="task-text" id="task-mech-5-text">🖨️ 機構 3D 模型列印與測試</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- ⚡ 控制系統 -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this.parentElement)">
+              <span class="accordion-icon">⚡</span>
+              <span class="accordion-title">控制系統</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ul class="task-list">
+                <li class="task-item">
+                  <span class="check pending" id="task-ctrl-1"></span>
+                  <span class="task-text" id="task-ctrl-1-text">🦾 手臂運動學分析</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-ctrl-2"></span>
+                  <span class="task-text" id="task-ctrl-2-text">📐 桿面角度控制策略</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-ctrl-3"></span>
+                  <span class="task-text" id="task-ctrl-3-text">💪 桿力控制（擊球力道）</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-ctrl-4"></span>
+                  <span class="task-text" id="task-ctrl-4-text">👁️ 視覺定位（球、洞口偵測）</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-ctrl-5"></span>
+                  <span class="task-text" id="task-ctrl-5-text">🔗 控制系統整合</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 💻 軟體系統 -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this.parentElement)">
+              <span class="accordion-icon">💻</span>
+              <span class="accordion-title">軟體系統</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ul class="task-list">
+                <li class="task-item">
+                  <span class="check pending" id="task-sw-1"></span>
+                  <span class="task-text" id="task-sw-1-text">📷 影像辨識系統（OpenCV）</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-sw-2"></span>
+                  <span class="task-text" id="task-sw-2-text">🎯 球桿姿態估算</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-sw-3"></span>
+                  <span class="task-text" id="task-sw-3-text">📐 擊球路徑規劃</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-sw-4"></span>
+                  <span class="task-text" id="task-sw-4-text">🚧 障礙物偵測</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-sw-5"></span>
+                  <span class="task-text" id="task-sw-5-text">🧠 策略決策系統</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 📹 複審準備 -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this.parentElement)">
+              <span class="accordion-icon">📹</span>
+              <span class="accordion-title">複審準備</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ul class="task-list">
+                <li class="task-item">
+                  <span class="check pending" id="task-review-1"></span>
+                  <span class="task-text" id="task-review-1-text">📝 確認複審任務項目</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-review-2"></span>
+                  <span class="task-text" id="task-review-2-text">🎬 拍攝任務演示影片</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-review-3"></span>
+                  <span class="task-text" id="task-review-3-text">✂️ 影片剪輯與說明文件</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 🚀 決賽準備 -->
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this.parentElement)">
+              <span class="accordion-icon">🚀</span>
+              <span class="accordion-title">決賽準備</span>
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="accordion-body">
+              <ul class="task-list">
+                <li class="task-item">
+                  <span class="check pending" id="task-final-1"></span>
+                  <span class="task-text" id="task-final-1-text">🏟️ 實地場地演練</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-final-2"></span>
+                  <span class="task-text" id="task-final-2-text">🛡️ 穩定性強化</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-final-3"></span>
+                  <span class="task-text" id="task-final-3-text">🔄 備用方案準備</span>
+                </li>
+                <li class="task-item">
+                  <span class="check pending" id="task-final-4"></span>
+                  <span class="task-text" id="task-final-4-text">🎯 比賽策略演練</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">📁</span>
+        <h2>專案資料</h2>
+      </div>
+      <div class="section-content">
+        <div class="quick-links">
+          <a href="01-比賽規則/00_比賽規則.html" class="quick-link">
+            <span class="ql-icon">📋</span>
+            <span class="ql-label">比賽規則</span>
+            <span class="ql-arrow">→</span>
+          </a>
+          <a href="02-系統架構/00_系統架構.html" class="quick-link">
+            <span class="ql-icon">⚙️</span>
+            <span class="ql-label">系統架構</span>
+            <span class="ql-arrow">→</span>
+          </a>
+          <a href="03-進度規劃/00_進度規劃.html" class="quick-link">
+            <span class="ql-icon">📝</span>
+            <span class="ql-label">進度規劃</span>
+            <span class="ql-arrow">→</span>
+          </a>
+          <a href="04-採購清單/00_採購清單.html" class="quick-link">
+            <span class="ql-icon">🛒</span>
+            <span class="ql-label">採購清單</span>
+            <span class="ql-arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Links -->
+    <section class="section">
+      <div class="section-header">
+        <span class="icon">🔗</span>
+        <h2>相關連結</h2>
+      </div>
+      <div class="section-content">
+        <div class="quick-links">
+          <a href="https://www.hiwin.org.tw/Regulation.aspx?f=1" target="_blank" class="quick-link">
+            <span class="ql-icon">🌐</span>
+            <span class="ql-label">官方競賽網站</span>
+            <span class="ql-arrow">↗</span>
+          </a>
+          <a href="https://www.facebook.com/HIWINRobot/" target="_blank" class="quick-link">
+            <span class="ql-icon">📱</span>
+            <span class="ql-label">粉絲專頁</span>
+            <span class="ql-arrow">↗</span>
+          </a>
+          <a href="https://github.com/Oren2026/Oren_own/tree/main/docs/%E4%B8%8A%E9%8A%B3%E6%92%9E%E7%90%83" target="_blank" class="quick-link">
+            <span class="ql-icon">📂</span>
+            <span class="ql-label">GitHub</span>
+            <span class="ql-arrow">↗</span>
+          </a>
+          <a href="https://www.hiwin.org.tw/download/hiwin_robot/第十八屆上銀智慧機器手實作競賽_競賽辦法.pdf" target="_blank" class="quick-link">
+            <span class="ql-icon">📄</span>
+            <span class="ql-label">競賽辦法 PDF</span>
+            <span class="ql-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>上銀撞球 2026 | 最後更新：<span id="footer-updated">2026-03-27</span></p>
+    <p style="margin-top: 0.5rem;">由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+  </footer>
+
+  <button class="refresh-btn" id="refresh-btn" title="重新整理">↻</button>
+
+  <script>
+    // ── Countdown ──
+    function updateCountdowns() {
+      const now = new Date();
+
+      // Review deadline
+      const reviewDate = new Date('2026-05-22T17:30:00+08:00');
+      const diff1 = reviewDate - now;
+      const days1 = Math.floor(diff1 / (1000 * 60 * 60 * 24));
+      const el1 = document.getElementById('review-countdown');
+      if (el1) {
+        if (diff1 > 0) el1.textContent = `倒數 ${days1} 天`;
+        else el1.textContent = '⚠️ 已截止';
+      }
+
+      // Finals countdown
+      const finalsDate = new Date('2026-08-19T09:00:00+08:00');
+      const diff2 = finalsDate - now;
+      const days2 = Math.floor(diff2 / (1000 * 60 * 60 * 24));
+      const el2 = document.getElementById('finals-countdown');
+      if (el2) {
+        if (diff2 > 0) el2.textContent = `2026/08/19（倒數 ${days2} 天）`;
+        else el2.textContent = '2026/08/19';
+      }
+    }
+
+    // ── Accordion ──
+    function toggleAccordion(item) {
+      item.classList.toggle('open');
+    }
+
+    // ── Progress ──
+    function updateProgress() {
+      const allTasks = document.querySelectorAll('.accordion .task-item');
+      let done = 0;
+      allTasks.forEach(t => {
+        if (t.querySelector('.check.done')) done++;
+      });
+      const total = allTasks.length;
+      const pct = total > 0 ? Math.round(done / total * 100) : 0;
+      const fill = document.getElementById('progress-fill');
+      const text = document.getElementById('progress-text');
+      if (fill) fill.style.width = pct + '%';
+      if (text) text.textContent = pct === 100 ? `✅ 完成（${done}/${total}）` : `🚧 ${done}/${total} 完成（${pct}%）`;
+    }
+
+    // ── Init ──
+    updateCountdowns();
+    updateProgress();
+
+    document.getElementById('refresh-btn').addEventListener('click', function() {
+      location.reload();
+    });
+  </script>
+</body>
+</html>

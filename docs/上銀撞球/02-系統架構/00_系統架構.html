@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系統架構 | 上銀撞球 2026</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    body { background: var(--bg); }
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); text-decoration: none; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .back-link:hover { text-decoration: underline; }
+    .page-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 2rem; border-radius: var(--radius); margin-bottom: 2rem; }
+    .page-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .content-card { background: var(--card-bg); border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .placeholder { text-align: center; padding: 3rem; color: var(--text-light); }
+    .placeholder-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+    .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link">← 返回首頁</a>
+    <div class="page-header">
+      <h1>⚙️ 系統架構</h1>
+      <p>技術架構規劃（建構中）</p>
+    </div>
+    <div class="content-card">
+      <div class="placeholder">
+        <div class="placeholder-icon">🚧</div>
+        <h3>系統架構規劃中</h3>
+        <p style="margin-top: 0.5rem;">待確認 HIWIN 機械手臂規格與比賽任務後填寫</p>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="section-title">📐 預計架構方向</div>
+      <ul style="padding-left: 1.2rem;">
+        <li style="margin-bottom: 0.5rem;">🤖 <strong>機械手臂</strong>：HIWIN 智慧機器手（主辦單位提供）</li>
+        <li style="margin-bottom: 0.5rem;">🎱 <strong>撞球機構</strong>：3D 列印桿夾持 + 角度調整機構</li>
+        <li style="margin-bottom: 0.5rem;">👁️ <strong>視覺系統</strong>：OpenCV 球/洞口偵測</li>
+        <li style="margin-bottom: 0.5rem;">🧠 <strong>策略系統</strong>：擊球路徑規劃 + 決策</li>
+        <li>⚡ <strong>控制整合</strong>：手臂運動學 +力道控制</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
