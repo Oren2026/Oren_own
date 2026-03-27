@@ -178,16 +178,35 @@
 
     <div class="version-grid">
 
-      <!-- v2.0 最新 -->
+      <!-- v2.1 最新 -->
       <div class="version-card latest">
         <div class="version-icon">🚀</div>
         <div class="version-info">
           <h2>
-            v2.0
+            v2.1
             <span class="badge badge-latest">最新</span>
             <span class="badge badge-date">2026-03-27</span>
           </h2>
-          <p>Node.js + SQLite 後端對照版。同一個系統，用 Express + bcrypt + JWT REST API 實作。需在本機執行 `node server.js`。拿掉 sql.js，改用 better-sqlite3，跑在 server 端。</p>
+          <p>Node.js + SQLite 後端版。同一個系統，用 Express + bcrypt + JWT REST API 實作。v2.1 加了 Morgan HTTP 日誌、統一錯誤處理（ApiError + errorHandler）、按鈕 Loading 狀態。</p>
+          <div class="version-tags">
+            <span class="tag-chip">🟢 Node.js</span>
+            <span class="tag-chip">🪵 Morgan 日誌</span>
+            <span class="tag-chip">🔄 統一錯誤處理</span>
+            <span class="tag-chip">⚡ Loading 狀態</span>
+          </div>
+          <a href="https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v2.1/index.html" class="version-link">→ 啟動說明</a>
+        </div>
+      </div>
+
+      <!-- v2.0 後端版 -->
+      <div class="version-card">
+        <div class="version-icon small">🟢</div>
+        <div class="version-info">
+          <h2>
+            v2.0
+            <span class="badge badge-date">2026-03-27</span>
+          </h2>
+          <p>Node.js + SQLite 後端對照版。同一個系統，用 Express + bcrypt + JWT REST API 實作。需在本機執行 `node server.js`。基礎版，無錯誤處理和日誌。</p>
           <div class="version-tags">
             <span class="tag-chip">🟢 Node.js</span>
             <span class="tag-chip">🔐 bcrypt</span>

@@ -8,7 +8,8 @@
 
 | 版本 | 日期 | 類型 | 說明 | 連結 |
 |------|------|------|------|------|
-| **v2.0** | 2026-03-27 | 🆕 最新 | Node.js + SQLite 後端對照版：bcrypt、JWT、REST API、Express | [→ 說明頁](https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v2.0/index.html) |
+| **v2.1** | 2026-03-27 | 🆕 最新 | Node.js 版 v2.1：Morgan 日誌 + 統一錯誤處理 + Loading 狀態 | [→ 說明頁](https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v2.1/index.html) |
+| **v2.0** | 2026-03-27 | 後端版 | Node.js + SQLite 後端對照版：bcrypt、JWT、REST API、Express | [→ 說明頁](https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v2.0/index.html) |
 | **v1.3** | 2026-03-27 | 最新版 | 重構 SQLite 框架：DB class + 參數化查詢 + 安全性提升 | [→ 進入](https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v1.3/index.html) |
 | **v1.2** | 2026-03-27 | 功能版 | 新增作者過濾功能 + 更新預設文章內容 | [→ 進入](https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v1.2/index.html) |
 | **v1.1** | 2026-03-27 | 正式版 | 雙面板 Auth Modal + 公開日誌牆 + seed.db | [→ 進入](https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v1.1/index.html) |
@@ -31,19 +32,21 @@ HW_firstweb0327/
 │   ├── journal.js
 │   ├── seed.db
 │   └── README.md
-└── v2.0/            ← 當前最新版（Node.js + SQLite 對照組）
+└── v2.1/            ← 當前最新版（Node.js + SQLite 對照組 + 統一錯誤處理）
     ├── index.html       ← 說明頁 + 啟動教學
     ├── package.json
     ├── database.sqlite  ← 真實 SQLite 檔案
-    ├── server/          ← Node.js 後端
-    │   ├── server.js
+    ├── server/
+    │   ├── server.js             ← Express + Morgan + errorHandler
     │   ├── db.js
-    │   ├── routes/auth.js
+    │   ├── routes/auth.js        ← asyncWrap + ApiError
     │   ├── routes/entries.js
-    │   └── middleware/auth.js
-    └── public/          ← 純前端對照組
-        ├── index.html
-        └── journal.js
+    │   └── middleware/
+    │       ├── auth.js
+    │       └── errorHandler.js   ← 🆕 統一錯誤處理
+    └── public/          ← 純前端示範（⚠️ 需後端才能操作）
+        ├── index.html              ← ⚠️ 含預覽模式提示
+        └── journal.js              ← fetch API + Loading 狀態
 ```
 
 ---
@@ -60,11 +63,16 @@ HW_firstweb0327/
 
 ## 📚 各版本功能總覽
 
-### v1.3（當前最新版）
+### v2.1（當前最新版）
+- 🪵 **Morgan 日誌**：每次 request 在 console 清楚顯示
+- 🔄 **統一錯誤處理**：`ApiError` + `asyncWrap` + `errorHandler`
+- ⚡ **Loading 狀態**：按鈕 disable + ⏳，防重複點擊
+- 👤 **作者過濾**：點擊作者名稱只看該作者，右上角 ✕ 清除
+
+### v1.3（純前端最新版）
 - 🔧 **DB class 重構**：封裝 `db.get()` / `db.all()` / `db.run()` 三個方法
 - 🔒 **參數化查詢**：消滅所有 SQL 字串拼接，徹底防範注入攻擊
 - 🔑 **DB key 隔離**：`journal_sqlite_v3` 獨立，與舊版乾淨切分
-- 👤 **作者過濾**：點擊作者名稱只看該作者，右上角 ✕ 清除
 
 ### v1.2
 - 👤 作者過濾功能

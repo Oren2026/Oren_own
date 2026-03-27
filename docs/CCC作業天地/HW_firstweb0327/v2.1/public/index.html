@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📓 網頁日誌系統 v2.1</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ── Site Header ── -->
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-icon">📓</span>
+      <div>
+        <h1>網頁日誌系統</h1>
+        <p>Node.js + SQLite（v2.1 示範版）</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="db-status"></span>
+      <div id="header-auth"><!-- 動態填充 --></div>
+    </div>
+  </header>
+
+  <!-- ── Main Content ── -->
+
+  <!-- JS Preview Banner -->
+  <div style="background:#fef9c3;border-bottom:1px solid #fde047;padding:0.5rem 1rem;text-align:center;font-size:0.82rem;color:#854d0e;">
+    ⚠️ <strong>預覽模式</strong>：此頁面需要搭配 Node.js 後端才能正常操作。
+    靜態預覽請至 <a href="https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/HW_firstweb0327/v1.3/index.html" style="color:#92400e;">v1.3 純前端版</a>。
+  </div>
+
+  <main class="container" id="main-content">
+
+    <div class="welcome-banner">
+      <div>
+        <h2 id="welcome-title">👋 歡迎來到網頁日誌系統</h2>
+        <p id="welcome-sub">這是一個公開日誌牆，所有人的文章都能看到。</p>
+      </div>
+      <button class="btn" id="banner-new-btn" onclick="openEntryForm()">＋ 發表文章</button>
+    </div>
+
+    <div class="demo-users" id="demo-hint" style="display:none;">
+      <span style="font-size:0.85rem;color:var(--text-light);margin-right:0.5rem;">測試帳號：</span>
+      <span class="demo-chip">admin / 1234</span>
+      <span class="demo-chip">小美 / 1111</span>
+      <span class="demo-chip">阿偉 / 2222</span>
+      <span class="demo-chip">妮妮 / 3334</span>
+    </div>
+
+    <div class="stats-row">
+      <span class="stat-chip">📝 總文章：<strong id="stat-total">0</strong></span>
+      <span class="stat-chip">👥 作者：<strong id="stat-authors">0</strong></span>
+      <span class="stat-chip">🆕 最新：<strong id="stat-latest">—</strong></span>
+    </div>
+
+    <div class="toolbar" id="auth-toolbar" style="display:none;">
+      <button class="btn btn-primary" onclick="openEntryForm()">＋ 新增文章</button>
+      <button class="btn btn-secondary" onclick="exportDB()">💾 匯出</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">📂 匯入</button>
+      <input type="file" id="import-file" accept=".db,.sqlite" style="display:none" onchange="importDB(this.files[0])">
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="🔍 搜尋標題或內容..." oninput="renderEntries()">
+    </div>
+
+    <div id="entry-list">
+      <div class="empty">
+        <div class="icon">📭</div>
+        <p>還沒有文章，成為第一個發表的人吧！</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       🌟 AUTH MODAL — 雙面板設計
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="auth-card">
+
+      <!-- 左側品牌區 -->
+      <div class="auth-brand">
+        <div class="auth-brand-icon">📓</div>
+        <div class="auth-brand-tag">
+          <span>🔒</span> 純前端 · SQLite
+        </div>
+        <h2 id="auth-brand-title">你的想法<br>值得被看見</h2>
+        <p>每個人都能在這裡記錄、分享。<br>無需註冊即可瀏覽。</p>
+        <div class="auth-brand-features">
+          <div class="auth-brand-feature">
+            <span class="check-icon">✓</span>
+            <span>所有文章公開顯示</span>
+          </div>
+          <div class="auth-brand-feature">
+            <span class="check-icon">✓</span>
+            <span>資料存在本地瀏覽器</span>
+          </div>
+          <div class="auth-brand-feature">
+            <span class="check-icon">✓</span>
+            <span>SHA-256 密碼保護</span>
+          </div>
+          <div class="auth-brand-feature">
+            <span class="check-icon">✓</span>
+            <span>可匯出備份資料庫</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右側表單區 -->
+      <div class="auth-form-panel">
+        <button class="auth-close" onclick="closeAuth()">×</button>
+
+        <!-- Tab 切換 -->
+        <div class="auth-toggle">
+          <button class="auth-toggle-btn active" id="tab-login" onclick="switchAuth('login')">登入</button>
+          <button class="auth-toggle-btn" id="tab-reg" onclick="switchAuth('reg')">註冊</button>
+        </div>
+
+        <!-- 登入表單 -->
+        <form id="login-form" onsubmit="handleLogin(event)">
+          <div class="auth-field">
+            <input type="text" id="login-username" placeholder=" " autocomplete="username" required>
+            <label for="login-username">帳號</label>
+          </div>
+          <div class="auth-field">
+            <input type="password" id="login-password" placeholder=" " autocomplete="current-password" required>
+            <label for="login-password">密碼</label>
+          </div>
+          <div class="auth-submit">
+            <button type="submit">登入 →</button>
+          </div>
+          <div class="auth-msg" id="auth-msg"></div>
+        </form>
+
+        <!-- 註冊表單 -->
+        <form id="reg-form" style="display:none;" onsubmit="handleRegister(event)">
+          <div class="auth-field">
+            <input type="text" id="reg-username" placeholder=" " autocomplete="username" required>
+            <label for="reg-username">帳號名稱</label>
+          </div>
+          <div class="auth-field">
+            <input type="password" id="reg-password" placeholder=" " autocomplete="new-password" required>
+            <label for="reg-password">密碼</label>
+          </div>
+          <div class="auth-field">
+            <input type="password" id="reg-password2" placeholder=" " autocomplete="new-password" required>
+            <label for="reg-password2">確認密碼</label>
+          </div>
+          <div class="auth-submit">
+            <button type="submit">建立帳號 →</button>
+          </div>
+          <div class="auth-msg" id="auth-msg-reg"></div>
+        </form>
+
+        <p class="auth-hint" id="auth-hint">每位使用者的文章都會出現在公開日誌牆上。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Entry Form Modal ── -->
+  <div class="modal-overlay" id="entry-modal">
+    <div class="form-modal">
+      <div class="form-modal-header">
+        <h2 id="entry-modal-title">＋ 新增文章</h2>
+        <button class="modal-close" onclick="closeEntryForm()">×</button>
+      </div>
+      <div class="form-modal-body">
+        <input type="hidden" id="edit-entry-id">
+        <div class="form-group">
+          <label>標題</label>
+          <input type="text" id="entry-title" placeholder="這篇文章的主題是什麼？" maxlength="100" required>
+        </div>
+        <div class="form-group">
+          <label>日期（選填）</label>
+          <input type="date" id="entry-date">
+        </div>
+        <div class="form-group">
+          <label>內容</label>
+          <textarea id="entry-content" placeholder="寫下你的想法..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="closeEntryForm()">取消</button>
+          <button class="btn btn-success" onclick="saveEntry()">💾 發表</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── View Modal ── -->
+  <div class="modal-overlay" id="view-modal">
+    <div class="view-modal">
+      <div class="view-modal-header">
+        <h2 id="view-title">—</h2>
+        <button class="modal-x" onclick="closeView()">×</button>
+      </div>
+      <div class="view-modal-body">
+        <div class="view-meta" id="view-meta"></div>
+        <pre class="view-content" id="view-content"></pre>
+        <div class="view-actions" id="view-actions"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>📓 網頁日誌系統｜Node.js + SQLite｜所有文章公開可見</p>
+    <p style="margin-top:0.3rem;">由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
+  </footer>
+
+  <script src="journal.js"></script>
+</body>
+</html>
