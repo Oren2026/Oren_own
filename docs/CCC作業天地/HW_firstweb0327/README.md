@@ -8,7 +8,8 @@
 
 | 版本 | 日期 | 類型 | 說明 | 連結 |
 |------|------|------|------|------|
-| **v1.3** | 2026-03-27 | 🆕 最新 | 重構 SQLite 框架：DB class + 參數化查詢 + 安全性提升 | [→ 進入](v1.3/index.html) |
+| **v2.0** | 2026-03-27 | 🆕 最新 | Node.js + SQLite 後端對照版：bcrypt、JWT、REST API、Express | [→ 說明頁](v2.0/index.html) |
+| **v1.3** | 2026-03-27 | 最新版 | 重構 SQLite 框架：DB class + 參數化查詢 + 安全性提升 | [→ 進入](v1.3/index.html) |
 | **v1.2** | 2026-03-27 | 功能版 | 新增作者過濾功能 + 更新預設文章內容 | [→ 進入](v1.2/index.html) |
 | **v1.1** | 2026-03-27 | 正式版 | 雙面板 Auth Modal + 公開日誌牆 + seed.db | [→ 進入](v1.1/index.html) |
 | **v1.0** | 2026-03-27 | 初版 | 基本 CRUD + 搜尋 | （已整合至 v1.1） |
@@ -20,19 +21,29 @@
 ```
 HW_firstweb0327/
 ├── README.md           ← 本檔（改版日誌總覽）
-├── assets/             ← 共享 CSS 資源
-│   └── css/
-│       ├── base.css
-│       └── auth.css
 ├── index.html          ← 版本入口頁
+├── assets/             ← 共享 CSS 資源
 ├── v1.0/            ← 初版（基本日誌，無使用者系統）
 ├── v1.1/            ← 第一正式版
 ├── v1.2/            ← 作者過濾功能版
-└── v1.3/            ← 當前最新版（SQLite 框架重構）
-    ├── index.html
-    ├── journal.js     ← DB class + 參數化
-    ├── seed.db
-    └── README.md
+├── v1.3/            ← SQLite 框架重構（純前端最新版）
+│   ├── index.html
+│   ├── journal.js
+│   ├── seed.db
+│   └── README.md
+└── v2.0/            ← 當前最新版（Node.js + SQLite 對照組）
+    ├── index.html       ← 說明頁 + 啟動教學
+    ├── package.json
+    ├── database.sqlite  ← 真實 SQLite 檔案
+    ├── server/          ← Node.js 後端
+    │   ├── server.js
+    │   ├── db.js
+    │   ├── routes/auth.js
+    │   ├── routes/entries.js
+    │   └── middleware/auth.js
+    └── public/          ← 純前端對照組
+        ├── index.html
+        └── journal.js
 ```
 
 ---
