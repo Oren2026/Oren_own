@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCC 作業天地</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --radius: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .header {
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+      color: white;
+      padding: 2.5rem 1rem;
+      text-align: center;
+    }
+    .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .header .subtitle { opacity: 0.85; font-size: 1.1rem; }
+    .header .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+    }
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+    .section {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .section-header {
+      background: var(--bg);
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-header h2 { font-size: 1.1rem; }
+    .section-content { padding: 1.25rem; }
+    .assignment-list { list-style: none; }
+    .assignment-item {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .assignment-item:last-child { border-bottom: none; }
+    .assignment-item .icon { font-size: 1.5rem; flex-shrink: 0; }
+    .assignment-item .info { flex: 1; }
+    .assignment-item .title { font-weight: 600; color: var(--primary); display: block; margin-bottom: 0.25rem; }
+    .assignment-item .title:hover { text-decoration: underline; }
+    .assignment-item .desc { font-size: 0.9rem; color: var(--text-light); }
+    .assignment-item .meta { font-size: 0.8rem; color: var(--text-light); margin-top: 0.25rem; }
+    .status { display: inline-block; font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 4px; margin-left: 0.5rem; }
+    .status.done { background: #d1fae5; color: #059669; }
+    .status.pending { background: #fef3c7; color: #d97706; }
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-light);
+    }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-light);
+      font-size: 0.85rem;
+    }
+    @media (max-width: 768px) {
+      .header h1 { font-size: 1.5rem; }
+      .container { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>📚 CCC 作業天地</h1>
+    <p class="subtitle">課堂作業與專案存放處</p>
+    <span class="badge">🗂️ 整理中</span>
+  </header>
+
+  <main class="container">
+
+    <div class="section">
+      <div class="section-header">
+        <span>📋</span>
+        <h2>作業列表</h2>
+      </div>
+      <div class="section-content">
+        <ul class="assignment-list" id="assignment-list">
+          <li class="empty-state">
+            <div class="icon">📭</div>
+            <p>目前還沒有上傳的作業</p>
+            <p style="font-size: 0.85rem; margin-top: 0.5rem;">準備好後將作業檔案放入此資料夾並更新本頁面</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <span>💡</span>
+        <h2>使用說明</h2>
+      </div>
+      <div class="section-content" style="color: var(--text-light); line-height: 1.8;">
+        <ul style="padding-left: 1.25rem;">
+          <li>老師的作業要求檔案請放在對應的子資料夾中</li>
+          <li>繳交的作業建議另外建立資料夾存放（<code>your_work/</code>）</li>
+          <li>如需上傳大型檔案，建議使用 Git LFS 或外部雲端連結</li>
+          <li>更新本頁面的作業列表，確保同學能快速找到資料</li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <p>由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+  </footer>
+</body>
+</html>
