@@ -760,5 +760,45 @@
       "Maker economy",
       "少量生產"
     ]
+  },
+  {
+    "title": "意識的困難問題：神經元到主觀體驗的鴻溝",
+    "summary": "意識困難問題：神經元電訊號如何產生主觀感質？查爾莫斯提出「感質」概念，挑戰科學測量极限。",
+    "tags": [
+      "意識",
+      "神經科學",
+      "哲學",
+      "意識門檻"
+    ]
+  },
+  {
+    "title": "創意積分：曼徹斯特制度實驗",
+    "summary": "Creative Credits在曼徹斯特試點，隨機分配創意券資助企業創意項目。",
+    "tags": [
+      "制度實驗",
+      "積分系統",
+      "創意經濟"
+    ]
+  },
+  {
+    "title": "TDK/FIRA機器人競賽如何推動技術民用化",
+    "summary": "FIRA自1996年舉辦，透過競賽激發年輕人興趣，催生救援、導航等民用機器人技術。",
+    "tags": [
+      "robot",
+      "competition",
+      "FIRA",
+      "civilian"
+    ]
+  },
+  {
+    "title": "世界模型戰爭：OpenAI/DeepMind/Anthropic 的世界模型路線對比",
+    "summary": "OpenAI押注推理與Agent能力，Anthropic重可靠與永續，DeepMind聚焦結構性創新與世界模型。",
+    "tags": [
+      "AI",
+      "世界模型",
+      "OpenAI",
+      "Anthropic",
+      "DeepMind"
+    ]
   }
 ]
