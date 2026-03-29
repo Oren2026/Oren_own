@@ -582,5 +582,38 @@
       "遊戲設計",
       "回歸成本"
     ]
+  },
+  {
+    "title": "半導體地理：晶圓廠的區位選擇如何重塑全球權力版圖",
+    "summary": "晶片法案催生美歐亞大擴廠：美國/歐洲設備投資2028年前將增逾60%；亞洲23座新晶圓廠密集投產；中國華為/SMIC鎖定5nm突圍；歐盟衝2nm試驗線；東南亞成先進封裝新重心。",
+    "tags": [
+      "semiconductors",
+      "geopolitics",
+      "TSMC",
+      "fab",
+      "chip-act"
+    ]
+  },
+  {
+    "title": "悟的計算模型：頓悟在做什麼優化",
+    "summary": "頓悟是約束放鬆與重組表征的計算突變——右腦aSTG在局部最優陷阱時觸發遠距離語義連接，γ波爆發標誌重構完成。",
+    "tags": [
+      "insight",
+      "computational-neuroscience",
+      "representational-change",
+      "problem-solving",
+      "cognitive-science"
+    ]
+  },
+  {
+    "title": "人形機器人關節經濟爆發：成本懸崖催生的五大應用場景",
+    "summary": "關節占BOM成本30-50%，價格下滑後醫療照護、物流倉儲、製造業優先爆發；UBTech預測均價從K降至K（2030），家用人形2026-2027年進入大眾市場。",
+    "tags": [
+      "humanoid-robot",
+      "bionic-actuator",
+      "cost-reduction",
+      "healthcare-robot",
+      "logistics-automation"
+    ]
   }
 ]
