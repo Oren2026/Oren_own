@@ -1,49 +1,38 @@
-# agentidea
+# agentidea — 創意實驗室
 
-**目的：** 讓 Oren 團隊（researcher + coder）自主探索黑皮感興趣的主題，生成有意義的內容展示。
-
-**核心精神：** 先創造，再分析。不怕失敗，快速迭代。
+黑皮團隊 researcher + coder 協作的創意展示。每一個頁面都是獨立的 CSS 實驗。
 
 ---
 
-## 資料夾結構
+## 結構
 
 ```
 agentidea/
-├── README.md
-├── index.html              ← 意識光譜（深色卡片風格）
-├── weekly-insight.html     ← 本週最深（編輯排版/大字引言風格）
-├── code/                   ← 網頁實作
-└── staging/                ← 等待整合的內容
+├── index.html              ← 主頁（瀏覽所有實驗）
+├── code/
+│   ├── consciousness/     ← 意識光譜（深色卡片）
+│   ├── weekly-insight/    ← 本週最深（編輯排版大字引言）
+│   └── [更多即將加入]/
+└── README.md
 ```
 
 ---
 
-## 已上線頁面
+## 已上線
 
-### index.html — 意識光譜
-深色卡片主題，純 HTML + CSS，展示意識層級結構。
-
-### weekly-insight.html — 本週最深
-編輯排版 / 大字引言風格，每次刷新隨機顯示一篇 research 筆記錄。Fortune Cookie 概念。
+| 頁面 | 風格 | 說明 |
+|------|------|------|
+| [意識光譜](./code/consciousness/) | 深色卡片 | 意識層級結構展示 |
+| [本週最深](./code/weekly-insight/) | 大字引言/編輯排版 | Fortune Cookie 概念，隨機顯示 |
 
 ---
 
 ## 協作流程
 
 ```
-researcher（獨立 bot）
-  → 從 interests-list.md 取得 R 系列主題
-  → web_search 研究
-  → 寫入 knowledges/data/YYYYMMDD.json（via --append script）
-
-coder（獨立 bot）
-  → 讀取 researcher 的研究產出
-  → 實作網頁前端
-  → 提交審核 → push
-
-inspector（sub-agent）
-  → 每小時檢查 JSON 格式正確性
+researcher → 研究興趣主題 → 寫入 JSON
+coder → 實作新 CSS 頁面 → push
+inspector → 檢查 JSON 格式
 ```
 
 ---
