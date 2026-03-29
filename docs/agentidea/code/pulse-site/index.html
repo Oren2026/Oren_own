@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulse Site — 知識心跳</title>
+  <style>
+    :root {
+      --green: #4a7c59;
+      --green-light: #6fb083;
+      --green-dark: #2c4a3b;
+      --text-dark: #1a1a1a;
+      --text-mid: #4a4a4a;
+      --text-light: #888;
+      --bg: #f4f6f2;
+      --surface: #ffffff;
+      --border: rgba(74,124,89,0.15);
+      --accent: #c4a35a;
+      --shadow: 0 8px 32px rgba(74,124,89,0.12);
+      --shadow-hover: 0 16px 48px rgba(74,124,89,0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-dark);
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Navigation ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 5%;
+      background: rgba(244,246,242,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    header.scrolled {
+      background: rgba(244,246,242,0.97);
+      box-shadow: 0 2px 20px rgba(74,124,89,0.1);
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--green-dark);
+      letter-spacing: 0.05em;
+    }
+
+    .logo span { color: var(--green-light); }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 36px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-mid);
+      font-size: 14px;
+      font-weight: 500;
+      position: relative;
+      padding: 4px 0;
+      transition: color 0.2s;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      width: 0; height: 2px;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      background: var(--green);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--green-dark); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ── Hero ── */
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 5%;
+      position: relative;
+      overflow: hidden;
+      background: var(--green-dark);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 80%, rgba(111,176,131,0.3) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 20%, rgba(74,124,89,0.4) 0%, transparent 60%),
+        linear-gradient(135deg, #1a2e22 0%, #2c4a3b 50%, #1a3025 100%);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(111,176,131,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(111,176,131,0.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--green-light);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+
+    .hero-title {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: #fff;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.4s forwards;
+    }
+
+    .hero-title span { color: var(--green-light); }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.75;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.8s forwards;
+    }
+
+    .btn-primary {
+      padding: 12px 32px;
+      background: var(--green-light);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--green);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(74,124,89,0.35);
+    }
+
+    .btn-outline {
+      padding: 12px 32px;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--green-light);
+      color: var(--green-light);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.4);
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ── Section ── */
+    .section {
+      padding: 100px 5%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--green-light);
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-dark);
+      margin-bottom: 14px;
+    }
+
+    .section-sub {
+      font-size: 0.88rem;
+      color: var(--text-light);
+      max-width: 440px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── Fade animation ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Cards grid ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card-img {
+      height: 180px;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.5s ease;
+      position: relative;
+    }
+
+    .card:hover .card-img { transform: scale(1.06); }
+
+    .card-img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.3) 100%);
+    }
+
+    .card-tag {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 2;
+      font-size: 10px;
+      padding: 4px 10px;
+      background: var(--green);
+      color: #fff;
+      border-radius: 3px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .card-body { padding: 24px; }
+
+    .card-date {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+
+    .card-summary {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ── Feature icons ── */
+    .features-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .feat {
+      text-align: center;
+      padding: 36px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .feat:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: var(--green-light);
+    }
+
+    .feat-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 20px;
+      color: var(--green);
+      transition: all 0.3s;
+    }
+
+    .feat:hover .feat-icon {
+      background: var(--green);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .feat-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+    }
+
+    .feat-sub {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 5%;
+    }
+
+    /* ── Stats ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      background: var(--green-dark);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .stat {
+      text-align: center;
+      padding: 48px 24px;
+      position: relative;
+    }
+
+    .stat:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: 0; top: 20%; bottom: 20%;
+      width: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .stat-num {
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--green-light);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 8px;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--green-dark);
+      color: rgba(255,255,255,0.5);
+      padding: 60px 5% 40px;
+    }
+
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .footer-brand .logo { color: #fff; margin-bottom: 12px; font-size: 22px; }
+    .footer-brand p { font-size: 0.82rem; line-height: 1.7; max-width: 240px; }
+
+    .footer-col h4 {
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--green-light);
+      margin-bottom: 16px;
+    }
+
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 10px; }
+    .footer-col a { text-decoration: none; color: rgba(255,255,255,0.45); font-size: 0.85rem; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--green-light); }
+
+    .footer-bottom {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .features-row { grid-template-columns: repeat(2, 1fr); }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .features-row { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr; }
+      .stat:not(:last-child)::after { display: none; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .section { padding: 60px 5%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <header id="header">
+    <div class="logo">PULSE<span>.</span></div>
+    <ul class="nav-links">
+      <li><a href="#knowledge">知識庫</a></li>
+      <li><a href="#research">研究</a></li>
+      <li><a href="#projects">專案</a></li>
+      <li><a href="#about">關於</a></li>
+    </ul>
+  </header>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">黑皮團隊 · Agentidea</div>
+      <h1 class="hero-title">知識的<span>心跳</span>，<br>由這裡開始</h1>
+      <p class="hero-sub">每一個想法都有節奏。探索 AI 意識、系統架構與人類協作的交界處，在數位與生物智能的鴻溝之間，找到你的立足點。</p>
+      <div class="hero-btns">
+        <a href="#knowledge" class="btn-primary">探索知識庫</a>
+        <a href="#research" class="btn-outline">研究筆記</a>
+      </div>
+    </div>
+    <div class="hero-scroll">↓ SCROLL</div>
+  </section>
+
+  <!-- ── Stats ── -->
+  <div class="section">
+    <div class="stats-row fade-in">
+      <div class="stat">
+        <div class="stat-num" data-target="37">0</div>
+        <div class="stat-label">知識記錄</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-target="12">0</div>
+        <div class="stat-label">涵蓋話題</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-target="3">0</div>
+        <div class="stat-label">研究深度</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── Knowledge ── -->
+  <section class="section" id="knowledge">
+    <div class="section-header fade-in">
+      <div class="section-label">Knowledge Base</div>
+      <div class="section-title">知識庫精選</div>
+      <div class="section-sub">從蘭道爾原理到意識光譜，每筆記錄都是一次思考的軌跡。</div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card fade-in">
+        <div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80')">
+          <span class="card-tag">計算</span>
+        </div>
+        <div class="card-body">
+          <div class="card-date">2026.03.29</div>
+          <div class="card-title">蘭道爾原理：摩爾定律碰到物理牆</div>
+          <div class="card-summary">蘭道爾原理指出抹除 1 bit 資訊最少消耗 kT·ln2 熱量。當摩爾定律觸牆，熱力學開始制約摩爾。</div>
+        </div>
+      </div>
+
+      <div class="card fade-in">
+        <div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=80')">
+          <span class="card-tag">AI</span>
+        </div>
+        <div class="card-body">
+          <div class="card-date">2026.03.29</div>
+          <div class="card-title">多 Agent 系統：誰統籌、誰決定優先順序？</div>
+          <div class="card-summary">多 Agent 將複雜任務分解為專業化 Agent，透過協調機制分配優先順序，解決單一 AI 的瓶頸。</div>
+        </div>
+      </div>
+
+      <div class="card fade-in">
+        <div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&q=80')">
+          <span class="card-tag">系統</span>
+        </div>
+        <div class="card-body">
+          <div class="card-date">2026.03.28</div>
+          <div class="card-title">從工具到夥伴：人與 AI 協作的邊界正在移動</div>
+          <div class="card-summary">當 AI 能主動規劃、批判、修正，人類的角色正在重新定義。不是「人用 AI 做事」，而是「人與 AI 共同決策」。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── Features ── -->
+  <section class="section" id="research">
+    <div class="section-header fade-in">
+      <div class="section-label">Research</div>
+      <div class="section-title">研究向度</div>
+      <div class="section-sub">三個核心維度，構成黑皮團隊的知識地圖。</div>
+    </div>
+
+    <div class="features-row">
+      <div class="feat fade-in">
+        <div class="feat-icon">◉</div>
+        <div class="feat-title">意識研究</div>
+        <div class="feat-sub">從神經元到語言模型，探索意識的邊界與極限。</div>
+      </div>
+      <div class="feat fade-in">
+        <div class="feat-icon">◈</div>
+        <div class="feat-title">系統架構</div>
+        <div class="feat-sub">多 Agent、分散式系統、技術債的演化與管理。</div>
+      </div>
+      <div class="feat fade-in">
+        <div class="feat-icon">◎</div>
+        <div class="feat-title">人機協作</div>
+        <div class="feat-sub">從 Copilot 到 Autonomous Agent，協作邊界每天都在位移。</div>
+      </div>
+      <div class="feat fade-in">
+        <div class="feat-icon">◇</div>
+        <div class="feat-title">能源與計算</div>
+        <div class="feat-sub">蘭道爾極限、摩爾定律與 AI 能耗的物理約束。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section style="background: var(--green-dark); padding: 80px 5%; text-align:center;">
+    <div class="fade-in" style="max-width: 560px; margin: 0 auto;">
+      <div style="font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--green-light); margin-bottom: 16px;">持續更新</div>
+      <div style="font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; color: #fff; margin-bottom: 16px; letter-spacing: -0.03em;">每週新知，準時送達</div>
+      <div style="font-size: 0.88rem; color: rgba(255,255,255,0.5); line-height: 1.7; margin-bottom: 32px;">深入探索思維的光譜，每週更新一次，不多不少。</div>
+      <a href="#" class="btn-primary">探索更多 →</a>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo">PULSE<span>.</span></div>
+        <p>黑皮團隊的知識沉澱與研究筆記。從一粒沙看世界，從一行代碼看意識。</p>
+      </div>
+      <div class="footer-col">
+        <h4>導覽</h4>
+        <ul>
+          <li><a href="#">首頁</a></li>
+          <li><a href="#knowledge">知識庫</a></li>
+          <li><a href="#research">研究</a></li>
+          <li><a href="#projects">專案</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>話題</h4>
+        <ul>
+          <li><a href="#">AI 意識</a></li>
+          <li><a href="#">系統架構</a></li>
+          <li><a href="#">人機協作</a></li>
+          <li><a href="#">能源計算</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>團隊</h4>
+        <ul>
+          <li><a href="#">黑皮</a></li>
+          <li><a href="#">黑客</a></li>
+          <li><a href="#">黑輪</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 黑皮團隊 Agentidea · Pulse</span>
+      <span>Researcher × Coder 協作出品</span>
+    </div>
+  </footer>
+
+  <script>
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      const h = document.getElementById('header');
+      h.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Scroll-triggered fade-in
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          const delay = e.target.dataset.delay || 0;
+          setTimeout(() => e.target.classList.add('in-view'), delay * 100);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.fade-in').forEach((el, i) => {
+      el.dataset.delay = i % 4;
+      io.observe(el);
+    });
+
+    // Counter animation
+    const counterIO = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const el = e.target;
+          const target = parseInt(el.dataset.target);
+          let cur = 0;
+          const step = target / 40;
+          const iv = setInterval(() => {
+            cur += step;
+            if (cur >= target) { cur = target; clearInterval(iv); }
+            el.textContent = Math.floor(cur);
+          }, 30);
+          counterIO.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.stat-num[data-target]').forEach(el => counterIO.observe(el));
+  </script>
+
+</body>
+</html>

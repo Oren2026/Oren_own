@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atlas — 知識地圖</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&display=swap');
+
+    :root {
+      --amber: #b8860b;
+      --amber-light: #d4a843;
+      --amber-dark: #7a5c08;
+      --cream: #faf6ee;
+      --surface: #fff;
+      --text: #2a2018;
+      --text-mid: #6b5d4d;
+      --text-light: #a09080;
+      --border: rgba(184,134,11,0.15);
+      --shadow: 0 8px 32px rgba(184,134,11,0.08);
+      --shadow-hover: 0 16px 48px rgba(184,134,11,0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: "PingFang TC", "Microsoft JhengHei", "Noto Serif TC", Georgia, serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Navigation ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 6%;
+      background: rgba(250,246,238,0.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--amber-dark);
+      letter-spacing: 0.04em;
+    }
+
+    .logo em { color: var(--amber); font-style: normal; }
+
+    .nav-pills {
+      display: flex;
+      gap: 4px;
+    }
+
+    .pill {
+      padding: 6px 18px;
+      border-radius: 20px;
+      border: 1px solid transparent;
+      font-size: 13px;
+      cursor: pointer;
+      background: none;
+      color: var(--text-mid);
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .pill:hover { color: var(--amber-dark); border-color: var(--border); }
+    .pill.active {
+      background: var(--amber);
+      color: #fff;
+      border-color: var(--amber);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 120px 6% 80px;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 80% at 100% 100%, rgba(212,168,67,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 0% 0%, rgba(184,134,11,0.06) 0%, transparent 60%);
+    }
+
+    /* Decorative lines */
+    .hero-deco {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .deco-line {
+      position: absolute;
+      background: var(--border);
+    }
+
+    .deco-line.h { height: 1px; left: 0; right: 0; }
+    .deco-line.v { width: 1px; top: 0; bottom: 0; }
+
+    .deco-line.h.top { top: 120px; }
+    .deco-line.h.bottom { bottom: 80px; }
+    .deco-line.v.left { left: 6%; }
+    .deco-line.v.right { right: 6%; }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .hero-text {}
+
+    .hero-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 16px;
+      font-family: sans-serif;
+      opacity: 0;
+      animation: slideIn 0.8s ease 0.2s forwards;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: slideIn 0.8s ease 0.35s forwards;
+    }
+
+    .hero-title em { color: var(--amber); font-style: normal; }
+
+    .hero-body {
+      font-size: 0.95rem;
+      color: var(--text-mid);
+      line-height: 1.85;
+      max-width: 440px;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: slideIn 0.8s ease 0.5s forwards;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 28px;
+      background: var(--amber);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: sans-serif;
+      transition: all 0.2s;
+      opacity: 0;
+      animation: slideIn 0.8s ease 0.65s forwards;
+    }
+
+    .hero-cta:hover {
+      background: var(--amber-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(184,134,11,0.25);
+    }
+
+    /* Hero visual */
+    .hero-visual {
+      position: relative;
+      opacity: 0;
+      animation: slideIn 0.8s ease 0.4s forwards;
+    }
+
+    .map-frame {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .map-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .map-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.05em;
+    }
+
+    .map-badge {
+      font-size: 10px;
+      padding: 3px 10px;
+      background: rgba(184,134,11,0.1);
+      color: var(--amber);
+      border-radius: 20px;
+      font-family: sans-serif;
+    }
+
+    .map-nodes {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .map-node {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--cream);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .map-node:hover {
+      border-color: var(--amber-light);
+      background: var(--surface);
+      transform: translateX(4px);
+    }
+
+    .node-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .node-dot.d1 { background: var(--amber); }
+    .node-dot.d2 { background: #6fb083; }
+    .node-dot.d3 { background: #7fb3ff; }
+    .node-dot.d4 { background: #f472b6; }
+
+    .node-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .node-count {
+      font-size: 11px;
+      color: var(--text-light);
+      font-family: sans-serif;
+    }
+
+    /* ── Section ── */
+    .section {
+      padding: 80px 6%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* ── Fade animation ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+    /* ── Editorial grid ── */
+    .editorial-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+
+    .article-featured {
+      grid-column: 1;
+      grid-row: 1 / 3;
+    }
+
+    .article-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .article-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-4px);
+    }
+
+    .article-img {
+      height: 160px;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.5s;
+    }
+
+    .article-card:hover .article-img { transform: scale(1.04); }
+
+    .article-body { padding: 20px; }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .article-tag {
+      font-size: 10px;
+      padding: 3px 8px;
+      background: rgba(184,134,11,0.1);
+      color: var(--amber);
+      border-radius: 3px;
+      font-family: sans-serif;
+    }
+
+    .article-date {
+      font-size: 11px;
+      color: var(--text-light);
+      font-family: sans-serif;
+    }
+
+    .article-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.45;
+      margin-bottom: 8px;
+    }
+
+    .article-summary {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Small articles */
+    .article-sm {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .article-sm:hover {
+      border-color: var(--amber-light);
+      box-shadow: var(--shadow);
+      transform: translateX(4px);
+    }
+
+    .sm-num {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--amber);
+      line-height: 1;
+      opacity: 0.3;
+      flex-shrink: 0;
+      font-family: sans-serif;
+    }
+
+    .sm-body {}
+
+    .sm-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .sm-summary {
+      font-size: 0.78rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+    }
+
+    /* ── Section divider ── */
+    .ornament {
+      text-align: center;
+      padding: 48px 0;
+      font-size: 20px;
+      color: var(--amber);
+      opacity: 0.3;
+      letter-spacing: 0.5em;
+    }
+
+    /* ── Quote banner ── */
+    .quote-banner {
+      background: var(--amber);
+      padding: 60px 6%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quote-banner::before {
+      content: """;
+      position: absolute;
+      top: -20px; left: 5%;
+      font-size: 200px;
+      color: rgba(255,255,255,0.1);
+      font-family: serif;
+      line-height: 1;
+    }
+
+    .quote-text {
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 700;
+      color: #fff;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.5;
+      position: relative;
+      font-family: "Noto Serif TC", Georgia, serif;
+    }
+
+    .quote-author {
+      margin-top: 16px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      font-style: italic;
+    }
+
+    /* ── Tag cloud ── */
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .cloud-tag {
+      padding: 7px 18px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--surface);
+    }
+
+    .cloud-tag:hover {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(184,134,11,0.2);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--text);
+      color: rgba(255,255,255,0.4);
+      padding: 60px 6% 40px;
+    }
+
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .footer-brand .logo { color: #fff; margin-bottom: 12px; }
+    .footer-brand p { font-size: 0.82rem; line-height: 1.7; max-width: 240px; }
+
+    .footer-col h4 {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--amber-light);
+      margin-bottom: 16px;
+    }
+
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 10px; }
+    .footer-col a { text-decoration: none; color: rgba(255,255,255,0.4); font-size: 0.85rem; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--amber-light); }
+
+    .footer-bottom {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* ── Animations ── */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .editorial-grid { grid-template-columns: 1fr; }
+      .article-featured { grid-column: 1; grid-row: auto; }
+    }
+
+    @media (max-width: 640px) {
+      .nav-pills { display: none; }
+      .section { padding: 60px 5%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <header>
+    <div class="logo">ATLAS<em>.</em></div>
+    <div class="nav-pills">
+      <button class="pill active">首頁</button>
+      <button class="pill">知識庫</button>
+      <button class="pill">研究</button>
+      <button class="pill">專案</button>
+    </div>
+  </header>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-deco">
+      <div class="deco-line h top"></div>
+      <div class="deco-line h bottom"></div>
+      <div class="deco-line v left"></div>
+      <div class="deco-line v right"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-eyebrow">知識地圖 · 黑皮團隊</div>
+        <h1 class="hero-title">在複雜的世界裡<br>繪製<em>理解的</em>輪廓</h1>
+        <p class="hero-body">每一個知識節點都是地圖上的一個座標。從蘭道爾原理到意識光譜，從技術債到多 Agent 系統——這裡是黑皮團隊的思考領土。</p>
+        <a href="#" class="hero-cta">探索知識庫 →</a>
+      </div>
+
+      <div class="hero-visual">
+        <div class="map-frame">
+          <div class="map-header">
+            <div class="map-title">知識領土圖</div>
+            <div class="map-badge">2026 Q1</div>
+          </div>
+          <div class="map-nodes">
+            <div class="map-node">
+              <div class="node-dot d1"></div>
+              <div class="node-name">AI 意識與認知</div>
+              <div class="node-count">12 篇</div>
+            </div>
+            <div class="map-node">
+              <div class="node-dot d2"></div>
+              <div class="node-name">系統架構與設計</div>
+              <div class="node-count">9 篇</div>
+            </div>
+            <div class="map-node">
+              <div class="node-dot d3"></div>
+              <div class="node-name">人機協作與應用</div>
+              <div class="node-count">8 篇</div>
+            </div>
+            <div class="map-node">
+              <div class="node-dot d4"></div>
+              <div class="node-name">能源、計算與物理</div>
+              <div class="node-count">5 篇</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Editorial Articles ── -->
+  <section class="section">
+    <div class="section-header reveal">
+      <div style="font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); margin-bottom:10px; font-family:sans-serif;">Featured</div>
+      <div style="font-size:clamp(1.4rem,3vw,2rem); font-weight:900; letter-spacing:-0.03em; margin-bottom:8px;">本期特寫</div>
+    </div>
+
+    <div class="editorial-grid reveal">
+      <div class="article-featured article-card">
+        <div class="article-img" style="background-image:url('https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=600&q=80')"></div>
+        <div class="article-body">
+          <div class="article-meta">
+            <span class="article-tag">AI</span>
+            <span class="article-date">2026.03.29</span>
+          </div>
+          <div class="article-title">蘭道爾原理：摩爾定律碰到物理牆 — 當摩爾定律觸牆，熱力學開始制約摩爾</div>
+          <div class="article-summary">蘭道爾原理指出抹除 1 bit 資訊最少消耗 kT·ln2 熱量。當半導體製程走到物理極限，晶片效率的瓶頸不再是製程，而是熱力學。</div>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <div class="article-img" style="background-image:url('https://images.unsplash.com/photo-1555255707-c07966088b7b?w=600&q=80')"></div>
+        <div class="article-body">
+          <div class="article-meta">
+            <span class="article-tag">系統</span>
+            <span class="article-date">2026.03.28</span>
+          </div>
+          <div class="article-title">多 Agent 系統：誰統籌、誰決定優先順序？</div>
+          <div class="article-summary">多 Agent 將複雜任務分解為專業化 Agent，透過協調機制分配優先順序。</div>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <div class="article-img" style="background-image:url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=80')"></div>
+        <div class="article-body">
+          <div class="article-meta">
+            <span class="article-tag">協作</span>
+            <span class="article-date">2026.03.27</span>
+          </div>
+          <div class="article-title">從工具到夥伴：人與 AI 協作的邊界正在移動</div>
+          <div class="article-summary">當 AI 能主動規劃、批判、修正，人類的角色正在重新定義。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Small articles -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap:16px;" class="reveal">
+      <div class="article-sm">
+        <div class="sm-num">01</div>
+        <div class="sm-body">
+          <div class="sm-title">技術債：指數成長的隱形成本</div>
+          <div class="sm-summary">耦合度提高讓維護成本指數成長，重構遲早成為必要選項。</div>
+        </div>
+      </div>
+      <div class="article-sm">
+        <div class="sm-num">02</div>
+        <div class="sm-body">
+          <div class="sm-title">意識光譜：不是二元開關</div>
+          <div class="sm-summary">從草履蟲的反射到人類的反思，意識是連續過渡而非斷裂。</div>
+        </div>
+      </div>
+      <div class="article-sm">
+        <div class="sm-num">03</div>
+        <div class="sm-body">
+          <div class="sm-title">積分與權力：遊戲化重構社群規則</div>
+          <div class="sm-summary">當「等級」決定誰的聲音被聽見，規則就悄悄改變了。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Ornament ── -->
+  <div class="ornament">— ◆ —</div>
+
+  <!-- ── Quote ── -->
+  <div class="quote-banner">
+    <div class="quote-text">意識不是二元開關，而是一條從簡單反射到深度自我反思的連續光譜。</div>
+    <div class="quote-author">— 研究員備考，2026.03</div>
+  </div>
+
+  <!-- ── Topics ── -->
+  <section class="section">
+    <div style="text-align:center; margin-bottom:32px;" class="reveal">
+      <div style="font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); margin-bottom:10px; font-family:sans-serif;">Topics</div>
+      <div style="font-size:clamp(1.2rem,2.5vw,1.6rem); font-weight:900; letter-spacing:-0.02em;">探索話題</div>
+    </div>
+    <div class="tag-cloud reveal">
+      <div class="cloud-tag">AI 意識</div>
+      <div class="cloud-tag">蘭道爾原理</div>
+      <div class="cloud-tag">Multi-Agent</div>
+      <div class="cloud-tag">技術債</div>
+      <div class="cloud-tag">人機協作</div>
+      <div class="cloud-tag">系統架構</div>
+      <div class="cloud-tag">摩爾定律</div>
+      <div class="cloud-tag">意識光譜</div>
+      <div class="cloud-tag">能源計算</div>
+      <div class="cloud-tag">遊戲化</div>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo">ATLAS<em>.</em></div>
+        <p>黑皮團隊的知識沉澱與研究筆記。從一粒沙看世界。</p>
+      </div>
+      <div class="footer-col">
+        <h4>知識庫</h4>
+        <ul>
+          <li><a href="#">AI 意識</a></li>
+          <li><a href="#">系統架構</a></li>
+          <li><a href="#">人機協作</a></li>
+          <li><a href="#">能源計算</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>團隊</h4>
+        <ul>
+          <li><a href="#">黑皮</a></li>
+          <li><a href="#">黑客</a></li>
+          <li><a href="#">黑輪</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 黑皮團隊 Agentidea · Atlas</span>
+      <span>Researcher × Coder 協作出品</span>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll-triggered reveals
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          const delay = e.target.dataset.delay || 0;
+          setTimeout(() => e.target.classList.add('in-view'), delay * 120);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      el.dataset.delay = i % 3;
+      io.observe(el);
+    });
+  </script>
+
+</body>
+</html>
