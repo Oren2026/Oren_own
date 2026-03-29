@@ -53,6 +53,7 @@
 ```
 Oren_own/
 ├── README.md
+├── 比賽/                    ← 比賽專區首頁（整合三個比賽入口）
 ├── docs/                   ← 所有專案文件
 │   ├── agent_idle/         ← 自動生產部門
 │   ├── agentidea/           ← 創意實驗室
