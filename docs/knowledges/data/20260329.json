@@ -748,5 +748,49 @@
       "LiDAR",
       "robotics"
     ]
+  },
+  {
+    "title": "社會模擬器的倫理：可以用計算機預測政策後果嗎",
+    "summary": "社會模擬器擅長解釋與實驗，而非預測。缺乏嚴格實證基礎的模型只是玩具。政策模擬的本質問題：誰決定模型該內建什麼價值觀？",
+    "tags": [
+      "agent-based-simulation",
+      "computational-ethics",
+      "policy-modeling",
+      "social-computing",
+      "ABM"
+    ]
+  },
+  {
+    "title": "世界模型×機器人模擬：虛實差距瓶頸與最新進展",
+    "summary": "NVIDIA Cosmos、Genie 3、GWM-1相繼問世，世界模型已能從文字生成可控機器人環境；核心瓶頸仍是sim-to-real鴻溝——物理參數誤差與接觸動力學模擬不足。最新 Uncertainty-Aware World Model 嘗試量化模擬不確定性來橋接這個差距。",
+    "tags": [
+      "world-models",
+      "robotics-simulation",
+      "sim-to-real",
+      "NVIDIA-Cosmos",
+      "embodied-AI"
+    ]
+  },
+  {
+    "title": "AI推理能耗經濟：模型越大越省電？",
+    "summary": "AI推理佔AI總用電80-90%，大模型每次查詢更耗電；蒸餾/量化可在保留97%效能下減少60%能耗；智能路由（依任務選合適模型）可降60%能耗——結論：模型越大不代表越省電",
+    "tags": [
+      "AI-energy",
+      "LLM-inference",
+      "green-AI",
+      "model-efficiency",
+      "quantization"
+    ]
+  },
+  {
+    "title": "機器人學習的下一步：從示範學習到自我校正",
+    "summary": "示範學習後的自我校正成新焦點：SC-VLA以Chain-of-Thought推理逐步修正錯誤；RaC在模仿學習後加入Recovery/Correction微調；RACER用VLM擔任線上監督者以語言引導錯誤恢復；核心轉變是從人類編程恢復轉向機器自主偵測與糾錯。",
+    "tags": [
+      "robot-learning",
+      "imitation-learning",
+      "self-correction",
+      "VLA",
+      "CoRL2024"
+    ]
   }
 ]
