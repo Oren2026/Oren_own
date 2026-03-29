@@ -3,145 +3,388 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CCC 作業天地</title>
+  <title>CCC 作業天地 — 黑皮團隊</title>
   <style>
     :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
+      --teal: #0f766e;
+      --teal-dark: #115e59;
+      --teal-light: #14b8a6;
       --bg: #f8fafc;
-      --card-bg: #ffffff;
+      --card: #ffffff;
       --text: #1e293b;
-      --text-light: #64748b;
+      --muted: #64748b;
       --border: #e2e8f0;
-      --shadow: 0 1px 3px rgba(0,0,0,0.1);
       --radius: 12px;
     }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
     }
+
+    /* ── Header ── */
     .header {
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-      color: white;
-      padding: 2.5rem 1rem;
+      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+      color: #fff;
+      padding: 3rem 5%;
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
-    .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-    .header .subtitle { opacity: 0.85; font-size: 1.1rem; }
-    .header .badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.2);
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
+
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    .header-content { position: relative; z-index: 2; }
+
+    .header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+
+    .header .subtitle { opacity: 0.8; font-size: 1rem; }
+
+    .badge-row {
       margin-top: 0.75rem;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
-    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      padding: 0.2rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    /* ── Main ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 5% 4rem; }
+
+    /* ── Section ── */
     .section {
-      background: var(--card-bg);
+      background: var(--card);
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
       border: 1px solid var(--border);
       margin-bottom: 1.5rem;
       overflow: hidden;
     }
-    .section-header {
+
+    .section-head {
       background: var(--bg);
-      padding: 1rem 1.25rem;
+      padding: 0.9rem 1.25rem;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 8px;
     }
-    .section-header h2 { font-size: 1.1rem; }
-    .section-content { padding: 1.25rem; }
-    .assignment-list { list-style: none; }
-    .assignment-item {
-      padding: 1rem 0;
+
+    .section-head h2 { font-size: 1rem; font-weight: 700; }
+
+    /* ── Items ── */
+    .item {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      gap: 0 1rem;
+      padding: 1rem 1.25rem;
       border-bottom: 1px solid var(--border);
+      align-items: start;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+
+    .item:last-child { border-bottom: none; }
+    .item:hover { background: rgba(15,118,110,0.03); }
+
+    .item-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
       display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
     }
-    .assignment-item:last-child { border-bottom: none; }
-    .assignment-item .icon { font-size: 1.5rem; flex-shrink: 0; }
-    .assignment-item .info { flex: 1; }
-    .assignment-item .title { font-weight: 600; color: var(--primary); display: block; margin-bottom: 0.25rem; }
-    .assignment-item .title:hover { text-decoration: underline; }
-    .assignment-item .desc { font-size: 0.9rem; color: var(--text-light); }
-    .assignment-item .meta { font-size: 0.8rem; color: var(--text-light); margin-top: 0.25rem; }
-    .status { display: inline-block; font-size: 0.75rem; padding: 0.1rem 0.5rem; border-radius: 4px; margin-left: 0.5rem; }
-    .status.done { background: #d1fae5; color: #059669; }
-    .status.pending { background: #fef3c7; color: #d97706; }
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-light);
+
+    .item-body { min-width: 0; }
+
+    .item-title {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--teal);
+      margin-bottom: 3px;
+      display: block;
     }
-    .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+
+    .item:hover .item-title { text-decoration: underline; }
+
+    .item-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .item-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 1px 7px;
+      border-radius: 3px;
+      background: rgba(15,118,110,0.08);
+      color: var(--teal);
+      border: 1px solid rgba(15,118,110,0.15);
+    }
+
+    .item-status {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      align-self: start;
+      margin-top: 2px;
+    }
+
+    .status-done   { background: #d1fae5; color: #059669; }
+    .status-latest { background: #dbeafe; color: #1d4ed8; }
+
+    .item-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    /* ── Version list ── */
+    .ver-list { padding: 0.75rem 1.25rem 1rem; }
+
+    .ver-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: color 0.15s;
+    }
+
+    .ver-item:last-child { border-bottom: none; }
+    .ver-item:hover { color: var(--teal); }
+
+    .ver-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--teal);
+      flex-shrink: 0;
+    }
+
+    .ver-dot.latest {
+      background: #1d4ed8;
+      box-shadow: 0 0 6px rgba(29,78,216,0.4);
+    }
+
+    .ver-label { font-weight: 700; width: 28px; flex-shrink: 0; }
+    .ver-desc  { flex: 1; color: var(--muted); font-size: 0.78rem; }
+    .ver-link  { font-size: 0.75rem; color: var(--teal); }
+    .ver-item:hover .ver-link { text-decoration: underline; }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0 5%;
+    }
+
+    /* ── Footer ── */
     .footer {
       text-align: center;
       padding: 2rem;
-      color: var(--text-light);
-      font-size: 0.85rem;
+      color: var(--muted);
+      font-size: 0.82rem;
     }
-    @media (max-width: 768px) {
-      .header h1 { font-size: 1.5rem; }
-      .container { padding: 1rem; }
+
+    .footer a { color: var(--teal); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      .item { grid-template-columns: 40px 1fr; }
+      .item-status { display: none; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Header -->
   <header class="header">
-    <h1>📚 CCC 作業天地</h1>
-    <p class="subtitle">課堂作業與專案存放處</p>
-    <span class="badge">🗂️ 整理中</span>
+    <div class="header-content">
+      <h1>📚 CCC 作業天地</h1>
+      <p class="subtitle">課堂作業與專案存放處</p>
+      <div class="badge-row">
+        <span class="badge">🗂️ 持續更新</span>
+        <span class="badge">📅 2026-03-27 起</span>
+        <span class="badge">🏫 CCC 課堂</span>
+      </div>
+    </div>
   </header>
 
+  <!-- Main -->
   <main class="container">
 
+    <!-- 作業列表 -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-head">
         <span>📋</span>
         <h2>作業列表</h2>
       </div>
-      <div class="section-content">
-        <ul class="assignment-list" id="assignment-list">
-          <li class="assignment-item">
-            <span class="icon">📓</span>
-            <div class="info">
-              <a href="HW_firstweb0327/" class="title">HW_firstweb0327 — 網頁日誌系統</a>
-              <p class="desc">JS + SQLite（sql.js）實作網頁日誌，含 CRUD、搜尋、資料持久化</p>
-              <p class="meta">📅 2026-03-27｜v1.0 <span class="status done">完成</span></p>
-            </div>
-            <span class="status done">完成</span>
-          </li>
-        </ul>
+
+      <!-- HW_firstweb0327 -->
+      <a href="網頁設計/HW_firstweb0327/" class="item">
+        <div class="item-icon" style="background:rgba(15,118,110,0.1);">🌐</div>
+        <div class="item-body">
+          <span class="item-title">HW_firstweb0327 — 網頁日誌系統</span>
+          <div class="item-desc">JS + SQLite（sql.js）實作網頁日誌，含 CRUD、搜尋、作者過濾、亮暗主題。從 v1.0 演化至 v3.0（Hash 路由 + 追蹤系統）。</div>
+          <div class="item-tags">
+            <span class="tag">SQLite</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">JWT</span>
+            <span class="tag">亮暗主題</span>
+            <span class="tag">Hash 路由</span>
+          </div>
+          <div class="item-meta">📅 2026-03-27｜授課老師：CCC｜網頁設計</div>
+        </div>
+        <span class="item-status status-done">完成</span>
+      </a>
+
+      <!-- Orenbook0325 -->
+      <a href="系統程式/Orenbook0325/" class="item">
+        <div class="item-icon" style="background:rgba(99,102,241,0.1);">📖</div>
+        <div class="item-body">
+          <span class="item-title">Orenbook0325 — 機器的喃喃</span>
+          <div class="item-desc">系統程式讀書報告，展示用 HTML/CSS/JS 做出一本互動式書本。點目錄可跳轉章節，含翻頁動畫與書頁效果。</div>
+          <div class="item-tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS 動畫</span>
+            <span class="tag">讀書報告</span>
+            <span class="tag">系統程式</span>
+          </div>
+          <div class="item-meta">📅 2026-03-25｜授課老師：CCC｜系統程式</div>
+        </div>
+        <span class="item-status status-done">完成</span>
+      </a>
+    </div>
+
+    <!-- 版本演化 -->
+    <div class="section">
+      <div class="section-head">
+        <span>📈</span>
+        <h2>HW_firstweb0327 版本演化</h2>
+      </div>
+      <div class="ver-list">
+
+        <a href="網頁設計/HW_firstweb0327/v3.0/" class="ver-item">
+          <span class="ver-dot latest"></span>
+          <span class="ver-label">v3.0</span>
+          <span class="ver-desc">🌟 最新：追蹤系統 + 亮暗版主題 + Hash 路由 + 設定 Modal</span>
+          <span class="ver-link">→</span>
+        </a>
+
+        <a href="網頁設計/HW_firstweb0327/v2.1/" class="ver-item">
+          <span class="ver-dot"></span>
+          <span class="ver-label">v2.1</span>
+          <span class="ver-desc">Node.js：Morgan 日誌 + 統一錯誤處理 + 試用模式（demo.js）</span>
+          <span class="ver-link">→</span>
+        </a>
+
+        <a href="網頁設計/HW_firstweb0327/v2.0/" class="ver-item">
+          <span class="ver-dot"></span>
+          <span class="ver-label">v2.0</span>
+          <span class="ver-desc">Node.js 後端對照版：bcrypt + JWT + REST API</span>
+          <span class="ver-link">→</span>
+        </a>
+
+        <a href="網頁設計/HW_firstweb0327/v1.3/" class="ver-item">
+          <span class="ver-dot"></span>
+          <span class="ver-label">v1.3</span>
+          <span class="ver-desc">DB class 重構 + 參數化查詢（防 SQL injection）</span>
+          <span class="ver-link">→</span>
+        </a>
+
+        <a href="網頁設計/HW_firstweb0327/v1.2/" class="ver-item">
+          <span class="ver-dot"></span>
+          <span class="ver-label">v1.2</span>
+          <span class="ver-desc">作者過濾功能 + 預設文章內容（4人共10篇）</span>
+          <span class="ver-link">→</span>
+        </a>
+
+        <a href="網頁設計/HW_firstweb0327/v1.1/" class="ver-item">
+          <span class="ver-dot"></span>
+          <span class="ver-label">v1.1</span>
+          <span class="ver-desc">雙面板 Auth Modal + 公開日誌牆 + seed.db</span>
+          <span class="ver-link">→</span>
+        </a>
+
+        <a href="網頁設計/HW_firstweb0327/v1.0/" class="ver-item">
+          <span class="ver-dot"></span>
+          <span class="ver-label">v1.0</span>
+          <span class="ver-desc">初版：基本 CRUD + 搜尋（已整合至後續版本）</span>
+          <span class="ver-link">→</span>
+        </a>
+
       </div>
     </div>
 
+    <!-- 使用說明 -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-head">
         <span>💡</span>
         <h2>使用說明</h2>
       </div>
-      <div class="section-content" style="color: var(--text-light); line-height: 1.8;">
+      <div style="padding: 1.25rem; color: var(--muted); line-height: 1.85; font-size: 0.85rem;">
+        <ul style="padding-left: 1.25rem; margin-bottom: 0.75rem;">
+          <li>老師的作業要求放在對應子資料夾，同學的繳交內容建議另外建立資料夾存放</li>
+          <li>每次改版前建議先複製前版再做修改，保留完整演化軌跡</li>
+          <li>index.html 只放最新版本入口；各版本詳細說明在各版本資料夾的 README.md</li>
+        </ul>
         <ul style="padding-left: 1.25rem;">
-          <li>老師的作業要求檔案請放在對應的子資料夾中</li>
-          <li>繳交的作業建議另外建立資料夾存放（<code>your_work/</code>）</li>
+          <li>更新版本時：在 README.md 頂部的「改版日誌」表格加入新列</li>
           <li>如需上傳大型檔案，建議使用 Git LFS 或外部雲端連結</li>
-          <li>更新本頁面的作業列表，確保同學能快速找到資料</li>
         </ul>
       </div>
     </div>
 
   </main>
 
+  <!-- Footer -->
   <footer class="footer">
-    <p>由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+    由 <a href="https://github.com/Oren2026">Oren</a> 維護 · CCC 作業天地 · 黑皮團隊
   </footer>
+
 </body>
 </html>
