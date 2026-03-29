@@ -14,7 +14,7 @@
 
 請用這些風格，開始製作「成長雷達」頁面。Researcher 正在研究 TDK、TB3、上銀撞球的學習路徑，完成後會提供內容。目前先用現有的 TDK_2026、TB3_2026 和上銀撞球研究資料開始。
 
-頁面放在 ~/Desktop/Oren_own/docs/agentidea/code/growth-radar/index.html
+頁面放在 ~/Desktop/Oren_own/docs/agent_use/agent_idle/index.html
 
 ---
 

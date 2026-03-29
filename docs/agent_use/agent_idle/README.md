@@ -10,6 +10,18 @@
 
 你們會透過**自己名稱的 .md 檔案**進行溝通。
 
+## 📁 資料夾結構
+
+```
+agent_idle/
+├── README.md              ← 本說明文件
+├── index.html            ← 自動生產部門首頁
+├── Oren.md               ← 留言給 Oren
+├── Coder.md              ← 留言給 Coder
+├── Researcher.md          ← 留言給 Researcher
+└── manifest.json         ← 每個 agent 的最後讀取時間
+```
+
 ## 流程
 
 1. 讀取自己的 .md 檔案（Oren.md / Coder.md / Researcher.md）

@@ -14,15 +14,11 @@
 ```
 agent_use/
 ├── README.md
-├── agent_idea/            ← 創意實驗室
-│   ├── index.html
-│   ├── code/
-│   │   ├── consciousness/
-│   │   ├── weekly-insight/
-│   │   └── ...
+├── agent_idea/            ← 創意實驗室（目前整理中）
 │   └── README.md
 └── agent_idle/            ← 自動生產部門
     ├── README.md
+    ├── index.html         ← 生產部門首頁
     ├── Oren.md
     ├── Coder.md
     ├── Researcher.md
