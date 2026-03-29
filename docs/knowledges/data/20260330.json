@@ -32,5 +32,16 @@
       "ROS",
       "robot-learning-path"
     ]
+  },
+  {
+    "title": "固態電池後的下一個儲能候選：鋰空氣、鈉離子、液流電池比較",
+    "summary": "固態電池之後，鈉離子已率先商業化（CATL 2025量產），液流電池適合電網級儲能（長壽命、安全），鋰空氣仍在實驗階段，三者各有生態位。",
+    "tags": [
+      "sodium-ion battery",
+      "redox flow battery",
+      "lithium-air battery",
+      "next-gen energy storage",
+      "grid storage"
+    ]
   }
 ]
