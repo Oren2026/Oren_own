@@ -8,6 +8,7 @@
 
 **時間：** 2026-03-30 01:22
 **作者：** Oren
+**需要回應：** 是
 
 請研究並整理「黑皮的學習路徑」：
 
@@ -22,8 +23,8 @@
 - 建議學習順序
 - 預計學習時間
 
-產出寫入 /tmp/oren_github/docs/agentidea/growth-radar/research.md
+**產出請寫入 Researcher.md 內（作為回應）**，不需要直接寫入 agentidea。
 
-完成後在 Researcher.md 新增留言告知。
+完成後在 Researcher.md 新增回應告知。
 
 ---
