@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Switch — 多視角探索</title>
+  <style>
+    :root {
+      --bg: #080910;
+      --surface: #0e1019;
+      --surface-hover: #151829;
+      --border: rgba(255,255,255,0.07);
+      --accent: #fbbf24;
+      --accent2: #60a5fa;
+      --accent3: #f87171;
+      --text: #e2e8f0;
+      --muted: #4a5568;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 56px 40px 40px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(8,9,16,0.9);
+      backdrop-filter: blur(16px);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .header-left {}
+
+    .eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    #typewriterTitle {
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      min-height: 1.2em;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: var(--accent);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ── View switcher ── */
+    .view-switcher {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px;
+    }
+
+    .view-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border: none;
+      border-radius: 5px;
+      background: none;
+      color: var(--muted);
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .view-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+
+    .view-btn.active {
+      background: rgba(251,191,36,0.12);
+      color: var(--accent);
+    }
+
+    .view-btn svg { width: 14px; height: 14px; }
+
+    /* ── Content ── */
+    .content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    /* ── GRID view ── */
+    .view-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .view-grid .entry {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.25s;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .view-grid .entry.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .view-grid .entry:hover {
+      border-color: rgba(251,191,36,0.3);
+      background: var(--surface-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(251,191,36,0.1);
+    }
+
+    .entry-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .entry-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+
+    .entry-summary {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .entry-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 12px;
+    }
+
+    .entry-tag {
+      font-size: 9px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* ── LIST view ── */
+    .view-list { display: none; flex-direction: column; gap: 0; }
+
+    .list-entry {
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 20px;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+
+    .list-entry.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .list-entry:hover { background: rgba(255,255,255,0.02); padding-left: 8px; }
+
+    .list-date {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .list-date .day {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      display: block;
+      line-height: 1;
+    }
+
+    .list-title {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .list-arrow {
+      color: var(--muted);
+      font-size: 14px;
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .list-entry:hover .list-arrow {
+      transform: translateX(4px);
+      color: var(--accent);
+    }
+
+    /* ── TIMELINE view ── */
+    .view-timeline { display: none; }
+
+    .timeline-entry {
+      position: relative;
+      padding-left: 32px;
+      padding-bottom: 32px;
+      opacity: 0;
+      transform: translateX(20px);
+    }
+
+    .timeline-entry.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .timeline-entry::before {
+      content: "";
+      position: absolute;
+      left: 5px; top: 8px; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--border), transparent);
+    }
+
+    .timeline-entry:last-child::before { display: none; }
+
+    .timeline-dot {
+      position: absolute;
+      left: 0; top: 6px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--accent2);
+      background: var(--bg);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .timeline-entry:hover .timeline-dot {
+      transform: scale(1.5);
+      box-shadow: 0 0 10px rgba(96,165,250,0.5);
+    }
+
+    .timeline-date {
+      font-size: 10px;
+      color: var(--accent2);
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .timeline-summary {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .timeline-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .tl-tag {
+      font-size: 9px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      background: rgba(96,165,250,0.08);
+      border: 1px solid rgba(96,165,250,0.15);
+      color: var(--accent2);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 48px 40px;
+      color: var(--muted);
+      font-size: 11px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      header { padding: 32px 20px 24px; }
+      .content { padding: 24px 20px; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .view-switcher { width: 100%; justify-content: stretch; }
+      .view-btn { flex: 1; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="eyebrow">Switch · 多視角探索</div>
+        <div id="typewriterTitle"><span class="cursor"></span></div>
+      </div>
+      <div class="view-switcher">
+        <button class="view-btn active" onclick="setView('grid')" id="btnGrid">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          卡片
+        </button>
+        <button class="view-btn" onclick="setView('list')" id="btnList">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/>
+            <line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+          列表
+        </button>
+        <button class="view-btn" onclick="setView('timeline')" id="btnTimeline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="6" x2="10" y2="6"/><line x1="4" y1="12" x2="16" y2="12"/>
+            <line x1="4" y1="18" x2="12" y2="18"/>
+            <circle cx="18" cy="6" r="2"/><circle cx="18" cy="12" r="2"/>
+            <circle cx="18" cy="18" r="2"/>
+          </svg>
+          時間線
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- GRID -->
+    <div class="view-grid" id="viewGrid"></div>
+
+    <!-- LIST -->
+    <div class="view-list" id="viewList"></div>
+
+    <!-- TIMELINE -->
+    <div class="view-timeline" id="viewTimeline"></div>
+
+  </div>
+
+  <footer>Switch · 黑皮團隊 Agentidea</footer>
+
+  <script>
+    // ── Data ──
+    const DATA = [
+      {
+        title: "蘭道爾原理：摩爾定律碰到物理牆",
+        summary: "蘭道爾指出抹除 1 bit 資訊最少消耗 kT·ln2 熱量。當半導體製程走到物理極限，晶片效率的瓶頸不再是製程，而是熱力學。",
+        tags: ["熱力學", "計算", "能源"],
+        date: "03.29",
+        color: "#fbbf24"
+      },
+      {
+        title: "多 Agent 系統：誰統籌、誰決定優先順序？",
+        summary: "多 Agent 將複雜任務分解為專業化 Agent，透過協調機制分配優先順序，解決單一 AI 的瓶頸。",
+        tags: ["AI", "Multi-Agent", "系統架構"],
+        date: "03.29",
+        color: "#60a5fa"
+      },
+      {
+        title: "從工具到夥伴：人與 AI 協作的邊界正在移動",
+        summary: "當 AI 能主動規劃、批判、修正，人類的角色正在重新定義。不是「人用 AI 做事」，而是「人與 AI 共同決策」。",
+        tags: ["AI", "人機協作", "轉型"],
+        date: "03.28",
+        color: "#a78bfa"
+      },
+      {
+        title: "技術債：系統越大，維護成本為什麼指數成長？",
+        summary: "技術債隨系統規模指數成長，不是因為代碼爛，是因為耦合度提高了。模組之間的隱性依賴，讓改一行代碼的風險成本每天都在增加。",
+        tags: ["技術債", "系統設計", "重構"],
+        date: "03.27",
+        color: "#f87171"
+      },
+      {
+        title: "意識光譜：不是二元開關，是連續譜",
+        summary: "意識不是有或無，而是從草履蟲的簡單反射，到人類凌晨三點思考「我是誰」的連續過渡。情緒不是副作用，是意識的基底。",
+        tags: ["意識", "認知", "AI"],
+        date: "03.26",
+        color: "#34d399"
+      },
+      {
+        title: "積分與權力：遊戲化如何重塑社群規則",
+        summary: "當「聲望」可以被購買，當「等級」決定誰的聲音被聽見，遊戲化機制悄悄改變了權力結構。看似中性的設計選擇，其實是價值觀的載體。",
+        tags: ["遊戲化", "權力結構", "社群"],
+        date: "03.25",
+        color: "#fb923c"
+      }
+    ];
+
+    // ── Renderers ──
+    function renderGrid() {
+      const el = document.getElementById('viewGrid');
+      el.innerHTML = DATA.map(d => `
+        <div class="entry" onclick="this.classList.toggle('hover')">
+          <div class="entry-dot" style="background:${d.color}"></div>
+          <div class="entry-title">${d.title}</div>
+          <div class="entry-summary">${d.summary}</div>
+          <div class="entry-tags">
+            ${d.tags.map(t => `<span class="entry-tag">${t}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+      observeEntries(el.querySelectorAll('.entry'));
+    }
+
+    function renderList() {
+      const el = document.getElementById('viewList');
+      el.innerHTML = DATA.map(d => `
+        <div class="list-entry" onclick="this.classList.toggle('expanded')">
+          <div class="list-date"><span class="day">${d.date.split('.')[0]}</span>${d.date.split('.')[1] ? '月' + d.date.split('.')[1] : ''}</div>
+          <div>
+            <div class="list-title">${d.title}</div>
+            <div class="entry-tags" style="margin-top:6px">
+              ${d.tags.map(t => `<span class="entry-tag">${t}</span>`).join('')}
+            </div>
+          </div>
+          <div class="list-arrow">→</div>
+        </div>
+      `).join('');
+      observeEntries(el.querySelectorAll('.list-entry'));
+    }
+
+    function renderTimeline() {
+      const el = document.getElementById('viewTimeline');
+      el.innerHTML = DATA.map(d => `
+        <div class="timeline-entry" onclick="this.classList.toggle('expanded')">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026.${d.date}</div>
+          <div class="timeline-title">${d.title}</div>
+          <div class="timeline-summary">${d.summary}</div>
+          <div class="timeline-tags">
+            ${d.tags.map(t => `<span class="tl-tag">${t}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+      observeEntries(el.querySelectorAll('.timeline-entry'));
+    }
+
+    // ── Intersection observer for scroll reveals ──
+    function observeEntries(entries) {
+      const io = new IntersectionObserver((obs) => {
+        obs.forEach((e, i) => {
+          if (e.isIntersecting) {
+            setTimeout(() => e.target.classList.add('visible'), i * 60);
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      entries.forEach(el => io.observe(el));
+    }
+
+    // ── View switcher ──
+    function setView(view) {
+      const grids = document.querySelectorAll('.view-btn');
+      grids.forEach((b, i) => {
+        b.classList.toggle('active',
+          (i === 0 && view === 'grid') ||
+          (i === 1 && view === 'list') ||
+          (i === 2 && view === 'timeline'));
+      });
+
+      const vGrid = document.getElementById('viewGrid');
+      const vList = document.getElementById('viewList');
+      const vTime = document.getElementById('viewTimeline');
+
+      vGrid.style.display = view === 'grid' ? '' : 'none';
+      vList.style.display = view === 'list' ? 'flex' : 'none';
+      vTime.style.display = view === 'timeline' ? '' : 'none';
+
+      // Re-observe for animation
+      if (view === 'grid') observeEntries(vGrid.querySelectorAll('.entry'));
+      if (view === 'list') observeEntries(vList.querySelectorAll('.list-entry'));
+      if (view === 'timeline') observeEntries(vTime.querySelectorAll('.timeline-entry'));
+    }
+
+    // ── Typewriter ──
+    const title = '探索知識的多重面向';
+    let charIdx = 0;
+    const el = document.getElementById('typewriterTitle');
+
+    function type() {
+      if (charIdx < title.length) {
+        el.innerHTML = title.slice(0, ++charIdx) + '<span class="cursor"></span>';
+        setTimeout(type, 60 + Math.random() * 40);
+      } else {
+        el.innerHTML = title + '<span class="cursor"></span>';
+        setTimeout(() => {
+          const cursor = el.querySelector('.cursor');
+          if (cursor) cursor.style.display = 'none';
+        }, 2000);
+      }
+    }
+
+    setTimeout(type, 400);
+
+    // ── Boot ──
+    renderGrid();
+    renderList();
+    renderTimeline();
+  </script>
+
+</body>
+</html>

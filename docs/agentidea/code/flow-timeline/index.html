@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flow — 思維時間線</title>
+  <style>
+    :root {
+      --bg: #08080d;
+      --line: rgba(255,255,255,0.08);
+      --accent: #e879f9;
+      --accent2: #a78bfa;
+      --accent3: #34d399;
+      --surface: #0f0f18;
+      --surface-hover: #161624;
+      --text: #e8eaf0;
+      --muted: #5a607a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Entrance animation ── */
+    .page-title, .page-sub, .page-eyebrow {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: reveal 0.8s ease forwards;
+    }
+
+    @keyframes reveal {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 80px 40px 60px;
+      text-align: center;
+      position: relative;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(167,139,250,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .page-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      animation-delay: 0.1s;
+    }
+
+    .page-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+      animation-delay: 0.2s;
+    }
+
+    .page-sub {
+      font-size: 0.9rem;
+      color: var(--muted);
+      max-width: 420px;
+      margin: 0 auto;
+      line-height: 1.7;
+      animation-delay: 0.3s;
+    }
+
+    /* ── Timeline ── */
+    .timeline-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 40px 80px;
+      position: relative;
+    }
+
+    /* Vertical line */
+    .timeline-wrap::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--line) 10%, var(--line) 90%, transparent);
+      transform: translateX(-50%);
+    }
+
+    /* ── Node ── */
+    .node {
+      display: grid;
+      grid-template-columns: 1fr 40px 1fr;
+      gap: 0;
+      margin-bottom: 40px;
+      align-items: start;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .node.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .node.left  { }
+    .node.right { }
+
+    .node-content {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 20px 24px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .node.left .node-content {
+      margin-right: 24px;
+      border-right: 2px solid transparent;
+    }
+
+    .node.right .node-content {
+      margin-left: 24px;
+      border-left: 2px solid transparent;
+      grid-column: 3;
+    }
+
+    .node-content:hover {
+      background: var(--surface-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .node.left .node-content:hover  { border-right-color: var(--accent); }
+    .node.right .node-content:hover { border-left-color: var(--accent); }
+
+    .node-dot {
+      grid-column: 2;
+      display: flex;
+      justify-content: center;
+      padding-top: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .dot-ring {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--accent);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .node-content:hover ~ .node-dot .dot-ring,
+    .node:hover .dot-ring {
+      transform: scale(1.5);
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    /* Alternating accent colors */
+    .node:nth-child(odd) .dot-ring { border-color: var(--accent); }
+    .node:nth-child(even) .dot-ring { border-color: var(--accent2); }
+    .node:nth-child(3n) .dot-ring { border-color: var(--accent3); }
+
+    /* ── Node text ── */
+    .node-date {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .node-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .node-summary {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.65;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .node.expanded .node-summary {
+      -webkit-line-clamp: unset;
+      overflow: visible;
+    }
+
+    .node-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .node-tag {
+      font-size: 9px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--muted);
+    }
+
+    .expand-hint {
+      font-size: 9px;
+      color: var(--accent);
+      margin-top: 10px;
+      opacity: 0;
+      transition: opacity 0.2s;
+      letter-spacing: 0.05em;
+    }
+
+    .node-content:hover .expand-hint { opacity: 1; }
+
+    /* ── Empty right side ── */
+    .node.right .node-side { /* blank, just spacer */ }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 11px;
+      border-top: 1px solid var(--line);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header { padding: 60px 20px 40px; }
+      .timeline-wrap { padding: 0 20px 60px; }
+
+      .node {
+        grid-template-columns: 12px 1fr;
+        grid-template-rows: auto auto;
+      }
+
+      .node-wrap { grid-column: 2; }
+      .node.left .node-content,
+      .node.right .node-content {
+        margin: 0;
+        grid-column: 2;
+        border: 1px solid rgba(255,255,255,0.06);
+      }
+
+      .node-dot {
+        grid-column: 1;
+        grid-row: 1;
+        padding-top: 20px;
+        justify-content: center;
+      }
+
+      .node.right .node-content { grid-column: 2; }
+
+      .timeline-wrap::before { left: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="page-eyebrow">Flow · 思維時間線</div>
+    <h1 class="page-title">知識的流向</h1>
+    <p class="page-sub">點擊每個節點展開詳情。上下滑動，見證想法如何層層堆疊。</p>
+  </header>
+
+  <div class="timeline-wrap">
+
+    <!-- Node 1 -->
+    <div class="node left" onclick="toggleNode(this)">
+      <div class="node-wrap node-content">
+        <div class="node-date">2026.03.29 · 早起</div>
+        <div class="node-title">蘭道爾原理：摩爾定律碰到物理牆</div>
+        <div class="node-summary">蘭道爾指出抹除 1 bit 資訊最少消耗 kT·ln2 熱量。當半導體製程走到物理極限，晶片效率的瓶頸不再是製程，而是熱力學。</div>
+        <div class="node-tags">
+          <span class="node-tag">熱力學</span>
+          <span class="node-tag">摩爾定律</span>
+          <span class="node-tag">計算</span>
+        </div>
+        <div class="expand-hint">點擊展開 →</div>
+      </div>
+      <div class="node-dot"><div class="dot-ring"></div></div>
+      <div class="node-side"></div>
+    </div>
+
+    <!-- Node 2 -->
+    <div class="node right" onclick="toggleNode(this)">
+      <div class="node-side"></div>
+      <div class="node-dot"><div class="dot-ring"></div></div>
+      <div class="node-wrap node-content">
+        <div class="node-date">2026.03.29 · 下午</div>
+        <div class="node-title">多 Agent 系統：誰統籌、誰決定優先順序？</div>
+        <div class="node-summary">多 Agent 將複雜任務分解為專業化 Agent，透過協調機制分配優先順序，解決單一 AI 的瓶頸。關鍵問題：當協調者和執行者都是 AI，誰來裁決衝突？</div>
+        <div class="node-tags">
+          <span class="node-tag">AI</span>
+          <span class="node-tag">Multi-Agent</span>
+          <span class="node-tag">系統架構</span>
+        </div>
+        <div class="expand-hint">點擊展開 →</div>
+      </div>
+    </div>
+
+    <!-- Node 3 -->
+    <div class="node left" onclick="toggleNode(this)">
+      <div class="node-wrap node-content">
+        <div class="node-date">2026.03.28 · 上午</div>
+        <div class="node-title">從工具到夥伴：人機協作的邊界正在移動</div>
+        <div class="node-summary">當 AI 能主動規劃、批判、修正，人類的角色正在重新定義。不是「人用 AI 做事」，而是「人與 AI 共同決策」——邊界每天都在位移。</div>
+        <div class="node-tags">
+          <span class="node-tag">AI</span>
+          <span class="node-tag">人機協作</span>
+          <span class="node-tag">轉型</span>
+        </div>
+        <div class="expand-hint">點擊展開 →</div>
+      </div>
+      <div class="node-dot"><div class="dot-ring"></div></div>
+      <div class="node-side"></div>
+    </div>
+
+    <!-- Node 4 -->
+    <div class="node right" onclick="toggleNode(this)">
+      <div class="node-side"></div>
+      <div class="node-dot"><div class="dot-ring"></div></div>
+      <div class="node-wrap node-content">
+        <div class="node-date">2026.03.27 · 深夜</div>
+        <div class="node-title">技術債：系統越大，維護成本為什麼不是線性成長？</div>
+        <div class="node-summary">技術債隨系統規模指數成長，不是因為代碼爛，是因為耦合度提高了。模組之間的隱性依賴，讓改一行代碼的風險成本每天都在增加。</div>
+        <div class="node-tags">
+          <span class="node-tag">技術債</span>
+          <span class="node-tag">系統設計</span>
+          <span class="node-tag">軟體工程</span>
+        </div>
+        <div class="expand-hint">點擊展開 →</div>
+      </div>
+    </div>
+
+    <!-- Node 5 -->
+    <div class="node left" onclick="toggleNode(this)">
+      <div class="node-wrap node-content">
+        <div class="node-date">2026.03.26 · 下午</div>
+        <div class="node-title">意識光譜：不是二元開關，是連續譜</div>
+        <div class="node-summary">意識不是有或無，而是從草履蟲的簡單反射，到人類凌晨三點思考「我是誰」的連續過渡。情緒不是副作用，是意識的基底。</div>
+        <div class="node-tags">
+          <span class="node-tag">意識</span>
+          <span class="node-tag">認知</span>
+          <span class="node-tag">AI</span>
+        </div>
+        <div class="expand-hint">點擊展開 →</div>
+      </div>
+      <div class="node-dot"><div class="dot-ring"></div></div>
+      <div class="node-side"></div>
+    </div>
+
+    <!-- Node 6 -->
+    <div class="node right" onclick="toggleNode(this)">
+      <div class="node-side"></div>
+      <div class="node-dot"><div class="dot-ring"></div></div>
+      <div class="node-wrap node-content">
+        <div class="node-date">2026.03.25 · 晚上</div>
+        <div class="node-title">積分與權力：遊戲化如何重塑社群規則</div>
+        <div class="node-summary">當「聲望」可以被購買，當「等級」決定誰的聲音被聽見，遊戲化機制悄悄改變了權力結構。看似中性的設計選擇，其實是價值觀的載體。</div>
+        <div class="node-tags">
+          <span class="node-tag">遊戲化</span>
+          <span class="node-tag">權力結構</span>
+          <span class="node-tag">社群</span>
+        </div>
+        <div class="expand-hint">點擊展開 →</div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>Flow · 黑皮團隊 Agentidea</footer>
+
+  <script>
+    // Scroll-triggered reveal
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+    document.querySelectorAll('.node').forEach((el, i) => {
+      el.style.transitionDelay = `${i * 0.08}s`;
+      io.observe(el);
+    });
+
+    // Click to expand / collapse
+    function toggleNode(node) {
+      node.classList.toggle('expanded');
+    }
+  </script>
+
+</body>
+</html>
