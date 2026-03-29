@@ -847,5 +847,38 @@
       "domain-randomization",
       "system-identification"
     ]
+  },
+  {
+    "title": "能源AI：電網管理與再生能源調度的最新進展",
+    "summary": "AI讓電網預測誤差降29%、電壓違規減半、綠氫成本降20%。數位孿生+分散式資源協調成主流，虛擬電廠已商業化落地。",
+    "tags": [
+      "AI",
+      "SmartGrid",
+      "RenewableEnergy",
+      "EnergyAI",
+      "GridManagement"
+    ]
+  },
+  {
+    "title": "具身智慧：讓AI真正「長出手腳」需要突破什麼",
+    "summary": "大語言/多模態模型是核心驅動力；中國資本密集投入人形機器人（銀河通用獲3億美元），移動手臂為過渡方案；多智能體協作與模組化是2026重點方向；台灣長照場景為落地突破口。",
+    "tags": [
+      "embodied-ai",
+      "humanoid-robot",
+      "LLM",
+      "agentic-AI",
+      "Taiwan"
+    ]
+  },
+  {
+    "title": "程式碼即知識：LLM能自動證明與最佳化自己嗎",
+    "summary": "STOP/STO已實現LLM遞迴最佳化自身代碼；DeepMind的AlphaEvolve用LLM設計新演算法。但「自動證明」仍是開放問題——最佳化不等於正確性保證。",
+    "tags": [
+      "LLM",
+      "self-improvement",
+      "AlphaEvolve",
+      "STOP",
+      "recursive-optimization"
+    ]
   }
 ]
