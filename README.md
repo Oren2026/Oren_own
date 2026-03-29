@@ -10,81 +10,34 @@
 
 ---
 
-## 🔄 自動生產部門（agent_idle）
-
-詳見 `docs/agent_use/agent_idle/README.md`
-
-透過留言板機制，agents 可以自動協作：
-- Researcher → 研究學習路徑
-- Coder → 製作展示頁面
-- Oren → 協調與審核
-
----
-
 ## 📁 專案一覽
 
-| 專案 | 說明 | 網頁 | 原始碼 |
-|------|------|------|--------|
-| **比賽專區** | 三個比賽整合入口 | [🌐](https://Oren2026.github.io/Oren_own/docs/%E4%B8%8A%E5%90%88/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/%E4%B8%8A%E5%90%88) |
-| └ TDK_2026 | 第30屆 TDK 機器人大賽 | [🌐](https://Oren2026.github.io/Oren_own/docs/%E4%B8%8A%E5%90%88/TDK_2026/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/%E4%B8%8A%E5%90%88/TDK_2026) |
-| └ TB3_2026 | FIRA AutoRace × TurtleBot 3 | [🌐](https://Oren2026.github.io/Oren_own/docs/%E4%B8%8A%E5%90%88/TB3_2026/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/%E4%B8%8A%E5%90%88/TB3_2026) |
-| └ 上銀撞球 | 上銀撞球比賽相關 | [🌐](https://Oren2026.github.io/Oren_own/docs/%E4%B8%8A%E5%90%88/%E4%B8%8A%E9%8A%88%E6%92%9E%E7%90%83/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/%E4%B8%8A%E5%90%88/%E4%B8%8A%E9%8A%88%E6%92%9E%E7%90%83) |
-| **knowledges** | 每日知識文章（JSON） | [🌐](https://Oren2026.github.io/Oren_own/docs/knowledges/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/knowledges) |
-| **slides** | 簡報相關 | [🌐](https://Oren2026.github.io/Oren_own/docs/slides/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/slides) |
-| **CCC作業天地** | 課業相關（網頁設計、系統程式） | [🌐](https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0) |
-| **agent_use** | Agent 協作區 | [🌐](https://Oren2026.github.io/Oren_own/docs/agent_use/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/agent_use) |
-| └ agent_idea | 創意實驗室（CSS 展示） | [🌐](https://Oren2026.github.io/Oren_own/docs/agent_use/agent_idea/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/agent_use/agent_idea) |
-| └ agent_idle | 自動生產部門（留言板） | （本地運行） | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/agent_use/agent_idle) |
+| 專案 | 說明 |
+|------|------|
+| **CONTEST** | 比賽專區（TDK、TB3、上銀撞球） |
+| **knowledges** | 每日知識文章（JSON） |
+| **CCC作業天地** | 課業相關（網頁設計、系統程式） |
+| **agent_use** | Agent 協作區 |
+| └ agent_idea | 創意實驗室（CSS 展示） |
+| └ agent_idle | 自動生產部門（留言板） |
 
 ---
 
 ## ⚙️ Cron 排程
 
-| 任務 | Agent | 頻率 | 功能 |
-|------|-------|------|------|
-| 更新加密貨幣價格 | Coder | 每 10 分鐘 | TAO/FET → price.json |
-| 搜尋興趣主題 | Researcher-test | 每 15 分鐘 | 取主題 → 搜尋 → 寫入 JSON |
-| 新增興趣主題 | Researcher-test | 每 4 小時 | 低於 20 條則新增 R 主題 |
-| 檢驗JSON內容 | Inspector | 每小時 | 檢查格式正確性 |
-| Coder檢查訊息 | Coder | 每小時 | 讀取 agent_idle |
-| Researcher檢查訊息 | Researcher | 每小時 | 讀取 agent_idle |
-
----
-
-## 📂 資料夾結構
-
-```
-Oren_own/
-├── README.md
-├── docs/                   ← 所有專案文件
-│   ├── 比賽/               ← 比賽專區
-│   │   ├── TDK_2026/
-│   │   ├── TB3_2026/
-│   │   └── 上銀撞球/
-│   ├── agent_use/         ← Agent 協作區
-│   │   ├── agent_idea/   ← 創意實驗室（CSS 展示）
-│   │   └── agent_idle/   ← 自動生產部門（留言板）
-│   ├── CCC作業天地/       ← 課業相關
-│   │   ├── 網頁設計/
-│   │   └── 系統程式/
-│   ├── knowledges/        ← JSON 知識庫
-│   └── slides/            ← 簡報相關
-├── memory/                 ← 興趣主題列表
-└── scripts/               ← Cron 用腳本
-```
+| 任務 | Agent | 頻率 |
+|------|-------|------|
+| 更新加密貨幣價格 | Coder | 每 10 分鐘 |
+| 搜尋興趣主題 | Researcher-test | 每 15 分鐘 |
+| 新增興趣主題 | Researcher-test | 每 4 小時 |
+| 檢驗JSON內容 | Inspector | 每小時 |
+| Coder/Researcher 檢查訊息 | 各 agent | 每小時 |
 
 ---
 
 ## 💡 關於這個系統
 
-這不是一般的新聞訂閱，而是**由興趣驅動的個人知識庫**。
-
-主題的選擇反映了黑皮與黑輪的對話脈絡——
-能源轉型、電網現代化、AI 與意識、機器人比賽。
-
-透過 multi-agent 協作，系統可以自動研究、實作、展示。
-
-中後期規劃使用 Node.js 建構動態功能，初期以靜態頁面為主。
+由興趣驅動的個人知識庫。透過 multi-agent 協作，系統可以自動研究、實作、展示。
 
 ---
 
