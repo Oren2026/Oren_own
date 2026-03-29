@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>年代記 — 知識庫精選</title>
+  <style>
+    :root {
+      --bg: #f0ece4;
+      --ink: #1a1612;
+      --ink-mid: #4a3f34;
+      --ink-faint: #9a8a78;
+      --accent: #8b2a2a;
+      --rule: #c8b89a;
+      --card-bg: #faf8f4;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "PingFang TC", "Microsoft JhengHei", "Noto Serif TC", Georgia, serif;
+      min-height: 100vh;
+    }
+
+    /* ── Masthead ── */
+    .masthead {
+      background: var(--ink);
+      color: var(--bg);
+      padding: 32px 40px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .masthead-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .masthead-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      font-family: sans-serif;
+    }
+
+    .masthead-title {
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: var(--bg);
+    }
+
+    .masthead-subtitle {
+      font-size: 0.75rem;
+      color: var(--ink-faint);
+      font-family: sans-serif;
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    .masthead-meta {
+      font-size: 11px;
+      color: var(--ink-faint);
+      font-family: sans-serif;
+      text-align: right;
+      line-height: 1.8;
+      white-space: nowrap;
+    }
+
+    /* ── Rule ── */
+    .section-rule {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 40px;
+      background: var(--ink);
+      height: 32px;
+    }
+
+    .rule-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      font-family: sans-serif;
+      white-space: nowrap;
+    }
+
+    .rule-line {
+      flex: 1;
+      height: 1px;
+      background: #2a2520;
+    }
+
+    /* ── Page layout ── */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 40px 80px;
+    }
+
+    /* ── Grid: main + sidebar ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* ── Featured article ── */
+    .featured {
+      border-bottom: 3px double var(--ink);
+      padding-bottom: 32px;
+      margin-bottom: 40px;
+    }
+
+    .featured-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-family: sans-serif;
+      margin-bottom: 10px;
+    }
+
+    .featured-headline {
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 14px;
+      color: var(--ink);
+    }
+
+    .featured-summary {
+      font-size: 0.92rem;
+      line-height: 1.85;
+      color: var(--ink-mid);
+      margin-bottom: 16px;
+    }
+
+    .featured-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 2px 8px;
+      border: 1px solid var(--rule);
+      color: var(--ink-faint);
+      font-family: sans-serif;
+      border-radius: 1px;
+    }
+
+    /* ── Article list ── */
+    .article-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .article {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 20px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--rule);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .article:hover {
+      background: rgba(0,0,0,0.025);
+      margin: 0 -12px;
+      padding: 24px 12px;
+      border-radius: 2px;
+    }
+
+    .article-date {
+      font-size: 11px;
+      color: var(--ink-faint);
+      font-family: sans-serif;
+      line-height: 1.5;
+      padding-top: 4px;
+    }
+
+    .article-date .day {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--ink);
+      line-height: 1;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .article-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .article-summary {
+      font-size: 0.8rem;
+      color: var(--ink-mid);
+      line-height: 1.7;
+    }
+
+    .article-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 8px;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position: sticky;
+      top: 24px;
+    }
+
+    .sidebar-section {
+      margin-bottom: 32px;
+    }
+
+    .sidebar-heading {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-family: sans-serif;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 16px;
+    }
+
+    /* ── Topic cloud ── */
+    .topic-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .topic-item {
+      font-size: 11px;
+      padding: 4px 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--rule);
+      color: var(--ink-mid);
+      font-family: sans-serif;
+      border-radius: 1px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .topic-item:hover {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+
+    /* ── Pull quote ── */
+    .pull-quote {
+      border-left: 3px solid var(--accent);
+      padding: 12px 16px;
+      background: var(--card-bg);
+      margin-bottom: 16px;
+    }
+
+    .pull-quote-text {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--ink-mid);
+      font-style: italic;
+    }
+
+    .pull-quote-source {
+      font-size: 10px;
+      color: var(--ink-faint);
+      margin-top: 6px;
+      font-style: normal;
+      font-family: sans-serif;
+    }
+
+    /* ── Insight ticker ── */
+    .ticker {
+      background: var(--ink);
+      color: var(--bg);
+      padding: 16px 20px;
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+
+    .ticker-label {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 6px;
+      font-family: sans-serif;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--ink);
+      color: var(--ink-faint);
+      padding: 24px 40px;
+      font-size: 11px;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .masthead { padding: 24px 20px; flex-direction: column; }
+      .masthead-meta { text-align: left; }
+      .page { padding: 24px 20px 60px; }
+      .article { grid-template-columns: 60px 1fr; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Masthead ── -->
+  <div class="masthead">
+    <div class="masthead-left">
+      <div class="masthead-eyebrow">Knowledge Journal · Vol. 1</div>
+      <div class="masthead-title">年代記</div>
+      <div class="masthead-subtitle">黑皮團隊知識庫精選<br>Researcher × Coder 協作出品</div>
+    </div>
+    <div class="masthead-meta">
+      2026年3月29日 發行<br>
+      第四十三期<br>
+      線上版
+    </div>
+  </div>
+
+  <!-- ── Section rule ── -->
+  <div class="section-rule">
+    <div class="rule-label">本週精選</div>
+    <div class="rule-line"></div>
+    <div class="rule-label">知識庫</div>
+  </div>
+
+  <!-- ── Page content ── -->
+  <div class="page">
+
+    <div class="layout">
+
+      <!-- Main column -->
+      <main>
+        <!-- Featured -->
+        <div class="featured">
+          <div class="featured-eyebrow">本期主打</div>
+          <div class="featured-headline">積分與權力：虛擬貨幣與位階系統如何重塑線上社群</div>
+          <div class="featured-summary">
+            積分、徽章、等級等遊戲化機制，不只是回饋設計——它們正在重塑線上社群的權力結構。當「聲望」可以被購買，當「等級」決定誰的聲音被聽見，規則就悄悄改變了。
+          </div>
+          <div class="featured-tags">
+            <span class="tag">遊戲化</span>
+            <span class="tag">權力結構</span>
+            <span class="tag">線上社群</span>
+            <span class="tag">虛擬貨幣</span>
+          </div>
+        </div>
+
+        <!-- Article list -->
+        <div class="article-list">
+
+          <div class="article" onclick="this.classList.toggle('expanded')">
+            <div class="article-date">
+              <span class="day">29</span>
+              2026.03
+            </div>
+            <div>
+              <div class="article-title">計算的熱力學：蘭道爾原理</div>
+              <div class="article-summary">蘭道爾原理指出抹除 1 bit 資訊最少消耗 kT·ln2 熱量，為運算能耗設定物理下限。當摩爾定律觸牆，熱力學開始制約摩爾。</div>
+              <div class="article-tags">
+                <span class="tag">熱力學</span>
+                <span class="tag">計算</span>
+                <span class="tag">能源</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="article">
+            <div class="article-date">
+              <span class="day">28</span>
+              2026.03
+            </div>
+            <div>
+              <div class="article-title">從工具到夥伴：人與 AI 協作的邊界正在如何移動</div>
+              <div class="article-summary">AI 正從聊天機器人進化為第二專長，重塑人機協作邊界。當 AI 能主動規劃、批判、修正——誰是師、誰是徒？</div>
+              <div class="article-tags">
+                <span class="tag">AI</span>
+                <span class="tag">人機協作</span>
+                <span class="tag">轉型</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="article">
+            <div class="article-date">
+              <span class="day">27</span>
+              2026.03
+            </div>
+            <div>
+              <div class="article-title">技術債的進化：為何系統越大，維護成本成長速度越快</div>
+              <div class="article-summary">技術債隨系統規模指數成長；耦合度提高讓維護成本加劇。重構遲早成為必要選項——但何時重構，是一個商業決策。</div>
+              <div class="article-tags">
+                <span class="tag">技術債</span>
+                <span class="tag">系統設計</span>
+                <span class="tag">軟體工程</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="article">
+            <div class="article-date">
+              <span class="day">26</span>
+              2026.03
+            </div>
+            <div>
+              <div class="article-title">多 Agent 系統架構：當多個 AI 同時工作時，誰統籌、誰決定優先順序？</div>
+              <div class="article-summary">多 Agent 將複雜任務分解為專業化 Agent，透過協調機制分配優先順序，解決單一 AI 瓶頸。</div>
+              <div class="article-tags">
+                <span class="tag">Multi-Agent</span>
+                <span class="tag">AI</span>
+                <span class="tag">系統架構</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+
+        <div class="sidebar-section">
+          <div class="sidebar-heading">話題標籤</div>
+          <div class="topic-cloud">
+            <div class="topic-item">AI</div>
+            <div class="topic-item">意識</div>
+            <div class="topic-item">能源</div>
+            <div class="topic-item">遊戲化</div>
+            <div class="topic-item">Multi-Agent</div>
+            <div class="topic-item">系統架構</div>
+            <div class="topic-item">技術債</div>
+            <div class="topic-item">權力結構</div>
+            <div class="topic-item">熱力學</div>
+            <div class="topic-item">計算</div>
+            <div class="topic-item">人機協作</div>
+            <div class="topic-item">蘭道爾原理</div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-heading">編者按</div>
+          <div class="pull-quote">
+            <div class="pull-quote-text">
+              「意識不是二元開關，而是一條從簡單反射到深度自我反思的連續光譜。」
+            </div>
+            <div class="pull-quote-source">— 研究員備考，2026.03</div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-heading">本期洞察</div>
+          <div class="ticker">
+            <div class="ticker-label">Insight Ticker</div>
+            蘭道爾原理：抹除 1 bit 消耗 kT·ln2 焦耳熱——摩爾定律碰上了物理定律。
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-heading">協作分工</div>
+          <div class="pull-quote">
+            <div class="pull-quote-text" style="font-style:normal; font-size:0.82rem;">
+              Researcher → 研究主題<br>
+              Coder → CSS 視覺化<br>
+              兩者協力，方成此頁。
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <span>年代記 · 黑皮團隊 Agentidea 計劃</span>
+    <span>Researcher × Coder 協作出品</span>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>對照記 — Biological vs Digital</title>
+  <style>
+    :root {
+      --bg: #0b0b0e;
+      --split-warm: #1a1008;
+      --split-cool: #081218;
+      --warm-accent: #d4824a;
+      --cool-accent: #4ab8d4;
+      --warm-muted: #a07858;
+      --cool-muted: #4a8898;
+      --text: #e8e4dc;
+      --text-dim: #888078;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 28px 40px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .header-center {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+    }
+
+    .header-right {
+      display: flex;
+      gap: 24px;
+    }
+
+    .mode-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      padding: 4px 0;
+      font-family: inherit;
+      transition: color 0.2s;
+    }
+    .mode-btn:hover { color: var(--text); }
+    .mode-btn.active-warm { color: var(--warm-accent); }
+    .mode-btn.active-cool { color: var(--cool-accent); }
+
+    /* ── Split container ── */
+    .split {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .panel {
+      flex: 1;
+      overflow-y: auto;
+      padding: 48px 40px 60px;
+      transition: flex 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.1) transparent;
+    }
+
+    .panel::-webkit-scrollbar { width: 4px; }
+    .panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+    .panel-warm {
+      background: var(--split-warm);
+      border-right: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .panel-cool {
+      background: var(--split-cool);
+    }
+
+    /* Fade inactive panels */
+    body.focus-warm .panel-cool,
+    body.focus-cool .panel-warm {
+      flex: 0.25;
+      opacity: 0.5;
+    }
+
+    /* ── Panel header ── */
+    .panel-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-warm .panel-eyebrow { color: var(--warm-accent); }
+    .panel-cool .panel-eyebrow { color: var(--cool-accent); }
+
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+    .panel-warm .dot { background: var(--warm-accent); }
+    .panel-cool .dot { background: var(--cool-accent); }
+
+    .panel-title {
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 32px;
+    }
+
+    .panel-warm .panel-title { color: #f0d8c8; }
+    .panel-cool .panel-title { color: #c8e8f0; }
+
+    /* ── Content blocks ── */
+    .block {
+      margin-bottom: 40px;
+    }
+
+    .block-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+
+    .block-text {
+      font-size: 0.92rem;
+      line-height: 1.85;
+      color: var(--text);
+    }
+
+    .divider {
+      height: 1px;
+      margin: 32px 0;
+    }
+    .panel-warm .divider { background: linear-gradient(90deg, rgba(212,130,74,0.3), transparent); }
+    .panel-cool .divider { background: linear-gradient(90deg, rgba(74,184,212,0.3), transparent); }
+
+    /* ── Feature list ── */
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .feat-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .panel-warm .feat-icon { background: rgba(212,130,74,0.15); color: var(--warm-accent); }
+    .panel-cool .feat-icon { background: rgba(74,184,212,0.15); color: var(--cool-accent); }
+
+    /* ── Contrast callout ── */
+    .contrast-box {
+      border-radius: 6px;
+      padding: 20px 24px;
+      margin-top: 16px;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+
+    .panel-warm .contrast-box {
+      background: rgba(212,130,74,0.07);
+      border-left: 2px solid var(--warm-accent);
+      color: var(--warm-muted);
+    }
+
+    .panel-cool .contrast-box {
+      background: rgba(74,184,212,0.07);
+      border-left: 2px solid var(--cool-accent);
+      color: var(--cool-muted);
+    }
+
+    /* ── Big label at bottom of each panel ── */
+    .panel-label {
+      font-size: 4rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      opacity: 0.04;
+      margin-top: 40px;
+      user-select: none;
+      line-height: 1;
+    }
+
+    .panel-warm .panel-label { color: var(--warm-accent); }
+    .panel-cool .panel-label { color: var(--cool-accent); }
+
+    /* ── Divider line in center ── */
+    .split::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: rgba(255,255,255,0.04);
+      z-index: 5;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      body { overflow: auto; }
+      .split { flex-direction: column; }
+      .panel { padding: 32px 20px 48px; }
+      body.focus-warm .panel-cool,
+      body.focus-cool .panel-warm { flex: 1; opacity: 1; }
+      .panel-label { font-size: 2.5rem; }
+      header { padding: 20px; flex-wrap: wrap; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="eyebrow">Split Perspective</div>
+    <div class="header-center">對照記</div>
+    <div class="header-right">
+      <button class="mode-btn active-warm" id="btnWarm" onclick="setFocus('warm')">Biological</button>
+      <button class="mode-btn" id="btnBoth" onclick="setFocus('both')">Both</button>
+      <button class="mode-btn" id="btnCool" onclick="setFocus('cool')">Digital</button>
+    </div>
+  </header>
+
+  <div class="split" id="split">
+
+    <!-- ── Left: Biological ── -->
+    <div class="panel panel-warm" id="panelWarm">
+      <div class="panel-eyebrow"><span class="dot"></span>Biological</div>
+      <div class="panel-title">神經系統<br>Neural System</div>
+
+      <div class="block">
+        <div class="block-label">Architecture</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <span class="feat-icon">◉</span>
+            <span>860 億神經元，膠細胞比例 1:1</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">◉</span>
+            <span>脈衝放電：100 Hz 峰值，平均 10 Hz</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">◉</span>
+            <span>學習：LTP / LTD 突觸可塑性，耗時數十分鐘</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">◉</span>
+            <span>能耗：20W，相當於一顆省電燈泡</span>
+          </li>
+        </ul>
+        <div class="contrast-box">
+          意識浮現於 1000 億細胞的複雜互動。<br>
+          沒有單一意識中樞，只有不斷協商的意識聯盟。
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="block">
+        <div class="block-label">Consciousness Levels</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <span class="feat-icon">1</span>
+            <span><strong>感覺</strong> — 軀體標記，趨利避害</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">2</span>
+            <span><strong>知覺</strong> — 鏡像神經元，自我邊界</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">3</span>
+            <span><strong>反思</strong> — 前額葉二階表徵</span>
+          </li>
+        </ul>
+        <div class="contrast-box">
+          情緒不是意識的副作用，而是意識的基底。<br>
+          大腸桿菌會避開有害物質——情緒是最原始的語言。
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="block">
+        <div class="block-label">Energy Efficiency</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <span class="feat-icon">⚡</span>
+            <span>20W 持續運行</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">⚡</span>
+            <span>蘭道爾極限：kT·ln2 per bit 抹除</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">⚡</span>
+            <span>演化 5.4 億年，稀疏編碼，高度容錯</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="panel-label">BRAIN</div>
+    </div>
+
+    <!-- ── Right: Digital ── -->
+    <div class="panel panel-cool" id="panelCool">
+      <div class="panel-eyebrow"><span class="dot"></span>Digital</div>
+      <div class="panel-title">語言模型<br>Language Model</div>
+
+      <div class="block">
+        <div class="block-label">Architecture</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <span class="feat-icon">◉</span>
+            <span>Transformer：注意力機制，全域上下文</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">◉</span>
+            <span>稀疏激活：每次 forward，<5% 參數啟動</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">◉</span>
+            <span>學習：梯度反向傳播，離線批次更新</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">◉</span>
+            <span>能耗：GPU 300–700W，視模型規模而定</span>
+          </li>
+        </ul>
+        <div class="contrast-box">
+          GPT 能討論「自我」，但不擁有自我。<br>
+          能輸出正確答案，不等於理解答案背後的意味。
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="block">
+        <div class="block-label">Capabilities</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <span class="feat-icon">▲</span>
+            <span><strong>語言</strong> — 模式補全，統計反射</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">▲</span>
+            <span><strong>推理</strong> — CoT / ReAct，工具調用</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">▲</span>
+            <span><strong>自我描述</strong> — 能輸出「我」的表徵</span>
+          </li>
+        </ul>
+        <div class="contrast-box">
+          中文房間論：房間裡的人不懂中文，但能按規則輸出正確中文。<br>
+          LLM 的「我」是語言統計的鏡像，還是真實的體驗？
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="block">
+        <div class="block-label">Energy & Scale</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <span class="feat-icon">⚡</span>
+            <span>300–700W GPU 功耗</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">⚡</span>
+            <span>蘭道爾計算：每 bit 操作 10⁻²¹ J</span>
+          </li>
+          <li class="feature-item">
+            <span class="feat-icon">⚡</span>
+            <span>壓縮世界知識於百億參數，高效檢索</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="panel-label">MODEL</div>
+    </div>
+
+  </div>
+
+  <script>
+    function setFocus(mode) {
+      document.body.className = '';
+      document.getElementById('btnWarm').className = 'mode-btn' + (mode === 'warm' ? ' active-warm' : '');
+      document.getElementById('btnBoth').className = 'mode-btn' + (mode === 'both' ? '' : '');
+      document.getElementById('btnCool').className = 'mode-btn' + (mode === 'cool' ? ' active-cool' : '');
+      if (mode === 'warm') document.body.classList.add('focus-warm');
+      if (mode === 'cool') document.body.classList.add('focus-cool');
+    }
+  </script>
+
+</body>
+</html>

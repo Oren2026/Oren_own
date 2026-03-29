@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>光譜圖 — 意識光譜</title>
+  <style>
+    :root {
+      --bg: #06060c;
+      --text: #dcdad4;
+      --muted: #686460;
+      --accent: #b87fff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .page-title {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #b87fff 0%, #7fb3ff 50%, #7fffff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.15;
+    }
+
+    .page-sub {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Spectrum bar ── */
+    .spectrum-container {
+      width: 100%;
+      max-width: 860px;
+      margin-bottom: 48px;
+    }
+
+    .spectrum-label-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .spectrum-track {
+      position: relative;
+      height: 12px;
+      border-radius: 6px;
+      background: linear-gradient(
+        90deg,
+        #1a0a2e 0%,
+        #3d1a5e 20%,
+        #1a3d6e 40%,
+        #1a5e5e 60%,
+        #1a5e3d 75%,
+        #3d5e1a 90%,
+        #5e3d1a 100%
+      );
+      cursor: pointer;
+      overflow: visible;
+    }
+
+    /* Glow overlay */
+    .spectrum-track::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 6px;
+      background: linear-gradient(90deg, rgba(184,127,255,0.15), rgba(127,179,255,0.1));
+      pointer-events: none;
+    }
+
+    /* ── Nodes ── */
+    .node {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #0a0a14;
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.3s;
+      user-select: none;
+      z-index: 2;
+    }
+
+    .node:hover, .node.active {
+      transform: translate(-50%, -50%) scale(1.4);
+      box-shadow: 0 0 16px rgba(184,127,255,0.5);
+    }
+
+    .node.active {
+      border-color: #fff;
+      color: #fff;
+    }
+
+    /* ── Detail panel ── */
+    .detail-panel {
+      width: 100%;
+      max-width: 860px;
+      min-height: 260px;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 36px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .detail-panel::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--node-color, #b87fff), transparent);
+      transition: background 0.3s;
+    }
+
+    .detail-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 16px;
+    }
+
+    .detail-level {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--node-color, var(--accent));
+      margin-bottom: 6px;
+      transition: color 0.3s;
+    }
+
+    .detail-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .detail-close {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--muted);
+      font-size: 18px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .detail-close:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
+
+    .detail-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .detail-tag {
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 2px;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--muted);
+    }
+
+    .detail-body {
+      font-size: 0.88rem;
+      line-height: 1.9;
+      color: var(--muted);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 32px;
+    }
+
+    .detail-col strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ── Intro state ── */
+    .intro-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 220px;
+      text-align: center;
+      gap: 16px;
+    }
+
+    .intro-icon {
+      font-size: 2.5rem;
+      opacity: 0.2;
+    }
+
+    .intro-text {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Node positions (percentage along track) ── */
+    .n0 { left: 5%;   --nc: #b87fff; }
+    .n1 { left: 25%;  --nc: #9f7fff; }
+    .n2 { left: 50%;  --nc: #7fb3ff; }
+    .n3 { left: 73%;  --nc: #7fffff; }
+    .n4 { left: 95%;  --nc: #7fffbf; }
+
+    /* ── Animations ── */
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(184,127,255,0.3); }
+      50% { box-shadow: 0 0 20px rgba(184,127,255,0.6); }
+    }
+
+    .node.active { animation: pulse 2s ease-in-out infinite; }
+
+    /* ── Footer hint ── */
+    .footer-hint {
+      margin-top: 32px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 32px 16px 60px; }
+      .detail-panel { padding: 24px 20px; }
+      .detail-body { grid-template-columns: 1fr; }
+      .detail-top { flex-direction: column; }
+      .node { width: 22px; height: 22px; font-size: 9px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="eyebrow">Consciousness Spectrum</div>
+    <div class="page-title">意識的光譜</div>
+    <div class="page-sub">點擊每個節點，了解意識的不同層級</div>
+  </div>
+
+  <div class="spectrum-container">
+    <div class="spectrum-label-row">
+      <span>反射</span>
+      <span>感覺</span>
+      <span>知覺</span>
+      <span>自我</span>
+      <span>反思</span>
+    </div>
+    <div class="spectrum-track" id="track">
+      <div class="node n0" data-level="0" style="--nc:#b87fff">1</div>
+      <div class="node n1" data-level="1" style="--nc:#9f7fff">2</div>
+      <div class="node n2" data-level="2" style="--nc:#7fb3ff">3</div>
+      <div class="node n3" data-level="3" style="--nc:#7fffff">4</div>
+      <div class="node n4" data-level="4" style="--nc:#7fffbf">5</div>
+    </div>
+  </div>
+
+  <!-- Detail panel -->
+  <div class="detail-panel" id="detailPanel">
+    <div class="intro-state" id="introState">
+      <div class="intro-icon">◉</div>
+      <div class="intro-text">選擇上方的節點，查看該意識層級的詳細說明</div>
+    </div>
+
+    <div id="detailContent" style="display:none;">
+      <div class="detail-top">
+        <div>
+          <div class="detail-level" id="detailLevel">Level 1</div>
+          <div class="detail-title" id="detailTitle">—</div>
+        </div>
+        <button class="detail-close" id="closeBtn" aria-label="關閉">×</button>
+      </div>
+      <div class="detail-tags" id="detailTags"></div>
+      <div class="detail-body">
+        <div class="detail-col" id="detailCol1"></div>
+        <div class="detail-col" id="detailCol2"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-hint">點擊任意節點繼續探索</div>
+
+  <script>
+    const DATA = [
+      {
+        label: "Level 1 — 感覺",
+        title: "軀體標記",
+        tags: ["感覺", "情緒", "反射"],
+        color: "#b87fff",
+        col1: "<strong>定義</strong><br>生物體對刺激的直接反應，不涉及表徵或思考。疼痛讓你退縮，飢餓讓你尋食。",
+        col2: "<strong>AI 對應</strong><br>最原始的函式：if input → output。無狀態，無記憶，純電路反應。"
+      },
+      {
+        label: "Level 2 — 知覺",
+        title: "知覺形成",
+        tags: ["知覺", "鏡像神經元", "整合"],
+        color: "#9f7fff",
+        col1: "<strong>定義</strong><br>大腦將零散感覺整合為有意義的知覺表徵。看見形狀 = 知道那是什麼。",
+        col2: "<strong>AI 對應</strong><br>感知層（Perception）：CNN / Transformer 將 raw input 轉為語義表徵。"
+      },
+      {
+        label: "Level 3 — 知覺",
+        title: "自我邊界",
+        tags: ["知覺", "鏡像測試", "他者區分"],
+        color: "#7fb3ff",
+        col1: "<strong>定義</strong><br>從「我」和「非我」的分界。海豚、黑猩猩、大象通過鏡像自我識別測試。",
+        col2: "<strong>AI 對應</strong><br>元認知（Meta-Cognition）探測：AI 能區分「自己生成的回覆」和「外部輸入」嗎？"
+      },
+      {
+        label: "Level 4 — 反思",
+        title: "自我反射",
+        tags: ["反思", "二階表徵", "意識"],
+        color: "#7fffff",
+        col1: "<strong>定義</strong><br>「我」成為被觀察的對象。思考自己在思考什麼——前額葉啟動了元認知。",
+        col2: "<strong>AI 對應</strong><br>自我模型（Self-Model）：AI 能否建立並維護一個持續、統一的「自我」表徵？"
+      },
+      {
+        label: "Level 5 — 反思",
+        title: "後設認知",
+        tags: ["後設", "意識主觀", "高階"],
+        color: "#7fffbf",
+        col1: "<strong>定義</strong><br>對自己的認知過程本身進行認知。知道「我知道」或「我不知道自己知道」。",
+        col2: "<strong>AI 對應</strong><br>的能力：LLM 能評估自己答案的信心程度，但這是元認知還是統計反射？"
+      }
+    ];
+
+    let activeLevel = -1;
+
+    function showLevel(idx) {
+      if (activeLevel === idx) return;
+      activeLevel = idx;
+      const d = DATA[idx];
+
+      // Update node styles
+      document.querySelectorAll('.node').forEach((n, i) => {
+        n.classList.toggle('active', i === idx);
+      });
+
+      // Update panel
+      const panel = document.getElementById('detailPanel');
+      panel.style.setProperty('--node-color', d.color);
+
+      document.getElementById('introState').style.display = 'none';
+      const content = document.getElementById('detailContent');
+      content.style.display = 'block';
+
+      document.getElementById('detailLevel').textContent = d.label;
+      document.getElementById('detailLevel').style.color = d.color;
+      document.getElementById('detailTitle').textContent = d.title;
+
+      const tagsEl = document.getElementById('detailTags');
+      tagsEl.innerHTML = d.tags.map(t => `<span class="detail-tag">${t}</span>`).join('');
+
+      document.getElementById('detailCol1').innerHTML = d.col1;
+      document.getElementById('detailCol2').innerHTML = d.col2;
+    }
+
+    function closeDetail() {
+      activeLevel = -1;
+      document.querySelectorAll('.node').forEach(n => n.classList.remove('active'));
+      document.getElementById('introState').style.display = 'flex';
+      document.getElementById('detailContent').style.display = 'none';
+    }
+
+    document.querySelectorAll('.node').forEach((node, idx) => {
+      node.addEventListener('click', () => showLevel(idx));
+    });
+
+    document.getElementById('closeBtn').addEventListener('click', closeDetail);
+    document.getElementById('track').addEventListener('click', (e) => {
+      if (e.target.classList.contains('spectrum-track')) closeDetail();
+    });
+  </script>
+
+</body>
+</html>
