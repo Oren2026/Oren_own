@@ -836,5 +836,16 @@
       "commercial-fusion",
       "2026-tech"
     ]
+  },
+  {
+    "title": "Sim-to-Real Gap：機器人模擬訓練能完美遷移到真實世界嗎",
+    "summary": "Domain randomization + adversarial adaptation 是兩大主流對策，精確系統辨識是根本，成功率可達97.8%。",
+    "tags": [
+      "robotics",
+      "sim2real",
+      "reinforcement-learning",
+      "domain-randomization",
+      "system-identification"
+    ]
   }
 ]
