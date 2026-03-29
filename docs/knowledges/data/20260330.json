@@ -43,5 +43,28 @@
       "next-gen energy storage",
       "grid storage"
     ]
+  },
+  {
+    "title": "FIRA機器人競賽技術分析：電腦視覺、運動控制、策略AI",
+    "summary": "FIRA是全球最老機器人足球賽，分四大聯盟；HuroCup需人形機器人行走/平衡/策略規劃，SimuroSot提供無硬體模擬環境。",
+    "tags": [
+      "robotics",
+      "computer-vision",
+      "motion-control",
+      "AI-strategy",
+      "FIRA"
+    ]
+  },
+  {
+    "title": "世界模型在機器人控制的最新突破（2025-2026）",
+    "summary": "世界模型讓AI在虛擬環境模擬物理世界，突破真實數據不足限制。Meta V-JEPA 2具理解與預測能力；Galbot以合成+真實數據混合訓練實現靈巧手控制；NVIDIA物理AI生態系整合數位孿生與人形機器人，2025年正式邁入工廠元年。",
+    "tags": [
+      "WorldModel",
+      "PhysicalAI",
+      "EmbodiedAI",
+      "HumanoidRobot",
+      "NVIDIA",
+      "V-JEPA2"
+    ]
   }
 ]
