@@ -25,9 +25,10 @@
 
 | 專案 | 說明 | 網頁 | 原始碼 |
 |------|------|------|--------|
-| **TDK_2026** | 第30屆 TDK 機器人大賽 | [🌐](https://Oren2026.github.io/Oren_own/docs/TDK_2026/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/TDK_2026) |
-| **TB3_2026** | FIRA AutoRace × TurtleBot 3 | [🌐](https://Oren2026.github.io/Oren_own/docs/TB3_2026/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/TB3_2026) |
-| **上銀撞球** | 上銀撞球比賽相關 | [🌐](https://Oren2026.github.io/Oren_own/docs/%E4%B8%8A%E9%8A%88%E6%92%9E%E7%90%83/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/%E4%B8%8A%E9%8A%88%E6%92%9E%E7%90%83) |
+| **比賽專區** | 三個比賽整合入口 | [🌐](https://Oren2026.github.io/Oren_own/docs/%E4%B8%8A%E5%AE%B3/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/%E4%B8%8A%E5%AE%B3) |
+| └ TDK_2026 | 第30屆 TDK 機器人大賽 | [🌐](https://Oren2026.github.io/Oren_own/docs/%E4%B8%8A%E5%AE%B3/TDK_2026/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/%E4%B8%8A%E5%AE%B3/TDK_2026) |
+| └ TB3_2026 | FIRA AutoRace × TurtleBot 3 | [🌐](https://Oren2026.github.io/Oren_own/docs/%E4%B8%8A%E5%AE%B3/TB3_2026/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/%E4%B8%8A%E5%AE%B3/TB3_2026) |
+| └ 上銀撞球 | 上銀撞球比賽相關 | [🌐](https://Oren2026.github.io/Oren_own/docs/%E4%B8%8A%E5%AE%B3/%E4%B8%8A%E9%8A%88%E6%92%9E%E7%90%83/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/%E4%B8%8A%E5%AE%B3/%E4%B8%8A%E9%8A%88%E6%92%9E%E7%90%83) |
 | **knowledges** | 每日知識文章（JSON） | [🌐](https://Oren2026.github.io/Oren_own/docs/knowledges/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/knowledges) |
 | **slides** | 簡報相關 | [🌐](https://Oren2026.github.io/Oren_own/docs/slides/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/slides) |
 | **agentidea** | 創意實驗室（CSS 展示） | [🌐](https://Oren2026.github.io/Oren_own/docs/agentidea/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/agentidea) |
