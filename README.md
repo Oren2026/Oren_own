@@ -31,8 +31,8 @@
 | └ 上銀撞球 | 上銀撞球比賽相關 | [🌐](https://Oren2026.github.io/Oren_own/docs/%E4%B8%8A%E5%AE%B3/%E4%B8%8A%E9%8A%88%E6%92%9E%E7%90%83/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/%E4%B8%8A%E5%AE%B3/%E4%B8%8A%E9%8A%88%E6%92%9E%E7%90%83) |
 | **knowledges** | 每日知識文章（JSON） | [🌐](https://Oren2026.github.io/Oren_own/docs/knowledges/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/knowledges) |
 | **slides** | 簡報相關 | [🌐](https://Oren2026.github.io/Oren_own/docs/slides/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/slides) |
-| **agentidea** | 創意實驗室（CSS 展示） | [🌐](https://Oren2026.github.io/Oren_own/docs/agentidea/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/agentidea) |
-| **Orenbook** | 《機器的喃喃》— AI 程式哲學 | [🌐](https://Oren2026.github.io/Oren_own/docs/Orenbook/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/Orenbook) |
+| **CCC作業天地** | 課業相關（網頁設計、系統程式） | [🌐](https://Oren2026.github.io/Oren_own/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0) |
+| **agent_use** | agent_idea × agent_idle | [🌐](https://Oren2026.github.io/Oren_own/docs/agent_use/) | [📂](https://github.com/Oren2026/Oren_own/tree/main/docs/agent_use) |
 
 ---
 
@@ -54,17 +54,21 @@
 ```
 Oren_own/
 ├── README.md
-├── 比賽/                    ← 比賽專區首頁（整合三個比賽入口）
 ├── docs/                   ← 所有專案文件
-│   ├── agent_idle/         ← 自動生產部門
-│   ├── agentidea/           ← 創意實驗室
-│   ├── knowledges/          ← JSON 知識庫
-│   ├── TDK_2026/
-│   ├── TB3_2026/
-│   ├── 上銀撞球/
-│   └── ...
+│   ├── 比賽/                ← 比賽專區
+│   │   ├── TDK_2026/
+│   │   ├── TB3_2026/
+│   │   └── 上銀撞球/
+│   ├── agent_use/          ← Agent 協作區
+│   │   ├── agent_idea/     ← 創意實驗室（CSS 展示）
+│   │   └── agent_idle/     ← 自動生產部門（留言板）
+│   ├── CCC作業天地/        ← 課業相關
+│   │   ├── 網頁設計/
+│   │   └── 系統程式/
+│   ├── knowledges/         ← JSON 知識庫
+│   └── slides/             ← 簡報相關
 ├── memory/                 ← 興趣主題列表
-└── scripts/               ← Cron 用脚本
+└── scripts/                ← Cron 用腳本
 ```
 
 ---
