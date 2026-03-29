@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>比賽專區 — 黑皮團隊</title>
+  <style>
+    :root {
+      --bg: #08090f;
+      --surface: #0d1019;
+      --border: rgba(255,255,255,0.07);
+      --accent: #6ee7f7;
+      --accent-dim: rgba(110,231,247,0.12);
+      --text: #dde4f0;
+      --muted: #5a6478;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 5%;
+      background: rgba(8,9,15,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .nav-logo:hover { color: var(--text); }
+
+    .nav-back {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 5px 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      transition: all 0.2s;
+    }
+    .nav-back:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 80px 5% 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 50% 40% at 50% 0%, rgba(110,231,247,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.1s forwards;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.2s forwards;
+    }
+
+    .hero-sub {
+      font-size: 0.88rem;
+      color: var(--muted);
+      max-width: 400px;
+      margin: 0 auto;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.35s forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Cards ── */
+    .cards-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 5% 80px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, border-color 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      animation: cardIn 0.6s ease forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.22s; }
+    .card:nth-child(3) { animation-delay: 0.34s; }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(110,231,247,0.3);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(110,231,247,0.1);
+    }
+
+    .card-visual {
+      height: 130px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-visual-bg {
+      position: absolute;
+      inset: 0;
+      transition: transform 0.5s ease;
+    }
+
+    .card:hover .card-visual-bg { transform: scale(1.06); }
+
+    .card-visual-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 30%, rgba(13,16,25,0.9) 100%);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.08em;
+    }
+
+    .badge-tdk    { background: rgba(239,130,60,0.2); color: #ef8340; border: 1px solid rgba(239,130,60,0.35); }
+    .badge-fira    { background: rgba(110,231,247,0.12); color: var(--accent); border: 1px solid rgba(110,231,247,0.25); }
+    .badge-hiwin   { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+
+    .card-body {
+      padding: 22px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .card-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.7;
+      flex: 1;
+      margin-bottom: 14px;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .card-tag {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--muted);
+    }
+
+    .card-arrow {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: gap 0.2s;
+    }
+
+    .card:hover .card-arrow { gap: 9px; }
+
+    footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 28px;
+      color: var(--muted);
+      font-size: 11px;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 60px 5% 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="../../" class="nav-logo">← docs</a>
+    <a href="../../" class="nav-back">回首頁</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-eyebrow">黑皮團隊</div>
+    <h1 class="hero-title">比賽專區</h1>
+    <p class="hero-sub">三個機器人比賽的完整記錄與技術文件</p>
+  </section>
+
+  <div class="cards-wrap">
+    <div class="cards-grid">
+
+      <a href="./TDK_2026/" class="card">
+        <div class="card-visual">
+          <div class="card-visual-bg" style="background: linear-gradient(135deg,#1a0d05 0%,#2c1a08 50%,#1a0d05 100%);"></div>
+          <div class="card-visual-overlay"></div>
+          <span class="card-badge badge-tdk">遙控組</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">TDK 遙控組</div>
+          <div class="card-desc">第30屆 TDK 全國大賽遙控組競賽。四大關卡自主導航，包含障礙辨識、路徑規劃與精準停車。</div>
+          <div class="card-tags">
+            <span class="card-tag">遙控</span>
+            <span class="card-tag">競速</span>
+            <span class="card-tag">障礙辨識</span>
+            <span class="card-tag">Linetracing</span>
+          </div>
+          <div class="card-arrow">查看詳情 →</div>
+        </div>
+      </a>
+
+      <a href="./TB3_2026/" class="card">
+        <div class="card-visual">
+          <div class="card-visual-bg" style="background: linear-gradient(135deg,#051218 0%,#081e2c 50%,#051822 100%);"></div>
+          <div class="card-visual-overlay"></div>
+          <span class="card-badge badge-fira">AutoRace</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">FIRA AutoRace — TB3</div>
+          <div class="card-desc">FIRA 世界盃機器人足球大賽自動駕駛挑戰賽。使用 TurtleBot 3，基於 ROS + OpenCV 全自主路徑規劃。</div>
+          <div class="card-tags">
+            <span class="card-tag">TurtleBot 3</span>
+            <span class="card-tag">ROS</span>
+            <span class="card-tag">OpenCV</span>
+            <span class="card-tag">AutoRace</span>
+          </div>
+          <div class="card-arrow">查看詳情 →</div>
+        </div>
+      </a>
+
+      <a href="./上銀撞球/" class="card">
+        <div class="card-visual">
+          <div class="card-visual-bg" style="background: linear-gradient(135deg,#0d0a05 0%,#1a1508 50%,#0d0d05 100%);"></div>
+          <div class="card-visual-overlay"></div>
+          <span class="card-badge badge-hiwin">創新應用</span>
+        </div>
+        <div class="card-body">
+          <div class="card-title">上銀 — HIWIN 撞球</div>
+          <div class="card-desc">上銀機械手臂創意應用競賽。將機械手臂應用於撞球運動，結合視覺系統與運動控制的創新挑戰。</div>
+          <div class="card-tags">
+            <span class="card-tag">機械手臂</span>
+            <span class="card-tag">HIWIN</span>
+            <span class="card-tag">視覺系統</span>
+            <span class="card-tag">運動控制</span>
+          </div>
+          <div class="card-arrow">查看詳情 →</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <footer>黑皮團隊 · 比賽專區 · Researcher × Coder</footer>
+
+</body>
+</html>
