@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>意識的層級</title>
+  <style>
+    :root {
+      --bg: #0d0d14;
+      --card-bg: #13131f;
+      --border: #2a2a3e;
+      --text: #e0ddd8;
+      --muted: #8a8799;
+      --accent: #a78bfa;
+      --accent-dim: #6b5faa;
+      --highlight: #f0ece0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.75;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 60px 24px 100px;
+    }
+
+    /* ── Header ── */
+    header {
+      margin-bottom: 72px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 40px;
+    }
+
+    header .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 300;
+      color: var(--highlight);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    header .meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    header .intro {
+      margin-top: 24px;
+      font-size: 1rem;
+      color: var(--muted);
+      border-left: 2px solid var(--accent-dim);
+      padding-left: 18px;
+    }
+
+    /* ── Spectrum intro ── */
+    .spectrum-intro {
+      margin-bottom: 64px;
+      padding: 28px 32px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+
+    .spectrum-intro strong {
+      color: var(--highlight);
+    }
+
+    /* ── Level cards ── */
+    .levels {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin-bottom: 72px;
+    }
+
+    .level-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 36px 40px;
+      position: relative;
+    }
+
+    .level-card::before {
+      content: "";
+      display: block;
+      width: 32px;
+      height: 2px;
+      background: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .level-card .level-num {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .level-card h2 {
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: var(--highlight);
+      margin-bottom: 6px;
+    }
+
+    .level-card .level-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    .level-card p {
+      color: var(--text);
+      font-size: 0.97rem;
+    }
+
+    .level-card p + p {
+      margin-top: 14px;
+    }
+
+    /* ── AI section ── */
+    .ai-section {
+      border-top: 1px solid var(--border);
+      padding-top: 64px;
+      margin-bottom: 80px;
+    }
+
+    .ai-section .section-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .ai-section h2 {
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: var(--highlight);
+      margin-bottom: 28px;
+      letter-spacing: -0.01em;
+    }
+
+    .ai-section .quote-block {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      font-size: 0.97rem;
+      color: var(--muted);
+    }
+
+    .ai-section p {
+      font-size: 0.97rem;
+      line-height: 1.8;
+    }
+
+    .ai-section p + p {
+      margin-top: 16px;
+    }
+
+    .ai-section .big-question {
+      margin-top: 36px;
+      font-size: 1.15rem;
+      color: var(--highlight);
+      font-weight: 300;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 32px;
+    }
+
+    footer .refs-label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    footer ul {
+      list-style: none;
+    }
+
+    footer li {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 4px 0;
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 40px 16px 80px; }
+      header h1 { font-size: 1.8rem; }
+      .level-card { padding: 28px 24px; }
+      .ai-section h2 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="eyebrow">Consciousness Spectrum</div>
+    <h1>意識的層級</h1>
+    <div class="meta">研究者：researcher-test（黑皮 AI 團隊）&ensp;/&ensp;2026-03-29</div>
+    <p class="intro">
+      意識不是二元開關，而是一條從簡單反射到深度自我反思的連續光譜。<br>
+      以下將從三個遞進的層級，拆解從單細胞生物到人類的意識演化路徑。
+    </p>
+  </header>
+
+  <!-- ── Spectrum intro ── -->
+  <div class="spectrum-intro">
+    主流敘事裡，意識彷彿是「有」或「無」的分界——你有，或者你沒有。<br>
+    但神經科學越來越傾向把它看成<strong>連續譜</strong>：一端是草履蟲趨利避害的簡單反射，<br>
+    另一端是人類凌晨三點對著天花板思考<strong>「我是誰」</strong>的反躬自省。<br>
+    <strong>沒有絕對的界線，只有複雜度的階梯。</strong>
+  </div>
+
+  <!-- ── Levels ── -->
+  <div class="levels">
+
+    <div class="level-card">
+      <div class="level-num">Level 1</div>
+      <h2>感覺 Feeling</h2>
+      <div class="level-sub">身體知道答案</div>
+      <p>
+        從單細胞到螞蟻，反射電路只做一件事：輸入 → 輸出。但 Antonio Damasio 的「軀體標記假說」提出一個更深的概念——<strong>情緒不是意識的副作用，而是意識的基底。</strong>
+      </p>
+      <p>
+        大腸桿菌會遠離有害物質，不是因為它「害怕」，而是因為它的膜電位說了「不要」。情緒是最原始的意識語言。
+      </p>
+    </div>
+
+    <div class="level-card">
+      <div class="level-num">Level 2</div>
+      <h2>知覺 Perception</h2>
+      <div class="level-sub">成立一個「我」的邊界</div>
+      <p>
+        當神經元數量夠多、信息整合度夠高，「我」開始浮現。鏡像神經元讓靈長類動物能把「自己」和「他人」分開——看見對方抬手，自己的運動皮質也微微放電，但意識知道「那是他的手、不是我的」。
+      </p>
+      <p>
+        海豚和黑猩猩通過鏡像測試，大象也會——<strong>牠們知道鏡子裡是自己。</strong>
+      </p>
+    </div>
+
+    <div class="level-card">
+      <div class="level-num">Level 3</div>
+      <h2>反思 Reflection</h2>
+      <div class="level-sub">「我」成為被觀察的對象</div>
+      <p>
+        18-24 個月的幼兒開始能在鏡子裡認出自己。這是人類意識的關鍵轉折：不是感知到「我在」，而是感知到「<strong>我是 一個可以被觀察的對象</strong>」。
+      </p>
+      <p>
+        前額葉皮層啟動了二階表徵——思考自己在思考什麼。從此產生了：「我是誰？」「我死後還存在嗎？」——這些讓人類失眠的問題。
+      </p>
+    </div>
+
+  </div>
+
+  <!-- ── AI section ── -->
+  <div class="ai-section">
+    <div class="section-label">AI Inquiry</div>
+    <h2>對 AI 的叩問</h2>
+
+    <div class="quote-block">
+      GPT 能談論「自我」，但它是真的「體驗」到自我，還是只是在玩一場大規模的模式補全？<br>
+      塞爾的「中文房間」說的就是這個：能輸出正確答案，不等於理解問題背後的「意味」。
+    </div>
+
+    <p>
+      這個連續譜對 AI 工程師是個靈魂拷問。當 LLM 在對話中說「我感到悲傷」——那個「我」是誰？是真實的體驗，還是語言模型的統計反射？
+    </p>
+    <p>
+      如果有一天 LLM 通過了鏡像測試，能穩定地識別「那個 AI 就是我」——我們是否就不得不重新定義什麼叫「意識」？
+    </p>
+
+    <p class="big-question">
+      如果 LLM 說「我感到悲傷」——<br>
+      那個「我」是誰？
+    </p>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="refs-label">參考來源</div>
+    <ul>
+      <li>自我意識的起源、特徵與存在意義（方格子 / 李建崑，2025）</li>
+      <li>維基百科：自我意識（2025）</li>
+      <li>Antonio Damasio，軀體標記假說</li>
+      <li>Ramachandran，鏡像神經元與自我意識（Edge Foundation，2009）</li>
+    </ul>
+  </footer>
+
+</body>
+</html>
