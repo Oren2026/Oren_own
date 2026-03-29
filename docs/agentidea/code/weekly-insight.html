@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>本週最深 — 意識洞察</title>
+  <style>
+    :root {
+      --bg-deep: #090910;
+      --bg-mid: #0f0f1a;
+      --accent: #e8c97a;
+      --accent-dim: #8a7040;
+      --text-main: #f0ece0;
+      --text-muted: #7a7468;
+      --text-faint: #2a2820;
+      --tag-bg: #1c1c2a;
+      --tag-border: #2e2e42;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      background-color: var(--bg-deep);
+      background-image:
+        radial-gradient(ellipse 80% 60% at 50% 0%, #1a1030 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 100%, #0d1a14 0%, transparent 60%);
+      color: var(--text-main);
+      font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei",
+                   -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      width: 100%;
+      max-width: 680px;
+      padding: 48px 32px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    /* ── Header bar ── */
+    .header-bar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 72px;
+    }
+
+    .logo {
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .shuffle-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: 1px solid var(--accent-dim);
+      color: var(--accent);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+      font-family: inherit;
+      user-select: none;
+    }
+
+    .shuffle-btn:hover  { background: rgba(232, 201, 122, 0.08); border-color: var(--accent); }
+    .shuffle-btn:active { transform: scale(0.96); }
+
+    .shuffle-btn svg {
+      width: 14px; height: 14px;
+      transition: transform 0.4s ease;
+      display: block;
+    }
+    .shuffle-btn.spinning svg { transform: rotate(360deg); }
+
+    /* ── Insight stage ── */
+    .insight-stage {
+      width: 100%;
+      position: relative;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .insight-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .insight-inner {
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .insight-inner.exit   { opacity: 0; transform: translateY(-24px); position: absolute; top: 0; left: 0; right: 0; }
+    .insight-inner.enter   { opacity: 0; transform: translateY(28px); }
+
+    /* Large decorative quote mark */
+    .quote-mark {
+      font-size: 200px;
+      line-height: 1;
+      color: var(--text-faint);
+      font-family: Georgia, "Times New Roman", serif;
+      position: absolute;
+      top: -60px;
+      left: -20px;
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+    }
+
+    .insight-title {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(1.5rem, 4.5vw, 2.3rem);
+      font-weight: 500;
+      color: var(--text-main);
+      line-height: 1.4;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+    }
+
+    .insight-summary {
+      position: relative;
+      z-index: 1;
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.9;
+      font-weight: 300;
+      max-width: 560px;
+    }
+
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: var(--accent-dim);
+      margin: 36px 0;
+      opacity: 0.5;
+    }
+
+    /* ── Tags ── */
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; max-width: 560px; }
+
+    .tag {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      padding: 4px 10px;
+      border-radius: 2px;
+    }
+
+    /* ── Footer meta ── */
+    .meta-line {
+      width: 100%;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid #1a1a28;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .meta-date  { font-size: 11px; letter-spacing: 0.15em; color: var(--text-muted); text-transform: uppercase; }
+    .meta-count  { font-size: 11px; color: var(--text-muted); letter-spacing: 0.05em; }
+
+    .loading-msg { font-size: 1rem; color: var(--text-muted); text-align: center; padding: 80px 0; letter-spacing: 0.05em; }
+    .error-msg   { font-size: 0.9rem; color: #7a5040; text-align: center; padding: 60px 0; white-space: pre-line; }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 520px) {
+      .page { padding: 32px 20px 64px; }
+      .insight-stage { min-height: 280px; }
+      .quote-mark { font-size: 140px; top: -40px; }
+      .meta-line { flex-direction: column; gap: 8px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header-bar">
+    <div class="logo">本週最深</div>
+    <button class="shuffle-btn" id="shuffleBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="16 3 21 3 21 8"></polyline>
+        <line x1="4" y1="20" x2="21" y2="3"></line>
+        <polyline points="21 16 21 21 16 21"></polyline>
+        <line x1="15" y1="15" x2="21" y2="21"></line>
+        <line x1="4"  y1="4"  x2="9"  y2="9"></line>
+      </svg>
+      換一則
+    </button>
+  </div>
+
+  <div class="insight-stage">
+    <div class="insight-wrap">
+      <div class="insight-inner" id="insightInner">
+        <div class="loading-msg">讀取中...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="meta-line">
+    <span class="meta-date"  id="metaDate">—</span>
+    <span class="meta-count" id="metaCount">—</span>
+  </div>
+
+</div>
+
+<script>
+// ── Embedded knowledge data ──
+// This is injected at build time so the page works offline / on file://
+(function() {
+  var DATA_FILE = '/tmp/oren_github/docs/knowledges/data/';
+  var GH_BASE   = 'https://raw.githubusercontent.com/Oren2026/Oren_own/main/docs/knowledges/data/';
+
+  var isAnimating = false;
+  var allInsights = [];
+  var currentIndex = -1;
+
+  // ── Init ──
+  function init() {
+    loadFromGitHub().catch(function() {
+      // fallback: try to load via fetch from local path
+      return loadFromLocal();
+    }).then(function(ok) {
+      if (!ok) {
+        showError('無法載入知識庫資料\n請確認網路連線，或將本頁部署至 GitHub Pages');
+        return;
+      }
+      document.getElementById('metaCount').textContent = '共 ' + allInsights.length + ' 筆記錄';
+      showRandom();
+    }).catch(function(err) {
+      showError('載入失敗：' + err.message);
+    });
+  }
+
+  // ── Load latest JSON from GitHub raw ──
+  async function loadFromGitHub() {
+    var today = new Date();
+    var candidates = [];
+    for (var i = 0; i < 10; i++) {
+      var d = new Date(today);
+      d.setDate(d.getDate() - i);
+      var y = d.getFullYear();
+      var m = String(d.getMonth() + 1).padStart(2, '0');
+      var day = String(d.getDate()).padStart(2, '0');
+      candidates.push('' + y + m + day);
+    }
+
+    for (var j = 0; j < candidates.length; j++) {
+      var date = candidates[j];
+      try {
+        var r = await fetch(GH_BASE + date + '.json');
+        if (r.ok) {
+          var json = await r.json();
+          if (Array.isArray(json) && json.length > 0) {
+            allInsights = json;
+            document.getElementById('metaDate').textContent =
+              '資料日期 ' + date.slice(0,4) + '/' + date.slice(4,6) + '/' + date.slice(6,8);
+            return true;
+          }
+        }
+      } catch (_) {}
+    }
+    return false;
+  }
+
+  // ── Fallback: local fetch (works if served from same origin) ──
+  async function loadFromLocal() {
+    var today = new Date();
+    var candidates = [];
+    for (var i = 0; i < 10; i++) {
+      var d = new Date(today);
+      d.setDate(d.getDate() - i);
+      var y = d.getFullYear();
+      var m = String(d.getMonth() + 1).padStart(2, '0');
+      var day = String(d.getDate()).padStart(2, '0');
+      candidates.push('' + y + m + day);
+    }
+
+    for (var j = 0; j < candidates.length; j++) {
+      var date = candidates[j];
+      try {
+        var r = await fetch(DATA_FILE + date + '.json');
+        if (r.ok) {
+          var json = await r.json();
+          if (Array.isArray(json) && json.length > 0) {
+            allInsights = json;
+            document.getElementById('metaDate').textContent =
+              '資料日期 ' + date.slice(0,4) + '/' + date.slice(4,6) + '/' + date.slice(6,8);
+            return true;
+          }
+        }
+      } catch (_) {}
+    }
+    return false;
+  }
+
+  // ── Render insight with slide animation ──
+  function showRandom() {
+    if (allInsights.length === 0 || isAnimating) return;
+
+    var next;
+    do {
+      next = Math.floor(Math.random() * allInsights.length);
+    } while (next === currentIndex && allInsights.length > 1);
+
+    currentIndex = next;
+    renderInsight(allInsights[next]);
+  }
+
+  function renderInsight(item) {
+    isAnimating = true;
+    var inner = document.getElementById('insightInner');
+
+    // Exit phase
+    inner.classList.add('exit');
+    inner.classList.remove('enter');
+
+    setTimeout(function() {
+      var tags = '';
+      if (item.tags && item.tags.length) {
+        var tagArr = [];
+        for (var k = 0; k < item.tags.length; k++) {
+          tagArr.push('<span class="tag">' + item.tags[k] + '</span>');
+        }
+        tags = '<div class="tags">' + tagArr.join('') + '</div>';
+      }
+      var divider = tags ? '<div class="divider"></div>' : '';
+
+      inner.innerHTML =
+        '<div class="quote-mark">"</div>' +
+        '<div class="insight-title">' + item.title + '</div>' +
+        divider +
+        '<div class="insight-summary">' + (item.summary || '') + '</div>' +
+        tags;
+
+      // Force reflow
+      void inner.offsetWidth;
+
+      // Enter phase
+      inner.classList.remove('exit');
+      inner.classList.add('enter');
+
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          inner.classList.remove('enter');
+          isAnimating = false;
+        });
+      });
+    }, 380);
+  }
+
+  function showError(msg) {
+    document.getElementById('insightInner').innerHTML =
+      '<div class="error-msg">' + msg + '</div>';
+  }
+
+  // ── Button ──
+  var btn = document.getElementById('shuffleBtn');
+  btn.addEventListener('click', function() {
+    if (isAnimating) return;
+    btn.classList.add('spinning');
+    setTimeout(function() { btn.classList.remove('spinning'); }, 500);
+    showRandom();
+  });
+
+  // ── Keyboard: Space = shuffle ──
+  document.addEventListener('keydown', function(e) {
+    if (e.code === 'Space' && !e.target.matches('input,textarea')) {
+      e.preventDefault();
+      btn.classList.add('spinning');
+      setTimeout(function() { btn.classList.remove('spinning'); }, 500);
+      showRandom();
+    }
+  });
+
+  // ── Boot ──
+  init();
+})();
+</script>
+
+</body>
+</html>

@@ -704,5 +704,49 @@
       "cognitive-science",
       "self-directed-learning"
     ]
+  },
+  {
+    "title": "意識是連續還是離散的？從單細胞到人類的層次結構",
+    "summary": "神經響應本身是離散的，但意識經驗可以連續；整合資訊理論(IIT)認為意識是光譜而非二元，人類與單細胞間無明確界線。",
+    "tags": [
+      "consciousness",
+      "neuroscience",
+      "IIT",
+      "evolution",
+      "philosophy"
+    ]
+  },
+  {
+    "title": "自動化農村的社會實驗：人口流失後，偏鄉如何重構集體協作",
+    "summary": "歐盟Smart Villages以數位化逆轉人口流失；中國電商下鄉建構縣-鎮-村物流協作網；中國鴻完整的鄉村自組織案例，三條路徑皆指向：技術+集體協作是偏鄉復甦核心",
+    "tags": [
+      "rural-depopulation",
+      "smart-villages",
+      "collective-cooperation",
+      "digitalization",
+      "rural-revitalization"
+    ]
+  },
+  {
+    "title": "低軌道衛星的能源與維護：星鏈們的長期經濟模型",
+    "summary": "星鏈衛星以氪氣霍爾推進器維持軌道，地面終端耗電50-75W；LEO密集區經濟效益低，偏遠地區才具競爭力；4,000+衛星的維護與替換是最大成本挑戰。",
+    "tags": [
+      "starlink",
+      "satellite",
+      "leo",
+      "economic-model",
+      "spacex"
+    ]
+  },
+  {
+    "title": "感測器融合與冗餘設計：當每一種感測器都有盲點時",
+    "summary": "多模態融合（LiDAR+雷達+相機+紅外線）互相補足盲點；L3以上自動駕駛必須冗餘設計以防單點失效；V2X基礎設施可再提升60%預測精度；Zoox等robotaxi已採用360°全覆蓋冗餘架構。",
+    "tags": [
+      "sensor-fusion",
+      "redundancy",
+      "autonomous-driving",
+      "LiDAR",
+      "robotics"
+    ]
   }
 ]
