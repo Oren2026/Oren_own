@@ -1,0 +1,36 @@
+[
+  {
+    "title": "Micro-Reactor創業熱：Radiant獲投百億美元、Last Energy搶建數據中心核電廠",
+    "summary": "AI資料中心需求爆發，核能新創Radiant獲3億美元投資並已預售20台微反應爐；Last Energy德州試點5MW機組，預計2028年商業量產；2025年核能投資額創新高，SPAC併購潮興起。",
+    "tags": [
+      "nuclear",
+      "microreactor",
+      "startup",
+      "datacenter",
+      "clean-energy"
+    ]
+  },
+  {
+    "title": "世界模型的物理約束：當虛擬模擬不符合牛頓力學",
+    "summary": "當前世界模型常見物理違規：物體消失、永續性失效、物體穿透表面、液體忽略重力。Scale可改善但無法根本解決，Nvidia Newton等可微分物理引擎與PIN-WM正嘗試以物理約束學習來修復。IntPhys基準測試以四原則（永續性、不變性、時空連續性、固體性）評估模型的物理直覺。",
+    "tags": [
+      "world-model",
+      "physics-simulation",
+      "robotics",
+      "Newton-physics",
+      "physical-AI"
+    ]
+  },
+  {
+    "title": "機器人競賽的技術階梯：從菜鳥到頂尖的路徑與資源",
+    "summary": "菜鳥→Arduino/基礎電子→ROS/ML/CV中階→FIRA/FIRST/無人類頂尖。FIRA是國際基準競賽，FIRST有完整技能階梯文件，ROS是核心技術棧。",
+    "tags": [
+      "robotics-competition",
+      "FIRA",
+      "FIRST",
+      "beginner-guide",
+      "ROS",
+      "robot-learning-path"
+    ]
+  }
+]
