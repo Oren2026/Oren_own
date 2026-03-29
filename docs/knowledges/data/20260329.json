@@ -792,5 +792,38 @@
       "VLA",
       "CoRL2024"
     ]
+  },
+  {
+    "title": "固態電池量產卡關：2026進度與成本瓶頸",
+    "summary": "2026年僅小批量試產，大規模量產預計2030年後。成本差距達4-7倍（固態-800/kWh vs 液態/kWh），超薄電解質量產是核心關卡。中國廣汽MG已交付半固態量產車，寶馬賓士仍在路測。",
+    "tags": [
+      "solid-state-battery",
+      "EV-battery",
+      "energy-storage",
+      "semi-solid",
+      "Li-ion"
+    ]
+  },
+  {
+    "title": "小型機器人競賽的技術生態",
+    "summary": "機器人競賽（TDK、FIRA、ABU Robocon等）是大學團隊技術驗證場，MIT/CMU/ETH等名校spin-off皆源自競賽經驗。DARPA Grand Challenge證明競賽能催生整個產業。核心技術：嵌入式系統、控制演算法、SLAM。這些是機器人新創的人才庫與練兵場。",
+    "tags": [
+      "robot-competition",
+      "university-research",
+      "startup-ecosystem",
+      "robotics-education",
+      "technology-transfer"
+    ]
+  },
+  {
+    "title": "AI for Science: GPT-style模型的突破與限制",
+    "summary": "GPT-5.2在PhD級科學題目從39%躍升至92%，但物理學家、數學家、生物學家仍指出：AI能驗證與加速，卻仍無法真正提出全新假說。",
+    "tags": [
+      "AI-for-Science",
+      "GPT-5",
+      "scientific-discovery",
+      "machine-learning",
+      "research-AI"
+    ]
   }
 ]
