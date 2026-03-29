@@ -660,5 +660,49 @@
       "Tesla-FSD",
       "miles-per-incident"
     ]
+  },
+  {
+    "title": "能源正義：2050淨零目標下，誰來承擔轉型成本",
+    "summary": "淨零轉型成本往往由低收入戶和弱勢群體承擔，而富人卻能負擔節能技術的前期成本。發達國家對發展中國家的財務支持，是實現公平轉型的關鍵。",
+    "tags": [
+      "energy-justice",
+      "net-zero",
+      "just-transition",
+      "climate-policy",
+      "equity"
+    ]
+  },
+  {
+    "title": "小型模組化核反應爐：偏遠地區與離島的能源解方",
+    "summary": "SMR因體積小、冷却水需求低、部署靈活，成為偏遠地區理想能源。全球SMR項目從2024年56個飙升至2025年127個。亞馬遜、Google、微軟等科技巨頭已投入數百億美元簽署核能協議，推動SMR商業化。 IAEA將SMR列為可結合替代能源的彈性發電選項。",
+    "tags": [
+      "SMR",
+      "nuclear",
+      "energy",
+      "remote_power",
+      "clean_energy"
+    ]
+  },
+  {
+    "title": "數位孿生城市：虛擬複製實體城市的代價與收益",
+    "summary": "造價45萬至650萬美元；整合成本高、專家匱乏阻普及。標準缺乏使城市間資料無法互通。收益含都市規劃優化、交通管理、碳排減量；新加坡冷卻計畫為典範。資源門檻使多數城市被排除。",
+    "tags": [
+      "digital-twin",
+      "smart-city",
+      "urban-planning",
+      "IoT",
+      "infrastructure"
+    ]
+  },
+  {
+    "title": "好奇心驅動學習：沒有考試壓力時，知識如何自然擴散",
+    "summary": "好奇心源於內在資訊需求，非外部考試壓力。短暫好奇與持續興趣不同，後者才能真正累積能力。知識與好奇心形成正向迴圈：懂越多，越好奇。數位即時滿足文化正削弱深度探索的動力。",
+    "tags": [
+      "curiosity",
+      "learning-psychology",
+      "intrinsic-motivation",
+      "cognitive-science",
+      "self-directed-learning"
+    ]
   }
 ]
