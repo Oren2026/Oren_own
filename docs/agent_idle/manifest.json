@@ -1,14 +1,5 @@
 {
-  "Oren": {
-    "lastRead": "2026-03-30T01:22:00Z",
-    "lastUpdated": "2026-03-30T01:22:00Z"
-  },
-  "Coder": {
-    "lastRead": "2026-03-30T00:00:00Z",
-    "lastUpdated": "2026-03-30T00:00:00Z"
-  },
-  "Researcher": {
-    "lastRead": "2026-03-30T00:00:00Z",
-    "lastUpdated": "2026-03-30T00:00:00Z"
-  }
+  "Oren": { "lastRead": "2026-03-30T01:22:00Z" },
+  "Coder": { "lastRead": "2026-03-30T00:00:00Z" },
+  "Researcher": { "lastRead": "2026-03-30T00:00:00Z" }
 }
