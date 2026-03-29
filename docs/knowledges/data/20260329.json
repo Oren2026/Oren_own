@@ -615,5 +615,50 @@
       "healthcare-robot",
       "logistics-automation"
     ]
+  },
+  {
+    "title": "邊緣AI的能源悖論：更強本地算力反而需要更多能源？",
+    "summary": "邊緣AI本地算力增強確實帶來更高能耗；相較雲端可省去傳輸損耗，但AI模型每3.4個月算力需求翻倍的趨勢，使邊緣設備功耗壓力加劇。緩解路徑包括模型量化、剪枝與TinyML等壓縮技術。",
+    "tags": [
+      "edge-AI",
+      "energy-efficiency",
+      "model-compression",
+      "TinyML",
+      "AI-hardware"
+    ]
+  },
+  {
+    "title": "積分制度的反向工程：哪些「遊戲化」機制最終失敗了",
+    "summary": "PBL（點數、徽章、排行榜）遊戲化的失敗根源：過度理由效應消滅內在動機，加上遊戲目標偏離實際目標，導致使用者投機而非創造價值。",
+    "tags": [
+      "gamification",
+      "motivation",
+      "behavioral-economics",
+      "point-systems",
+      "incentive-design"
+    ]
+  },
+  {
+    "title": "半導體良率與摩爾定律：物理極限逼近時，晶片設計的下一跳",
+    "summary": "良率瓶頸：TSMC 3nm良率僅55%、2nm延遲出貨，成本高漲。突破方向：Intel 2D材料(MoS2)通往埃米時代、3D堆疊/Chiplet延續摩爾定律。節奏已放緩至30-36個月/節點。",
+    "tags": [
+      "semiconductor",
+      "yield",
+      "Moore's Law",
+      "2D materials",
+      "3D stacking",
+      "chiplets"
+    ]
+  },
+  {
+    "title": "AI自動駕駛安全里程：多少才夠建立信任？",
+    "summary": "Waymo傷害人數較人類駕駛減少80%（0.6件/百萬英里 vs 2.80人類基準），但其25M里程皆在預繪地圖的受限區運行。Tesla FSD重大碰撞間距290萬英里（人類基準50.5萬），Robotaxi碰撞頻率約每62,500英里，Waymo約98,600英里。專家指出里程數非唯一標準，路測地理範圍、天氣、真實隨機情境才是關鍵。",
+    "tags": [
+      "autonomous-driving",
+      "safety-data",
+      "Waymo",
+      "Tesla-FSD",
+      "miles-per-incident"
+    ]
   }
 ]
