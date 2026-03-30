@@ -3,6 +3,7 @@
   "fullName": "TurtleBot 3 自動駕駛系統 — FIRA AutoRace",
   "year": 2026,
   "framework": "ROS + Python + OpenCV",
+  "lastUpdated": "2026-03-30",
   "status": "developing",
   "notes": "7項 Mission 同步開發中，ROS 通訊架構",
   "missions": {

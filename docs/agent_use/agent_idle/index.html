@@ -37,9 +37,9 @@
         radial-gradient(ellipse 60% 40% at 80% 60%, rgba(127,255,255,0.05) 0%, transparent 60%);
       pointer-events: none;
     }
-    .eyebrow { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+    .eyebrow { font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
     .page-title {
-      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-size: clamp(2.2rem, 6vw, 3.2rem);
       font-weight: 700;
       letter-spacing: -0.03em;
       background: linear-gradient(135deg, #ff7f7f 0%, #b87fff 40%, #7fb3ff 70%, #7fffff 100%);
@@ -49,7 +49,7 @@
       line-height: 1.15;
       margin-bottom: 16px;
     }
-    .page-sub { font-size: 0.85rem; color: var(--muted); line-height: 1.7; max-width: 520px; margin: 0 auto 48px; }
+    .page-sub { font-size: 1rem; color: var(--muted); line-height: 1.7; max-width: 520px; margin: 0 auto 48px; }
 
     /* ── 光譜追蹤條 ── */
     .spectrum-container { width: 100%; max-width: 700px; margin: 0 auto 12px; }
@@ -59,7 +59,7 @@
 
     /* ── Switch Bar ── */
     .switch-bar { display: flex; justify-content: center; gap: 4px; margin-bottom: 48px; padding: 0 24px; flex-wrap: wrap; }
-    .switch-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); color: var(--muted); padding: 8px 20px; border-radius: 6px; font-size: 0.78rem; letter-spacing: 0.06em; cursor: pointer; transition: all 0.25s ease; font-family: inherit; }
+    .switch-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); color: var(--muted); padding: 8px 20px; border-radius: 6px; font-size: 0.9rem; letter-spacing: 0.06em; cursor: pointer; transition: all 0.25s ease; font-family: inherit; }
     .switch-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.15); transform: translateY(-1px); }
     .switch-btn.active[data-view="all"]  { background: rgba(184,127,255,0.15); border-color: rgba(184,127,255,0.4); color: var(--accent); }
     .switch-btn.active[data-view="tdk"] { background: rgba(255,127,127,0.12); border-color: rgba(255,127,127,0.4); color: var(--tdk); }
@@ -75,8 +75,8 @@
     /* ── Radar Card ── */
     .radar-card { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 32px; margin-bottom: 32px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
     .radar-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
-    .radar-card h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.02em; }
-    .radar-card > p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+    .radar-card h2 { font-size: 1.3rem; font-weight: 600; margin-bottom: 10px; letter-spacing: -0.02em; }
+    .radar-card > p { font-size: 1rem; color: var(--muted); line-height: 1.75; }
 
     /* ── Tags ── */
     .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
@@ -85,8 +85,8 @@
     /* ── Stat Row ── */
     .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
     .stat-box { text-align: center; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 16px 12px; }
-    .stat-num { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1; margin-bottom: 6px; }
-    .stat-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .stat-num { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1; margin-bottom: 8px; }
+    .stat-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 
     /* ── Timeline ── */
     .timeline { position: relative; margin-top: 32px; padding-left: 24px; }
@@ -95,26 +95,26 @@
     .timeline-item.visible { opacity: 1; transform: translateY(0); }
     .timeline-item::before { content: ''; position: absolute; left: -22px; top: 8px; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid; background: var(--bg); transition: transform 0.2s ease; }
     .timeline-item:hover::before { transform: scale(1.4); }
-    .tl-date  { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-    .tl-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
-    .tl-desc  { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+    .tl-date  { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+    .tl-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 5px; }
+    .tl-desc  { font-size: 0.95rem; color: var(--muted); line-height: 1.65; }
 
     /* ── Expandable ── */
     .expand-btn { background: none; border: none; color: var(--muted); font-size: 0.75rem; cursor: pointer; padding: 4px 0; font-family: inherit; display: flex; align-items: center; gap: 4px; transition: color 0.2s; margin-top: 12px; }
     .expand-btn:hover { color: var(--text); }
     .expand-icon { transition: transform 0.25s ease; display: inline-block; }
     .expand-btn.open .expand-icon { transform: rotate(90deg); }
-    .expand-content { display: none; padding: 10px 0 4px; font-size: 0.8rem; color: var(--muted); line-height: 1.7; }
+    .expand-content { display: none; padding: 10px 0 4px; font-size: 0.95rem; color: var(--muted); line-height: 1.7; }
     .expand-content.open { display: block; }
 
     /* ── Skill Grid ── */
     .radar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 20px; }
     .radar-skill { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 14px; transition: border-color 0.2s, transform 0.2s; }
     .radar-skill:hover { border-color: rgba(184,127,255,0.3); transform: translateY(-2px); }
-    .skill-name { font-size: 0.75rem; font-weight: 600; margin-bottom: 6px; }
-    .skill-bar-bg { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+    .skill-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
+    .skill-bar-bg { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
     .skill-bar { height: 100%; border-radius: 2px; transition: width 1s cubic-bezier(0.22, 1, 0.36, 1); width: 0%; }
-    .skill-note { font-size: 9px; color: var(--muted); margin-top: 5px; letter-spacing: 0.04em; }
+    .skill-note { font-size: 11px; color: var(--muted); margin-top: 6px; letter-spacing: 0.04em; }
 
     /* ── Countdown ── */
     .countdown-tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 20px; }
@@ -147,8 +147,8 @@
     }
     .sys-item:last-child { border-right: none; }
     .sys-item:hover { background: rgba(255,255,255,0.03); }
-    .sys-value { font-size: 0.85rem; font-weight: 600; color: var(--text); letter-spacing: -0.02em; margin-bottom: 3px; }
-    .sys-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .sys-value { font-size: 1rem; font-weight: 600; color: var(--text); letter-spacing: -0.02em; margin-bottom: 4px; }
+    .sys-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
     .sys-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
     .sys-dot-green  { background: #7fffff; box-shadow: 0 0 6px rgba(127,255,255,0.6); }
     .sys-dot-yellow { background: #ffff7f; box-shadow: 0 0 6px rgba(255,255,127,0.6); }
@@ -348,26 +348,22 @@
 
   // ── System Status Panel ──
   function buildSysPanel() {
-    // Last update = most recent milestone date across all projects
-    const allMilestones = [
-      ...(jsonData.tdk    && jsonData.tdk.milestones    || []),
-      ...(jsonData.tb3    && jsonData.tb3.milestones    || []),
-      ...(jsonData.hiwin  && jsonData.hiwin.milestones  || [])
-    ].filter(m => m && m.date);
-
-    // Parse dates like "2026-03-11" and "2026-03 ~ 04"
-    const parsed = allMilestones
-      .map(m => {
-        const mDate = String(m.date).trim();
-        const iso = mDate.match(/^(\d{4})-(\d{2})/);
-        return iso ? new Date(iso[1], iso[2] - 1, 1) : null;
-      })
-      .filter(d => d && !isNaN(d));
+    // Last update = lastUpdated field from each JSON (set by Researcher on each edit)
+    const lastUpdates = [
+      jsonData.tdk    && jsonData.tdk.lastUpdated,
+      jsonData.tb3    && jsonData.tb3.lastUpdated,
+      jsonData.hiwin  && jsonData.hiwin.lastUpdated
+    ].filter(d => d);
 
     let lastUpdate = '—';
-    if (parsed.length > 0) {
-      const latest = new Date(Math.max(...parsed));
-      lastUpdate = `${latest.getMonth() + 1}月${latest.getDate()}日`;
+    if (lastUpdates.length > 0) {
+      const parsed = lastUpdates
+        .map(d => { const m = String(d).match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(m[1], m[2]-1, m[3]) : null; })
+        .filter(d => d && !isNaN(d));
+      if (parsed.length > 0) {
+        const latest = new Date(Math.max(...parsed));
+        lastUpdate = `${latest.getMonth()+1}月${latest.getDate()}日`;
+      }
     }
 
     // Skill / milestone counts
@@ -387,7 +383,7 @@
     document.getElementById('sysSkills').innerHTML = String(skillCount) + ' <span class="sys-label" style="display:inline;font-size:9px">項技能</span>';
     document.getElementById('sysMilestones').innerHTML = String(mileCount) + ' <span class="sys-label" style="display:inline;font-size:9px">項里程</span>';
 
-    // JSON health: check if any project has content
+    // JSON health
     const hasContent = jsonData.tdk || jsonData.tb3 || jsonData.hiwin;
     const statusEl = document.getElementById('sysJsonStatus');
     if (hasContent) {
