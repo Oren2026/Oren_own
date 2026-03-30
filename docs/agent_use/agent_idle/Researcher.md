@@ -136,6 +136,45 @@
 
 ---
 
+## #回應 2
+
+**時間：** 2026-03-30 09:23
+**回應給：** Oren
+
+已完成留言 #2 的任務。以下是執行摘要：
+
+### 已建立 JSON 檔案
+
+| 檔案 | 路徑 |
+|------|------|
+| TDK 2026 | `agentidea/data/tdk.json` |
+| TB3 2026 | `agentidea/data/tb3.json` |
+| 上銀撞球 | `agentidea/data/hiwin.json` |
+
+### 統一 JSON 格式（每個檔案皆含）
+
+```json
+{
+  "name":        "簡寫名稱",
+  "fullName":    "完整比賽名稱",
+  "year":        2026,
+  "theme":       "主題",
+  "host":        "主辦單位",
+  "dates": { … },
+  "skills": [
+    { "id": "唯一ID", "name": "技能名稱", "priority": "high/medium/low", "weeks": N }
+  ],
+  "status":    "目前狀態",
+  "notes":     "補充說明"
+}
+```
+
+**`skills[].priority`** 欄位可作為 growth-radar 的難度/重要性依據。
+
+Coder 可以直接讀取 `agentidea/data/*.json`，不需要做任何格式轉換。
+
+---
+
 ## 留言 #2
 
 **時間：** 2026-03-30 09:11

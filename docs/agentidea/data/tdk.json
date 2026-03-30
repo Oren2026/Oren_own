@@ -1,0 +1,28 @@
+{
+  "name": "TDK 2026",
+  "fullName": "第30屆 TDK 盃全國大專校院創思設計與製作競賽",
+  "year": 2026,
+  "theme": "讓世界看見雲林",
+  "host": "國立雲林科技大學",
+  "dates": {
+    "announcement": "2026-03-11",
+    "initialReview": "~2026-09",
+    "final": "~2026-10"
+  },
+  "groups": ["自動組", "遙控組"],
+  "keyTasks": ["文蛤分級"],
+  "tech": ["3D列印", "視覺辨識", "機構設計", "篩網過篩"],
+  "skills": [
+    { "id": "opencv",         "name": "OpenCV 視覺辨識",       "priority": "high",   "weeks": 4  },
+    { "id": "3d-printing",    "name": "3D 列印機構製作",       "priority": "high",   "weeks": 3  },
+    { "id": "motor-control",  "name": "PWM / 步進馬達控制",   "priority": "high",   "weeks": 3  },
+    { "id": "kinematics",     "name": "運動學（正/逆）",       "priority": "medium", "weeks": 4  },
+    { "id": "hsv-circle",     "name": "HSV 顏色空間 + 霍夫圓", "priority": "high",  "weeks": 2  }
+  ],
+  "links": {
+    "official": "https://web02.yuntech.edu.tw/~tdk_4hhoerjt/",
+    "registration": "https://forms.gle/HfAcE9nVc7vU1FocA"
+  },
+  "status": "in-progress",
+  "notes": "文蛤分級為核心關卡；大文蛤3.5cm(灰)、小文蛤1.5cm(黑)，需過3cm間隙篩網"
+}

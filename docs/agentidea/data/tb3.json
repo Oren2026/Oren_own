@@ -1,0 +1,34 @@
+{
+  "name": "TB3 2026",
+  "fullName": "TurtleBot 3 機器人大賽",
+  "year": 2026,
+  "theme": "自走車挑戰賽（7項 Mission）",
+  "host": "待確認",
+  "dates": {
+    "competition": "~2026 年下半年"
+  },
+  "missions": [
+    { "id": 1, "name": "交通號誌",        "tech": ["HSV顏色偵測", "霍夫圓變換", "紅燈停/綠燈行"] },
+    { "id": 2, "name": "障礙區",           "tech": ["紅色三角偵測", "障礙物辨識"] },
+    { "id": 3, "name": "S型彎道",          "tech": ["車道線偵測", "滑動視窗演算法"] },
+    { "id": 4, "name": "停車區",           "tech": ["定點停車", "PID控制"] },
+    { "id": 5, "name": "圓環/路口",        "tech": ["方向辨識", "決策演算法"] },
+    { "id": 6, "name": "平交道",           "tech": ["紅白柵欄偵測", "等待邏輯"] },
+    { "id": 7, "name": "隧道 + M型急彎",  "tech": ["光源補償", "狹窄彎道控制"] }
+  ],
+  "skills": [
+    { "id": "opencv",        "name": "OpenCV 視覺處理",       "priority": "high",   "weeks": 4  },
+    { "id": "hsv-detect",    "name": "HSV 顏色空間偵測",     "priority": "high",   "weeks": 2  },
+    { "id": "hough-circle",  "name": "霍夫圓變換",            "priority": "high",   "weeks": 1  },
+    { "id": "perspective",   "name": "透視轉換 (top-down)",  "priority": "high",   "weeks": 1  },
+    { "id": "lane-detect",   "name": "車道線偵測",           "priority": "high",   "weeks": 2  },
+    { "id": "pid-control",   "name": "PID 控制理論與實作",   "priority": "high",   "weeks": 2  },
+    { "id": "ros",           "name": "ROS 基本架構",         "priority": "high",   "weeks": 4  },
+    { "id": "tb3-ops",       "name": "TurtleBot 3 操作",     "priority": "high",   "weeks": 2  },
+    { "id": "slam-nav",      "name": "SLAM 與導航堆疊",      "priority": "medium", "weeks": 4  },
+    { "id": "light-comp",    "name": "光源補償與隧道備援",  "priority": "medium", "weeks": 2  },
+    { "id": "yolo",          "name": "YOLO 物體偵測（選修）","priority": "low",    "weeks": 6  }
+  ],
+  "status": "in-progress",
+  "notes": "核心瓶頸在視覺辨識；PID控制是自駕基礎；ROS只需懂基礎夠用即可"
+}

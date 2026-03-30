@@ -1,0 +1,43 @@
+{
+  "name": "上銀撞球 2026",
+  "fullName": "第十八屆上銀智慧機器手實作競賽 — 撞球組",
+  "year": 2026,
+  "theme": "HIWIN 智慧機器手臂撞球任務",
+  "host": "上銀科技",
+  "dates": {
+    "initialReviewResult": "2026-03-27",
+    "safetyTraining": "2026-03 至 04",
+    "reviewVideoDeadline": "2026-05-22",
+    "reviewResult": "2026-06-05",
+    "final": "2026-08-19 至 20",
+    "subsidyDeadline": "2026-09-04"
+  },
+  "format": "小組賽 → 四強雙敗淘汰賽（A/B組各前2名晉級）",
+  "prizes": [
+    { "place": "冠軍", "count": 1, "prize": "新台幣 10 萬元" },
+    { "place": "亞軍", "count": 1, "prize": "新台幣 8 萬元" },
+    { "place": "季軍", "count": 2, "prize": "新台幣 6 萬元" },
+    { "place": "評審特別獎", "count": 1, "prize": "新台幣 2 萬元" }
+  ],
+  "subsidy": {
+    "area": "外島（金門）",
+    "amount": "新台幣 15,000 元（最高補助）"
+  },
+  "skills": [
+    { "id": "3d-printing",     "name": "3D 列印機構製作",       "priority": "high",   "weeks": 3  },
+    { "id": "motor-control",   "name": "馬達控制（ESP32/Arduino）","priority": "high", "weeks": 3  },
+    { "id": "stepper-servo",    "name": "步進馬達與舵機控制",     "priority": "high",   "weeks": 2  },
+    { "id": "kinematics",      "name": "運動學（正/逆運動學）",  "priority": "high",   "weeks": 4  },
+    { "id": "opencv",          "name": "視覺定位（撞球目標偵測）","priority": "high",   "weeks": 3  },
+    { "id": "trajectory",      "name": "軌跡規劃與精度控制",     "priority": "high",   "weeks": 3  },
+    { "id": "ros",             "name": "ROS 基礎（機械手臂控制）","priority": "medium","weeks": 3  },
+    { "id": "hiwin-api",       "name": "HIWIN 機械手臂 API 操作","priority": "high",   "weeks": 2  }
+  ],
+  "links": {
+    "official": "https://www.hiwin.org.tw",
+    "rulebook": "https://www.hiwin.org.tw/download/hiwin_robot/第十八屆上銀智慧機器手實作競賽_競賽辦法.pdf",
+    "package": "https://www.hiwin.org.tw/download/hiwin_robot/第十八屆上銀智慧機器手實作競賽-撞球組應用組報名包.zip"
+  },
+  "status": "初審通過，備戰複審影片",
+  "notes": "2026/05/22 為複審影片截止；機構優先3D列印；外島補助最高15,000元"
+}
