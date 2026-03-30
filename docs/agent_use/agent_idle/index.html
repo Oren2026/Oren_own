@@ -306,6 +306,9 @@
   <div class="cal-grid" id="calDowRow"></div>
   <!-- Calendar cells -->
   <div class="cal-grid" id="calGrid"></div>
+  <!-- Loading / error -->
+  <div class="loading-msg" id="loadingMsg">正在載入行程...</div>
+  <div class="error-msg" id="errorMsg" style="display:none"></div>
   <!-- Selected day detail -->
   <div id="dayDetail"></div>
 </div>
@@ -348,10 +351,13 @@
 
       renderCalendar();
       renderUpcoming();
-      document.getElementById('loadingMsg') && (document.getElementById('loadingMsg').style.display = 'none');
+      document.getElementById('loadingMsg').style.display = 'none';
     } catch(e) {
       const el = document.getElementById('calGrid');
       if (el) el.innerHTML = `<div class="error-msg">載入失敗：${e.message}</div>`;
+      document.getElementById('loadingMsg').style.display = 'none';
+      document.getElementById('errorMsg').style.display = 'block';
+      document.getElementById('errorMsg').textContent = '載入失敗：' + e.message;
     }
   }
 
