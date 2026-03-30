@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TB3 指令手冊 — FIRA AutoRace</title>
+  <style>
+    :root {
+      --bg: #06080f;
+      --surface: rgba(255,255,255,0.03);
+      --surface-hover: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.07);
+      --text: #dcdad4;
+      --muted: #5a6478;
+      --accent: #7fb3ff;
+      --accent-dim: rgba(127,179,255,0.1);
+      --accent2: #22d3ee;
+      --tdk: #ff7f7f;
+      --hiwin: #7fffff;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 2px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── Back ── */
+    .back { position: absolute; top: 20px; left: 24px; z-index: 10; }
+    .back a { font-size: 0.75rem; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: color 0.2s; }
+    .back a:hover { color: var(--text); }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: rgba(0,0,0,0.3);
+      border-right: 1px solid var(--border);
+      padding: 56px 0 24px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar-title { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); padding: 0 16px 10px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+    .nav-item {
+      display: block;
+      padding: 9px 16px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      border-left: 2px solid transparent;
+    }
+    .nav-item:hover { background: var(--surface); color: var(--text); }
+    .nav-item.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+    .nav-item .nav-count { font-size: 0.7rem; color: var(--muted); float: right; }
+
+    /* ── Main ── */
+    .main { flex: 1; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+
+    /* ── Header ── */
+    .main-header {
+      padding: 48px 28px 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 5;
+    }
+    .main-header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; color: var(--accent); margin-bottom: 4px; }
+    .main-header p { font-size: 0.78rem; color: var(--muted); }
+
+    /* ── Search ── */
+    .search-wrap { padding: 16px 28px; border-bottom: 1px solid var(--border); }
+    .search-box { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; }
+    .search-box:focus-within { border-color: rgba(127,179,255,0.3); }
+    .search-icon { color: var(--muted); font-size: 0.85rem; flex-shrink: 0; }
+    .search-input { background: none; border: none; outline: none; color: var(--text); font-size: 0.88rem; width: 100%; font-family: inherit; }
+    .search-input::placeholder { color: var(--muted); }
+    .search-clear { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.85rem; padding: 0; display: none; }
+    .search-clear.show { display: block; }
+    .search-count { font-size: 0.72rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+
+    /* ── Content ── */
+    .content { padding: 20px 28px 60px; overflow-y: auto; }
+
+    /* ── Section ── */
+    .cmd-section { margin-bottom: 36px; }
+    .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .section-icon { font-size: 1rem; }
+    .section-title { font-size: 1rem; font-weight: 700; color: var(--accent); }
+    .section-count { font-size: 0.72rem; color: var(--muted); }
+    .section-desc { font-size: 0.78rem; color: var(--muted); margin-bottom: 10px; line-height: 1.6; }
+
+    /* ── Command list ── */
+    .cmd-list { display: flex; flex-direction: column; gap: 6px; }
+    .cmd-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: start;
+      transition: border-color 0.15s;
+    }
+    .cmd-item:hover { border-color: rgba(127,179,255,0.2); }
+    .cmd-item.hidden { display: none; }
+    .cmd-body { min-width: 0; }
+    .cmd-category { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent2); margin-bottom: 3px; }
+    .cmd-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+    .cmd-code {
+      font-family: "Courier New", Consolas, monospace;
+      font-size: 0.78rem;
+      color: var(--text);
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 5px;
+      padding: 6px 10px;
+      margin-bottom: 5px;
+      word-break: break-all;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      position: relative;
+      padding-right: 36px;
+    }
+    .cmd-code:hover { border-color: rgba(127,179,255,0.15); }
+    .cmd-copy {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, color 0.15s;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .cmd-copy:hover { background: var(--accent-dim); color: var(--accent); border-color: rgba(127,179,255,0.3); }
+    .cmd-copy.copied { background: rgba(127,255,255,0.1); color: var(--hiwin); border-color: rgba(127,255,255,0.3); }
+    .cmd-note { font-size: 0.72rem; color: var(--muted); margin-top: 4px; font-style: italic; }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .data-table th { text-align: left; color: var(--accent); font-weight: 600; padding: 8px 12px; border-bottom: 1px solid rgba(127,179,255,0.2); background: var(--surface); }
+    .data-table td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; }
+    .data-table tr:hover td { background: var(--surface-hover); }
+    .td-name { font-weight: 600; color: var(--text); }
+    .td-code { font-family: "Courier New", Consolas, monospace; font-size: 0.75rem; color: var(--accent2); }
+    .td-type { font-size: 0.72rem; color: var(--muted); }
+    .td-desc { color: var(--muted); line-height: 1.5; }
+
+    /* ── Workflow ── */
+    .workflow-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 10px; }
+    .workflow-title { font-size: 0.9rem; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+    .workflow-steps { display: flex; flex-direction: column; gap: 6px; }
+    .wf-step { display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; }
+    .wf-num { width: 18px; height: 18px; border-radius: 50%; background: var(--accent-dim); border: 1px solid rgba(127,179,255,0.3); color: var(--accent); font-size: 0.68rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .wf-text { color: var(--text); line-height: 1.5; }
+    .wf-text code { font-family: "Courier New", Consolas, monospace; font-size: 0.78rem; color: var(--accent2); background: rgba(0,0,0,0.4); padding: 1px 5px; border-radius: 3px; }
+
+    /* ── Empty state ── */
+    .empty-search { text-align: center; padding: 48px; color: var(--muted); font-size: 0.88rem; }
+    .empty-search strong { color: var(--accent); }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--surface);
+      border: 1px solid rgba(127,255,255,0.3);
+      color: var(--hiwin);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      transition: transform 0.3s ease;
+      z-index: 100;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── Footer ── */
+    footer { padding: 16px 28px; border-top: 1px solid var(--border); font-size: 0.72rem; color: var(--muted); text-align: center; }
+
+    @media (max-width: 700px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 16px 0 8px; }
+      .sidebar-title { display: none; }
+      .nav-item { display: inline-block; padding: 6px 12px; border-left: none; border-bottom: 2px solid transparent; }
+      .nav-item.active { border-bottom-color: var(--accent); background: none; }
+      .main-header { padding: 20px 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="back"><a href="../">← 賽程日曆</a></div>
+
+<!-- Sidebar navigation -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-title">指令分類</div>
+  <div id="navList"></div>
+</nav>
+
+<!-- Main content -->
+<div class="main">
+  <div class="main-header">
+    <h1>TB3 指令手冊</h1>
+    <p id="pageDesc">基於三份 AutoRace 研習資料整合，所有實際用過的指令</p>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-box">
+      <span class="search-icon">⌕</span>
+      <input class="search-input" id="searchInput" placeholder="搜尋指令、關鍵字..." oninput="onSearch(this.value)">
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+      <span class="search-count" id="searchCount"></span>
+    </div>
+  </div>
+
+  <div class="content" id="content"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">已複製到剪貼簿</div>
+
+<script>
+  // ── State ──
+  let cmdData = {};
+  let currentSection = null;
+  let searchQuery = '';
+
+  // ── Load JSON ──
+  async function loadData() {
+    try {
+      const res = await fetch('../data/tb3-commands.json');
+      cmdData = await res.json();
+      buildNav();
+      if (location.hash) {
+        const section = location.hash.slice(1);
+        showSection(decodeURIComponent(section));
+      } else {
+        showSection('environment');
+      }
+    } catch(e) {
+      document.getElementById('content').innerHTML = `<div class="empty-search">載入失敗：${e.message}</div>`;
+    }
+  }
+
+  // ── Build nav ──
+  function buildNav() {
+    const sections = [
+      { id: 'environment',     label: '環境建置',     icon: '⚙',  count: cmdData.environment?.commands?.length || 0 },
+      { id: 'rosCore',          label: 'ROS 核心',      icon: '◉',  count: cmdData.rosCore?.commands?.length || 0 },
+      { id: '研習1_道路駕駛',  label: '道路駕駛',      icon: '🚦', count: cmdData['研習1_道路駕駛']?.commands?.length || 0 },
+      { id: '研習2_自動避障',  label: '自動避障',      icon: '🚧', count: cmdData['研習2_自動避障']?.commands?.length || 0 },
+      { id: '研習3_SLAM導航', label: 'SLAM 導航',     icon: '🗺', count: cmdData['研習3_SLAM導航']?.commands?.length || 0 },
+      { id: '常用工具',         label: '常用工具',       icon: '🔧', count: cmdData['常用工具']?.commands?.length || 0 },
+      { id: 'launchFiles',     label: 'Launch 對照',    icon: '📁', count: cmdData.launchFiles?.files?.length || 0 },
+      { id: 'topics',          label: 'Topic 對照',     icon: '📡', count: (cmdData.topics?.subscribers?.length||0) + (cmdData.topics?.publishers?.length||0) },
+      { id: 'quickReference',   label: '快速流程',      icon: '⚡', count: cmdData.quickReference?.workflows?.length || 0 },
+    ];
+
+    const nav = document.getElementById('navList');
+    nav.innerHTML = sections.map(s => `
+      <div class="nav-item${currentSection===s.id?' active':''}" onclick="showSection('${s.id}')">
+        ${s.icon} ${s.label} <span class="nav-count">${s.count}</span>
+      </div>`).join('');
+
+    document.getElementById('pageDesc').textContent = cmdData.description || '';
+  }
+
+  // ── Show section ──
+  function showSection(id) {
+    currentSection = id;
+    searchQuery = '';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchClear').classList.remove('show');
+    document.getElementById('searchCount').textContent = '';
+    location.hash = encodeURIComponent(id);
+
+    // update nav active
+    document.querySelectorAll('.nav-item').forEach(el => {
+      el.classList.toggle('active', el.getAttribute('onclick')?.includes(id));
+    });
+
+    const content = document.getElementById('content');
+    const d = cmdData[id];
+    if (!d) { content.innerHTML = '<div class="empty-search">找不到這個分類</div>'; return; }
+
+    let html = '';
+
+    if (id === 'launchFiles') {
+      const files = d.files || [];
+      html += `<div class="cmd-section">
+        <div class="section-header"><span class="section-icon">📁</span><span class="section-title">${d.title||'Launch 檔案'}</span><span class="section-count">${files.length} 檔案</span></div>
+        <p class="section-desc">${d.description||''}</p>
+        <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>檔案名稱</th><th>套件</th><th>說明</th></tr></thead>
+          <tbody>
+          ${files.map(f => `<tr>
+            <td class="td-code">${escHtml(f.name||'')}</td>
+            <td class="td-type">${escHtml(f.package||'')}</td>
+            <td class="td-desc">${escHtml(f.desc||'')}</td>
+          </tr>`).join('')}
+          </tbody>
+        </table></div></div>`;
+    }
+    else if (id === 'topics') {
+      const subs = d.subscribers || [];
+      const pubs = d.publishers || [];
+      html += `<div class="cmd-section">
+        <div class="section-header"><span class="section-icon">📡</span><span class="section-title">${d.title||'Topic 對照'}</span></div>
+        <p class="section-desc">${d.description||''}</p>
+        <h3 style="font-size:0.85rem;color:var(--accent);margin:16px 0 8px;">訂閱（Subscribers）</h3>
+        <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Topic</th><th>類型</th><th>說明</th></tr></thead>
+          <tbody>
+          ${subs.map(t => `<tr>
+            <td class="td-code">${escHtml(t.name||'')}</td>
+            <td class="td-type">${escHtml(t.type||'')}</td>
+            <td class="td-desc">${escHtml(t.desc||'')}</td>
+          </tr>`).join('')}
+          </tbody>
+        </table></div>
+        <h3 style="font-size:0.85rem;color:var(--accent);margin:20px 0 8px;">發布（Publishers）</h3>
+        <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Topic</th><th>類型</th><th>說明</th></tr></thead>
+          <tbody>
+          ${pubs.map(t => `<tr>
+            <td class="td-code">${escHtml(t.name||'')}</td>
+            <td class="td-type">${escHtml(t.type||'')}</td>
+            <td class="td-desc">${escHtml(t.desc||'')}</td>
+          </tr>`).join('')}
+          </tbody>
+        </table></div></div>`;
+    }
+    else if (id === 'quickReference') {
+      const workflows = d.workflows || [];
+      html += `<div class="cmd-section">
+        <div class="section-header"><span class="section-icon">⚡</span><span class="section-title">${d.title||'快速流程'}</span></div>
+        <p class="section-desc">${d.description||''}</p>
+        ${workflows.map(w => `
+        <div class="workflow-card">
+          <div class="workflow-title">${escHtml(w.title||'')}</div>
+          <div class="workflow-steps">
+            ${(w.steps||[]).map((s, i) => `<div class="wf-step">
+              <div class="wf-num">${i+1}</div>
+              <div class="wf-text">${formatStep(s)}</div>
+            </div>`).join('')}
+          </div>
+        </div>`).join('')}
+        </div>`;
+    }
+    else if (d.commands) {
+      // Regular command section
+      const cmds = d.commands;
+      const sectionInfo = getSectionInfo(id);
+      html += `<div class="cmd-section">
+        <div class="section-header"><span class="section-icon">${sectionInfo.icon}</span><span class="section-title">${d.title||sectionInfo.label}</span><span class="section-count">${cmds.length} 指令</span></div>
+        ${d.description ? `<p class="section-desc">${escHtml(d.description)}</p>` : ''}
+        <div class="cmd-list" id="cmdList">
+          ${cmds.map(c => buildCmdItem(c)).join('')}
+        </div>
+      </div>`;
+    }
+
+    content.innerHTML = html;
+  }
+
+  function getSectionInfo(id) {
+    return {
+      environment:    { icon:'⚙', label:'環境建置' },
+      rosCore:         { icon:'◉', label:'ROS 核心' },
+      '研習1_道路駕駛': { icon:'🚦', label:'道路駕駛' },
+      '研習2_自動避障': { icon:'🚧', label:'自動避障' },
+      '研習3_SLAM導航':{ icon:'🗺', label:'SLAM 導航' },
+      '常用工具':       { icon:'🔧', label:'常用工具' },
+    }[id] || { icon:'◉', label:id };
+  }
+
+  function buildCmdItem(c, sectionId) {
+    return `<div class="cmd-item" data-search="${escHtml(c.id||'')} ${escHtml(c.category||'')} ${escHtml(c.cmd||'')} ${escHtml(c.desc||'')} ${escHtml(c.note||'')}">
+      <div class="cmd-body">
+        ${c.category ? `<div class="cmd-category">${escHtml(c.category)}</div>` : ''}
+        ${c.desc ? `<div class="cmd-name">${escHtml(c.desc)}</div>` : ''}
+        <div class="cmd-code">${escHtml(c.cmd||'')}<button class="cmd-copy" onclick="copyCmd(this, '${escHtml(c.cmd||'')}')">複製</button></div>
+        ${c.note ? `<div class="cmd-note">📌 ${escHtml(c.note)}</div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  // ── Search ──
+  function onSearch(q) {
+    searchQuery = q.toLowerCase().trim();
+    const clear = document.getElementById('searchClear');
+    clear.classList.toggle('show', searchQuery.length > 0);
+
+    if (!currentSection) return;
+
+    const d = cmdData[currentSection];
+    if (!d || !d.commands) return;
+
+    const items = document.querySelectorAll('.cmd-item');
+    let visible = 0;
+    items.forEach(item => {
+      const text = item.getAttribute('data-search') || '';
+      const match = text.toLowerCase().includes(searchQuery);
+      item.classList.toggle('hidden', !match);
+      if (match) visible++;
+    });
+
+    const total = d.commands.length;
+    document.getElementById('searchCount').textContent = searchQuery ? `${visible}/${total}` : '';
+  }
+
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    onSearch('');
+  }
+
+  // ── Copy ──
+  function copyCmd(btn, cmd) {
+    navigator.clipboard.writeText(cmd).then(() => {
+      btn.classList.add('copied');
+      btn.textContent = '✓';
+      showToast('已複製：' + cmd.slice(0,40) + (cmd.length > 40 ? '...' : ''));
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.textContent = '複製';
+      }, 2000);
+    }).catch(() => {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = cmd;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = '✓';
+      setTimeout(() => { btn.textContent = '複製'; }, 2000);
+    });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ── Format step (bold code parts) ──
+  function formatStep(s) {
+    // detect code fragments (monospace parts)
+    const parts = s.split(/(`[^`]+`)/g);
+    return parts.map(p => {
+      if (p.startsWith('`') && p.endsWith('`')) return `<code>${escHtml(p.slice(1,-1))}</code>`;
+      return escHtml(p);
+    }).join('');
+  }
+
+  // ── Helpers ──
+  function escHtml(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Init ──
+  document.addEventListener('DOMContentLoaded', loadData);
+</script>
+
+</body>
+</html>
