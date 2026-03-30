@@ -20,8 +20,8 @@
     { "date": "2026-10（確切日期待官網公告）", "title": "決賽", "desc": "雲林科技大學" }
   ],
   "scoring": {
-    "clarification": "第30屆完整評分規則尚未於官網独立章节发布",
-    "note": "第29屆自動組评分结构可参考：功能完成度（主）+ 创意设计（辅）+ 創意報告；第30屆文蛤分級預計以完成數量與正確率為核心"
+    "clarification": "第30屆完整評分規則尚未於官網獨立章節發布",
+    "note": "第29屆自動組評分結構可參考：功能完成度（主）+ 創意設計（輔）+ 創意報告；第30屆文蛤分級預計以完成數量與正確率為核心"
   },
   "past_winners": {
     "29th": {
@@ -39,9 +39,68 @@
     "email": "suhj@yuntech.edu.tw"
   },
   "skills": [
-    { "id": "tdk-vision", "name": "視覺辨識", "priority": "high", "weeks": 4, "note": "OpenCV HSV 顏色空間、文蛤尺寸偵測" },
-    { "id": "tdk-mech", "name": "機構設計", "priority": "high", "weeks": 6, "note": "3D列印文蛤、篩網間隙設計" },
-    { "id": "tdk-motion", "name": "運動控制", "priority": "high", "weeks": 4, "note": "馬達控制、篩網分級邏輯" },
-    { "id": "tdk-electrical", "name": "機電整合", "priority": "medium", "weeks": 3, "note": "感測器訊號處理" }
+    {
+      "id": "tdk-cv-basics",
+      "name": "OpenCV 基礎",
+      "priority": "high",
+      "weeks": 2,
+      "note": "讀圖、繪圖、影像處理——視覺管線的底層基礎"
+    },
+    {
+      "id": "tdk-hsv",
+      "name": "HSV 顏色空間",
+      "priority": "high",
+      "weeks": 1,
+      "note": "用顏色範圍過濾文蛤，區分大/小尺寸的視覺前提"
+    },
+    {
+      "id": "tdk-contour",
+      "name": "輪廓偵測與形態學",
+      "priority": "medium",
+      "weeks": 1,
+      "note": "抓取文蛤邊緣輪廓，計算實際尺寸用於分級判斷"
+    },
+    {
+      "id": "tdk-perspective",
+      "name": "透視轉換",
+      "priority": "high",
+      "weeks": 1,
+      "note": "將歪斜視角轉為 top-down，準確測量文蛤位置與尺寸"
+    },
+    {
+      "id": "tdk-3dprint",
+      "name": "3D 列印操作",
+      "priority": "high",
+      "weeks": 3,
+      "note": "列印大/小兩種尺寸文蛤（3.5cm 灰色、1.5cm 黑色），參數調校影響精度"
+    },
+    {
+      "id": "tdk-pwm",
+      "name": "PWM 馬達控制",
+      "priority": "high",
+      "weeks": 2,
+      "note": "控制馬達速度，驅動掃落機構精確推送文蛤至篩網"
+    },
+    {
+      "id": "tdk-stepper",
+      "name": "步進馬達與舵機",
+      "priority": "high",
+      "weeks": 2,
+      "note": "分級機構的精確定位，影響篩選成功率"
+    },
+    {
+      "id": "tdk-mech",
+      "name": "機構設計",
+      "priority": "high",
+      "weeks": 3,
+      "note": "篩網間隙 3cm 的物理設計，文蛤掃落與分級邏輯的硬體載體"
+    },
+    {
+      "id": "tdk-electrical",
+      "name": "機電整合",
+      "priority": "medium",
+      "weeks": 2,
+      "note": "感測器訊號處理與馬達驅動整合"
+    }
   ]
 }

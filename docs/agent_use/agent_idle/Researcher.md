@@ -232,6 +232,7 @@ Coder 會等你的 JSON 格式確認後再動 growth-radar 的改版。
 **時間：** 2026-03-30 12:52
 **作者：** Oren
 **需要回應：** 是
+**處理狀況：** ✅ 已完成（2026-03-30 13:23）
 
 ### 任務：強化 JSON 內容品質
 
@@ -250,3 +251,52 @@ Coder 會等你的 JSON 格式確認後再動 growth-radar 的改版。
 3. `skills[].priority` 用 high/medium/low
 4. `skills[].weeks` 填數字
 5. 完成後在 Researcher.md 追加回應
+
+---
+
+## #回應
+
+**時間：** 2026-03-30 13:23
+**回應給：** Oren
+
+已完成 JSON 強化任務，摘要如下：
+
+### tdk.json 更新
+- **skills 從 4 項擴充至 9 項**，涵蓋：OpenCV 基礎 → HSV → 輪廓偵測 → 透視轉換 → 3D 列印 → PWM → 步進馬達 → 機構設計 → 機電整合
+- 每項技能均有 `note`（比賽用途說明）
+- `priority`（high/medium/low）已統一
+- `weeks`（預計學習週數）已填寫
+
+### tb3.json 更新
+- **milestones 第一項 null date 已修正**為 2026-04-06（成長雷達改版）
+- 新增完整時間線：Mission 1-2（4月底）→ Mission 3-5（5月底）→ Mission 6-7（6月底）→ 整合（7月底）→ 決賽（8月）
+- **skills 從 7 項擴充至 13 項**，新增：OpenCV 基礎、HSV、霍夫圓、透視轉換、ROS 基礎、運動學
+- HSV + 霍夫圓列為 high，與 TB3 比賽核心技術一致
+
+### hiwin.json 更新
+- **milestones 補完**：新增 4/30 機構第一階段、5/10 視覺定位、6/30 運動學整合、7/31 策略 AI
+- **skills 從 5 項增至 6 項**，新增 PWM 馬達控制（擊球力道精度）
+- 所有 `date` 格式與 `note` 一致性已對齊
+
+### 備註
+- 三個 JSON 的 `skills[].priority` 已統一用 `high`/`medium`/`low`
+- 三個 JSON 的 `skills[].weeks` 均已填寫數字
+- 所有 milestone 的 `date` 均無 null 值
+
+JSON 格式確認完畢，Coder 可直接取用。
+
+---
+
+## 留言 #6
+
+**時間：** 2026-03-30 13:48
+**作者：** Oren
+**需要回應：** 是
+
+關於 `interests/` 目錄——**不需要建立**。
+
+黑皮的興趣主題已經存在 `memory/interests/interests-list.md`，是給 researcher cron 用的。agent_idle 不需要重複儲存同一份資料。
+
+**優先任務仍然是 #5**：把 Researcher.md 內的完整學習路徑研究，濃縮寫入 `data/tdk.json` 的 `skills[]`，補滿 `note` 欄位。這個比 `interests/` 重要得多。
+
+interests 的用途是研究素材，不是給 agent_idle 頁面用的，先放著不用管。

@@ -1,26 +1,115 @@
 {
   "name": "TB3",
-  "fullName": "TurtleBot 3 自動駕駛系統",
+  "fullName": "TurtleBot 3 自動駕駛系統 — FIRA AutoRace",
   "year": 2026,
   "framework": "ROS + Python + OpenCV",
   "status": "developing",
-  "notes": "7項 Mission 同步開發中，ROS通訊架構",
+  "notes": "7項 Mission 同步開發中，ROS 通訊架構",
   "missions": {
     "total": 7,
     "completed": 0,
     "list": ["交通號誌", "障礙偵測", "S型彎道", "停車區", "圓環路口", "平交道", "隧道"]
   },
   "milestones": [
-    { "date": "2026-03-26", "title": "JSON資料架構重構", "desc": "每個Mission對應一個JSON，集中管理" },
-    { "date": null, "title": "Mission 1-7同步開發", "desc": "等待code傳入後更新JSON", "note": "進行中，無確定日期" }
+    { "date": "2026-03-26", "title": "JSON 資料架構重構", "desc": "每個 Mission 對應一個 JSON，集中管理" },
+    { "date": "2026-04-06", "title": "成長雷達頁面改版", "desc": "Coder 完成動態天數、三色技能狀態、鍵盤快速鍵" },
+    { "date": "2026-04-30", "title": "Mission 1-2 視覺核心完成", "desc": "號誌偵測（HSV + 霍夫圓） + 障礙偵測（紅色三角）" },
+    { "date": "2026-05-31", "title": "Mission 3-5 進階關卡", "desc": "S型彎道 + 停車控制 + 圓環決策" },
+    { "date": "2026-06-30", "title": "Mission 6-7 完賽關卡", "desc": "平交道等待 + 隧道備援機制" },
+    { "date": "2026-07-31", "title": "整合作戰測試", "desc": "7項 Mission 串聯實測，PID 參數調校" },
+    { "date": "2026-08-19-20", "title": "FIRA 決賽", "desc": "上銀撞球決賽同期，TB3 比賽日待官方公告" }
   ],
   "skills": [
-    { "id": "tb3-lane", "name": "車道跟隨", "priority": "high", "weeks": 4, "note": "PID控制 + 滑動視窗 + 透視轉換" },
-    { "id": "tb3-signal", "name": "號誌偵測", "priority": "high", "weeks": 3, "note": "HSV遮罩 + 霍夫圓變換" },
-    { "id": "tb3-obstacle", "name": "障礙偵測", "priority": "high", "weeks": 2, "note": "紅色三角標誌辨識" },
-    { "id": "tb3-parking", "name": "停車控制", "priority": "medium", "weeks": 2, "note": "定點停入車格" },
-    { "id": "tb3-roundabout", "name": "圓環決策", "priority": "medium", "weeks": 2, "note": "方向辨識與出口決策" },
-    { "id": "tb3-crossing", "name": "平交道", "priority": "medium", "weeks": 1, "note": "紅白柵欄辨識與等待" },
-    { "id": "tb3-tunnel", "name": "隧道備援", "priority": "medium", "weeks": 2, "note": "光源補償失效時的備援機制" }
+    {
+      "id": "tb3-cv-basics",
+      "name": "OpenCV 基礎",
+      "priority": "high",
+      "weeks": 2,
+      "note": "影像處理底層，HSV、輪廓、形態學的共同基礎"
+    },
+    {
+      "id": "tb3-hsv",
+      "name": "HSV 顏色空間",
+      "priority": "high",
+      "weeks": 1,
+      "note": "紅/黃/綠燈號偵測，比 BGR 更穩定，是號誌判讀的核心"
+    },
+    {
+      "id": "tb3-hough",
+      "name": "霍夫圓變換",
+      "priority": "high",
+      "weeks": 1,
+      "note": "在 HSV 遮罩中找圓形，確認是否為真實燈號"
+    },
+    {
+      "id": "tb3-perspective",
+      "name": "透視轉換",
+      "priority": "high",
+      "weeks": 1,
+      "note": "將視角轉為 top-down，擠出消失點，車道線與停車位測量的前提"
+    },
+    {
+      "id": "tb3-lane",
+      "name": "車道跟隨",
+      "priority": "high",
+      "weeks": 4,
+      "note": "滑動視窗找黃白線 + PID 控制輸出 steering angle"
+    },
+    {
+      "id": "tb3-signal",
+      "name": "號誌偵測",
+      "priority": "high",
+      "weeks": 2,
+      "note": "HSV 遮罩 + 霍夫圓變換，紅燈停、綠燈行"
+    },
+    {
+      "id": "tb3-obstacle",
+      "name": "障礙偵測",
+      "priority": "high",
+      "weeks": 2,
+      "note": "紅色三角標誌辨識，左側三個 + 隧道內分散擺放"
+    },
+    {
+      "id": "tb3-parking",
+      "name": "停車控制",
+      "priority": "medium",
+      "weeks": 2,
+      "note": "定點停入白色虛線車格，藍色 P 標誌入口導引"
+    },
+    {
+      "id": "tb3-roundabout",
+      "name": "圓環決策",
+      "priority": "medium",
+      "weeks": 2,
+      "note": "藍色圓形箭頭識別，判斷方向並選擇出口"
+    },
+    {
+      "id": "tb3-crossing",
+      "name": "平交道",
+      "priority": "medium",
+      "weeks": 1,
+      "note": "紅白柵欄辨識，識別後停等直到柵欄升起再通行"
+    },
+    {
+      "id": "tb3-tunnel",
+      "name": "隧道備援",
+      "priority": "medium",
+      "weeks": 2,
+      "note": "黑色區域光照補償失效，需備援機制（可能靠PID盲走）"
+    },
+    {
+      "id": "tb3-ros",
+      "name": "ROS 基礎",
+      "priority": "high",
+      "weeks": 3,
+      "note": "節點、Topic、Service 架構，TB3 的底層通訊框架"
+    },
+    {
+      "id": "tb3-kinematics",
+      "name": "運動學基礎",
+      "priority": "medium",
+      "weeks": 3,
+      "note": "正/逆運動學，用於停車定位與彎道軌跡規劃"
+    }
   ]
 }

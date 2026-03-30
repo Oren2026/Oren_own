@@ -126,11 +126,122 @@
     .loading-msg { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 40px; }
     .error-msg { text-align: center; color: #ff7f7f; font-size: 0.85rem; padding: 40px; }
 
+    /* ── System Status Panel ── */
+    .sys-panel {
+      display: flex;
+      justify-content: center;
+      gap: 1px;
+      margin: 0 auto 40px;
+      max-width: 700px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .sys-item {
+      flex: 1;
+      text-align: center;
+      padding: 14px 12px;
+      border-right: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.2s;
+    }
+    .sys-item:last-child { border-right: none; }
+    .sys-item:hover { background: rgba(255,255,255,0.03); }
+    .sys-value { font-size: 0.85rem; font-weight: 600; color: var(--text); letter-spacing: -0.02em; margin-bottom: 3px; }
+    .sys-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .sys-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+    .sys-dot-green  { background: #7fffff; box-shadow: 0 0 6px rgba(127,255,255,0.6); }
+    .sys-dot-yellow { background: #ffff7f; box-shadow: 0 0 6px rgba(255,255,127,0.6); }
+    .sys-dot-purple { background: #b87fff; box-shadow: 0 0 6px rgba(184,127,255,0.6); }
+
     /* ── Keyboard Hint ── */
     .kbd-hint { text-align: center; font-size: 10px; color: var(--muted); margin-bottom: 40px; letter-spacing: 0.06em; }
     .kbd { display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 3px; padding: 1px 6px; font-size: 9px; }
 
-    @media (max-width: 600px) { .radar-card { padding: 20px; } .radar-grid { grid-template-columns: repeat(2, 1fr); } .stat-row { gap: 8px; } }
+    /* ── Enhanced Radar Card with #07 Flow depth ── */
+    .radar-card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.35s ease,
+                  border-color 0.25s ease;
+    }
+    .radar-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 40% at 20% 0%, rgba(255,255,255,0.03) 0%, transparent 60%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .radar-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.12);
+    }
+    .radar-card:hover::before { opacity: 1; }
+
+    /* ── Enhanced Timeline with #07 Flow ── */
+    .timeline-item {
+      position: relative;
+      margin-bottom: 28px;
+      opacity: 0;
+      transform: translateX(-12px);
+      transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .timeline-item.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -22px;
+      top: 8px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 1.5px solid;
+      background: var(--bg);
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.25s ease;
+    }
+    .timeline-item:hover::before {
+      transform: scale(1.6);
+      box-shadow: 0 0 10px currentColor;
+    }
+    .tl-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      transition: color 0.2s;
+    }
+    .timeline-item:hover .tl-title { color: var(--text); }
+
+    /* ── Skill depth ── */
+    .radar-skill {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 14px;
+      transition: border-color 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.25s ease;
+    }
+    .radar-skill:hover {
+      border-color: rgba(184,127,255,0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 600px) { .radar-card { padding: 20px; } .radar-grid { grid-template-columns: repeat(2, 1fr); } .stat-row { gap: 8px; } .sys-panel { flex-wrap: wrap; } .sys-item { min-width: 50%; } }
   </style>
 </head>
 <body>
@@ -153,6 +264,25 @@
 </div>
 
 <div class="kbd-hint">按 <span class="kbd">1</span> <span class="kbd">2</span> <span class="kbd">3</span> <span class="kbd">4</span> 快速切換視角</div>
+
+<div class="sys-panel" id="sysPanel">
+  <div class="sys-item">
+    <div class="sys-value" id="sysLastUpdate">—</div>
+    <div class="sys-label">上次研究</div>
+  </div>
+  <div class="sys-item">
+    <div class="sys-value" id="sysSkills">— <span class="sys-label" style="display:inline;font-size:9px">項技能</span></div>
+    <div class="sys-label">總技能數</div>
+  </div>
+  <div class="sys-item">
+    <div class="sys-value" id="sysMilestones">— <span class="sys-label" style="display:inline;font-size:9px">項里程</span></div>
+    <div class="sys-label">總里程</div>
+  </div>
+  <div class="sys-item">
+    <div class="sys-value"><span class="sys-dot sys-dot-purple"></span><span id="sysJsonStatus">檢查中</span></div>
+    <div class="sys-label">JSON 狀態</div>
+  </div>
+</div>
 
 <div class="switch-bar">
   <button class="switch-btn active" data-view="all"   onclick="switchView('all')">全部一覽</button>
@@ -213,6 +343,60 @@
     renderSingle('view-hiwin', [jsonData.hiwin], 'hiwin');
     document.getElementById('footerNote').textContent =
       '成長雷達 · 黑皮的學習路徑追蹤  |  資料動態讀取：tdk.json · tb3.json · hiwin.json';
+    buildSysPanel();
+  }
+
+  // ── System Status Panel ──
+  function buildSysPanel() {
+    // Last update = most recent milestone date across all projects
+    const allMilestones = [
+      ...(jsonData.tdk    && jsonData.tdk.milestones    || []),
+      ...(jsonData.tb3    && jsonData.tb3.milestones    || []),
+      ...(jsonData.hiwin  && jsonData.hiwin.milestones  || [])
+    ].filter(m => m && m.date);
+
+    // Parse dates like "2026-03-11" and "2026-03 ~ 04"
+    const parsed = allMilestones
+      .map(m => {
+        const mDate = String(m.date).trim();
+        const iso = mDate.match(/^(\d{4})-(\d{2})/);
+        return iso ? new Date(iso[1], iso[2] - 1, 1) : null;
+      })
+      .filter(d => d && !isNaN(d));
+
+    let lastUpdate = '—';
+    if (parsed.length > 0) {
+      const latest = new Date(Math.max(...parsed));
+      lastUpdate = `${latest.getMonth() + 1}月${latest.getDate()}日`;
+    }
+
+    // Skill / milestone counts
+    const skillCount = [
+      ...(jsonData.tdk    && jsonData.tdk.skills    || []),
+      ...(jsonData.tb3    && jsonData.tb3.skills     || []),
+      ...(jsonData.hiwin  && jsonData.hiwin.skills   || [])
+    ].length;
+
+    const mileCount = [
+      ...(jsonData.tdk    && jsonData.tdk.milestones    || []),
+      ...(jsonData.tb3    && jsonData.tb3.milestones    || []),
+      ...(jsonData.hiwin  && jsonData.hiwin.milestones  || [])
+    ].filter(m => m && m.date).length;
+
+    document.getElementById('sysLastUpdate').textContent = lastUpdate;
+    document.getElementById('sysSkills').innerHTML = String(skillCount) + ' <span class="sys-label" style="display:inline;font-size:9px">項技能</span>';
+    document.getElementById('sysMilestones').innerHTML = String(mileCount) + ' <span class="sys-label" style="display:inline;font-size:9px">項里程</span>';
+
+    // JSON health: check if any project has content
+    const hasContent = jsonData.tdk || jsonData.tb3 || jsonData.hiwin;
+    const statusEl = document.getElementById('sysJsonStatus');
+    if (hasContent) {
+      statusEl.textContent = '正常';
+      const dot = document.querySelector('.sys-dot-purple');
+      if (dot) { dot.className = 'sys-dot sys-dot-green'; }
+    } else {
+      statusEl.textContent = '異常';
+    }
   }
 
   // ── Render one project view (one or more cards) ──

@@ -4,7 +4,7 @@
   "year": 2026,
   "host": "上銀機械（HIWIN）",
   "status": "preliminary_passed",
-  "notes": "初審已通過（2026/03/27），衝刺複審影片",
+  "notes": "初審已通過（2026/03/27），衝刺複審影片，決賽 2026/08/19-20",
   "dates": {
     "preliminary_pass": "2026-03-27",
     "safety_training": "2026-03 ~ 04",
@@ -23,17 +23,58 @@
     "special": "2萬"
   },
   "milestones": [
-    { "date": "2026-03-27", "title": "初審通過", "desc": "入選隊伍須參加安全講習" },
-    { "date": "2026-03 ~ 04", "title": "安全講習與測驗", "desc": "待主辦單位通知" },
-    { "date": "2026-05-22", "title": "複審影片截止", "desc": "17:30前繳交" },
-    { "date": "2026-06-05", "title": "複審結果公告", "desc": "" },
-    { "date": "2026-08-19-20", "title": "決賽", "desc": "目標：四強、衝擊冠軍獎金10萬" }
+    { "date": "2026-03-27", "title": "初審通過", "desc": "入選隊伍須參加安全講習並通過測驗" },
+    { "date": "2026-03 ~ 04（待通知）", "title": "安全講習與測驗", "desc": "參加工廠安全操作訓練並通過測驗" },
+    { "date": "2026-04-30", "title": "機構製作第一階段", "desc": "3D 列印爪子/夾具完成，HIWIN 手臂組裝就緒" },
+    { "date": "2026-05-10", "title": "撞球視覺定位系統", "desc": "OpenCV 撞球位置偵測，精確座標輸出至手臂控制" },
+    { "date": "2026-05-22（17:30截止）", "title": "複審影片繳交", "desc": "需展示機構+視覺+控制整合影片，限 5 分鐘" },
+    { "date": "2026-06-05", "title": "複審結果公告", "desc": "通過後晉級決賽" },
+    { "date": "2026-06-30", "title": "運動學整合完成", "desc": "正/逆運動學調校，撞球桿路徑規劃" },
+    { "date": "2026-07-31", "title": "策略 AI 實作", "desc": "撞球布局分析、擊球優先順序、障礙球處理" },
+    { "date": "2026-08-19-20", "title": "決賽", "desc": "小組賽 → 四強雙敗淘汰，目標：四強、衝擊冠軍獎金 10 萬" }
   ],
   "skills": [
-    { "id": "hiwin-arm", "name": "手臂控制", "priority": "high", "weeks": 6, "note": "HIWIN手臂定位與力道控制" },
-    { "id": "hiwin-vision", "name": "撞球視覺定位", "priority": "high", "weeks": 4, "note": "OpenCV撞球位置偵測" },
-    { "id": "hiwin-kinematics", "name": "運動學", "priority": "high", "weeks": 6, "note": "正/逆運動學求解" },
-    { "id": "hiwin-mech", "name": "機構設計", "priority": "high", "weeks": 4, "note": "3D列印機構零件" },
-    { "id": "hiwin-strategy", "name": "策略AI", "priority": "medium", "weeks": 4, "note": "撞球布局分析與擊球策略" }
+    {
+      "id": "hiwin-arm",
+      "name": "HIWIN 手臂控制",
+      "priority": "high",
+      "weeks": 6,
+      "note": "智慧機器手定位、力道控制與速度規劃，撞球任務的執行核心"
+    },
+    {
+      "id": "hiwin-cv",
+      "name": "撞球視覺定位",
+      "priority": "high",
+      "weeks": 3,
+      "note": "OpenCV 偵測撞球位置座標，轉換為手臂可讀的相對位置"
+    },
+    {
+      "id": "hiwin-kinematics",
+      "name": "運動學",
+      "priority": "high",
+      "weeks": 6,
+      "note": "正運動學（關節角度→桿頭位置）、逆運動學（目標位置→關節角度）"
+    },
+    {
+      "id": "hiwin-mech",
+      "name": "機構設計（3D 列印）",
+      "priority": "high",
+      "weeks": 4,
+      "note": "爪子/夾具 3D 列印，降低成本並加快迭代，機構零件優先"
+    },
+    {
+      "id": "hiwin-strategy",
+      "name": "撞球策略 AI",
+      "priority": "medium",
+      "weeks": 4,
+      "note": "布局分析、擊球順序、犯規防守，影響晉級關鍵"
+    },
+    {
+      "id": "hiwin-pwm",
+      "name": "馬達/舵機控制",
+      "priority": "high",
+      "weeks": 2,
+      "note": "PWM 控制擊球力道與角度，精確度影響撞球入袋率"
+    }
   ]
 }
