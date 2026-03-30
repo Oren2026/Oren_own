@@ -110,7 +110,7 @@
       padding: 12px 14px;
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 8px;
+      gap: 10px;
       align-items: start;
       transition: border-color 0.15s;
     }
@@ -131,22 +131,20 @@
       word-break: break-all;
       white-space: pre-wrap;
       line-height: 1.5;
-      position: relative;
-      padding-right: 36px;
     }
     .cmd-code:hover { border-color: rgba(127,179,255,0.15); }
+    .cmd-copy-wrap { display: flex; align-items: flex-start; padding-top: 2px; }
     .cmd-copy {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.08);
       color: var(--muted);
-      padding: 4px 10px;
+      padding: 5px 10px;
       border-radius: 5px;
       font-size: 0.72rem;
       cursor: pointer;
       font-family: inherit;
       transition: background 0.15s, color 0.15s;
-      flex-shrink: 0;
-      margin-top: 2px;
+      white-space: nowrap;
     }
     .cmd-copy:hover { background: var(--accent-dim); color: var(--accent); border-color: rgba(127,179,255,0.3); }
     .cmd-copy.copied { background: rgba(127,255,255,0.1); color: var(--hiwin); border-color: rgba(127,255,255,0.3); }
@@ -246,14 +244,20 @@
   let searchQuery = '';
 
   // ── Load JSON ──
+  // valid section IDs for hash mapping
+  const VALID_IDS = ['environment','rosCore','研習1_道路駕駛','研習2_自動避障','研習3_SLAM導航','常用工具','launchFiles','topics','quickReference'];
+  function isValidSection(id) { return id && VALID_IDS.includes(id); }
+
   async function loadData() {
     try {
       const res = await fetch('../data/tb3-commands.json');
       cmdData = await res.json();
       buildNav();
-      if (location.hash) {
-        const section = location.hash.slice(1);
-        showSection(decodeURIComponent(section));
+      // Restore section from hash (URL-decode, validate)
+      const rawHash = location.hash ? location.hash.slice(1) : '';
+      const decoded = rawHash ? decodeURIComponent(rawHash) : '';
+      if (isValidSection(decoded)) {
+        showSection(decoded);
       } else {
         showSection('environment');
       }
@@ -292,7 +296,8 @@
     document.getElementById('searchInput').value = '';
     document.getElementById('searchClear').classList.remove('show');
     document.getElementById('searchCount').textContent = '';
-    location.hash = encodeURIComponent(id);
+    if (isValidSection(id)) { location.hash = encodeURIComponent(id); }
+    else { history.replaceState(null, '', location.pathname); }
 
     // update nav active
     document.querySelectorAll('.nav-item').forEach(el => {
@@ -402,8 +407,11 @@
       <div class="cmd-body">
         ${c.category ? `<div class="cmd-category">${escHtml(c.category)}</div>` : ''}
         ${c.desc ? `<div class="cmd-name">${escHtml(c.desc)}</div>` : ''}
-        <div class="cmd-code">${escHtml(c.cmd||'')}<button class="cmd-copy" onclick="copyCmd(this, '${escHtml(c.cmd||'')}')">複製</button></div>
+        <div class="cmd-code">${escHtml(c.cmd||'')}</div>
         ${c.note ? `<div class="cmd-note">📌 ${escHtml(c.note)}</div>` : ''}
+      </div>
+      <div class="cmd-copy-wrap">
+        <button class="cmd-copy" onclick="copyCmd(this, '${escHtml(c.cmd||'')}')">複製</button>
       </div>
     </div>`;
   }
