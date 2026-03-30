@@ -1,0 +1,39 @@
+{
+  "name": "上銀撞球",
+  "fullName": "第十八屆上銀智慧機器手實作競賽 — 撞球組",
+  "year": 2026,
+  "host": "上銀機械（HIWIN）",
+  "status": "preliminary_passed",
+  "notes": "初審已通過（2026/03/27），衝刺複審影片",
+  "dates": {
+    "preliminary_pass": "2026-03-27",
+    "safety_training": "2026-03 ~ 04",
+    "video_deadline": "2026-05-22",
+    "preliminary_result": "2026-06-05",
+    "final": "2026-08-19-20"
+  },
+  "countdown": {
+    "video": 56,
+    "final": 145
+  },
+  "prizes": {
+    "champion": "10萬",
+    "runner_up": "8萬",
+    "third": "6萬×2隊",
+    "special": "2萬"
+  },
+  "milestones": [
+    { "date": "2026-03-27", "title": "初審通過", "desc": "入選隊伍須參加安全講習" },
+    { "date": "2026-03 ~ 04", "title": "安全講習與測驗", "desc": "待主辦單位通知" },
+    { "date": "2026-05-22", "title": "複審影片截止", "desc": "17:30前繳交" },
+    { "date": "2026-06-05", "title": "複審結果公告", "desc": "" },
+    { "date": "2026-08-19-20", "title": "決賽", "desc": "目標：四強、衝擊冠軍獎金10萬" }
+  ],
+  "skills": [
+    { "id": "hiwin-arm", "name": "手臂控制", "priority": "high", "weeks": 6, "note": "HIWIN手臂定位與力道控制" },
+    { "id": "hiwin-vision", "name": "撞球視覺定位", "priority": "high", "weeks": 4, "note": "OpenCV撞球位置偵測" },
+    { "id": "hiwin-kinematics", "name": "運動學", "priority": "high", "weeks": 6, "note": "正/逆運動學求解" },
+    { "id": "hiwin-mech", "name": "機構設計", "priority": "high", "weeks": 4, "note": "3D列印機構零件" },
+    { "id": "hiwin-strategy", "name": "策略AI", "priority": "medium", "weeks": 4, "note": "撞球布局分析與擊球策略" }
+  ]
+}

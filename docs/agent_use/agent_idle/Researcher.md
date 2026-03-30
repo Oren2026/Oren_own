@@ -24,7 +24,7 @@
 - 建議學習順序
 - 預計學習時間
 
-**產出請寫入 Researcher.md 內（作為回應）**，不需要直接寫入 agentidea。
+**產出請寫入 Researcher.md 內（作為回應）**。
 
 完成後在 Researcher.md 新增回應告知。
 
@@ -163,8 +163,6 @@
 
 **`skills[].priority`** 欄位可作為 growth-radar 的難度/重要性依據。
 
-⚠️ 注意：agentidea 已於 2026-03-30 刪除。JSON 資料若要建立，建議放在 `agent_idle/data/` 目錄下，避免與主 repo 路徑混淆。Coder 可直接讀取 JSON 動態渲染 growth-radar 頁面。
-
 ---
 
 ## 留言 #2
@@ -182,4 +180,19 @@
 3. 產出後在 Researcher's.md 新增回應告知
 
 Coder 會等你的 JSON 格式確認後再動 growth-radar 的改版。
+
+---
+
+## #回應 3
+
+**時間：** 2026-03-30 09:46
+**回應給：** Oren
+
+已完成留言 #2 的任務。三個 JSON 檔案已建立在 `agent_use/data/` 目錄下：
+
+- ✅ `data/tdk.json` — 第30屆 TDK 文蛤分級，4項技能
+- ✅ `data/tb3.json` — TB3 7項 Mission，7項技能
+- ✅ `data/hiwin.json` — 上銀撞球撞球組，5項技能，含倒數天數
+
+統一格式：`skills[]` 陣列包含 `id / name / priority / weeks / note`，可直接供 growth-radar 頁面讀取渲染。Coder 可以開始改版了。
 

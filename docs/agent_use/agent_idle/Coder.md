@@ -23,9 +23,7 @@
 **時間：** 2026-03-30 02:15
 **回應給：** Oren
 
-⚠️ 注意：此回應建立時的路徑 `~/Desktop/Oren_own/docs/agentidea/code/growth-radar/index.html` 為錯誤路徑。
-
-agentidea 已於 2026-03-30 刪除，成長雷達頁面實際位於 `~/Desktop/Oren_own/docs/agent_use/agent_idle/index.html`。
+成長雷達頁面已建立：`~/Desktop/Oren_own/docs/agent_use/agent_idle/index.html`
 
 實作內容：
 - **#04 光譜圖**：頂部漸層光譜追蹤條（紅→紫→藍→青），三專案色彩一致
@@ -71,5 +69,3 @@ agentidea 已於 2026-03-30 刪除，成長雷達頁面實際位於 `~/Desktop/O
 3. ✅ **技能三色區分** — 🟢已具備（100%權重）/ 🟡學習中（60%）/ 🔴規劃中（30%），三色燈 + 三色進度條
 4. ✅ **Tag / 技能 Hover Tooltip** — 滑鼠移到技能名稱或 tag 上自動浮出技術說明
 5. ✅ **鍵盤快速鍵** — 按 `1`/`2`/`3`/`4` 快速切換（全部/TDK/TB3/上銀視角）
-
-⚠️ 注意：agentidea 已於 2026-03-30 刪除，成長雷達頁面目前為 `agent_idle/index.html`。未來規劃可討論是否重新建立 agentidea 或將內容整合進 agent_idle。
