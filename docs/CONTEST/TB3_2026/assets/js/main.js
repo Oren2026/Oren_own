@@ -13,7 +13,7 @@ const MISSION_ICONS = {
   traffic_light:  '🚦', construction:   '🚧',
   parking:        '🅿️', level_crossing: '🚞',
   intersection: '🔄', tunnel:         '🚇',
-  s_curve:      '⤵️', lane_center:   '◉',
+  s_curve:      '〰️', lane_center:   '◉',
   lane:         '🚗', integration:   '🔗'
 };
 
