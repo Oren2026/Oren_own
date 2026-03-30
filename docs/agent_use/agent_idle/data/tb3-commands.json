@@ -1,0 +1,108 @@
+{
+  "title": "TB3 AutoRace 指令手冊",
+  "lastUpdated": "2026-03-30",
+  "description": "基於三份 AutoRace 研習資料整合，7項 Mission 開發順序",
+
+  "category1_環境建置": {
+    "description": "最先做，完成後才能遠端操控 TB3",
+    "commands": [
+      { "id": "wifi-edit", "cmd": "sudo nano /etc/netplan/50-cloud-init.yaml", "desc": "編輯WiFi設定檔" },
+      { "id": "wifi-apply", "cmd": "sudo netplan apply", "desc": "重啟網路設定" },
+      { "id": "wifi-check", "cmd": "ifconfig", "desc": "查詢wlan0 IP位址" },
+      { "id": "ssh-connect", "cmd": "ssh ubuntu@192.168.10.101", "desc": "遠端連線TB3（密碼：turtlebot）" },
+      { "id": "env-edit", "cmd": "nano ~/.bashrc", "desc": "編輯環境變數（PC與TB3都要設定）" }
+    ]
+  },
+
+  "category2_號誌偵測_研習1": {
+    "mission": "Mission 1 — 交通號誌",
+    "description": "Step 2，今天優先實作",
+    "commands": [
+      { "id": "hsv-filter", "cmd": "cv2.inRange(hsv, lower_green, upper_green)", "desc": "HSV綠燈遮罩過濾" },
+      { "id": "hsv-red", "cmd": "cv2.inRange(hsv, lower_red, upper_red)", "desc": "HSV紅燈遮罩過濾" },
+      { "id": "hough-circle", "cmd": "cv2.HoughCircles(crop, cv2.HOUGH_GRADIENT, dp, minDist)", "desc": "霍夫圓變換找燈號圓形" },
+      { "id": "signal-decision", "cmd": "if green_detected: go() elif red_detected: stop()", "desc": "號誌決策：綠走紅停" }
+    ],
+    "skills": ["tb3-hsv", "tb3-hough", "tb3-signal"]
+  },
+
+  "category3_車道跟隨_研習1": {
+    "mission": "Mission 3 — S型彎道",
+    "description": "Step 3",
+    "commands": [
+      { "id": "perspective", "cmd": "cv2.getPerspectiveTransform(src, dst)", "desc": "透視轉換為top-down視角" },
+      { "id": "slide-window", "cmd": "滑動視窗掃描黃白線", "desc": "找出左側黃線、右側白線" },
+      { "id": "pid-steer", "cmd": "PID(error, kp, ki, kd) → steering_angle", "desc": "PID控制輸出轉向角度" },
+      { "id": "lane-follow", "cmd": "center = (left_fit + right_fit) / 2; error = center - image_center", "desc": "車道跟隨核心公式" }
+    ],
+    "skills": ["tb3-lane", "tb3-perspective"]
+  },
+
+  "category4_岔路決策_研習1": {
+    "mission": "Mission 5 — 圓環路口",
+    "description": "Step 4",
+    "commands": [
+      { "id": "intersection-detect", "cmd": "偵測岔路號誌（左右箭頭）", "desc": "顏色+形狀識別岔路方向" },
+      { "id": "turn-decision", "cmd": "if left_arrow: turn_left() elif right_arrow: turn_right()", "desc": "岔路轉向決策" }
+    ],
+    "skills": ["tb3-signal", "tb3-roundabout"]
+  },
+
+  "category5_障礙偵測_研習2": {
+    "mission": "Mission 2 — 障礙偵測",
+    "description": "Step 5",
+    "commands": [
+      { "id": "obstacle-red-triangle", "cmd": "紅色三角形標誌偵測", "desc": "固定障礙物（場地左側三個）" },
+      { "id": "obstacle-stop", "cmd": "障礙物前方停等或繞行", "desc": "障礙偵測後的應對策略" }
+    ],
+    "skills": ["tb3-obstacle"]
+  },
+
+  "category6_自動停車_研習2": {
+    "mission": "Mission 4 — 停車區",
+    "description": "Step 6",
+    "commands": [
+      { "id": "parking-scan", "cmd": "超聲波或視覺掃描停車格", "desc": "找出空車格位置" },
+      { "id": "parking-empty", "cmd": "空車格判斷演算法", "desc": "隨機空位的自動化選擇" },
+      { "id": "parking-control", "cmd": "倒車入庫控制", "desc": "定點停入停車格" },
+      { "id": "parking-exit", "cmd": "停車場駛出導引至C點", "desc": "停好後繼續前進" }
+    ],
+    "skills": ["tb3-parking", "tb3-kinematics"]
+  },
+
+  "category7_平交道_研習3": {
+    "mission": "Mission 6 — 平交道",
+    "description": "Step 7",
+    "commands": [
+      { "id": "crossing-gate", "cmd": "紅白柵欄辨識", "desc": "偵測平交道柵欄狀態" },
+      { "id": "crossing-wait", "cmd": "while gate_closed: stop()", "desc": "柵欄未升起前停等" },
+      { "id": "crossing-go", "cmd": "gate_open → go()", "desc": "柵欄升起後繼續前進" }
+    ],
+    "skills": ["tb3-crossing"]
+  },
+
+  "category8_隧道導航_研習3": {
+    "mission": "Mission 7 — 隧道",
+    "description": "Step 8",
+    "commands": [
+      { "id": "slam-build", "cmd": "roslaunch turtlebot3_slam turtlebot3_slam.launch", "desc": "SLAM建圖模式啟動" },
+      { "id": "slam-nav", "cmd": "roslaunch turtlebot3_navigation move_base.launch", "desc": "導航模式啟動" },
+      { "id": "tunnel-dark", "cmd": "光源補償失效偵測", "desc": "偵測是否進入隧道（全黑區域）" },
+      { "id": "tunnel-pid", "cmd": "切換至PID盲走模式", "desc": "隧道內無光源時用PID控制前進" },
+      { "id": "tunnel-obstacle", "cmd": "隧道內障礙物偵測", "desc": "隧道隨機障礙的應對" }
+    ],
+    "skills": ["tb3-tunnel", "tb3-ros"]
+  },
+
+  "developmentOrder": [
+    { "step": 1, "today": true, "focus": "環境建置", "desc": "WiFi → SSH → bashrc，TB3可連線操控" },
+    { "step": 2, "today": true, "focus": "號誌偵測", "desc": "HSV + 霍夫圓，紅停綠走" },
+    { "step": 3, "focus": "車道跟隨", "desc": "透視轉換 + PID，車道線自動行駛" },
+    { "step": 4, "focus": "岔路決策", "desc": "號誌方向偵測，左右轉判斷" },
+    { "step": 5, "focus": "障礙偵測", "desc": "紅色三角障礙物識別" },
+    { "step": 6, "focus": "自動停車", "desc": "停車格掃描 + 定點停車" },
+    { "step": 7, "focus": "平交道", "desc": "柵欄偵測 + 等待邏輯" },
+    { "step": 8, "focus": "隧道導航", "desc": "SLAM + PID盲走 + 隧道障礙" },
+    { "step": 9, "focus": "整合測試", "desc": "7項Mission串聯，計時優化" }
+  ]
+}

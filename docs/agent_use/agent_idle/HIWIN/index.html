@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上銀撞球 2026 — 初審通過</title>
+  <style>
+    :root { --bg:#060c0e; --surface:rgba(255,255,255,0.03); --surface-hover:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.07); --text:#e8e4de; --muted:#5a6478; --accent:#7fffff; --accent-dim:rgba(127,255,255,0.1); --accent2:#ffd060; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-thumb { background:var(--muted); border-radius:2px; }
+    body { background:var(--bg); color:var(--text); font-family:"PingFang TC","Microsoft JhengHei",-apple-system,sans-serif; min-height:100vh; }
+
+    /* ── Back ── */
+    .back { padding: 20px 24px 0; }
+    .back a { font-size: 0.78rem; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: color 0.2s; }
+    .back a:hover { color: var(--text); }
+
+    /* ── Hero ── */
+    .hero { padding: 32px 24px 40px; position: relative; overflow: hidden; }
+    .hero::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(127,255,255,0.06) 0%, transparent 60%); pointer-events:none; }
+    .badge { display: inline-block; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); background: var(--accent-dim); border: 1px solid rgba(127,255,255,0.25); padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+    .hero-title { font-size: clamp(1.6rem, 5vw, 2.6rem); font-weight: 800; letter-spacing: -0.03em; color: var(--accent); margin-bottom: 6px; }
+    .hero-sub { font-size: 0.85rem; color: var(--muted); line-height: 1.65; margin-bottom: 24px; max-width: 480px; }
+
+    /* ── Countdown strip ── */
+    .countdown-strip { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+    .cd-box { background: var(--accent-dim); border: 1px solid rgba(127,255,255,0.2); border-radius: 8px; padding: 10px 16px; min-width: 100px; text-align: center; }
+    .cd-num { font-size: 1.8rem; font-weight: 900; color: var(--accent); letter-spacing: -0.04em; line-height: 1; margin-bottom: 3px; }
+    .cd-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+
+    /* ── Stats ── */
+    .stats { display: flex; gap: 12px; flex-wrap: wrap; }
+    .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; min-width: 80px; text-align: center; }
+    .stat-num { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.04em; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+    .stat-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+    /* ── Content ── */
+    .content { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+    /* ── Section ── */
+    .section { margin-bottom: 44px; }
+    .section-title { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(127,255,255,0.12); }
+
+    /* ── Timeline ── */
+    .timeline { position: relative; padding-left: 24px; }
+    .timeline::before { content:''; position:absolute; left:6px; top:4px; bottom:4px; width:1px; background:linear-gradient(to bottom,transparent,rgba(127,255,255,0.18) 10%,rgba(127,255,255,0.18) 90%,transparent); }
+    .tl-item { position:relative; margin-bottom:20px; }
+    .tl-item::before { content:''; position:absolute; left:-23px; top:8px; width:7px; height:7px; border-radius:50%; border:1.5px solid var(--accent); background:var(--bg); transition:transform 0.2s; }
+    .tl-item:hover::before { transform:scale(1.5); }
+    .tl-date { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px; }
+    .tl-title { font-size: 0.92rem; font-weight: 700; margin-bottom: 3px; }
+    .tl-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+    .tl-done { opacity: 0.5; }
+    .tl-done .tl-title::after { content:' ✓'; font-size: 0.75em; color: var(--accent); }
+    .tl-urgent { border-left: 2px solid var(--accent2); padding-left: 8px; }
+    .tl-urgent::before { border-color: var(--accent2) !important; background: var(--bg) !important; }
+
+    /* ── Skills ── */
+    .skill-list { display: flex; flex-direction: column; gap: 10px; }
+    .skill-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; transition: border-color 0.2s; }
+    .skill-item:hover { border-color: rgba(127,255,255,0.2); }
+    .skill-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .skill-body { flex: 1; }
+    .skill-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 3px; }
+    .skill-note { font-size: 0.72rem; color: var(--muted); }
+    .skill-weeks { font-size: 0.75rem; color: var(--accent); flex-shrink: 0; min-width: 40px; text-align: right; }
+
+    /* ── Prizes ── */
+    .prize-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .prize-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+    .prize-place { font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent2); margin-bottom: 6px; }
+    .prize-name { font-size: 0.9rem; font-weight: 700; }
+
+    /* ── Footer ── */
+    footer { text-align: center; padding: 24px; font-size: 0.72rem; color: var(--muted); border-top: 1px solid var(--border); }
+
+    @media (max-width: 540px) { .prize-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="back"><a href="../">← 賽程日曆</a></div>
+
+<div class="hero">
+  <div class="badge">🎉 初審通過</div>
+  <h1 class="hero-title">上銀撞球</h1>
+  <p class="hero-sub">第十八屆上銀智慧機器手實作競賽。衝刺複審影片，決賽 2026/08/19-20。</p>
+
+  <div class="countdown-strip">
+    <div class="cd-box">
+      <div class="cd-num" id="cdVideo">56</div>
+      <div class="cd-label">複審倒數</div>
+    </div>
+    <div class="cd-box">
+      <div class="cd-num" id="cdFinal">145</div>
+      <div class="cd-label">決賽倒數</div>
+    </div>
+    <div class="cd-box">
+      <div class="cd-num" style="color:var(--accent2)" id="cdDeadline">53</div>
+      <div class="cd-label">繳交倒數</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-box"><div class="stat-num">9</div><div class="stat-label">里程</div></div>
+    <div class="stat-box"><div class="stat-num">6</div><div class="stat-label">核心技能</div></div>
+    <div class="stat-box"><div class="stat-num" style="color:var(--accent2)">05/22</div><div class="stat-label">複審截止</div></div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- Timeline -->
+  <div class="section">
+    <div class="section-title">里程進度</div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+
+  <!-- Skills -->
+  <div class="section">
+    <div class="section-title">核心技能</div>
+    <div class="skill-list" id="skillList"></div>
+  </div>
+
+  <!-- Prizes -->
+  <div class="section">
+    <div class="section-title">獎項機制</div>
+    <div class="prize-grid" id="prizeGrid"></div>
+  </div>
+
+</div>
+
+<footer>上銀撞球 2026 · 黑皮團隊 · 資料動態讀取 agent_idle/data/hiwin.json</footer>
+
+<script>
+async function load() {
+  try {
+    const res = await fetch('../data/hiwin.json');
+    const d = await res.json();
+
+    // Countdown overrides from JSON
+    if (d.countdown) {
+      document.getElementById('cdVideo').textContent = d.countdown.video || '—';
+      document.getElementById('cdFinal').textContent = d.countdown.final || '—';
+    }
+    // Video deadline countdown
+    const vd = new Date('2026-05-22');
+    const now = new Date();
+    const diffVd = Math.round((vd - now) / 86400000);
+    document.getElementById('cdDeadline').textContent = diffVd > 0 ? diffVd : '0';
+
+    // Timeline
+    const today = new Date(); today.setHours(0,0,0,0);
+    const tl = document.getElementById('timeline');
+    tl.innerHTML = (d.milestones||[]).map(m => {
+      const parsed = new Date(m.date);
+      const isPast = parsed < today;
+      const isUrgent = !isPast && (parsed - today) < 7 * 86400000;
+      return `<div class="tl-item ${isPast?'tl-done':''} ${isUrgent?'tl-urgent':''}">
+        <div class="tl-date">${m.date}</div>
+        <div class="tl-title">${m.title}</div>
+        ${m.desc ? `<div class="tl-desc">${m.desc}</div>` : ''}
+      </div>`;
+    }).join('');
+
+    // Skills
+    const sl = document.getElementById('skillList');
+    sl.innerHTML = (d.skills||[]).map(s => `
+      <div class="skill-item">
+        <div class="skill-icon">◎</div>
+        <div class="skill-body">
+          <div class="skill-name">${s.name}</div>
+          ${s.note ? `<div class="skill-note">${s.note}</div>` : ''}
+        </div>
+        <div class="skill-weeks">${s.weeks}w</div>
+      </div>`).join('');
+
+    // Prizes
+    const prizes = d.prizes || {};
+    const prizeData = [
+      { place:'冠軍', name: prizes.champion||'待定' },
+      { place:'亞軍', name: prizes.second||'待定' },
+      { place:'季軍 ×2', name: prizes.third||'待定' },
+      { place:'評審特別獎', name: prizes.special||'待定' }
+    ];
+    const pg = document.getElementById('prizeGrid');
+    pg.innerHTML = prizeData.map(p => `
+      <div class="prize-card">
+        <div class="prize-place">${p.place}</div>
+        <div class="prize-name">${p.name}</div>
+      </div>`).join('');
+
+  } catch(e) {
+    document.querySelector('.content').innerHTML += `<div style="color:#7fffff;padding:40px">載入失敗：${e.message}</div>`;
+  }
+}
+document.addEventListener('DOMContentLoaded', load);
+</script>
+
+</body>
+</html>

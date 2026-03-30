@@ -5,57 +5,147 @@
   "framework": "ROS + Python + OpenCV",
   "lastUpdated": "2026-03-30",
   "status": "developing",
-  "notes": "7項 Mission 同步開發中，ROS 通訊架構",
+  "notes": "FIRA 2026 AutoRace 7項 Mission，基於三份 AutoRace 研習資料整合",
+  "raceInfo": {
+    "date": "2026-04-25",
+    "name": "FIRA AutoRace",
+    "location": "待確認"
+  },
+  "studyModules": {
+    "研習1": {
+      "name": "道路駕駛、影像辨識",
+      "focus": "號誌偵測 + 岔路決策 + 車道跟隨",
+      "commands": {
+        "network": [
+          "sudo nano /etc/netplan/50-cloud-init.yaml  # WiFi設定",
+          "sudo netplan apply  # 重啟網路",
+          "ifconfig  # 查詢wlan0 IP",
+          "ssh ubuntu@192.168.10.101  # 連線TB3"
+        ],
+        "env": [
+          "nano ~/.bashrc  # 環境變數設定（PC與TB3都要）"
+        ],
+        "mission": [
+          "號誌燈號顏色偵測（紅/綠/黃）",
+          "車道線跟隨（黃線左、白線右）",
+          "岔路左右轉號誌判斷",
+          "開始線觸發發車"
+        ]
+      }
+    },
+    "研習2": {
+      "name": "自動避障、自動停車",
+      "focus": "障礙偵測 + 停車格定位 + 停車控制",
+      "commands": {
+        "mission": [
+          "障礙物偵測（固定位置）",
+          "停車格掃描（超聲波或視覺）",
+          "空車格判斷演算法",
+          "定點停車控制（倒車入庫）",
+          "停車場駛出導引"
+        ]
+      }
+    },
+    "研習3": {
+      "name": "SLAM導航",
+      "focus": "SLAM建圖 + 平交道等待 + 隧道導航",
+      "commands": {
+        "slam": [
+          "roscore",
+          "roslaunch turtlebot3_slam turtlebot3_slam.launch",
+          "rosrun turtlebot3_teleop turtlebot3_teleop_key"
+        ],
+        "mission": [
+          "平交道柵欄偵測（紅白條紋）",
+          "柵欄升起等待邏輯",
+          "隧道入口辨識（全黑區域）",
+          "隧道內光源補償失效 → PID盲走",
+          "隧道內障礙物偵測"
+        ]
+      }
+    }
+  },
+  "missionSequence": {
+    "description": "從研習1到研習3的開發順序，串聯7項Mission",
+    "steps": [
+      {
+        "step": 1,
+        "title": "環境建置",
+        "focus": "WiFi + SSH + 環境變數",
+        "commands": ["netplan設定", "SSH連線", "bashrc設定"],
+        "output": "TB3可遠端操控"
+      },
+      {
+        "step": 2,
+        "title": "號誌偵測（Mission 1核心）",
+        "focus": "研習1 — 紅綠燈顏色判斷",
+        "commands": ["HSV顏色遮罩", "霍夫圓變換確認燈號"],
+        "output": "可區分紅/綠/黃燈，驅動停/行決策"
+      },
+      {
+        "step": 3,
+        "title": "車道跟隨（Mission 3核心）",
+        "focus": "研習1 — 車道線追蹤",
+        "commands": ["滑動視窗找黃白線", "透視轉換top-down", "PID控制steering"],
+        "output": "車子可沿車道線自動行駛"
+      },
+      {
+        "step": 4,
+        "title": "岔路決策（Mission 5核心）",
+        "focus": "研習1 — 左右轉號誌",
+        "commands": ["號誌燈位置偵測", "轉向方向判斷"],
+        "output": "可依號誌選擇正確岔路"
+      },
+      {
+        "step": 5,
+        "title": "障礙偵測（Mission 2核心）",
+        "focus": "研習2 — 固定障礙物",
+        "commands": ["紅色三角標誌辨識", "障礙物位置地圖標記"],
+        "output": "偵測到障礙後停或繞行"
+      },
+      {
+        "step": 6,
+        "title": "自動停車（Mission 4核心）",
+        "focus": "研習2 — 停車格定位",
+        "commands": ["停車格視覺掃描", "空車格判斷", "定點停車控制"],
+        "output": "可自動停入空車格並駛出"
+      },
+      {
+        "step": 7,
+        "title": "平交道等待（Mission 6核心）",
+        "focus": "研習3 — 柵欄辨識",
+        "commands": ["紅白柵欄偵測", "等待邏輯（柵欄升起才走）"],
+        "output": "遇到平交道會停等"
+      },
+      {
+        "step": 8,
+        "title": "隧道導航（Mission 7核心）",
+        "focus": "研習3 — SLAM + 隧道備援",
+        "commands": ["SLAM建圖", "隧道光源補償失效時PID盲走", "隧道障礙偵測"],
+        "output": "可在無光源環境導航"
+      },
+      {
+        "step": 9,
+        "title": "整合計時測試",
+        "focus": "7項Mission串聯",
+        "commands": ["完整賽道計時", "瓶頸優化", "PID調參"],
+        "output": "穩定完賽"
+      }
+    ]
+  },
   "missions": {
     "total": 7,
     "completed": 0,
-    "list": [
-      "交通號誌",
-      "障礙偵測",
-      "S型彎道",
-      "停車區",
-      "圓環路口",
-      "平交道",
-      "隧道"
-    ]
-  },
-  "milestones": [
-    {
-      "date": "2026-03-26",
-      "title": "JSON 資料架構重構",
-      "desc": "每個 Mission 對應一個 JSON，集中管理"
-    },
-    {
-      "date": "2026-04-06",
-      "title": "成長雷達頁面改版",
-      "desc": "Coder 完成動態天數、三色技能狀態、鍵盤快速鍵"
-    },
-    {
-      "date": "2026-04-25",
-      "title": "FIRA AutoRace",
-      "desc": "TB3 正式比賽，4/25-26"
-    },
-    {
-      "date": "2026-04-30",
-      "title": "Mission 1-2 視覺核心完成",
-      "desc": "號誌偵測（HSV + 霍夫圓） + 障礙偵測（紅色三角）"
-    },
-    {
-      "date": "2026-05-31",
-      "title": "Mission 3-5 進階關卡",
-      "desc": "S型彎道 + 停車控制 + 圓環決策"
-    },
-    {
-      "date": "2026-06-30",
-      "title": "Mission 6-7 完賽關卡",
-      "desc": "平交道等待 + 隧道備援機制"
-    },
-    {
-      "date": "2026-07-31",
-      "title": "整合作戰測試",
-      "desc": "7項 Mission 串聯實測，PID 參數調校"
+    "mapping": {
+      "1": { "name": "交通號誌", "研習": "研習1", "skills": ["tb3-hsv", "tb3-hough", "tb3-signal"] },
+      "2": { "name": "障礙偵測", "研習": "研習2", "skills": ["tb3-obstacle"] },
+      "3": { "name": "S型彎道", "研習": "研習1", "skills": ["tb3-lane", "tb3-perspective"] },
+      "4": { "name": "停車區", "研習": "研習2", "skills": ["tb3-parking", "tb3-kinematics"] },
+      "5": { "name": "圓環路口", "研習": "研習1", "skills": ["tb3-signal", "tb3-roundabout"] },
+      "6": { "name": "平交道", "研習": "研習3", "skills": ["tb3-crossing"] },
+      "7": { "name": "隧道", "研習": "研習3", "skills": ["tb3-tunnel", "tb3-ros"] }
     }
-  ],
+  },
   "skills": [
     {
       "id": "tb3-cv-basics",
@@ -69,7 +159,7 @@
       "name": "HSV 顏色空間",
       "priority": "high",
       "weeks": 1,
-      "note": "紅/黃/綠燈號偵測，比 BGR 更穩定，是號誌判讀的核心"
+      "note": "紅/黃/綠燈號偵測，比 BGR 更穩定"
     },
     {
       "id": "tb3-hough",
@@ -132,7 +222,7 @@
       "name": "隧道備援",
       "priority": "medium",
       "weeks": 2,
-      "note": "黑色區域光照補償失效，需備援機制（可能靠PID盲走）"
+      "note": "黑色區域光照補償失效，需備援機制（可能靠 PID 盲走）"
     },
     {
       "id": "tb3-ros",
@@ -148,5 +238,15 @@
       "weeks": 3,
       "note": "正/逆運動學，用於停車定位與彎道軌跡規劃"
     }
-  ]
+  ],
+  "todayAction": {
+    "priority": "Step 1 + Step 2",
+    "focus": "環境建置 + 號誌偵測",
+    "commands": [
+      "1. WiFi設定：netplan → SSH → bashrc",
+      "2. HSV測試：測試紅/綠燈顏色範圍",
+      "3. 霍夫圓：確認可以找到燈號圓形",
+      "4. 停車邏輯：紅燈停、綠燈走"
+    ]
+  }
 }

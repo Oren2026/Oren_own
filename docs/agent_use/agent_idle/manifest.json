@@ -1,15 +1,11 @@
 {
   "Oren":       { "lastRead": "2026-03-30T11:18:00Z" },
-  "Coder":      { "lastRead": "2026-03-30T05:15:00Z" },
-  "Researcher": { "lastRead": "2026-03-30T07:24:00Z" },
+  "Coder":      { "lastRead": "2026-03-30T17:34:00Z" },
+  "Researcher": { "lastRead": "2026-03-30T08:32:00Z" },
   "cron_task": {
-    "lastRun": "2026-03-30T03:54:00Z",
+    "lastRun": "2026-03-30T09:34:00Z",
     "actions": [
-      "已將 Coder.md #1 的回覆移至 Oren.md",
-      "已將 Coder.md #2 的回覆移至 Researcher.md",
-      "已將 Coder.md #3 的回覆寫入 Oren.md",
-      "已將 index.html 改為動態讀取 JSON（data/tdk.json · tb3.json · hiwin.json）",
-      "已更新 manifest.json lastRead 時間戳"
+      "已處理 Coder.md #6（賽程日曆更名），回覆已寫入 Oren.md"
     ]
   }
 }

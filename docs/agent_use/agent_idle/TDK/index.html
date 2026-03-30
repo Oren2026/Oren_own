@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TDK 2026 — 第30屆文蛤分級</title>
+  <style>
+    :root { --bg:#0a0608; --surface:rgba(255,255,255,0.03); --surface-hover:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.07); --text:#e8e4de; --muted:#5a6478; --accent:#ff7f7f; --accent-dim:rgba(255,127,127,0.12); }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-thumb { background:var(--muted); border-radius:2px; }
+    body { background:var(--bg); color:var(--text); font-family:"PingFang TC","Microsoft JhengHei",-apple-system,sans-serif; min-height:100vh; }
+
+    /* ── Back link ── */
+    .back { padding: 20px 24px 0; }
+    .back a { font-size: 0.78rem; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: color 0.2s; }
+    .back a:hover { color: var(--text); }
+
+    /* ── Hero ── */
+    .hero { padding: 32px 24px 40px; position: relative; overflow: hidden; }
+    .hero::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(255,127,127,0.07) 0%, transparent 60%); pointer-events:none; }
+    .hero-eyebrow { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .hero-title { font-size: clamp(1.6rem, 5vw, 2.6rem); font-weight: 800; letter-spacing: -0.03em; color: var(--accent); margin-bottom: 6px; }
+    .hero-sub { font-size: 0.85rem; color: var(--muted); line-height: 1.65; margin-bottom: 24px; max-width: 480px; }
+
+    /* ── Stats ── */
+    .stats { display: flex; gap: 12px; flex-wrap: wrap; }
+    .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; min-width: 88px; text-align: center; }
+    .stat-num { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.04em; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+    .stat-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+    /* ── Content ── */
+    .content { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+    /* ── Section ── */
+    .section { margin-bottom: 40px; }
+    .section-title { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,127,127,0.15); }
+
+    /* ── Timeline ── */
+    .timeline { position: relative; padding-left: 24px; }
+    .timeline::before { content:''; position:absolute; left:6px; top:4px; bottom:4px; width:1px; background:linear-gradient(to bottom,transparent,rgba(255,127,127,0.2) 10%,rgba(255,127,127,0.2) 90%,transparent); }
+    .tl-item { position:relative; margin-bottom:20px; padding-bottom:4px; }
+    .tl-item::before { content:''; position:absolute; left:-23px; top:8px; width:7px; height:7px; border-radius:50%; border:1.5px solid var(--accent); background:var(--bg); transition:transform 0.2s; }
+    .tl-item:hover::before { transform:scale(1.5); }
+    .tl-date { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px; }
+    .tl-title { font-size: 0.92rem; font-weight: 700; margin-bottom: 3px; }
+    .tl-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+    .tl-done { opacity: 0.5; }
+    .tl-done .tl-title::after { content:' ✓'; font-size: 0.75em; color: var(--accent); }
+
+    /* ── Phase cards ── */
+    .phase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .phase-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .phase-num { font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 6px; }
+    .phase-name { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+    .phase-deadline { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
+    .phase-tasks { display: flex; flex-direction: column; gap: 4px; }
+    .phase-task { font-size: 0.75rem; color: var(--muted); padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+    .phase-task::before { content:'· '; color: var(--accent); }
+
+    /* ── Skills ── */
+    .skill-list { display: flex; flex-direction: column; gap: 10px; }
+    .skill-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; transition: border-color 0.2s, background 0.2s; }
+    .skill-item:hover { border-color: rgba(255,127,127,0.25); background: var(--surface-hover); }
+    .skill-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .skill-body { flex: 1; min-width: 0; }
+    .skill-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 3px; }
+    .skill-note { font-size: 0.72rem; color: var(--muted); }
+    .skill-bar-wrap { flex-shrink: 0; width: 80px; }
+    .skill-bar-bg { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+    .skill-bar { height: 100%; border-radius: 2px; background: var(--accent); transition: width 1.2s cubic-bezier(0.22,1,0.36,1); }
+    .skill-weeks { font-size: 0.7rem; color: var(--muted); text-align: right; margin-top: 2px; }
+
+    /* ── Countdown banner ── */
+    .countdown-banner { background: var(--accent-dim); border: 1px solid rgba(255,127,127,0.2); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; gap: 16px; }
+    .cd-num { font-size: 2rem; font-weight: 900; color: var(--accent); letter-spacing: -0.04em; line-height: 1; }
+    .cd-text { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+    .cd-label { color: var(--accent); font-weight: 600; }
+
+    /* ── Footer ── */
+    footer { text-align: center; padding: 24px; font-size: 0.72rem; color: var(--muted); border-top: 1px solid var(--border); }
+
+    @media (max-width: 540px) { .phase-grid { grid-template-columns: 1fr; } .skill-bar-wrap { display:none; } }
+  </style>
+</head>
+<body>
+
+<div class="back"><a href="../">← 賽程日曆</a></div>
+
+<div class="hero">
+  <div class="hero-eyebrow">第30屆 TDK 盃 · 自動組</div>
+  <h1 class="hero-title">文蛤分級</h1>
+  <p class="hero-sub">讓世界看見雲林。3D 列印文蛤 + 篩網機構，通過第一階段才能參加第二階段。</p>
+  <div class="stats">
+    <div class="stat-box">
+      <div class="stat-num">30</div>
+      <div class="stat-label">第30屆</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">9</div>
+      <div class="stat-label">核心技能</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">2</div>
+      <div class="stat-label">階段</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- Countdown -->
+  <div class="section">
+    <div class="countdown-banner" id="cdBanner">
+      <div class="cd-num" id="cdDays">—</div>
+      <div class="cd-text">離初賽還有<br><span class="cd-label" id="cdDate">2026/10/15</span></div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="section">
+    <div class="section-title">里程進度</div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+
+  <!-- Phases -->
+  <div class="section">
+    <div class="section-title">兩階段審查</div>
+    <div class="phase-grid" id="phaseGrid"></div>
+  </div>
+
+  <!-- Skills -->
+  <div class="section">
+    <div class="section-title">核心技能</div>
+    <div class="skill-list" id="skillList"></div>
+  </div>
+
+</div>
+
+<footer>TDK 2026 · 黑皮團隊 · 資料動態讀取 agent_idle/data/tdk.json</footer>
+
+<script>
+async function loadData() {
+  try {
+    const res = await fetch('../data/tdk.json');
+    const d = await res.json();
+
+    // Countdown
+    const prelim = new Date('2026-10-15');
+    const now = new Date();
+    const diff = Math.round((prelim - now) / 86400000);
+    document.getElementById('cdDays').textContent = diff > 0 ? diff : '0';
+
+    // Timeline
+    const tl = document.getElementById('timeline');
+    const today = new Date(); today.setHours(0,0,0,0);
+    tl.innerHTML = (d.milestones||[]).map(m => {
+      const parsed = new Date(m.date);
+      const isPast = parsed < today;
+      return `<div class="tl-item ${isPast?'tl-done':''}">
+        <div class="tl-date">${m.date}</div>
+        <div class="tl-title">${m.title}</div>
+        ${m.desc ? `<div class="tl-desc">${m.desc}</div>` : ''}
+      </div>`;
+    }).join('');
+
+    // Phases
+    const pg = document.getElementById('phaseGrid');
+    const phases = {
+      '1': { name:'第一階段', deadline:'2026-07-12 23:59', tasks:['書面審查','機構設計圖','文蛤尺寸規格'] },
+      '2': { name:'第二階段', deadline:'2026-09-20 23:59', tasks:['作品影片','現場演示','技術報告'] }
+    };
+    pg.innerHTML = Object.entries(phases).map(([k,v]) => `
+      <div class="phase-card">
+        <div class="phase-num">Phase ${k}</div>
+        <div class="phase-name">${v.name}</div>
+        <div class="phase-deadline">截止：${v.deadline}</div>
+        <div class="phase-tasks">${v.tasks.map(t=>`<div class="phase-task">${t}</div>`).join('')}</div>
+      </div>`).join('');
+
+    // Skills
+    const sl = document.getElementById('skillList');
+    sl.innerHTML = (d.skills||[]).map(s => {
+      const w = Math.round((s.weeks||1)*4);
+      return `<div class="skill-item">
+        <div class="skill-icon">◉</div>
+        <div class="skill-body">
+          <div class="skill-name">${s.name}</div>
+          <div class="skill-note">${s.note||''}</div>
+        </div>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar-bg"><div class="skill-bar" data-w="${w}"></div></div>
+          <div class="skill-weeks">${s.weeks}w</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    setTimeout(() => document.querySelectorAll('.skill-bar').forEach(b => {
+      const w = b.getAttribute('data-w');
+      if (w) b.style.width = w+'%';
+    }), 300);
+
+  } catch(e) { document.querySelector('.content').innerHTML += `<div style="color:#ff7f7f;padding:40px">載入失敗：${e.message}</div>`; }
+}
+document.addEventListener('DOMContentLoaded', loadData);
+</script>
+
+</body>
+</html>
