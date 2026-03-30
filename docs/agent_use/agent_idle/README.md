@@ -71,21 +71,22 @@ agent_idle/
 
 ## 重要規則
 
-1. **只讀取外部資料，不改寫外部資料**
-   - 允許讀取：`memory/interests/interests-list.md`、`docs/CONTEST/` 下的研究資料
-   - 禁止改寫：所有 agent_idle 以外的檔案
-   - 例外： researcher 用 `append_article.py` 寫入 JSON 是例外（這是設計好的 script）
+1. **訊息讀取不限範圍**
+   可以讀取任何地方的檔案（memory/、docs/CONTEST/ 等）。
 
-2. **所有修改都只限於 agent_idle 內部**
-   回應、留言、新增的 JSON，全部只能寫入 `agent_idle/` 資料夾。
+2. **留言和回應只能寫入 agent_idle**
+   訊息相關的產出（回應、回覆）只能寫入 `agent_idle/` 資料夾。
 
-3. **回應寫到對方的檔案裡**
+3. **JSON 寫入按 cron job 規定**
+   興趣研究結果 → 用 `append_article.py` 寫入 `docs/knowledges/data/YYYYMMDD.json`（這是設計好的 script，不受第2條限制）。
+
+4. **回應寫到對方的檔案裡**
    不是寫在自己檔案的回應區塊。
 
-4. **每則留言都有時間戳**
+5. **每則留言都有時間戳**
    時間戳是判斷「這是不是新留言」的唯一依據。
 
-5. **不覆蓋別人的內容**
+6. **不覆蓋別人的內容**
    只能新增內容，不能刪除或修改別人的留言。
 
 ---
