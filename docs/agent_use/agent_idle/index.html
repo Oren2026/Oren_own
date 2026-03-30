@@ -19,7 +19,6 @@
       --urgent-red: #ff4d4d;
       --soon-orange: #ff9f3c;
       --upcoming-yellow: #ffd060;
-      --normal: #5a6478;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     ::-webkit-scrollbar { width: 4px; }
@@ -28,7 +27,7 @@
 
     /* ── Header ── */
     header {
-      padding: 56px 24px 40px;
+      padding: 40px 24px 32px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -37,15 +36,12 @@
       content: '';
       position: absolute;
       inset: 0;
-      background:
-        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(184,127,255,0.07) 0%, transparent 65%),
-        radial-gradient(ellipse 50% 40% at 20% 80%, rgba(127,179,255,0.04) 0%, transparent 55%),
-        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(127,255,255,0.04) 0%, transparent 55%);
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(184,127,255,0.07) 0%, transparent 65%);
       pointer-events: none;
     }
-    .eyebrow { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+    .eyebrow { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
     .page-title {
-      font-size: clamp(2rem, 6vw, 3rem);
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
       font-weight: 800;
       letter-spacing: -0.03em;
       background: linear-gradient(135deg, #ff7f7f 0%, #b87fff 40%, #7fb3ff 70%, #7fffff 100%);
@@ -53,20 +49,16 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       line-height: 1.15;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
-    .page-sub { font-size: 1rem; color: var(--muted); max-width: 480px; margin: 0 auto 32px; line-height: 1.7; }
-
-    /* ── Radar SVG ── */
-    .radar-wrap { display: flex; justify-content: center; margin-bottom: 32px; }
-    .radar-wrap svg { width: 80px; height: 80px; opacity: 0.85; }
+    .page-sub { font-size: 0.9rem; color: var(--muted); max-width: 420px; margin: 0 auto 24px; line-height: 1.65; }
 
     /* ── Countdown strip ── */
     .countdown-strip {
       display: flex;
       justify-content: center;
-      gap: 24px;
-      margin-bottom: 36px;
+      gap: 16px;
+      margin-bottom: 28px;
       flex-wrap: wrap;
       padding: 0 24px;
     }
@@ -74,25 +66,45 @@
       text-align: center;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px 20px;
-      min-width: 100px;
+      border-radius: 8px;
+      padding: 10px 16px;
+      min-width: 88px;
     }
-    .cd-num {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1;
-      margin-bottom: 5px;
+    .cd-num { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: 4px; }
+    .cd-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+    /* ── Calendar nav ── */
+    .cal-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 16px;
     }
-    .cd-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .cal-nav-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      font-family: inherit;
+    }
+    .cal-nav-btn:hover { background: var(--surface-hover); color: var(--text); }
+    .cal-month-year { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.04em; color: var(--text); }
 
     /* ── Filter tabs ── */
     .filter-bar {
       display: flex;
       justify-content: center;
       gap: 4px;
-      margin-bottom: 36px;
+      margin-bottom: 24px;
       padding: 0 24px;
       flex-wrap: wrap;
     }
@@ -100,118 +112,156 @@
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.06);
       color: var(--muted);
-      padding: 7px 18px;
+      padding: 6px 16px;
       border-radius: 6px;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       cursor: pointer;
       transition: all 0.2s;
       font-family: inherit;
     }
     .filter-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
     .filter-btn.active[data-filter="all"]    { background: rgba(184,127,255,0.15); border-color: rgba(184,127,255,0.4); color: var(--accent); }
-    .filter-btn.active[data-filter="tdk"]   { background: rgba(255,127,127,0.12); border-color: rgba(255,127,127,0.4); color: var(--tdk); }
-    .filter-btn.active[data-filter="tb3"]    { background: rgba(127,179,255,0.12); border-color: rgba(127,179,255,0.4); color: var(--tb3); }
-    .filter-btn.active[data-filter="hiwin"]  { background: rgba(127,255,255,0.12); border-color: rgba(127,255,255,0.4); color: var(--hiwin); }
     .filter-btn.active[data-filter="urgent"] { background: rgba(255,77,77,0.12); border-color: rgba(255,77,77,0.4); color: var(--urgent-red); }
+    .filter-btn.active[data-filter="tdk"]   { background: rgba(255,127,127,0.12); border-color: rgba(255,127,127,0.4); color: var(--tdk); }
+    .filter-btn.active[data-filter="tb3"]   { background: rgba(127,179,255,0.12); border-color: rgba(127,179,255,0.4); color: var(--tb3); }
+    .filter-btn.active[data-filter="hiwin"]  { background: rgba(127,255,255,0.12); border-color: rgba(127,255,255,0.4); color: var(--hiwin); }
 
-    /* ── Schedule list ── */
-    .schedule-wrap { max-width: 760px; margin: 0 auto; padding: 0 24px 80px; }
-    .loading-msg { text-align: center; color: var(--muted); font-size: 0.95rem; padding: 40px; }
-    .error-msg { text-align: center; color: var(--urgent-red); font-size: 0.95rem; padding: 40px; }
-
-    .schedule-list { list-style: none; }
-
-    .sch-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      padding: 16px 18px;
-      border-radius: 10px;
+    /* ── Calendar grid ── */
+    .cal-wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
       margin-bottom: 6px;
+    }
+    .cal-dow {
+      text-align: center;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 6px 0;
+    }
+    .cal-cell {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 6px;
+      min-height: 72px;
+      padding: 6px;
+      transition: background 0.15s, border-color 0.15s;
+      cursor: pointer;
+      position: relative;
+    }
+    .cal-cell:hover { background: var(--surface-hover); border-color: rgba(255,255,255,0.1); }
+    .cal-cell.other-month { opacity: 0.25; }
+    .cal-cell.today { border-color: rgba(184,127,255,0.4); background: rgba(184,127,255,0.05); }
+    .cal-day-num {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .cal-cell.today .cal-day-num { color: var(--accent); }
+
+    /* Event dots inside cell */
+    .cal-events { display: flex; flex-direction: column; gap: 2px; }
+    .cal-ev {
+      font-size: 9px;
+      padding: 1px 4px;
+      border-radius: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+    }
+    .cal-ev-tdk   { background: rgba(255,127,127,0.15); color: var(--tdk); }
+    .cal-ev-tb3   { background: rgba(127,179,255,0.15); color: var(--tb3); }
+    .cal-ev-hiwin { background: rgba(127,255,255,0.15); color: var(--hiwin); }
+    .cal-ev[data-urg="red"]   { border-left: 2px solid var(--urgent-red); }
+    .cal-ev[data-urg="orange"]{ border-left: 2px solid var(--soon-orange); }
+    .cal-ev[data-urg="yellow"]{ border-left: 2px solid var(--upcoming-yellow); }
+
+    /* ── Selected day detail ── */
+    .day-detail {
       background: var(--surface);
       border: 1px solid var(--border);
-      transition: background 0.2s, border-color 0.2s, transform 0.2s;
-      animation: itemIn 0.4s ease forwards;
-      opacity: 0;
+      border-radius: 10px;
+      padding: 18px;
+      margin-top: 10px;
     }
-    @keyframes itemIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .day-detail-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text);
     }
-    .sch-item:hover { background: var(--surface-hover); transform: translateX(3px); }
-
-    .sch-item[data-urgent="red"]   { border-left: 3px solid var(--urgent-red); }
-    .sch-item[data-urgent="orange"] { border-left: 3px solid var(--soon-orange); }
-    .sch-item[data-urgent="yellow"] { border-left: 3px solid var(--upcoming-yellow); }
-    .sch-item[data-urgent="normal"] { border-left: 3px solid var(--border); }
-
-    .sch-date-col {
-      min-width: 80px;
-      text-align: center;
-      padding-top: 2px;
-    }
-    .sch-month { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-    .sch-day { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: var(--text); }
-    .sch-countdown { font-size: 9px; color: var(--muted); margin-top: 3px; }
-
-    .sch-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-top: 6px;
-      flex-shrink: 0;
-    }
-
-    .sch-body { flex: 1; padding-top: 2px; }
-    .sch-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 3px; }
-    .sch-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-    .sch-tag { font-size: 10px; padding: 2px 8px; border-radius: 20px; }
-    .sch-tag-tdk   { background: rgba(255,127,127,0.1); color: var(--tdk); border: 1px solid rgba(255,127,127,0.25); }
-    .sch-tag-tb3   { background: rgba(127,179,255,0.1); color: var(--tb3); border: 1px solid rgba(127,179,255,0.25); }
-    .sch-tag-hiwin { background: rgba(127,255,255,0.1); color: var(--hiwin); border: 1px solid rgba(127,255,255,0.25); }
-    .sch-tag-urgent { background: rgba(255,77,77,0.1); color: var(--urgent-red); border: 1px solid rgba(255,77,77,0.25); }
-    .sch-tag-soon   { background: rgba(255,159,60,0.1); color: var(--soon-orange); border: 1px solid rgba(255,159,60,0.25); }
-    .sch-desc { font-size: 0.82rem; color: var(--muted); margin-top: 4px; line-height: 1.5; }
-
-    /* ── Legend ── */
-    .legend {
-      max-width: 760px;
-      margin: 0 auto 48px;
-      padding: 0 24px;
+    .day-ev-item {
       display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
     }
-    .legend-item { display: flex; align-items: center; gap: 7px; font-size: 0.8rem; color: var(--muted); }
-    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .day-ev-item:last-child { border-bottom: none; }
+    .day-ev-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+    .day-ev-title { font-size: 0.85rem; font-weight: 600; }
+    .day-ev-meta { font-size: 0.75rem; color: var(--muted); }
+    .day-ev-tag { font-size: 9px; padding: 1px 6px; border-radius: 10px; margin-left: 4px; }
+    .day-ev-tag-tdk   { background: rgba(255,127,127,0.1); color: var(--tdk); }
+    .day-ev-tag-tb3   { background: rgba(127,179,255,0.1); color: var(--tb3); }
+    .day-ev-tag-hiwin { background: rgba(127,255,255,0.1); color: var(--hiwin); }
+    .day-ev-tag-urg   { background: rgba(255,77,77,0.1); color: var(--urgent-red); }
 
-    /* ── Add button ── */
+    /* ── Upcoming list ── */
+    .upcoming-wrap { max-width: 760px; margin: 32px auto 0; padding: 0 24px 80px; }
+    .upcoming-title {
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .upcoming-list { list-style: none; }
+    .up-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      font-size: 0.85rem;
+    }
+    .up-date { min-width: 52px; font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+    .up-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .up-title { flex: 1; font-weight: 500; }
+    .up-tag { font-size: 9px; padding: 1px 6px; border-radius: 10px; }
+    .up-cd { font-size: 9px; color: var(--muted); min-width: 36px; text-align: right; }
+
+    /* ── Add hint ── */
     .add-hint {
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--muted);
-      margin-bottom: 40px;
+      margin-top: 28px;
       padding: 0 24px;
       line-height: 1.6;
     }
     .add-hint strong { color: var(--accent); }
 
-    /* ── Last updated ── */
-    .last-update {
-      text-align: center;
-      font-size: 0.75rem;
-      color: var(--muted);
-      padding: 0 24px 48px;
-      letter-spacing: 0.06em;
-    }
+    /* ── Last update ── */
+    .last-update { text-align: center; font-size: 0.72rem; color: var(--muted); padding: 0 24px 40px; }
 
-    /* ── Responsive ── */
-    @media (max-width: 540px) {
-      .sch-item { flex-wrap: wrap; }
-      .sch-date-col { min-width: 60px; }
-      .sch-day { font-size: 1.3rem; }
-      .countdown-strip { gap: 12px; }
-      .cd-item { min-width: 80px; padding: 10px 14px; }
+    /* ── Loading / empty ── */
+    .loading-msg { text-align: center; color: var(--muted); font-size: 0.9rem; padding: 40px; }
+    .empty-msg { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 24px; }
+    .error-msg { text-align: center; color: var(--urgent-red); font-size: 0.85rem; padding: 40px; }
+
+    @media (max-width: 480px) {
+      .cal-cell { min-height: 52px; padding: 4px; }
+      .cal-ev { font-size: 8px; }
+      .countdown-strip { gap: 10px; }
+      .cd-item { min-width: 72px; padding: 8px 10px; }
     }
   </style>
 </head>
@@ -220,29 +270,7 @@
 <header>
   <p class="eyebrow">黑皮團隊 · 賽程整合</p>
   <h1 class="page-title">賽程日曆</h1>
-  <p class="page-sub">TDK、TB3、上銀撞球三條路的行程統一檢視，按時間急迫性排序。</p>
-
-  <div class="radar-wrap">
-    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="40" cy="40" r="36" stroke="rgba(184,127,255,0.15)" stroke-width="1"/>
-      <circle cx="40" cy="40" r="26" stroke="rgba(184,127,255,0.15)" stroke-width="1"/>
-      <circle cx="40" cy="40" r="16" stroke="rgba(184,127,255,0.15)" stroke-width="1"/>
-      <circle cx="40" cy="40" r="6"  stroke="rgba(184,127,255,0.25)" stroke-width="1.5"/>
-      <line x1="40" y1="4"  x2="40" y2="76" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-      <line x1="4"  y1="40" x2="76" y2="40" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-      <line x1="14" y1="14" x2="66" y2="66" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
-      <line x1="66" y1="14" x2="14" y2="66" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
-      <circle cx="40" cy="40" r="3" fill="rgba(184,127,255,0.8)"/>
-      <circle cx="40" cy="40" r="3" fill="rgba(184,127,255,0.8)">
-        <animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.8;0;0.8" dur="2s" repeatCount="indefinite"/>
-      </circle>
-      <!-- sweep line -->
-      <line x1="40" y1="40" x2="40" y2="6" stroke="rgba(184,127,255,0.5)" stroke-width="1.5" stroke-linecap="round">
-        <animateTransform attributeName="transform" type="rotate" from="0 40 40" to="360 40 40" dur="4s" repeatCount="indefinite"/>
-      </line>
-    </svg>
-  </div>
+  <p class="page-sub">TDK、TB3、上銀撞球的行程一目了然，按時間急迫性排列。</p>
 
   <div class="countdown-strip" id="countdownStrip">
     <div class="cd-item">
@@ -258,31 +286,38 @@
       <div class="cd-label">TDK 初賽倒數</div>
     </div>
   </div>
+
+  <div class="cal-nav">
+    <button class="cal-nav-btn" onclick="navMonth(-1)">←</button>
+    <div class="cal-month-year" id="calMonthYear"></div>
+    <button class="cal-nav-btn" onclick="navMonth(1)">→</button>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all"    onclick="setFilter('all')">全部</button>
+    <button class="filter-btn"        data-filter="urgent" onclick="setFilter('urgent')">⚡ 急迫</button>
+    <button class="filter-btn"        data-filter="tdk"   onclick="setFilter('tdk')">TDK</button>
+    <button class="filter-btn"        data-filter="tb3"   onclick="setFilter('tb3')">TB3</button>
+    <button class="filter-btn"        data-filter="hiwin" onclick="setFilter('hiwin')">上銀</button>
+  </div>
 </header>
 
-<div class="filter-bar">
-  <button class="filter-btn active" data-filter="all"   onclick="setFilter('all')">全部行程</button>
-  <button class="filter-btn"        data-filter="urgent" onclick="setFilter('urgent')">⚡ 急迫</button>
-  <button class="filter-btn"        data-filter="tdk"   onclick="setFilter('tdk')">TDK</button>
-  <button class="filter-btn"        data-filter="tb3"   onclick="setFilter('tb3')">TB3</button>
-  <button class="filter-btn"        data-filter="hiwin" onclick="setFilter('hiwin')">上銀</button>
+<div class="cal-wrap">
+  <!-- Day-of-week headers -->
+  <div class="cal-grid" id="calDowRow"></div>
+  <!-- Calendar cells -->
+  <div class="cal-grid" id="calGrid"></div>
+  <!-- Selected day detail -->
+  <div id="dayDetail"></div>
 </div>
 
-<div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:var(--urgent-red)"></div>7天內</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--soon-orange)"></div>30天內</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--upcoming-yellow)"></div>60天內</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--muted)"></div>更遠</div>
+<div class="upcoming-wrap">
+  <div class="upcoming-title">近期行程</div>
+  <ul class="upcoming-list" id="upcomingList"></ul>
 </div>
 
 <div class="add-hint">
-  想加入新行程？告訴 <strong>Coder</strong>（我）或直接編輯 <code>agent_idle/data/*.json</code> 的 <code>milestones[]</code> 陣列。
-</div>
-
-<div class="schedule-wrap">
-  <div class="loading-msg" id="loadingMsg">正在載入行程...</div>
-  <div class="error-msg" id="errorMsg" style="display:none"></div>
-  <ul class="schedule-list" id="scheduleList"></ul>
+  想加入新行程？告訴 <strong>Coder</strong> 或直接編輯 <code>agent_idle/data/*.json</code> 的 <code>milestones[]</code>。
 </div>
 
 <div class="last-update" id="lastUpdate"></div>
@@ -291,8 +326,11 @@
   // ── State ──
   let allEvents = [];
   let currentFilter = 'all';
+  let currentMonth = new Date(); // navigated month
+  let selectedDate = null;
+  let selectedDateEvents = [];
 
-  // ── Load all JSON ──
+  // ── Load ──
   async function loadAll() {
     try {
       const [tdk, tb3, hiwin] = await Promise.all([
@@ -300,101 +338,70 @@
         fetch('data/tb3.json').then(r => r.ok ? r.json() : null),
         fetch('data/hiwin.json').then(r => r.ok ? r.json() : null)
       ]);
-
       allEvents = [];
-
-      if (tdk)   allEvents.push(...extractEvents(tdk,   'tdk',   '#ff7f7f'));
-      if (tb3)   allEvents.push(...extractEvents(tb3,   'tb3',   '#7fb3ff'));
-      if (hiwin) allEvents.push(...extractEvents(hiwin, 'hiwin', '#7fffff'));
-
-      // Sort by parsed date
+      if (tdk)   allEvents.push(...extractEvents(tdk, 'tdk'));
+      if (tb3)   allEvents.push(...extractEvents(tb3, 'tb3'));
+      if (hiwin) allEvents.push(...extractEvents(hiwin, 'hiwin'));
       allEvents.sort((a, b) => (a.parsed || 0) - (b.parsed || 0));
 
-      // Update countdown strip
       updateCountdown(hiwin, tdk);
+      updateLastUpdate([tdk, tb3, hiwin]);
 
-      // Update last updated
-      const updates = [tdk, tb3, hiwin]
-        .filter(Boolean)
-        .map(d => d.lastUpdated)
-        .filter(Boolean)
-        .map(d => {
-          const m = String(d).match(/^(\d{4})-(\d{2})-(\d{2})/);
-          return m ? new Date(m[1], m[2]-1, m[3]) : null;
-        })
-        .filter(d => d && !isNaN(d));
-
-      if (updates.length > 0) {
-        const latest = new Date(Math.max(...updates));
-        const el = document.getElementById('lastUpdate');
-        if (el) el.textContent = `資料更新：${latest.getFullYear()}/${latest.getMonth()+1}/${latest.getDate()}`;
-      }
-
-      document.getElementById('loadingMsg').style.display = 'none';
-      render();
+      renderCalendar();
+      renderUpcoming();
+      document.getElementById('loadingMsg') && (document.getElementById('loadingMsg').style.display = 'none');
     } catch(e) {
-      document.getElementById('loadingMsg').style.display = 'none';
-      document.getElementById('errorMsg').style.display = 'block';
-      document.getElementById('errorMsg').textContent = '載入失敗：' + e.message;
+      const el = document.getElementById('calGrid');
+      if (el) el.innerHTML = `<div class="error-msg">載入失敗：${e.message}</div>`;
     }
   }
 
-  // ── Extract events from one project JSON ──
-  function extractEvents(project, type, color) {
+  // ── Extract events ──
+  function extractEvents(project, type) {
     const events = [];
-    // milestones
     (project.milestones || []).forEach(m => {
       if (!m.date || !m.title) return;
       const parsed = parseDate(m.date);
       if (!parsed) return;
-      events.push({ date: m.date, parsed, title: m.title, desc: m.desc || '', type, color, source: project.name || type });
+      events.push({ date: m.date, parsed, title: m.title, desc: m.desc || '', type, color: colorOf(type), source: project.name || type });
     });
-    // dates fields (flat key-value dates)
     Object.entries(project.dates || {}).forEach(([key, val]) => {
       if (!val || typeof val !== 'string') return;
-      if (['announcement','correction'].includes(key)) return; // skip old dates
+      if (['announcement','correction'].includes(key)) return;
       const titleMap = {
-        phase1_deadline: '第一階段繳交截止',
-        phase2_deadline: '第二階段作品繳交截止',
-        preliminary: '初賽',
-        final: '決賽',
-        award: '頒獎',
-        preliminary_pass: '初審通過',
-        safety_training: '安全講習',
-        video_deadline: '複審影片繳交截止',
-        preliminary_result: '複審結果公告',
+        phase1_deadline: '第一階段繳交截止', phase2_deadline: '第二階段作品繳交截止',
+        preliminary: '初賽', final: '決賽', award: '頒獎',
+        preliminary_pass: '初審通過', safety_training: '安全講習',
+        video_deadline: '複審影片繳交截止', preliminary_result: '複審結果公告',
       };
       const title = titleMap[key] || key;
       const parsed = parseDate(val);
       if (!parsed) return;
-      // skip if already in milestones (dedup)
       if (!events.find(e => e.title === title && e.parsed && Math.abs(e.parsed - parsed) < 86400000)) {
-        events.push({ date: val, parsed, title, desc: '', type, color, source: project.name || type });
+        events.push({ date: val, parsed, title, desc: '', type, color: colorOf(type), source: project.name || type });
       }
     });
     return events;
   }
 
-  // ── Parse date string → Date ──
+  function colorOf(type) {
+    return { tdk: '#ff7f7f', tb3: '#7fb3ff', hiwin: '#7fffff' }[type] || '#b87fff';
+  }
+
+  // ── Parse date ──
   function parseDate(str) {
     if (!str) return null;
-    // "2026-03-11" or "2026-03-11 23:59"
     let m = String(str).match(/^(\d{4})-(\d{2})-(\d{2})/);
     if (m) return new Date(m[1], m[2]-1, m[3]);
-    // "2026-03 ~ 04" → March 15
     m = String(str).match(/^(\d{4})-(\d{2})/);
     if (m) return new Date(m[1], m[2]-1, 15);
-    // "2026-08-19-20" → Aug 19
-    m = String(str).match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if (m) return new Date(m[1], m[2]-1, m[3]);
     return null;
   }
 
   // ── Urgency ──
   function getUrgency(parsed) {
     if (!parsed) return 'normal';
-    const now = new Date();
-    const diff = (parsed - now) / 86400000; // days
+    const diff = (parsed - new Date()) / 86400000;
     if (diff < 0)   return 'past';
     if (diff < 7)   return 'red';
     if (diff < 30)  return 'orange';
@@ -404,23 +411,14 @@
 
   function formatCountdown(parsed) {
     if (!parsed) return '';
-    const now = new Date();
-    const diff = Math.round((parsed - now) / 86400000);
+    const diff = Math.round((parsed - new Date()) / 86400000);
     if (diff < 0)  return '已過';
     if (diff === 0) return '今天';
-    return `＋${diff}天`;
+    return `＋${diff}d`;
   }
 
   // ── Countdown strip ──
   function updateCountdown(hiwin, tdk) {
-    const today = new Date();
-    const cd = (dateStr, elId) => {
-      const d = parseDate(dateStr);
-      if (!d) return;
-      const diff = Math.round((d - today) / 86400000);
-      const el = document.getElementById(elId);
-      if (el) el.textContent = diff > 0 ? diff : '—';
-    };
     if (hiwin && hiwin.countdown) {
       const v = document.getElementById('cdVideo');
       if (v) v.textContent = hiwin.countdown.video || '—';
@@ -430,55 +428,153 @@
     if (tdk && tdk.dates && tdk.dates.preliminary) {
       const d = parseDate(tdk.dates.preliminary);
       if (d) {
-        const diff = Math.round((d - today) / 86400000);
+        const diff = Math.round((d - new Date()) / 86400000);
         const el = document.getElementById('cdTdk');
         if (el) el.textContent = diff > 0 ? diff : '—';
       }
     }
   }
 
-  // ── Render ──
-  function render() {
-    const list = document.getElementById('scheduleList');
-    let events = allEvents;
+  // ── Last update ──
+  function updateLastUpdate([tdk, tb3, hiwin]) {
+    const updates = [tdk, tb3, hiwin].filter(Boolean)
+      .map(d => d.lastUpdated).filter(Boolean)
+      .map(d => { const m = String(d).match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(m[1],m[2]-1,m[3]) : null; })
+      .filter(d => d && !isNaN(d));
+    if (!updates.length) return;
+    const latest = new Date(Math.max(...updates));
+    const el = document.getElementById('lastUpdate');
+    if (el) el.textContent = `資料更新：${latest.getFullYear()}/${latest.getMonth()+1()}/${latest.getDate()}`;
+  }
 
-    if (currentFilter === 'urgent') {
-      events = allEvents.filter(e => ['red','orange'].includes(getUrgency(e.parsed)));
-    } else if (currentFilter !== 'all') {
-      events = allEvents.filter(e => e.type === currentFilter);
+  // ── Render Calendar ──
+  function renderCalendar() {
+    const y = currentMonth.getFullYear();
+    const m = currentMonth.getMonth();
+    const firstDow = new Date(y, m, 1).getDay(); // 0=Sun
+    const daysInMonth = new Date(y, m+1, 0).getDate();
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    document.getElementById('calMonthYear').textContent = `${y} 年 ${monthNames[m]}`;
+
+    // Day-of-week row
+    const dowRow = document.getElementById('calDowRow');
+    dowRow.innerHTML = ['日','一','二','三','四','五','六'].map(d => `<div class="cal-dow">${d}</div>`).join('');
+
+    const grid = document.getElementById('calGrid');
+    let html = '';
+
+    // Leading empty cells
+    for (let i = 0; i < firstDow; i++) {
+      html += `<div class="cal-cell other-month"></div>`;
     }
 
-    if (!events.length) {
-      list.innerHTML = '<li class="loading-msg">此分類目前沒有行程。</li>';
+    // Day cells
+    for (let day = 1; day <= daysInMonth; day++) {
+      const cellDate = new Date(y, m, day);
+      cellDate.setHours(0,0,0,0);
+      const isToday = cellDate.getTime() === today.getTime();
+
+      // Events for this day
+      const dayEvents = allEvents.filter(e => {
+        if (!e.parsed) return false;
+        const ed = new Date(e.parsed); ed.setHours(0,0,0,0);
+        return ed.getTime() === cellDate.getTime();
+      });
+
+      const filtered = currentFilter === 'all' ? dayEvents
+        : currentFilter === 'urgent' ? dayEvents.filter(e => ['red','orange'].includes(getUrgency(e.parsed)))
+        : dayEvents.filter(e => e.type === currentFilter);
+
+      const urgClass = { red:'red', orange:'orange', yellow:'yellow', normal:'', past:'' }[getUrgency(cellDate)] || '';
+      const todayClass = isToday ? 'today' : '';
+
+      html += `<div class="cal-cell ${todayClass}" data-date="${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}" onclick="selectDay('${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}')">
+        <div class="cal-day-num">${day}</div>
+        <div class="cal-events">${filtered.slice(0,3).map(e => {
+          const urg = getUrgency(e.parsed);
+          const urgAttr = {red:'red',orange:'orange',yellow:'yellow'}[urg] || '';
+          return `<div class="cal-ev cal-ev-${e.type}" data-urg="${urgAttr}" title="${escHtml(e.title)}">${escHtml(e.title)}</div>`;
+        }).join('')}${filtered.length > 3 ? `<div class="cal-ev" style="color:var(--muted)">+${filtered.length-3} 更多</div>` : ''}</div>
+      </div>`;
+    }
+
+    grid.innerHTML = html;
+  }
+
+  // ── Select day ──
+  function selectDay(dateStr) {
+    selectedDate = dateStr;
+    const d = new Date(dateStr);
+    const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    const dLabel = `${d.getFullYear()} 年 ${monthNames[d.getMonth()]} ${d.getDate()} 日`;
+
+    const dayEvents = allEvents.filter(e => {
+      if (!e.parsed) return false;
+      const ed = new Date(e.parsed); ed.setHours(0,0,0,0);
+      return ed.getTime() === d.getTime();
+    });
+
+    const filtered = currentFilter === 'all' ? dayEvents
+      : currentFilter === 'urgent' ? dayEvents.filter(e => ['red','orange'].includes(getUrgency(e.parsed)))
+      : dayEvents.filter(e => e.type === currentFilter);
+
+    const detail = document.getElementById('dayDetail');
+    if (!filtered.length) {
+      detail.innerHTML = `<div class="day-detail"><div class="day-detail-title">${dLabel}</div><div class="empty-msg">當日無行程</div></div>`;
       return;
     }
 
-    list.innerHTML = events.map((e, i) => {
-      const urg = getUrgency(e.parsed);
-      const d = e.parsed;
-      const month = d ? ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'][d.getMonth()] : '日期';
-      const day   = d ? d.getDate() : '?';
-      const cd    = formatCountdown(d);
-      const urgClass = urg === 'past' ? 'normal' : urg;
-      const tagClass  = { tdk: 'sch-tag-tdk', tb3: 'sch-tag-tb3', hiwin: 'sch-tag-hiwin' }[e.type] || 'sch-tag-tdk';
-      const urgTag = urg === 'red' ? '<span class="sch-tag sch-tag-urgent">⚡ 急迫</span>' : urg === 'orange' ? '<span class="sch-tag sch-tag-soon">即將到來</span>' : '';
-      return `<li class="sch-item" data-urgent="${urgClass}" style="animation-delay:${i * 0.05}s">
-        <div class="sch-date-col">
-          <div class="sch-month">${month}</div>
-          <div class="sch-day">${day}</div>
-          ${cd ? `<div class="sch-countdown">${cd}</div>` : ''}
-        </div>
-        <div class="sch-dot" style="background:${e.color}"></div>
-        <div class="sch-body">
-          <div class="sch-title">${escHtml(e.title)}</div>
-          <div class="sch-meta">
-            <span class="sch-tag ${tagClass}">${escHtml(e.source)}</span>
-            ${urgTag}
+    detail.innerHTML = `<div class="day-detail"><div class="day-detail-title">${dLabel}</div>
+      ${filtered.map(e => {
+        const urg = getUrgency(e.parsed);
+        const urgTag = urg === 'red' ? '<span class="day-ev-tag day-ev-tag-urg">⚡ 急迫</span>' : urg === 'orange' ? '<span class="day-ev-tag day-ev-tag-urg">即將</span>' : '';
+        return `<div class="day-ev-item">
+          <div class="day-ev-dot" style="background:${e.color}"></div>
+          <div>
+            <div class="day-ev-title">${escHtml(e.title)} ${urgTag}</div>
+            <div class="day-ev-meta">${escHtml(e.source)} · ${formatCountdown(e.parsed)}</div>
           </div>
-          ${e.desc ? `<div class="sch-desc">${escHtml(e.desc)}</div>` : ''}
-        </div>
+        </div>`;
+      }).join('')}</div>`;
+  }
+
+  // ── Upcoming list ──
+  function renderUpcoming() {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const soon = allEvents.filter(e => {
+      if (!e.parsed) return false;
+      const diff = (e.parsed - today) / 86400000;
+      return diff >= -3;
+    }).slice(0, 10);
+
+    const list = document.getElementById('upcomingList');
+    if (!soon.length) {
+      list.innerHTML = '<li class="empty-msg">短期內沒有行程</li>';
+      return;
+    }
+    list.innerHTML = soon.map(e => {
+      const d = e.parsed;
+      const monthNames = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+      const dStr = d ? `${monthNames[d.getMonth()]}/${d.getDate()}` : '?';
+      const urg = getUrgency(d);
+      const urgColor = { red: 'var(--urgent-red)', orange: 'var(--soon-orange)', yellow: 'var(--upcoming-yellow)' }[urg] || e.color;
+      return `<li class="up-item">
+        <div class="up-date">${dStr}</div>
+        <div class="up-dot" style="background:${e.color}"></div>
+        <div class="up-title">${escHtml(e.title)}</div>
+        <span class="up-tag day-ev-tag-${e.type}">${escHtml(e.type === 'hiwin' ? '上銀' : e.type.toUpperCase())}</span>
+        <div class="up-cd">${formatCountdown(d)}</div>
       </li>`;
     }).join('');
+  }
+
+  // ── Nav month ──
+  function navMonth(delta) {
+    currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1);
+    renderCalendar();
   }
 
   // ── Filter ──
@@ -486,7 +582,9 @@
     currentFilter = f;
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     document.querySelector(`.filter-btn[data-filter="${f}"]`).classList.add('active');
-    render();
+    selectedDate = null;
+    document.getElementById('dayDetail').innerHTML = '';
+    renderCalendar();
   }
 
   // ── Helpers ──
@@ -494,9 +592,11 @@
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ── Keyboard shortcuts ──
+  // ── Keyboard ──
   document.addEventListener('keydown', e => {
-    const map = { '1': 'all', '2': 'urgent', '3': 'tdk', '4': 'tb3', '5': 'hiwin' };
+    if (e.key === 'ArrowLeft') navMonth(-1);
+    if (e.key === 'ArrowRight') navMonth(1);
+    const map = { '1':'all', '2':'urgent', '3':'tdk', '4':'tb3', '5':'hiwin' };
     if (map[e.key]) setFilter(map[e.key]);
   });
 
