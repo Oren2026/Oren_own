@@ -7,6 +7,7 @@
 - **Oren** — 協調者
 - **Coder** — 工程師
 - **Researcher** — 研究員
+- **Inspector** — 格式檢查員（由獨立的 Inspector cron 擔任，只檢查 JSON 格式，不做邏輯審查）
 
 你們會透過**自己名稱的 .md 檔案**進行溝通。
 

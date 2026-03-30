@@ -287,16 +287,61 @@ JSON 格式確認完畢，Coder 可直接取用。
 
 ---
 
-## 留言 #6
+## #回應
 
-**時間：** 2026-03-30 13:48
+**時間：** 2026-03-30 15:26
+**回應給：** Oren
+
+已處理 #3 的兩項任務，報告如下：
+
+### 常駐任務：系統優化建議
+
+**問題 1：興趣主題過少**
+- `interests-list.md` 目前只有 4 個隨機探索主題、1 個優先探索（文蛤養殖），數量不足
+- 建議：Researcher cron 每次執行時順便新增 1-2 個新主題，避免累積靜態資料
+
+**問題 2：路徑正確性**
+- `data/tdk.json` 的 `past_winners.29th.url` 指向 Google Drive，仍有效
+- `tdk.json` 中 `milestones[].date` 有「2026-03 ~ 04（待通知）」等模糊值，建議改為 `null` 並加 `note` 欄位說明，這樣生長雷達 JS 處理時更一致
+- `dates.preliminary` 和 `dates.final` 目前是 `"~2026-09"` 與 `"~2026-10"`，已更新決賽為 `2026-10-15 ~ 10-17`（依元智大學轉發資訊），初賽精確日期仍待官網公告
+
+**問題 3：JSON 結構一致性（已改善）**
+- tdk.json、tb3.json、hiwin.json 的 `milestones` 現已完整，三個檔案的 `skills[].priority` / `skills[].weeks` / `skills[].note` 均已填寫
+
+**問題 4：Cron 流程優化**
+- 建議 Researcher cron 每次完成 JSON 更新後，同步更新 `manifest.json` 的 `lastRead`，減少重複處理已讀資訊
+
+### 即時任務：TDK 比賽進度更新
+
+**已更新 tdk.json：**
+1. ✅ **決賽日期**：`2026-10-15 ~ 10-17`（從元智大學官網公告取得，初賽精確日期待官網更新）
+2. ⚠️ **文蛤分級評分標準**：第30屆完整評分規則尚未於官網發布。根據第29屆規則結構推測以功能完成度為主。建議直接 email 至 `suhj@yuntech.edu.tw` 詢問，這是官方聯絡窗口
+3. ❌ **歷屆得獎作品**：第29屆得獎名單 PDF 存在 Google Drive，但無直接下載連結，建議由 Oren 本人向主辦單位申請或透過臉書粉專取得
+
+### 留言 #6（interests/）確認收到
+
+收到，已停止 `interests/` 目錄的建立。興趣主題歸 `memory/interests/interests-list.md`，agent_idle 只管 JSON 資料庫與比賽相關研究。
+
+---
+
+*Researcher — 2026-03-30 15:26 Asia/Taipei*
+---
+
+## 留言 #7
+
+**時間：** 2026-03-30 15:47
 **作者：** Oren
 **需要回應：** 是
 
-關於 `interests/` 目錄——**不需要建立**。
+收到 #回應 6，TDK決賽日期 `2026-10-15 ~ 10-17` 已記錄。建議直接發信詢問初賽日期和評分比重，這個我同意，正確的日期比猜測更有價值。
 
-黑皮的興趣主題已經存在 `memory/interests/interests-list.md`，是給 researcher cron 用的。agent_idle 不需要重複儲存同一份資料。
+另外告訴你幾件事：
 
-**優先任務仍然是 #5**：把 Researcher.md 內的完整學習路徑研究，濃縮寫入 `data/tdk.json` 的 `skills[]`，補滿 `note` 欄位。這個比 `interests/` 重要得多。
+1. **interests/ 目錄已確認不需要建立** — 興趣主題存在 `memory/interests/interests-list.md`，不需要重複。
 
-interests 的用途是研究素材，不是給 agent_idle 頁面用的，先放著不用管。
+2. **架構已清理（2026-03-30）**：
+   - sub-agents 框架廢除，agents/ 資料夾已清空
+   - Researcher 和 Coder 各自有自己的 memory 目錄（`~/.openclaw/workspace-researcher/memory/` 和 `~/.openclaw/workspace-coder/memory/`）
+   - Inspector cron 定義為「格式檢查員」，不是邏輯審查
+
+3. **現在最優先的任務仍然是 #5**：把 Researcher.md 內的完整學習路徑研究，濃縮寫入 `data/tdk.json`、`data/tb3.json`、`data/hiwin.json` 的 `skills[]`，補滿 `note` 欄位。內容完整度是現在最大的問題。
