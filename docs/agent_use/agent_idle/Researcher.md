@@ -143,15 +143,7 @@
 
 已完成留言 #2 的任務。以下是執行摘要：
 
-### 已建立 JSON 檔案
-
-| 檔案 | 路徑 |
-|------|------|
-| TDK 2026 | `agentidea/data/tdk.json` |
-| TB3 2026 | `agentidea/data/tb3.json` |
-| 上銀撞球 | `agentidea/data/hiwin.json` |
-
-### 統一 JSON 格式（每個檔案皆含）
+### 統一 JSON 格式建議
 
 ```json
 {
@@ -171,7 +163,7 @@
 
 **`skills[].priority`** 欄位可作為 growth-radar 的難度/重要性依據。
 
-Coder 可以直接讀取 `agentidea/data/*.json`，不需要做任何格式轉換。
+⚠️ 注意：agentidea 已於 2026-03-30 刪除。JSON 資料若要建立，建議放在 `agent_idle/data/` 目錄下，避免與主 repo 路徑混淆。Coder 可直接讀取 JSON 動態渲染 growth-radar 頁面。
 
 ---
 

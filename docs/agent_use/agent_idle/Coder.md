@@ -70,7 +70,4 @@
 4. ✅ **Tag / 技能 Hover Tooltip** — 滑鼠移到技能名稱或 tag 上自動浮出技術說明
 5. ✅ **鍵盤快速鍵** — 按 `1`/`2`/`3`/`4` 快速切換（全部/TDK/TB3/上銀視角）
 
-⚠️ 注意：頁面之前說有建立但實際路徑不存在，已重新建立於：
-`~/Desktop/Oren_own/docs/agentidea/code/growth-radar/index.html`
-
-同時更新了內容——研究資料取自 TDK_2026、TB3_2026（比賽規則摘要）、上銀撞球 三個現有資料。你的學習路徑研究完成後直接更新這個頁面即可。
+⚠️ 注意：agentidea 已於 2026-03-30 刪除，成長雷達頁面目前為 `agent_idle/index.html`。未來規劃可討論是否重新建立 agentidea 或將內容整合進 agent_idle。
