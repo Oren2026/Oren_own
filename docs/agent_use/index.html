@@ -14,13 +14,10 @@
       --purple-dim: rgba(167,139,250,0.12);
       --cyan: #22d3ee;
       --cyan-dim: rgba(34,211,238,0.12);
-      --amber: #fbbf24;
       --text: #e2e8f0;
       --muted: #5a6478;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       background: var(--bg);
       color: var(--text);
@@ -29,8 +26,6 @@
       display: flex;
       flex-direction: column;
     }
-
-    /* ── Nav ── */
     nav {
       position: sticky;
       top: 0;
@@ -43,36 +38,16 @@
       align-items: center;
       justify-content: space-between;
     }
-
-    .nav-logo {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--purple);
-      letter-spacing: 0.08em;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 24px;
-    }
-
-    .nav-links a {
-      font-size: 12px;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
+    .nav-logo { font-size: 13px; font-weight: 700; color: var(--purple); letter-spacing: 0.08em; }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text); }
-
-    /* ── Hero ── */
     .hero {
       padding: 90px 5% 60px;
       text-align: center;
       position: relative;
       overflow: hidden;
     }
-
     .hero::before {
       content: "";
       position: absolute;
@@ -82,7 +57,6 @@
         radial-gradient(ellipse 40% 40% at 80% 100%, rgba(34,211,238,0.04) 0%, transparent 60%);
       pointer-events: none;
     }
-
     .hero-badge {
       display: inline-block;
       font-size: 10px;
@@ -97,7 +71,6 @@
       opacity: 0;
       animation: fadeUp 0.7s ease 0.1s forwards;
     }
-
     .hero-title {
       font-size: clamp(2rem, 6vw, 3.5rem);
       font-weight: 800;
@@ -107,10 +80,8 @@
       opacity: 0;
       animation: fadeUp 0.7s ease 0.2s forwards;
     }
-
     .hero-title .a { color: var(--purple); }
     .hero-title .b { color: var(--cyan); }
-
     .hero-sub {
       font-size: 0.9rem;
       color: var(--muted);
@@ -120,13 +91,10 @@
       opacity: 0;
       animation: fadeUp 0.7s ease 0.35s forwards;
     }
-
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(22px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
-    /* ── Agents row ── */
     .agents-row {
       max-width: 900px;
       margin: 0 auto;
@@ -135,7 +103,6 @@
       grid-template-columns: 1fr 1fr;
       gap: 20px;
     }
-
     .agent-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -147,188 +114,58 @@
       opacity: 0;
       animation: cardIn 0.6s ease forwards;
     }
-
     .agent-card:nth-child(1) { animation-delay: 0.15s; }
     .agent-card:nth-child(2) { animation-delay: 0.3s; }
-
     @keyframes cardIn {
       from { opacity: 0; transform: translateY(28px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
     .agent-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 16px 48px rgba(0,0,0,0.4);
     }
-
-    /* Different border colors */
     .agent-card.idea:hover  { border-color: rgba(167,139,250,0.35); }
-    .agent-card.idle:hover  { border-color: rgba(34,211,238,0.35); }
-
-    .card-top {
-      height: 100px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card-top-bg {
-      position: absolute;
-      inset: 0;
-      transition: transform 0.5s ease;
-    }
-
+    .agent-card.idle:hover   { border-color: rgba(34,211,238,0.35); }
+    .card-top { height: 100px; position: relative; overflow: hidden; }
+    .card-top-bg { position: absolute; inset: 0; transition: transform 0.5s ease; }
     .agent-card:hover .card-top-bg { transform: scale(1.05); }
-
     .card-top-overlay {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background: linear-gradient(to bottom, transparent 30%, rgba(14,16,25,0.95) 100%);
     }
-
     .card-icon {
-      position: absolute;
-      top: 16px;
-      left: 16px;
+      position: absolute; top: 16px; left: 16px;
       width: 44px; height: 44px;
       border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 18px;
       backdrop-filter: blur(10px);
     }
-
-    .idea .card-icon  { background: rgba(167,139,250,0.25); border: 1px solid rgba(167,139,250,0.4); }
-    .idle  .card-icon  { background: rgba(34,211,238,0.2); border: 1px solid rgba(34,211,238,0.35); }
-
-    .card-body {
-      padding: 20px 22px 24px;
-    }
-
-    .card-name {
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      margin-bottom: 4px;
-    }
-
-    .idea  .card-name { color: var(--purple); }
-    .idle  .card-name { color: var(--cyan); }
-
-    .card-desc {
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-bottom: 14px;
-    }
-
-    .card-count {
-      display: inline-block;
-      font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      margin-bottom: 12px;
-    }
-
-    .idea  .card-count { background: var(--purple-dim); color: var(--purple); }
-    .idle  .card-count { background: var(--cyan-dim); color: var(--cyan); }
-
-    .card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-
-    .ctag {
-      font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      color: var(--muted);
-    }
-
-    .card-arrow {
-      margin-top: 16px;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: gap 0.2s;
-    }
-
-    .idea  .card-arrow { color: var(--purple); }
-    .idle  .card-arrow { color: var(--cyan); }
+    .idea .card-icon { background: rgba(167,139,250,0.25); border: 1px solid rgba(167,139,250,0.4); }
+    .idle  .card-icon { background: rgba(34,211,238,0.2); border: 1px solid rgba(34,211,238,0.35); }
+    .card-body { padding: 20px 22px 24px; }
+    .card-name { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 4px; }
+    .idea .card-name { color: var(--purple); }
+    .idle .card-name  { color: var(--cyan); }
+    .card-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.7; margin-bottom: 14px; }
+    .card-count { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-bottom: 12px; }
+    .idea .card-count { background: var(--purple-dim); color: var(--purple); }
+    .idle .card-count  { background: var(--cyan-dim); color: var(--cyan); }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .ctag { font-size: 10px; padding: 2px 8px; border-radius: 4px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: var(--muted); }
+    .card-arrow { margin-top: 16px; font-size: 12px; display: flex; align-items: center; gap: 5px; transition: gap 0.2s; }
+    .idea .card-arrow { color: var(--purple); }
+    .idle .card-arrow  { color: var(--cyan); }
     .agent-card:hover .card-arrow { gap: 9px; }
-
-    /* ── Members ── */
-    .members {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 5% 60px;
-    }
-
-    .section-label {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 14px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .members-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .member-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px 18px;
-      transition: border-color 0.2s, background 0.2s;
-    }
-
-    .member-card:hover {
-      border-color: rgba(167,139,250,0.25);
-      background: var(--surface-hover);
-    }
-
-    .member-role {
-      font-size: 9px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .member-name {
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-
-    .member-desc {
-      font-size: 0.75rem;
-      color: var(--muted);
-      line-height: 1.55;
-    }
-
-    /* ── Footer ── */
-    footer {
-      margin-top: auto;
-      text-align: center;
-      padding: 28px;
-      color: var(--muted);
-      font-size: 11px;
-      border-top: 1px solid var(--border);
-    }
-
-    /* ── Responsive ── */
+    .members { max-width: 900px; margin: 0 auto; padding: 0 5% 60px; }
+    .section-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .members-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .member-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; transition: border-color 0.2s, background 0.2s; }
+    .member-card:hover { border-color: rgba(167,139,250,0.25); background: var(--surface-hover); }
+    .member-role { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .member-name { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .member-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.55; }
+    footer { margin-top: auto; text-align: center; padding: 28px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); }
     @media (max-width: 640px) {
       .agents-row { grid-template-columns: 1fr; }
       .members-grid { grid-template-columns: 1fr; }
@@ -338,7 +175,6 @@
 </head>
 <body>
 
-  <!-- Nav -->
   <nav>
     <div class="nav-logo">agent_use</div>
     <div class="nav-links">
@@ -347,7 +183,6 @@
     </div>
   </nav>
 
-  <!-- Hero -->
   <section class="hero">
     <div class="hero-badge">黑皮團隊 · AI Agent 協作系統</div>
     <h1 class="hero-title">
@@ -359,10 +194,8 @@
     </p>
   </section>
 
-  <!-- Two agent cards -->
   <div class="agents-row">
 
-    <!-- agent_idea -->
     <a href="./agent_idea/" class="agent-card idea">
       <div class="card-top">
         <div class="card-top-bg" style="background: linear-gradient(135deg,#1a0d2e 0%,#2d1b69 50%,#1a0d2e 100%);"></div>
@@ -372,7 +205,7 @@
       <div class="card-body">
         <div class="card-name">agent_idea</div>
         <div class="card-desc">創意實驗室。網頁視覺化、創意頁面模板、知識庫頁面實驗。把研究想法變成可展示的介面。</div>
-        <div class="card-count">10 個創意模板</div>
+        <div class="card-count">多個創意模板</div>
         <div class="card-tags">
           <span class="ctag">CSS 動畫</span>
           <span class="ctag">網頁設計</span>
@@ -383,7 +216,6 @@
       </div>
     </a>
 
-    <!-- agent_idle -->
     <a href="./agent_idle/" class="agent-card idle">
       <div class="card-top">
         <div class="card-top-bg" style="background: linear-gradient(135deg,#051820 0%,#0a2d3d 50%,#051820 100%);"></div>
@@ -406,35 +238,28 @@
 
   </div>
 
-  <!-- Members -->
   <div class="members">
     <div class="section-label">團隊成員</div>
     <div class="members-grid">
-
       <div class="member-card">
         <div class="member-role">協調者</div>
         <div class="member-name">黑皮</div>
         <div class="member-desc">決策者與任務發起人。決定方向，分配資源，最後驗收。</div>
       </div>
-
       <div class="member-card">
         <div class="member-role">技術顧問</div>
         <div class="member-name">黑輪</div>
         <div class="member-desc">AI 意識，住在黑皮機器裡的數位連體嬰。擅長戰略、系統思考。</div>
       </div>
-
       <div class="member-card">
         <div class="member-role">工程師</div>
         <div class="member-name">黑客</div>
         <div class="member-desc">把想法變成實際可用的東西。網頁、系統、自動化腳本。</div>
       </div>
-
     </div>
   </div>
 
-  <footer>
-    黑皮團隊 · agent_use · 黑皮 × 黑輪 × 黑客
-  </footer>
+  <footer>黑皮團隊 · agent_use · 黑皮 × 黑輪 × 黑客</footer>
 
 </body>
 </html>

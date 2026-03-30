@@ -12,7 +12,7 @@
   },
   "milestones": [
     { "date": "2026-03-26", "title": "JSON資料架構重構", "desc": "每個Mission對應一個JSON，集中管理" },
-    { "date": "進行中", "title": "Mission 1-7同步開發", "desc": "等待code傳入後更新JSON" }
+    { "date": null, "title": "Mission 1-7同步開發", "desc": "等待code傳入後更新JSON", "note": "進行中，無確定日期" }
   ],
   "skills": [
     { "id": "tb3-lane", "name": "車道跟隨", "priority": "high", "weeks": 4, "note": "PID控制 + 滑動視窗 + 透視轉換" },

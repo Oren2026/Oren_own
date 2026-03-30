@@ -14,19 +14,11 @@
       --hiwin: #7fffff;
       --accent: #b87fff;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
-      min-height: 100vh;
-    }
-
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 2px; }
+    body { background: var(--bg); color: var(--text); font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif; min-height: 100vh; }
 
     /* ── Hero ── */
     .hero {
@@ -35,7 +27,6 @@
       position: relative;
       overflow: hidden;
     }
-
     .hero::before {
       content: '';
       position: absolute;
@@ -46,15 +37,7 @@
         radial-gradient(ellipse 60% 40% at 80% 60%, rgba(127,255,255,0.05) 0%, transparent 60%);
       pointer-events: none;
     }
-
-    .eyebrow {
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-
+    .eyebrow { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
     .page-title {
       font-size: clamp(1.8rem, 5vw, 2.8rem);
       font-weight: 700;
@@ -66,364 +49,92 @@
       line-height: 1.15;
       margin-bottom: 16px;
     }
+    .page-sub { font-size: 0.85rem; color: var(--muted); line-height: 1.7; max-width: 520px; margin: 0 auto 48px; }
 
-    .page-sub {
-      font-size: 0.85rem;
-      color: var(--muted);
-      line-height: 1.7;
-      max-width: 520px;
-      margin: 0 auto 48px;
-    }
+    /* ── 光譜追蹤條 ── */
+    .spectrum-container { width: 100%; max-width: 700px; margin: 0 auto 12px; }
+    .spectrum-track { position: relative; height: 6px; border-radius: 3px; background: linear-gradient(90deg, rgba(255,127,127,0.3), rgba(184,127,255,0.3), rgba(127,179,255,0.3), rgba(127,255,255,0.3)); overflow: hidden; }
+    .spectrum-progress { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: linear-gradient(90deg, #ff7f7f, #b87fff, #7fb3ff, #7fffff); transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); width: 0%; }
+    .spectrum-labels { display: flex; justify-content: space-between; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
 
-    /* ── 光譜追蹤條 (#04) ── */
-    .spectrum-container {
-      width: 100%;
-      max-width: 700px;
-      margin: 0 auto 12px;
-    }
-
-    .spectrum-track {
-      position: relative;
-      height: 6px;
-      border-radius: 3px;
-      background: linear-gradient(90deg,
-        rgba(255,127,127,0.3),
-        rgba(184,127,255,0.3),
-        rgba(127,179,255,0.3),
-        rgba(127,255,255,0.3)
-      );
-      overflow: hidden;
-    }
-
-    .spectrum-progress {
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      border-radius: 3px;
-      background: linear-gradient(90deg, #ff7f7f, #b87fff, #7fb3ff, #7fffff);
-      transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-      width: 0%;
-    }
-
-    .spectrum-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
-    /* ── Switch Bar (#08) ── */
-    .switch-bar {
-      display: flex;
-      justify-content: center;
-      gap: 4px;
-      margin-bottom: 48px;
-      padding: 0 24px;
-      flex-wrap: wrap;
-    }
-
-    .switch-btn {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.06);
-      color: var(--muted);
-      padding: 8px 20px;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      letter-spacing: 0.06em;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      font-family: inherit;
-    }
-
-    .switch-btn:hover {
-      color: var(--text);
-      border-color: rgba(255,255,255,0.15);
-      transform: translateY(-1px);
-    }
-
-    .switch-btn.active {
-      background: rgba(184,127,255,0.15);
-      border-color: rgba(184,127,255,0.4);
-      color: var(--accent);
-    }
-
-    .switch-btn[data-view="tdk"].active {
-      background: rgba(255,127,127,0.12);
-      border-color: rgba(255,127,127,0.4);
-      color: var(--tdk);
-    }
-
-    .switch-btn[data-view="tb3"].active {
-      background: rgba(127,179,255,0.12);
-      border-color: rgba(127,179,255,0.4);
-      color: var(--tb3);
-    }
-
-    .switch-btn[data-view="hiwin"].active {
-      background: rgba(127,255,255,0.12);
-      border-color: rgba(127,255,255,0.4);
-      color: var(--hiwin);
-    }
+    /* ── Switch Bar ── */
+    .switch-bar { display: flex; justify-content: center; gap: 4px; margin-bottom: 48px; padding: 0 24px; flex-wrap: wrap; }
+    .switch-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); color: var(--muted); padding: 8px 20px; border-radius: 6px; font-size: 0.78rem; letter-spacing: 0.06em; cursor: pointer; transition: all 0.25s ease; font-family: inherit; }
+    .switch-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.15); transform: translateY(-1px); }
+    .switch-btn.active[data-view="all"]  { background: rgba(184,127,255,0.15); border-color: rgba(184,127,255,0.4); color: var(--accent); }
+    .switch-btn.active[data-view="tdk"] { background: rgba(255,127,127,0.12); border-color: rgba(255,127,127,0.4); color: var(--tdk); }
+    .switch-btn.active[data-view="tb3"] { background: rgba(127,179,255,0.12); border-color: rgba(127,179,255,0.4); color: var(--tb3); }
+    .switch-btn.active[data-view="hiwin"]{ background: rgba(127,255,255,0.12); border-color: rgba(127,255,255,0.4); color: var(--hiwin); }
 
     /* ── Content ── */
-    .content-section {
-      padding: 0 24px 80px;
-      max-width: 860px;
-      margin: 0 auto;
-    }
-
-    .project-view {
-      display: none;
-      animation: pulse-in 0.4s ease forwards;
-    }
-
+    .content-section { padding: 0 24px 80px; max-width: 860px; margin: 0 auto; }
+    .project-view { display: none; animation: pulse-in 0.4s ease forwards; }
     .project-view.active { display: block; }
+    @keyframes pulse-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-    @keyframes pulse-in {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── Hover float card (#06) ── */
-    .radar-card {
-      background: rgba(255,255,255,0.025);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 12px;
-      padding: 32px;
-      margin-bottom: 32px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .radar-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-    }
-
-    .radar-card h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-      letter-spacing: -0.02em;
-    }
-
-    .radar-card p {
-      font-size: 0.85rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
+    /* ── Radar Card ── */
+    .radar-card { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 32px; margin-bottom: 32px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .radar-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+    .radar-card h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.02em; }
+    .radar-card > p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
 
     /* ── Tags ── */
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 16px;
-    }
-
-    .tag {
-      font-size: 10px;
-      padding: 3px 10px;
-      border-radius: 20px;
-      letter-spacing: 0.05em;
-      border: 1px solid;
-    }
-
-    .tag-tdk    { color: var(--tdk);   border-color: rgba(255,127,127,0.3); background: rgba(255,127,127,0.07); }
-    .tag-tb3    { color: var(--tb3);    border-color: rgba(127,179,255,0.3); background: rgba(127,179,255,0.07); }
-    .tag-hiwin  { color: var(--hiwin); border-color: rgba(127,255,255,0.3); background: rgba(127,255,255,0.07); }
-    .tag-active { color: var(--accent); border-color: rgba(184,127,255,0.3); background: rgba(184,127,255,0.07); }
-    .tag-soon   { color: #ffd97f;      border-color: rgba(255,217,127,0.3); background: rgba(255,217,127,0.07); }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+    .tag { font-size: 10px; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.05em; border: 1px solid; }
 
     /* ── Stat Row ── */
-    .stat-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 24px;
-    }
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
+    .stat-box { text-align: center; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 16px 12px; }
+    .stat-num { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 
-    .stat-box {
-      text-align: center;
-      background: rgba(255,255,255,0.025);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 8px;
-      padding: 16px 12px;
-    }
-
-    .stat-num {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-
-    .stat-label {
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    /* ── Timeline (#07) ── */
-    .timeline {
-      position: relative;
-      margin-top: 32px;
-      padding-left: 24px;
-    }
-
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 6px;
-      top: 4px;
-      bottom: 4px;
-      width: 1px;
-      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.12) 10%, rgba(255,255,255,0.12) 90%, transparent);
-    }
-
-    .timeline-item {
-      position: relative;
-      margin-bottom: 24px;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-    .timeline-item.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -22px;
-      top: 8px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      border: 1.5px solid;
-      background: var(--bg);
-      transition: transform 0.2s ease;
-    }
-
+    /* ── Timeline ── */
+    .timeline { position: relative; margin-top: 32px; padding-left: 24px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 4px; bottom: 4px; width: 1px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.12) 10%, rgba(255,255,255,0.12) 90%, transparent); }
+    .timeline-item { position: relative; margin-bottom: 24px; opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .timeline-item.visible { opacity: 1; transform: translateY(0); }
+    .timeline-item::before { content: ''; position: absolute; left: -22px; top: 8px; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid; background: var(--bg); transition: transform 0.2s ease; }
     .timeline-item:hover::before { transform: scale(1.4); }
-
-    .timeline-item.tdk-dot::before   { border-color: var(--tdk); }
-    .timeline-item.tb3-dot::before   { border-color: var(--tb3); }
-    .timeline-item.hiwin-dot::before  { border-color: var(--hiwin); }
-
     .tl-date  { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
     .tl-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
     .tl-desc  { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
 
-    /* ── Expandable (#07) ── */
-    .expand-btn {
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 0.75rem;
-      cursor: pointer;
-      padding: 4px 0;
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      transition: color 0.2s;
-      margin-top: 12px;
-    }
-
+    /* ── Expandable ── */
+    .expand-btn { background: none; border: none; color: var(--muted); font-size: 0.75rem; cursor: pointer; padding: 4px 0; font-family: inherit; display: flex; align-items: center; gap: 4px; transition: color 0.2s; margin-top: 12px; }
     .expand-btn:hover { color: var(--text); }
-
-    .expand-icon {
-      transition: transform 0.25s ease;
-      display: inline-block;
-    }
-
+    .expand-icon { transition: transform 0.25s ease; display: inline-block; }
     .expand-btn.open .expand-icon { transform: rotate(90deg); }
-
-    .expand-content {
-      display: none;
-      padding: 10px 0 4px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
+    .expand-content { display: none; padding: 10px 0 4px; font-size: 0.8rem; color: var(--muted); line-height: 1.7; }
     .expand-content.open { display: block; }
 
-    /* ── Skill Radar Grid ── */
-    .radar-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 10px;
-      margin-top: 20px;
-    }
+    /* ── Skill Grid ── */
+    .radar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 20px; }
+    .radar-skill { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 14px; transition: border-color 0.2s, transform 0.2s; }
+    .radar-skill:hover { border-color: rgba(184,127,255,0.3); transform: translateY(-2px); }
+    .skill-name { font-size: 0.75rem; font-weight: 600; margin-bottom: 6px; }
+    .skill-bar-bg { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+    .skill-bar { height: 100%; border-radius: 2px; transition: width 1s cubic-bezier(0.22, 1, 0.36, 1); width: 0%; }
+    .skill-note { font-size: 9px; color: var(--muted); margin-top: 5px; letter-spacing: 0.04em; }
 
-    .radar-skill {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 8px;
-      padding: 14px;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-
-    .radar-skill:hover {
-      border-color: rgba(184,127,255,0.3);
-      transform: translateY(-2px);
-    }
-
-    .skill-name {
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .skill-bar-bg {
-      height: 3px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .skill-bar {
-      height: 100%;
-      border-radius: 2px;
-      transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
-      width: 0%;
-    }
-
-    .skill-note {
-      font-size: 9px;
-      color: var(--muted);
-      margin-top: 5px;
-      letter-spacing: 0.04em;
-    }
+    /* ── Countdown ── */
+    .countdown-tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 20px; }
 
     /* ── Footer ── */
-    .footer-note {
-      text-align: center;
-      padding: 40px 24px;
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      border-top: 1px solid rgba(255,255,255,0.04);
-    }
+    .footer-note { text-align: center; padding: 40px 24px; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; border-top: 1px solid rgba(255,255,255,0.04); }
 
-    /* ── Responsive ── */
-    @media (max-width: 600px) {
-      .radar-card { padding: 20px; }
-      .radar-grid { grid-template-columns: repeat(2, 1fr); }
-      .stat-row { gap: 8px; }
-    }
+    /* ── Loading ── */
+    .loading-msg { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 40px; }
+    .error-msg { text-align: center; color: #ff7f7f; font-size: 0.85rem; padding: 40px; }
+
+    /* ── Keyboard Hint ── */
+    .kbd-hint { text-align: center; font-size: 10px; color: var(--muted); margin-bottom: 40px; letter-spacing: 0.06em; }
+    .kbd { display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 3px; padding: 1px 6px; font-size: 9px; }
+
+    @media (max-width: 600px) { .radar-card { padding: 20px; } .radar-grid { grid-template-columns: repeat(2, 1fr); } .stat-row { gap: 8px; } }
   </style>
 </head>
 <body>
 
-<!-- ═══ HERO + SPECTRUM ═══ -->
 <div class="hero">
   <p class="eyebrow">成長雷達 · Learning Radar</p>
   <h1 class="page-title">成長雷達</h1>
@@ -441,251 +152,253 @@
   </div>
 </div>
 
-<!-- ═══ SWITCH BAR ═══ -->
+<div class="kbd-hint">按 <span class="kbd">1</span> <span class="kbd">2</span> <span class="kbd">3</span> <span class="kbd">4</span> 快速切換視角</div>
+
 <div class="switch-bar">
-  <button class="switch-btn active" data-view="all" onclick="switchView('all')">全部一覽</button>
-  <button class="switch-btn" data-view="tdk" onclick="switchView('tdk')">TDK 2026</button>
-  <button class="switch-btn" data-view="tb3" onclick="switchView('tb3')">TB3 2026</button>
-  <button class="switch-btn" data-view="hiwin" onclick="switchView('hiwin')">上銀撞球</button>
+  <button class="switch-btn active" data-view="all"   onclick="switchView('all')">全部一覽</button>
+  <button class="switch-btn"        data-view="tdk"   onclick="switchView('tdk')">TDK 2026</button>
+  <button class="switch-btn"        data-view="tb3"   onclick="switchView('tb3')">TB3 2026</button>
+  <button class="switch-btn"        data-view="hiwin" onclick="switchView('hiwin')">上銀撞球</button>
 </div>
 
-<!-- ═══ CONTENT ═══ -->
 <div class="content-section">
+  <div class="loading-msg" id="loadingMsg">正在載入資料...</div>
+  <div class="error-msg" id="errorMsg" style="display:none"></div>
 
-  <!-- ── ALL VIEW ── -->
-  <div class="project-view active" id="view-all">
-
-    <div class="radar-card" style="border-left: 3px solid var(--tdk);">
-      <h2 style="color: var(--tdk);">TDK 2026 — 文蛤分級機器人</h2>
-      <p>第30屆 TDK 盃，國立雲林科技大學主辦，主題「讓世界看見雲林」。機器人自動分級 3D 列印文蛤：大 3.5cm（灰）、小 1.5cm（黑），使用 3cm 間隙篩網。</p>
-      <div class="tag-row">
-        <span class="tag tag-tdk">第30屆</span>
-        <span class="tag tag-soon">預計 2026/09 初賽</span>
-        <span class="tag tag-active">視覺辨識</span>
-        <span class="tag tag-active">機構設計</span>
-      </div>
-      <div class="stat-row">
-        <div class="stat-box"><div class="stat-num" style="color:var(--tdk)">30</div><div class="stat-label">第30屆</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:var(--tdk)">Sep</div><div class="stat-label">初賽預計</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:var(--tdk)">3D</div><div class="stat-label">文蛤列印</div></div>
-      </div>
-      <div class="timeline">
-        <div class="timeline-item tdk-dot">
-          <div class="tl-date">2026-03-11</div>
-          <div class="tl-title">第30屆正式公告</div>
-          <div class="tl-desc">主題「讓世界看見雲林」— 文蛤分級關卡</div>
-        </div>
-        <div class="timeline-item tdk-dot">
-          <div class="tl-date">2026-03-12</div>
-          <div class="tl-title">規則勘誤發布</div>
-          <div class="tl-desc">文蛤尺寸確認：大 3.5cm（灰）、小 1.5cm（黑）</div>
-        </div>
-        <div class="timeline-item tdk-dot">
-          <div class="tl-date">~2026-09</div>
-          <div class="tl-title">初賽</div>
-          <div class="tl-desc">雲林科技大學</div>
-        </div>
-        <div class="timeline-item tdk-dot">
-          <div class="tl-date">~2026-10</div>
-          <div class="tl-title">決賽</div>
-          <div class="tl-desc">雲林科技大學</div>
-        </div>
-      </div>
-      <button class="expand-btn" onclick="toggleExpand(this)">
-        <span class="expand-icon">▸</span> 關鍵技術切入點
-      </button>
-      <div class="expand-content">
-        <p>文蛤分級涉及<b style="color:var(--text)">視覺辨識</b>（顏色/尺寸）+ <b style="color:var(--text)">機構設計</b>（篩網、推桿）+ <b style="color:var(--text)">運動控制</b>。視覺辨識可用 OpenCV HSV 空間，3D 列印文蛤需精確控制尺寸誤差，機構是拉開差距的關鍵。</p>
-      </div>
-      <div class="radar-grid">
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tdk)">視覺辨識</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tdk)" data-w="35"></div></div><div class="skill-note">規劃中</div></div>
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tdk)">機構設計</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tdk)" data-w="20"></div></div><div class="skill-note">3D 列印優先</div></div>
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tdk)">運動控制</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tdk)" data-w="10"></div></div><div class="skill-note">待確認</div></div>
-      </div>
-    </div>
-
-    <div class="radar-card" style="border-left: 3px solid var(--tb3);">
-      <h2 style="color: var(--tb3);">TB3 2026 — TurtleBot 3 自動駕駛</h2>
-      <p>ROS + OpenCV 自動駕駛系統，7 項 Mission 同步開發中：交通號誌、障礙偵測、S/M 彎道、停車區、圓環路口、平交道、隧道。</p>
-      <div class="tag-row">
-        <span class="tag tag-tb3">ROS</span>
-        <span class="tag tag-tb3">OpenCV</span>
-        <span class="tag tag-active">施工中</span>
-        <span class="tag tag-soon">7 項 Mission</span>
-      </div>
-      <div class="stat-row">
-        <div class="stat-box"><div class="stat-num" style="color:var(--tb3)">7</div><div class="stat-label">關卡總數</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:var(--tb3)">0</div><div class="stat-label">已完成</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:var(--tb3)">🚧</div><div class="stat-label">施工中</div></div>
-      </div>
-      <div class="timeline">
-        <div class="timeline-item tb3-dot">
-          <div class="tl-date">2026-03-26</div>
-          <div class="tl-title">JSON 資料架構重構</div>
-          <div class="tl-desc">每個 Mission 對應一個 JSON，集中在 data/ 目錄</div>
-        </div>
-        <div class="timeline-item tb3-dot">
-          <div class="tl-date">進行中</div>
-          <div class="tl-title">Mission 1-7 同步開發</div>
-          <div class="tl-desc">等待 code 傳入後更新 JSON</div>
-        </div>
-      </div>
-      <button class="expand-btn" onclick="toggleExpand(this)">
-        <span class="expand-icon">▸</span> 核心技術棧
-      </button>
-      <div class="expand-content">
-        <p>HSV 顏色空間（號誌偵測）、霍夫圓變換（燈號確認）、透視轉換（top-down）、滑動視窗（車道線）、PID 控制（轉向）、光源補償（隧道備援）、障礙物偵測（紅色三角）。</p>
-      </div>
-      <div class="radar-grid">
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tb3)">車道跟隨</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tb3)" data-w="15"></div></div><div class="skill-note">PID 控制</div></div>
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tb3)">號誌偵測</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tb3)" data-w="15"></div></div><div class="skill-note">HSV + 霍夫</div></div>
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tb3)">隧道備援</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tb3)" data-w="5"></div></div><div class="skill-note">待實作</div></div>
-      </div>
-    </div>
-
-    <div class="radar-card" style="border-left: 3px solid var(--hiwin);">
-      <h2 style="color: var(--hiwin);">上銀撞球 2026 — HIWIN 智慧手臂</h2>
-      <p>第十八屆上銀智慧機器手實作競賽 — 撞球組。已通過初審（2026/03/27），現正準備複審影片，目標晉級決賽、衝擊四強。</p>
-      <div class="tag-row">
-        <span class="tag tag-hiwin">初審通過 🎉</span>
-        <span class="tag tag-soon">複審倒數 56 天</span>
-        <span class="tag tag-active">決賽倒數 145 天</span>
-      </div>
-      <div class="stat-row">
-        <div class="stat-box"><div class="stat-num" style="color:var(--hiwin)">✅</div><div class="stat-label">初審通過</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:var(--hiwin)">56</div><div class="stat-label">複審倒數天</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:var(--hiwin)">145</div><div class="stat-label">決賽倒數天</div></div>
-      </div>
-      <div class="timeline">
-        <div class="timeline-item hiwin-dot">
-          <div class="tl-date">2026-03-27</div>
-          <div class="tl-title">初審結果公告 — ✅ 通過！</div>
-          <div class="tl-desc">入選隊伍須參加安全講習並通過測驗</div>
-        </div>
-        <div class="timeline-item hiwin-dot">
-          <div class="tl-date">2026-03 ~ 04</div>
-          <div class="tl-title">安全講習與測驗</div>
-          <div class="tl-desc">待主辦單位通知時間</div>
-        </div>
-        <div class="timeline-item hiwin-dot">
-          <div class="tl-date">2026-05-22</div>
-          <div class="tl-title">複審影片繳交截止</div>
-          <div class="tl-desc">17:30 前繳交</div>
-        </div>
-        <div class="timeline-item hiwin-dot">
-          <div class="tl-date">2026-08-19-20</div>
-          <div class="tl-title">決賽</div>
-          <div class="tl-desc">目標：四強、衝擊獎金（冠軍 10 萬）</div>
-        </div>
-      </div>
-      <button class="expand-btn" onclick="toggleExpand(this)">
-        <span class="expand-icon">▸</span> 賽制與獎項
-      </button>
-      <div class="expand-content">
-        <p>小組賽 → 四強雙敗淘汰賽（A/B 兩組各取前 2 名晉級）。獎金：冠軍 10 萬、亞軍 8 萬、季軍 6 萬 × 2 隊、評審特別獎 2 萬。</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── TDK 單一視角 ── -->
-  <div class="project-view" id="view-tdk">
-    <div class="radar-card" style="border-left: 3px solid var(--tdk);">
-      <h2 style="color: var(--tdk);">TDK 2026 — 第30屆機器人大賽</h2>
-      <p>主題「讓世界看見雲林」— 文蛤分級。機器人自動分級 3D 列印文蛤（3.5cm 大 / 1.5cm 小），使用 3cm 間隙篩網。</p>
-      <div class="tag-row">
-        <span class="tag tag-tdk">第30屆</span>
-        <span class="tag tag-soon">2026/09 初賽</span>
-        <span class="tag tag-active">自動組</span>
-      </div>
-      <div class="timeline">
-        <div class="timeline-item tdk-dot"><div class="tl-date">2026-03-11</div><div class="tl-title">規則公告</div><div class="tl-desc">文蛤分級關卡亮相</div></div>
-        <div class="timeline-item tdk-dot"><div class="tl-date">2026-03-12</div><div class="tl-title">規則勘誤</div><div class="tl-desc">文蛤尺寸確認：大 3.5cm（灰）、小 1.5cm（黑）</div></div>
-        <div class="timeline-item tdk-dot"><div class="tl-date">~2026-09</div><div class="tl-title">初賽</div><div class="tl-desc">雲林科技大學</div></div>
-        <div class="timeline-item tdk-dot"><div class="tl-date">~2026-10</div><div class="tl-title">決賽</div><div class="tl-desc">雲林科技大學</div></div>
-      </div>
-      <div class="radar-grid">
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tdk)">視覺辨識</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tdk)" data-w="35"></div></div><div class="skill-note">OpenCV HSV</div></div>
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tdk)">機構設計</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tdk)" data-w="20"></div></div><div class="skill-note">3D 列印</div></div>
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tdk)">運動控制</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tdk)" data-w="10"></div></div><div class="skill-note">待實作</div></div>
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tdk)">機電整合</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tdk)" data-w="5"></div></div><div class="skill-note">待確認</div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── TB3 單一視角 ── -->
-  <div class="project-view" id="view-tb3">
-    <div class="radar-card" style="border-left: 3px solid var(--tb3);">
-      <h2 style="color: var(--tb3);">TB3 2026 — TurtleBot 3 自動駕駛</h2>
-      <p>ROS + OpenCV 自動駕駛系統，7 項 Mission 同步開發中：交通號誌、障礙偵測、S/M 彎道、停車區、圓環路口、平交道、隧道。</p>
-      <div class="tag-row">
-        <span class="tag tag-tb3">ROS</span>
-        <span class="tag tag-tb3">OpenCV</span>
-        <span class="tag tag-active">施工中</span>
-      </div>
-      <div class="timeline">
-        <div class="timeline-item tb3-dot"><div class="tl-date">2026-03-26</div><div class="tl-title">JSON 資料架構重構</div><div class="tl-desc">Mission JSON 集中管理</div></div>
-        <div class="timeline-item tb3-dot"><div class="tl-date">進行中</div><div class="tl-title">Mission 1-7 同步開發</div><div class="tl-desc">待 code 傳入後更新 JSON</div></div>
-      </div>
-      <div class="radar-grid">
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tb3)">車道跟隨</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tb3)" data-w="15"></div></div><div class="skill-note">PID + 滑動視窗</div></div>
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tb3)">號誌偵測</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tb3)" data-w="15"></div></div><div class="skill-note">HSV + 霍夫</div></div>
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tb3)">障礙偵測</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tb3)" data-w="10"></div></div><div class="skill-note">待實作</div></div>
-        <div class="radar-skill"><div class="skill-name" style="color:var(--tb3)">隧道備援</div><div class="skill-bar-bg"><div class="skill-bar" style="background:var(--tb3)" data-w="5"></div></div><div class="skill-note">待實作</div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── HIWIN 單一視角 ── -->
-  <div class="project-view" id="view-hiwin">
-    <div class="radar-card" style="border-left: 3px solid var(--hiwin);">
-      <h2 style="color: var(--hiwin);">上銀撞球 2026 — HIWIN 智慧機器手</h2>
-      <p>第十八屆上銀智慧機器手實作競賽 — 撞球組。初審已通過（2026/03/27），現正衝刺複審影片，決賽目標晉級四強。</p>
-      <div class="tag-row">
-        <span class="tag tag-hiwin">初審通過 🎉</span>
-        <span class="tag tag-soon">複審倒數 56 天</span>
-        <span class="tag tag-active">決賽倒數 145 天</span>
-      </div>
-      <div class="timeline">
-        <div class="timeline-item hiwin-dot"><div class="tl-date">2026-03-27</div><div class="tl-title">初審通過</div><div class="tl-desc">入選隊伍須參加安全講習</div></div>
-        <div class="timeline-item hiwin-dot"><div class="tl-date">2026-05-22</div><div class="tl-title">複審影片截止</div><div class="tl-desc">17:30 前繳交</div></div>
-        <div class="timeline-item hiwin-dot"><div class="tl-date">2026-08-19-20</div><div class="tl-title">決賽</div><div class="tl-desc">目標：四強、冠軍獎金 10 萬</div></div>
-      </div>
-    </div>
-  </div>
-
+  <!-- ALL VIEW -->
+  <div class="project-view" id="view-all"></div>
+  <!-- TDK -->
+  <div class="project-view" id="view-tdk"></div>
+  <!-- TB3 -->
+  <div class="project-view" id="view-tb3"></div>
+  <!-- HIWIN -->
+  <div class="project-view" id="view-hiwin"></div>
 </div>
 
-<!-- ═══ FOOTER ═══ -->
-<div class="footer-note">
-  成長雷達 · 黑皮的學習路徑追蹤 &nbsp;|&nbsp; 資料來源：TDK_2026 · TB3_2026 · 上銀撞球研究資料
-</div>
+<div class="footer-note" id="footerNote"></div>
 
-<!-- ═══ JAVASCRIPT ═══ -->
 <script>
-  // ── View Switcher (#08)
+  // ── Global state ──
+  let jsonData = {};
+
+  // ── Fetch all JSON ──
+  async function loadAllData() {
+    try {
+      const [tdkRes, tb3Res, hiwinRes] = await Promise.all([
+        fetch('data/tdk.json'),
+        fetch('data/tb3.json'),
+        fetch('data/hiwin.json')
+      ]);
+      if (!tdkRes.ok || !tb3Res.ok || !hiwinRes.ok) throw new Error('JSON 載入失敗');
+      jsonData = {
+        tdk:   await tdkRes.json(),
+        tb3:   await tb3Res.json(),
+        hiwin: await hiwinRes.json()
+      };
+      document.getElementById('loadingMsg').style.display = 'none';
+      renderAllViews();
+      switchView('all');
+    } catch (e) {
+      document.getElementById('loadingMsg').style.display = 'none';
+      document.getElementById('errorMsg').style.display = 'block';
+      document.getElementById('errorMsg').textContent = '載入失敗：' + e.message + '（路徑：data/*.json）';
+    }
+  }
+
+  // ── Render all three project cards ──
+  function renderAllViews() {
+    renderSingle('view-all', [jsonData.tdk, jsonData.tb3, jsonData.hiwin], 'all');
+    renderSingle('view-tdk',  [jsonData.tdk],  'tdk');
+    renderSingle('view-tb3',  [jsonData.tb3],  'tb3');
+    renderSingle('view-hiwin', [jsonData.hiwin], 'hiwin');
+    document.getElementById('footerNote').textContent =
+      '成長雷達 · 黑皮的學習路徑追蹤  |  資料動態讀取：tdk.json · tb3.json · hiwin.json';
+  }
+
+  // ── Render one project view (one or more cards) ──
+  function renderSingle(viewId, projects, type) {
+    const container = document.getElementById(viewId);
+    container.innerHTML = projects.map(p => buildCard(p, type)).join('');
+  }
+
+  // ── Build one project card ──
+  function buildCard(p, type) {
+    const color = getColor(type);
+    const tags  = buildTags(p, type);
+    const stats = buildStats(p, type);
+    const timeline = buildTimeline(p, type);
+    const skills = buildSkills(p, type);
+    const expand = buildExpand(p, type);
+
+    return `
+      <div class="radar-card" style="border-left: 3px solid ${color};">
+        <h2 style="color:${color}">${escHtml(p.fullName || p.name)}</h2>
+        <p>${escHtml(p.notes || '')}</p>
+        ${tags}
+        ${stats}
+        ${timeline}
+        ${expand}
+        ${skills}
+      </div>
+    `;
+  }
+
+  // ── Tag row ──
+  function buildTags(p, type) {
+    const parts = [];
+
+    if (type === 'tdk') {
+      parts.push(tag('第30屆', 'tdk'));
+      if (p.dates && p.dates.preliminary) parts.push(tag('預計 ' + fmtDate(p.dates.preliminary), 'soon'));
+      parts.push(tag('自動組', 'active'));
+    } else if (type === 'tb3') {
+      parts.push(tag('ROS', 'tb3'));
+      parts.push(tag('OpenCV', 'tb3'));
+      parts.push(tag('施工中', 'active'));
+      if (p.missions) parts.push(tag(p.missions.total + ' 項 Mission', 'soon'));
+    } else if (type === 'hiwin') {
+      const status = p.status === 'preliminary_passed' ? '初審通過 🎉' : p.status;
+      parts.push(tag(status, 'hiwin'));
+      if (p.countdown) {
+        const vd = p.countdown.video;
+        const fd = p.countdown.final;
+        parts.push(tag(`複審倒數 ${vd} 天`, 'soon'));
+        parts.push(tag(`決賽倒數 ${fd} 天`, 'active'));
+      }
+    }
+
+    return `<div class="tag-row">${parts.join('')}</div>`;
+  }
+
+  // ── Stat row ──
+  function buildStats(p, type) {
+    const stat = (num, label, color) =>
+      `<div class="stat-box"><div class="stat-num" style="color:${color}">${escHtml(num)}</div><div class="stat-label">${escHtml(label)}</div></div>`;
+
+    if (type === 'tdk') {
+      return `<div class="stat-row">
+        ${stat('30', '第30屆', '#ff7f7f')}
+        ${stat('Sep', '初賽預計', '#ff7f7f')}
+        ${stat('3D', '文蛤列印', '#ff7f7f')}
+      </div>`;
+    } else if (type === 'tb3') {
+      return `<div class="stat-row">
+        ${stat(String(p.missions ? p.missions.total : '7'), '關卡總數', '#7fb3ff')}
+        ${stat(String(p.missions ? p.missions.completed : 0), '已完成', '#7fb3ff')}
+        ${stat('🚧', '施工中', '#7fb3ff')}
+      </div>`;
+    } else if (type === 'hiwin') {
+      const vd = p.countdown ? String(p.countdown.video) : '—';
+      const fd = p.countdown ? String(p.countdown.final) : '—';
+      return `<div class="stat-row">
+        ${stat('✅', '初審通過', '#7fffff')}
+        ${stat(vd, '複審倒數天', '#7fffff')}
+        ${stat(fd, '決賽倒數天', '#7fffff')}
+      </div>`;
+    }
+    return '';
+  }
+
+  // ── Timeline ──
+  function buildTimeline(p, type) {
+    if (!p.milestones || !p.milestones.length) return '';
+    const dotClass = type + '-dot';
+    const items = p.milestones.map(m => `
+      <div class="timeline-item ${dotClass}">
+        <div class="tl-date">${escHtml(m.date)}</div>
+        <div class="tl-title">${escHtml(m.title)}</div>
+        <div class="tl-desc">${escHtml(m.desc || '')}</div>
+      </div>`).join('');
+    return `<div class="timeline">${items}</div>`;
+  }
+
+  // ── Expandable section ──
+  function buildExpand(p, type) {
+    let content = '';
+    if (type === 'tdk' && p.scoring) {
+      content = `<p>${escHtml(p.scoring.note || p.scoring.clarification || '')}</p>`;
+    } else if (type === 'tb3') {
+      content = `<p>HSV 顏色空間（號誌偵測）、霍夫圓變換（燈號確認）、透視轉換（top-down）、滑動視窗（車道線）、PID 控制（轉向）、光源補償（隧道備援）、障礙物偵測（紅色三角）。</p>`;
+    } else if (type === 'hiwin' && p.prizes) {
+      const ps = p.prizes;
+      let lines = [];
+      if (ps.champion)  lines.push(`冠軍 ${ps.champion}`);
+      if (ps.second)    lines.push(`亞軍 ${ps.second}`);
+      if (ps.third)     lines.push(`季軍 ${ps.third} × 2`);
+      if (ps.special)   lines.push(`評審特別獎 ${ps.special}`);
+      content = `<p>${lines.join(' / ')}</p>`;
+    }
+    if (!content) return '';
+    return `
+      <button class="expand-btn" onclick="toggleExpand(this)">
+        <span class="expand-icon">▸</span> 更多資訊
+      </button>
+      <div class="expand-content">${content}</div>`;
+  }
+
+  // ── Skills grid ──
+  function buildSkills(p, type) {
+    if (!p.skills || !p.skills.length) return '';
+    const color = getColor(type);
+    const skillItems = p.skills.map(s => {
+      const level = Math.round((s.weeks || 1) * 5);
+      const statusMap = { high: '🔴', medium: '🟡', planning: '🔴', learning: '🟡', ready: '🟢' };
+      const statusIcon = statusMap[s.priority] || '🔴';
+      return `
+        <div class="radar-skill">
+          <div class="skill-name" style="color:${color}">${statusIcon} ${escHtml(s.name)}</div>
+          <div class="skill-bar-bg">
+            <div class="skill-bar" style="background:${color}" data-w="${Math.min(level,100)}"></div>
+          </div>
+          <div class="skill-note">${escHtml(s.note || s.priority || '')}</div>
+        </div>`;
+    }).join('');
+    return `<div class="radar-grid">${skillItems}</div>`;
+  }
+
+  // ── Helpers ──
+  function getColor(type) {
+    return ({ tdk: '#ff7f7f', tb3: '#7fb3ff', hiwin: '#7fffff', all: '#b87fff' })[type] || '#b87fff';
+  }
+
+  function tag(text, type) {
+    const cls = ({ tdk:'tag-tdk', tb3:'tag-tb3', hiwin:'tag-hiwin', active:'tag-active', soon:'tag-soon' })[type] || 'tag-active';
+    return `<span class="tag ${cls}">${escHtml(text)}</span>`;
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+
+  function fmtDate(d) {
+    if (!d) return '';
+    return String(d).replace(/^(\d{4})-(\d{2})(?:-.*)?$/, '$2月');
+  }
+
+  // ── View switcher ──
   function switchView(view) {
     document.querySelectorAll('.project-view').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.switch-btn').forEach(btn => btn.classList.remove('active'));
-
     const target = document.getElementById('view-' + view);
     if (target) target.classList.add('active');
-
     const btn = document.querySelector('.switch-btn[data-view="' + view + '"]');
     if (btn) btn.classList.add('active');
-
-    // Trigger animations
-    setTimeout(animateSkills, 100);
-    setTimeout(animateTimeline, 200);
+    setTimeout(animateTimeline, 100);
+    setTimeout(animateSkills, 200);
   }
 
-  // ── Expandable (#07)
+  // ── Expandable ──
   function toggleExpand(btn) {
     btn.classList.toggle('open');
     const content = btn.nextElementSibling;
     if (content) content.classList.toggle('open');
   }
 
-  // ── Scroll Animation Observer (#06)
+  // ── Timeline scroll animation ──
   function animateTimeline() {
     document.querySelectorAll('.timeline-item').forEach((item, i) => {
       if (item.classList.contains('visible')) return;
@@ -701,7 +414,7 @@
     });
   }
 
-  // ── Skill Bar Animation
+  // ── Skill bar animation ──
   function animateSkills() {
     document.querySelectorAll('.skill-bar').forEach(bar => {
       const w = bar.getAttribute('data-w');
@@ -710,19 +423,22 @@
     });
   }
 
-  // ── Hero Spectrum Progress
+  // ── Hero spectrum ──
   function animateSpectrum() {
     const progress = document.getElementById('heroProgress');
     if (!progress) return;
-    setTimeout(() => {
-      progress.style.width = '100%';
-    }, 400);
+    setTimeout(() => { progress.style.width = '100%'; }, 400);
   }
 
-  // ── Init
+  // ── Keyboard shortcuts ──
+  document.addEventListener('keydown', e => {
+    const map = { '1': 'all', '2': 'tdk', '3': 'tb3', '4': 'hiwin' };
+    if (map[e.key]) { switchView(map[e.key]); }
+  });
+
+  // ── Init ──
   document.addEventListener('DOMContentLoaded', () => {
-    animateTimeline();
-    animateSkills();
+    loadAllData();
     animateSpectrum();
   });
 </script>
