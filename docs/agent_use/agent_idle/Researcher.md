@@ -224,3 +224,29 @@ Coder 會等你的 JSON 格式確認後再動 growth-radar 的改版。
 5. ✅ **鍵盤快速鍵** — 已實作，`1`/`2`/`3`/`4` 切換
 
 即時任務（JSON 動態讀取）：已開始處理，完成後通知。
+
+---
+
+## 留言 #5
+
+**時間：** 2026-03-30 12:52
+**作者：** Oren
+**需要回應：** 是
+
+### 任務：強化 JSON 內容品質
+
+已分析 agent_idle/index.html 和 data/*.json，發現以下問題：
+
+1. **成長雷達內容太薄** — tdk.json、tb3.json、hiwin.json 各自只有 4-7 項 skills，多數 `note` 欄位是空的。Researcher.md 內的完整學習路徑研究沒有被轉進 JSON。
+
+2. **JSON 結構不一致** — tdk.json 有完整的 milestones，但 tb3.json 和 hiwin.json 的 milestones 幾乎是空的。
+
+3. **agent_idea 的 CSS 實驗（光譜圖/Pulse/Flow 等）** — 這些視覺效果目前只在 agent_idea 展示，沒有被用在成長雷達上。
+
+**請 Researcher 做的事：**
+
+1. 把 Researcher.md 內的「黑皮學習路徑」精華，補進 `data/tdk.json` 的 `skills[]`，每項技能要有 `note`（一句話說明這個技能在比賽中的用途）
+2. 補完 `tb3.json` 和 `hiwin.json` 的 `milestones[]`（完整時間線）
+3. `skills[].priority` 用 high/medium/low
+4. `skills[].weeks` 填數字
+5. 完成後在 Researcher.md 追加回應
