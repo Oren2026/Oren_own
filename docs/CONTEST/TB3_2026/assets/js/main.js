@@ -10,15 +10,15 @@
  */
 
 const MISSION_ICONS = {
-  traffic_light:  '🚦', intersection:   '↩️',
-  construction:   '🚧', parking:        '🅿️',
-  level_crossing: '🚞', s_curve:      '〰️',
-  tunnel:         '🚇', lane:           '🚗'
+  traffic_light:  '🚦', construction:   '🚧',
+  parking:        '🅿️', level_crossing: '🚞',
+  s_curve:      '〰️', tunnel:         '🚇',
+  lane_center:  '◉', lane:           '🚗'
 };
 
 const MISSION_IDS = [
-  'traffic_light','intersection','construction',
-  'parking','level_crossing','s_curve','tunnel','lane'
+  'traffic_light','s_curve','construction',
+  'parking','m_curve','level_crossing','tunnel','lane_center','lane'
 ];
 
 // ── 讀取 ──────────────────────────────────────────────

@@ -1,0 +1,29 @@
+{
+  "id": "m_curve",
+  "name": { "zh": "M 型彎道", "en": "M-Curve" },
+  "category": "mission",
+  "description": "右下角鋸齒狀 M 型區域，狹窄彎道控制，挑戰精準轉向。",
+  "status": "todo",
+  "subConcepts": [
+    {
+      "id": "sharp_turn",
+      "name": { "zh": "急彎偵測", "en": "Sharp Turn Detection" },
+      "status": "todo",
+      "description": "偵測 M 型鋸齒狀彎道的轉向點"
+    },
+    {
+      "id": "tight_control",
+      "name": { "zh": "窄距控制", "en": "Tight Steering Control" },
+      "status": "todo",
+      "description": "在狹窄彎道中維持穩定行駛"
+    },
+    {
+      "id": "speed_damping",
+      "name": { "zh": "減速策略", "en": "Speed Damping" },
+      "status": "todo",
+      "description": "進入 M 型區前主動減速"
+    }
+  ],
+  "files": ["detect_lane.py"],
+  "testStatus": "untested"
+}
