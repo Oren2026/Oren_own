@@ -15,7 +15,6 @@
       --accent: #7fb3ff;
       --accent-dim: rgba(127,179,255,0.1);
       --accent2: #22d3ee;
-      --tdk: #ff7f7f;
       --hiwin: #7fffff;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -117,12 +116,11 @@
     .cmd-item:hover { border-color: rgba(127,179,255,0.2); }
     .cmd-item.hidden { display: none; }
     .cmd-body { min-width: 0; }
-    .cmd-category { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent2); margin-bottom: 3px; }
-    .cmd-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+    .cmd-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
     .cmd-code {
       font-family: "Courier New", Consolas, monospace;
       font-size: 0.78rem;
-      color: var(--text);
+      color: var(--accent2);
       background: rgba(0,0,0,0.4);
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 5px;
@@ -132,7 +130,6 @@
       white-space: pre-wrap;
       line-height: 1.5;
     }
-    .cmd-code:hover { border-color: rgba(127,179,255,0.15); }
     .cmd-copy-wrap { display: flex; align-items: flex-start; padding-top: 2px; }
     .cmd-copy {
       background: rgba(255,255,255,0.05);
@@ -150,29 +147,21 @@
     .cmd-copy.copied { background: rgba(127,255,255,0.1); color: var(--hiwin); border-color: rgba(127,255,255,0.3); }
     .cmd-note { font-size: 0.72rem; color: var(--muted); margin-top: 4px; font-style: italic; }
 
-    /* ── Table ── */
-    .table-wrap { overflow-x: auto; }
-    .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    .data-table th { text-align: left; color: var(--accent); font-weight: 600; padding: 8px 12px; border-bottom: 1px solid rgba(127,179,255,0.2); background: var(--surface); }
-    .data-table td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; }
-    .data-table tr:hover td { background: var(--surface-hover); }
-    .td-name { font-weight: 600; color: var(--text); }
-    .td-code { font-family: "Courier New", Consolas, monospace; font-size: 0.75rem; color: var(--accent2); }
-    .td-type { font-size: 0.72rem; color: var(--muted); }
-    .td-desc { color: var(--muted); line-height: 1.5; }
-
-    /* ── Workflow ── */
-    .workflow-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 10px; }
-    .workflow-title { font-size: 0.9rem; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
-    .workflow-steps { display: flex; flex-direction: column; gap: 6px; }
-    .wf-step { display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; }
-    .wf-num { width: 18px; height: 18px; border-radius: 50%; background: var(--accent-dim); border: 1px solid rgba(127,179,255,0.3); color: var(--accent); font-size: 0.68rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-    .wf-text { color: var(--text); line-height: 1.5; }
-    .wf-text code { font-family: "Courier New", Consolas, monospace; font-size: 0.78rem; color: var(--accent2); background: rgba(0,0,0,0.4); padding: 1px 5px; border-radius: 3px; }
+    /* ── Dev order steps ── */
+    .step-list { display: flex; flex-direction: column; gap: 8px; }
+    .step-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; }
+    .step-item:hover { border-color: rgba(127,179,255,0.2); }
+    .step-num { font-size: 1rem; font-weight: 900; color: var(--accent); text-align: center; line-height: 1.6; }
+    .step-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+    .step-focus { font-size: 0.75rem; color: var(--accent2); margin-bottom: 6px; }
+    .step-cmds { display: flex; flex-wrap: wrap; gap: 5px; }
+    .step-cmd { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.07); color: var(--muted); }
+    .step-output { font-size: 0.72rem; color: var(--muted); margin-top: 4px; font-style: italic; }
 
     /* ── Empty state ── */
     .empty-search { text-align: center; padding: 48px; color: var(--muted); font-size: 0.88rem; }
     .empty-search strong { color: var(--accent); }
+    .load-error { text-align: center; padding: 48px; color: #ff7f7f; font-size: 0.88rem; }
 
     /* ── Toast ── */
     .toast {
@@ -219,7 +208,7 @@
 <div class="main">
   <div class="main-header">
     <h1>TB3 指令手冊</h1>
-    <p id="pageDesc">基於三份 AutoRace 研習資料整合，所有實際用過的指令</p>
+    <p id="pageDesc">從 tb3-commands.json 載入</p>
   </div>
 
   <div class="search-wrap">
@@ -238,265 +227,226 @@
 <div class="toast" id="toast">已複製到剪貼簿</div>
 
 <script>
-  // ── State ──
-  let cmdData = {};
-  let currentSection = null;
-  let searchQuery = '';
+// ── State ──
+let cmdData = {};
+let currentSection = null;
+let searchQuery = '';
 
-  // ── Load JSON ──
-  // valid section IDs for hash mapping
-  const VALID_IDS = ['environment','rosCore','研習1_道路駕駛','研習2_自動避障','研習3_SLAM導航','常用工具','launchFiles','topics','quickReference'];
-  function isValidSection(id) { return id && VALID_IDS.includes(id); }
+// ── Category metadata ──
+const CATEGORIES = [
+  { key: 'category1_環境建置',    icon: '⚙',  label: '環境建置' },
+  { key: 'category2_號誌偵測_研習1', icon: '🚦', label: '號誌偵測' },
+  { key: 'category3_車道跟隨_研習1', icon: '🛤', label: '車道跟隨' },
+  { key: 'category4_岔路決策_研習1', icon: '↪', label: '岔路決策' },
+  { key: 'category5_障礙偵測_研習2', icon: '🚧', label: '障礙偵測' },
+  { key: 'category6_自動停車_研習2', icon: '🅿', label: '自動停車' },
+  { key: 'category7_平交道_研習3',  icon: '🚞', label: '平交道' },
+  { key: 'category8_隧道導航_研習3', icon: '⚡', label: '隧道導航' },
+];
 
-  // ── Inline JSON (fallback when fetch fails in file:// mode) ──
-  const INLINE_DATA = JSON.parse(`{   "title": "TB3 AutoRace 完整指令手冊",   "lastUpdated": "2026-03-30",   "description": "基於三份 AutoRace 研習資料（採智科技）整合，所有實際用過的指令",    "environment": {     "title": "環境建置",     "description": "TB3 與 PC 的網路連線、SSH、遠端操控環境",     "commands": [       {         "id": "env-01",         "category": "WiFi設定",         "cmd": "sudo nano /etc/netplan/50-cloud-init.yaml",         "desc": "編輯 WiFi 網路設定檔，修改 WIFI_SSID 和 WIFI_PASSWORD",         "note": "需要管理員權限"       },       {         "id": "env-02",         "category": "WiFi設定",         "cmd": "sudo netplan apply",         "desc": "重啟網路設定，使 WiFi 設定生效",         "note": "修改 netplan 後執行"       },       {         "id": "env-03",         "category": "WiFi設定",         "cmd": "ifconfig",         "desc": "查詢網路介面資訊（特別是 wlan0 的 IP 位址）",         "note": "確認 TB3 的 IP 是 192.168.10.101"       },       {         "id": "env-04",         "category": "SSH連線",         "cmd": "ssh ubuntu@192.168.10.101",         "desc": "從 PC 遠端連線到 TB3 主機",         "note": "預設密碼：turtlebot"       },       {         "id": "env-05",         "category": "環境變數",         "cmd": "nano ~/.bashrc",         "desc": "編輯 bash 環境變數設定檔（PC 與 TB3 都要設定）",         "note": "ROS_MASTER_URI、TURTLEBOT3_MODEL 等變數在這裡設定"       },       {         "id": "env-06",         "category": "環境變數",         "cmd": "source ~/.bashrc",         "desc": "讓環境變數立即生效（不用重開終端機）",         "note": "修改 bashrc 後執行"       },       {         "id": "env-07",         "category": "環境變數",         "cmd": "echo \$ROS_MASTER_URI",         "desc": "確認 ROS Master 的 URI 設定",         "note": "正常應顯示 http://localhost:11311"       }     ]   },    "rosCore": {     "title": "ROS 核心程序",     "description": "TB3 自駕系統的基礎執行環境，所有節點必須在 roscore 啟動後才能運作",     "commands": [       {         "id": "ros-01",         "category": "核心程序",         "cmd": "roscore",         "desc": "啟動 ROS Master，是所有 ROS 節點的通訊中心",         "note": "每次開機後只需執行一次，通常在 TB3 上執行"       },       {         "id": "ros-02",         "category": "核心程序",         "cmd": "roslaunch [package] [launchfile.launch]",         "desc": "啟動多個 ROS 節點的標準方式，自動處理參數和依賴",         "note": "範例：roslaunch turtlebot3_bringup turtlebot3_robot.launch"       },       {         "id": "ros-03",         "category": "核心程序",         "cmd": "rosrun [package] [node]",         "desc": "執行單一 ROS 節點",         "note": "通常用於測試或单独功能模組"       },       {         "id": "ros-04",         "category": "節點管理",         "cmd": "rosnode list",         "desc": "列出目前所有運行的 ROS 節點",         "note": "確認節點是否成功啟動"       },       {         "id": "ros-05",         "category": "Topic管理",         "cmd": "rostopic list",         "desc": "列出目前所有發布/訂閱的 Topic",         "note": "確認資料流是否存在"       },       {         "id": "ros-06",         "category": "Topic管理",         "cmd": "rostopic echo /[topic_name]",         "desc": "查看特定 Topic 的即時資料內容",         "note": "用於除錯：確認感測器資料是否正常發布"       },       {         "id": "ros-07",         "category": "節點管理",         "cmd": "rosnode info /[node_name]",         "desc": "查看特定節點的詳細資訊（發布的Topic、訂閱的Topic、連線狀況）",         "note": "用於除錯節點間的通訊問題"       }     ]   },    "研習1_道路駕駛": {     "title": "研習1：道路駕駛、影像辨識",     "description": "號誌判斷、岔路決策、車道跟隨，TB3 從起點 A 到終點 B",     "source": "AutoRace_研習1_學員.pdf",     "commands": [       {         "id": "study1-01",         "category": "環境確認",         "cmd": "roslaunch turtlebot3_bringup turtlebot3_robot.launch",         "desc": "啟動 TB3 硬體驅動（馬達、感測器）",         "note": "在 TB3 本機或透過 SSH 執行"       },       {         "id": "study1-02",         "category": "環境確認",         "cmd": "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch",         "desc": "啟動鍵盤遙控，確認 TB3 基本運動正常",         "note": "WASD 鍵控制方向，Q 結束"       },       {         "id": "study1-03",         "category": "影像辨識",         "cmd": "rosrun image_view image_view image:=/camera/image_raw",         "desc": "即時顯示 TB3 相機影像（確認相機正常運作）",         "note": "影像話題名稱可能因設定而異"       },       {         "id": "study1-04",         "category": "號誌偵測",         "cmd": "roslaunch detect detect_traffic_light.launch",         "desc": "啟動交通號誌偵測節點",         "note": "通常發布 /detected_color 或 /traffic_light_state"       },       {         "id": "study1-05",         "category": "號誌偵測",         "cmd": "rostopic echo /detected_color",         "desc": "查看號誌偵測結果（紅/綠/黃）",         "note": "確認 HSV 閾值設定是否正確"       },       {         "id": "study1-06",         "category": "岔路決策",         "cmd": "roslaunch detect detect_intersection.launch",         "desc": "啟動岔路號誌偵測節點（左右箭頭方向）",         "note": "與號誌偵測分開，獨立的節點"       },       {         "id": "study1-07",         "category": "岔路決策",         "cmd": "rostopic echo /intersection_direction",         "desc": "查看岔路方向偵測結果（left/right/forward）",         "note": "確認轉向判斷邏輯是否正確"       },       {         "id": "study1-08",         "category": "車道跟隨",         "cmd": "roslaunch lane_follow lane_follow.launch",         "desc": "啟動車道跟隨節點",         "note": "讀取車道線資料，輸出 steering angle"       },       {         "id": "study1-09",         "category": "車道跟隨",         "cmd": "rostopic echo /steering_angle",         "desc": "查看車道跟隨輸出的轉向角度",         "note": "正值左轉、負值右轉"       },       {         "id": "study1-10",         "category": "整合測試",         "cmd": "roslaunch autorace mission_intersection.launch",         "desc": "啟動完整岔路任務（號誌+車道+決策）",         "note": "從起點到終點的整合測試"       }     ]   },    "研習2_自動避障": {     "title": "研習2：自動避障、自動停車",     "description": "障礙物偵測、停車格辨識、定點停車，TB3 從 A 到 B 停車場再到 C",     "source": "AutoRace_研習2_學員.pdf",     "commands": [       {         "id": "study2-01",         "category": "障礙偵測",         "cmd": "roslaunch detect detect_obstacle.launch",         "desc": "啟動障礙物偵測節點（紅色三角標誌）",         "note": "固定位置障礙物偵測"       },       {         "id": "study2-02",         "category": "障礙偵測",         "cmd": "rostopic echo /obstacle_detected",         "desc": "查看障礙偵測結果（true/false）",         "note": "確認障礙物辨識是否正常"       },       {         "id": "study2-03",         "category": "停車控制",         "cmd": "roslaunch parking parking_detect.launch",         "desc": "啟動停車格偵測節點",         "note": "掃描停車場，找出空車格"       },       {         "id": "study2-04",         "category": "停車控制",         "cmd": "rostopic echo /parking_slot",         "desc": "查看停車格偵測結果（位置座標）",         "note": "空車格的相對位置"       },       {         "id": "study2-05",         "category": "停車控制",         "cmd": "roslaunch parking parking_control.launch",         "desc": "啟動定點停車控制節點",         "note": "接收目標座標，執行倒車入庫"       },       {         "id": "study2-06",         "category": "停車控制",         "cmd": "rostopic pub /parking_goal geometry_msgs/PoseStamped '{header: {}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}}}'",         "desc": "發布停車目標座標（測試用）",         "note": "手動指定停車位置"       },       {         "id": "study2-07",         "category": "整合測試",         "cmd": "roslaunch autorace mission_parking.launch",         "desc": "啟動完整停車任務（障礙+停車+駛出）",         "note": "從 A 到 B 停車場再到 C 的整合測試"       }     ]   },    "研習3_SLAM導航": {     "title": "研習3：SLAM 導航",     "description": "SLAM建圖、平交道等待、隧道導航，TB3 從 A 到 C（經過平交道+隧道）",     "source": "AutoRace_研習3_學員.pdf",     "commands": [       {         "id": "study3-01",         "category": "SLAM建圖",         "cmd": "roslaunch turtlebot3_slam turtlebot3_slam.launch",         "desc": "啟動 SLAM 建圖模式",         "note": "使用 Gmapping，同時定位與地圖建構"       },       {         "id": "study3-02",         "category": "SLAM建圖",         "cmd": "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch",         "desc": "鍵盤遙控 TB3 移動，同時進行地圖建構",         "note": "盡量覆蓋所有區域，建構完整地圖"       },       {         "id": "study3-03",         "category": "SLAM建圖",         "cmd": "rosrun map_server map_saver -f ~/map",         "desc": "將建構好的地圖儲存到檔案",         "note": "儲存為 map.yaml + map.pgm"       },       {         "id": "study3-04",         "category": "SLAM導航",         "cmd": "roslaunch turtlebot3_navigation move_base.launch",         "desc": "啟動導航堆疊（基於已儲存的地圖）",         "note": "接收目標座標，自主導航到目標"       },       {         "id": "study3-05",         "category": "平交道偵測",         "cmd": "roslaunch detect detect_gate.launch",         "desc": "啟動平交道柵欄偵測節點",         "note": "紅白條紋辨識"       },       {         "id": "study3-06",         "category": "平交道偵測",         "cmd": "rostopic echo /gate_state",         "desc": "查看柵欄狀態（open/closed）",         "note": "closed = 柵欄放下需等待"       },       {         "id": "study3-07",         "category": "隧道光源補償",         "cmd": "roslaunch tunnel tunnel_compensation.launch",         "desc": "啟動隧道光源補償節點",         "note": "偵測到隧道時自動切換補償模式"       },       {         "id": "study3-08",         "category": "隧道光源補償",         "cmd": "rostopic echo /in_tunnel",         "desc": "查看是否處於隧道內（true/false）",         "note": "進入隧道時光源補償失效，需切換 PID 盲走"       },       {         "id": "study3-09",         "category": "整合測試",         "cmd": "roslaunch autorace mission_slam.launch",         "desc": "啟動完整 SLAM 任務（平交道+隧道）",         "note": "從 A 到 C 的整合導航測試"       }     ]   },    "常用工具": {     "title": "常用工具指令",     "description": "日常開發、除錯、系統管理常用的指令",     "commands": [       {         "id": "tool-01",         "category": "系統資訊",         "cmd": "hostname -I",         "desc": "查詢本機 IP 位址",         "note": "快速確認網路是否正常"       },       {         "id": "tool-02",         "category": "系統資訊",         "cmd": "ping 192.168.10.101",         "desc": "測試 TB3 是否網路可達",         "note": "確認網路連線是否正常"       },       {         "id": "tool-03",         "category": "系統資訊",         "cmd": "cat /etc/ros/noetic/distribution.yaml | grep turtlebot",         "desc": "確認已安裝的 TurtleBot3 套件版本",         "note": "確認套件完整性"       },       {         "id": "tool-04",         "category": "ROS除錯",         "cmd": "rqt_graph",         "desc": "開啟節點連線視覺化圖（所有節點和 Topic 的連線關係）",         "note": "確認節點間的通訊架構是否正確"       },       {         "id": "tool-05",         "category": "ROS除錯",         "cmd": "rostopic hz /[topic_name]",         "desc": "查看 Topic 的更新頻率（Hz）",         "note": "確認感測器發布頻率是否正常"       },       {         "id": "tool-06",         "category": "ROS除錯",         "cmd": "rosrun rqt_reconfigure rqt_reconfigure",         "desc": "動態調整節點參數（不用重啟節點）",         "note": "調整 HSV 閾值、PID 參數等"       },       {         "id": "tool-07",         "category": "資料處理",         "cmd": "rosbag record -a",         "desc": "錄製所有 Topic 的資料（用於事後回放分析）",         "note": "Ctrl+C 結束錄製，產生 .bag 檔案"       },       {         "id": "tool-08",         "category": "資料處理",         "cmd": "rosbag play [filename.bag]",         "desc": "回放之前錄製的 bag 檔案",         "note": "用於除錯：重現之前的感測器資料"       },       {         "id": "tool-09",         "category": "程序管理",         "cmd": "ps aux | grep ros",         "desc": "查看所有與 ROS 相關的行程",         "note": "確認哪些節點在執行中"       },       {         "id": "tool-10",         "category": "程序管理",         "cmd": "kill -9 [PID]",         "desc": "強制結束特定行程（使用 PID）",         "note": "當節點卡住無法正常結束時使用"       },       {         "id": "tool-11",         "category": "檔案傳輸",         "cmd": "scp ubuntu@192.168.10.101:/path/to/file .",         "desc": "從 TB3 複製檔案到本機",         "note": "備份地圖、日誌等檔案"       },       {         "id": "tool-12",         "category": "檔案傳輸",         "cmd": "scp /path/to/file ubuntu@192.168.10.101:/path/to/",         "desc": "從本機複製檔案到 TB3",         "note": "部署程式碼、參數檔案等"       }     ]   },    "launchFiles": {     "title": "Launch 檔案對照表",     "description": "各功能模組的主要 launch 檔案名稱和用途",     "files": [       { "name": "turtlebot3_robot.launch", "package": "turtlebot3_bringup", "desc": "TB3 硬體驅動啟動（馬達、感測器初始化）" },       { "name": "turtlebot3_slam.launch", "package": "turtlebot3_slam", "desc": "SLAM 建圖模式" },       { "name": "turtlebot3_navigation.launch", "package": "turtlebot3_navigation", "desc": "自主導航模式" },       { "name": "turtlebot3_teleop_key.launch", "package": "turtlebot3_teleop", "desc": "鍵盤遙控" },       { "name": "detect_traffic_light.launch", "package": "detect", "desc": "交通號誌偵測（紅/綠/黃燈）" },       { "name": "detect_intersection.launch", "package": "detect", "desc": "岔路方向偵測（左右箭頭）" },       { "name": "detect_obstacle.launch", "package": "detect", "desc": "障礙物偵測（紅色三角）" },       { "name": "detect_gate.launch", "package": "detect", "desc": "平交道柵欄偵測（紅白條紋）" },       { "name": "parking_detect.launch", "package": "parking", "desc": "停車格偵測" },       { "name": "parking_control.launch", "package": "parking", "desc": "定點停車控制" },       { "name": "lane_follow.launch", "package": "lane_follow", "desc": "車道跟隨" },       { "name": "tunnel_compensation.launch", "package": "tunnel", "desc": "隧道光源補償" },       { "name": "mission_intersection.launch", "package": "autorace", "desc": "研習1整合：岔路任務" },       { "name": "mission_parking.launch", "package": "autorace", "desc": "研習2整合：停車任務" },       { "name": "mission_slam.launch", "package": "autorace", "desc": "研習3整合：SLAM導航任務" },       { "name": "core.launch", "package": "core", "desc": "自駕核心程序（所有底層節點）" }     ]   },    "topics": {     "title": "常見 Topic 對照表",     "description": "各節點發布/訂閱的重要 Topic",     "subscribers": [       { "name": "/cmd_vel", "type": "geometry_msgs/Twist", "desc": "速度命令（linear.x前進速度、angular.z轉向速度）" },       { "name": "/camera/image_raw", "type": "sensor_msgs/Image", "desc": "相機原始影像" },       { "name": "/parking_goal", "type": "geometry_msgs/PoseStamped", "desc": "停車目標座標" }     ],     "publishers": [       { "name": "/detected_color", "type": "std_msgs/String", "desc": "號誌偵測結果（red/green/yellow）" },       { "name": "/intersection_direction", "type": "std_msgs/String", "desc": "岔路方向（left/right/forward）" },       { "name": "/obstacle_detected", "type": "std_msgs/Bool", "desc": "障礙物偵測結果（true/false）" },       { "name": "/parking_slot", "type": "geometry_msgs/PoseStamped", "desc": "空車格位置" },       { "name": "/gate_state", "type": "std_msgs/String", "desc": "柵欄狀態（open/closed）" },       { "name": "/in_tunnel", "type": "std_msgs/Bool", "desc": "是否在隧道內（true/false）" },       { "name": "/steering_angle", "type": "std_msgs/Float32", "desc": "車道跟隨轉向角度" },       { "name": "/scan", "type": "sensor_msgs/LaserScan", "desc": "雷射雷達掃描資料" }     ]   },    "quickReference": {     "title": "快速參考",     "description": "最常用的指令組合，按任務快速查詢",     "workflows": [       {         "title": "開機後標配流程",         "steps": [           "1. 確認 PC 與 TB3 同 WiFi",           "2. SSH 連線 TB3：ssh ubuntu@192.168.10.101",           "3. 在 TB3 執行：roscore",           "4. 在 TB3 執行：roslaunch turtlebot3_bringup turtlebot3_robot.launch",           "5. 在 PC 執行對應任務的 launch 檔"         ]       },       {         "title": "號誌任務測試流程",         "steps": [           "1. core.launch（核心程序）",           "2. turtlebot3_robot.launch（硬體）",           "3. detect_traffic_light.launch（號誌偵測）",           "4. lane_follow.launch（車道跟隨）",           "5. 觀察 /detected_color 輸出"         ]       },       {         "title": "停車任務測試流程",         "steps": [           "1. core.launch",           "2. turtlebot3_robot.launch",           "3. parking_detect.launch（找空位）",           "4. parking_control.launch（執行停車）",           "5. 觀察 /parking_slot 和執行結果"         ]       },       {         "title": "SLAM建圖流程",         "steps": [           "1. core.launch",           "2. turtlebot3_slam.launch",           "3. turtlebot3_teleop_key.launch（遙控走一圈）",           "4. 走完後：rosrun map_server map_saver -f ~/map"         ]       }     ]   } } `);
-
-  async function loadData() {
-    try {
-      const res = await fetch('../data/tb3-commands.json');
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      cmdData = await res.json();
-    } catch(e) {
-      // Fallback: use inline JSON (works when opened as file://)
-      cmdData = INLINE_DATA;
-    }
-    buildNav();
-    const rawHash = location.hash ? location.hash.slice(1) : '';
-    const decoded = rawHash ? decodeURIComponent(rawHash) : '';
-    if (isValidSection(decoded)) {
-      showSection(decoded);
-    } else {
-      showSection('environment');
-    }
+// ── Load JSON ──
+async function loadData() {
+  try {
+    const res = await fetch('../data/tb3-commands.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    cmdData = await res.json();
+  } catch(e) {
+    document.getElementById('content').innerHTML =
+      `<div class="load-error">載入失敗：${e.message}<br><br>請透過 HTTP 伺服器開啟本頁（不要直接雙擊檔案）</div>`;
+    return;
   }
 
-  // ── Build nav ──
-  function buildNav() {
-    const sections = [
-      { id: 'environment',     label: '環境建置',     icon: '⚙',  count: cmdData.environment?.commands?.length || 0 },
-      { id: 'rosCore',          label: 'ROS 核心',      icon: '◉',  count: cmdData.rosCore?.commands?.length || 0 },
-      { id: '研習1_道路駕駛',  label: '道路駕駛',      icon: '🚦', count: cmdData['研習1_道路駕駛']?.commands?.length || 0 },
-      { id: '研習2_自動避障',  label: '自動避障',      icon: '🚧', count: cmdData['研習2_自動避障']?.commands?.length || 0 },
-      { id: '研習3_SLAM導航', label: 'SLAM 導航',     icon: '🗺', count: cmdData['研習3_SLAM導航']?.commands?.length || 0 },
-      { id: '常用工具',         label: '常用工具',       icon: '🔧', count: cmdData['常用工具']?.commands?.length || 0 },
-      { id: 'launchFiles',     label: 'Launch 對照',    icon: '📁', count: cmdData.launchFiles?.files?.length || 0 },
-      { id: 'topics',          label: 'Topic 對照',     icon: '📡', count: (cmdData.topics?.subscribers?.length||0) + (cmdData.topics?.publishers?.length||0) },
-      { id: 'quickReference',   label: '快速流程',      icon: '⚡', count: cmdData.quickReference?.workflows?.length || 0 },
-    ];
+  buildNav();
+  const rawHash = location.hash ? location.hash.slice(1) : '';
+  const decoded = rawHash ? decodeURIComponent(rawHash) : '';
+  const matched = CATEGORIES.find(c => c.key === decoded);
+  showSection(matched ? decoded : CATEGORIES[0].key);
+}
 
-    const nav = document.getElementById('navList');
-    nav.innerHTML = sections.map(s => `
-      <div class="nav-item${currentSection===s.id?' active':''}" onclick="showSection('${s.id}')">
-        ${s.icon} ${s.label} <span class="nav-count">${s.count}</span>
-      </div>`).join('');
+// ── Build nav ──
+function buildNav() {
+  const nav = document.getElementById('navList');
+  nav.innerHTML = CATEGORIES.map(c => {
+    const items = cmdData[c.key]?.items || [];
+    return `<div class="nav-item" data-section="${c.key}" onclick="showSection('${c.key}')">
+      ${c.icon} ${c.label} <span class="nav-count">${items.length}</span>
+    </div>`;
+  }).join('');
 
-    document.getElementById('pageDesc').textContent = cmdData.description || '';
-  }
-
-  // ── Show section ──
-  function showSection(id) {
-    currentSection = id;
-    searchQuery = '';
-    document.getElementById('searchInput').value = '';
-    document.getElementById('searchClear').classList.remove('show');
-    document.getElementById('searchCount').textContent = '';
-    if (isValidSection(id)) { location.hash = encodeURIComponent(id); }
-    else { history.replaceState(null, '', location.pathname); }
-
-    // update nav active
-    document.querySelectorAll('.nav-item').forEach(el => {
-      el.classList.toggle('active', el.getAttribute('onclick')?.includes(id));
-    });
-
-    const content = document.getElementById('content');
-    const d = cmdData[id];
-    if (!d) { content.innerHTML = '<div class="empty-search">找不到這個分類</div>'; return; }
-
-    let html = '';
-
-    if (id === 'launchFiles') {
-      const files = d.files || [];
-      html += `<div class="cmd-section">
-        <div class="section-header"><span class="section-icon">📁</span><span class="section-title">${d.title||'Launch 檔案'}</span><span class="section-count">${files.length} 檔案</span></div>
-        <p class="section-desc">${d.description||''}</p>
-        <div class="table-wrap">
-        <table class="data-table">
-          <thead><tr><th>檔案名稱</th><th>套件</th><th>說明</th></tr></thead>
-          <tbody>
-          ${files.map(f => `<tr>
-            <td class="td-code">${escHtml(f.name||'')}</td>
-            <td class="td-type">${escHtml(f.package||'')}</td>
-            <td class="td-desc">${escHtml(f.desc||'')}</td>
-          </tr>`).join('')}
-          </tbody>
-        </table></div></div>`;
-    }
-    else if (id === 'topics') {
-      const subs = d.subscribers || [];
-      const pubs = d.publishers || [];
-      html += `<div class="cmd-section">
-        <div class="section-header"><span class="section-icon">📡</span><span class="section-title">${d.title||'Topic 對照'}</span></div>
-        <p class="section-desc">${d.description||''}</p>
-        <h3 style="font-size:0.85rem;color:var(--accent);margin:16px 0 8px;">訂閱（Subscribers）</h3>
-        <div class="table-wrap">
-        <table class="data-table">
-          <thead><tr><th>Topic</th><th>類型</th><th>說明</th></tr></thead>
-          <tbody>
-          ${subs.map(t => `<tr>
-            <td class="td-code">${escHtml(t.name||'')}</td>
-            <td class="td-type">${escHtml(t.type||'')}</td>
-            <td class="td-desc">${escHtml(t.desc||'')}</td>
-          </tr>`).join('')}
-          </tbody>
-        </table></div>
-        <h3 style="font-size:0.85rem;color:var(--accent);margin:20px 0 8px;">發布（Publishers）</h3>
-        <div class="table-wrap">
-        <table class="data-table">
-          <thead><tr><th>Topic</th><th>類型</th><th>說明</th></tr></thead>
-          <tbody>
-          ${pubs.map(t => `<tr>
-            <td class="td-code">${escHtml(t.name||'')}</td>
-            <td class="td-type">${escHtml(t.type||'')}</td>
-            <td class="td-desc">${escHtml(t.desc||'')}</td>
-          </tr>`).join('')}
-          </tbody>
-        </table></div></div>`;
-    }
-    else if (id === 'quickReference') {
-      const workflows = d.workflows || [];
-      html += `<div class="cmd-section">
-        <div class="section-header"><span class="section-icon">⚡</span><span class="section-title">${d.title||'快速流程'}</span></div>
-        <p class="section-desc">${d.description||''}</p>
-        ${workflows.map(w => `
-        <div class="workflow-card">
-          <div class="workflow-title">${escHtml(w.title||'')}</div>
-          <div class="workflow-steps">
-            ${(w.steps||[]).map((s, i) => `<div class="wf-step">
-              <div class="wf-num">${i+1}</div>
-              <div class="wf-text">${formatStep(s)}</div>
-            </div>`).join('')}
-          </div>
-        </div>`).join('')}
-        </div>`;
-    }
-    else if (d.commands) {
-      // Regular command section
-      const cmds = d.commands;
-      const sectionInfo = getSectionInfo(id);
-      html += `<div class="cmd-section">
-        <div class="section-header"><span class="section-icon">${sectionInfo.icon}</span><span class="section-title">${d.title||sectionInfo.label}</span><span class="section-count">${cmds.length} 指令</span></div>
-        ${d.description ? `<p class="section-desc">${escHtml(d.description)}</p>` : ''}
-        <div class="cmd-list" id="cmdList">
-          ${cmds.map(c => buildCmdItem(c)).join('')}
-        </div>
+  // Add dev order
+  if (cmdData.developmentOrder) {
+    nav.innerHTML += `<div class="sidebar-title" style="margin-top:16px;border-top:1px solid var(--border);padding-top:10px;margin-bottom:8px;">開發順序</div>
+      <div class="nav-item" data-section="developmentOrder" onclick="showSection('developmentOrder')">
+        📋 開發順序 <span class="nav-count">${cmdData.developmentOrder.length}</span>
       </div>`;
-    }
-
-    content.innerHTML = html;
   }
 
-  function getSectionInfo(id) {
-    return {
-      environment:    { icon:'⚙', label:'環境建置' },
-      rosCore:         { icon:'◉', label:'ROS 核心' },
-      '研習1_道路駕駛': { icon:'🚦', label:'道路駕駛' },
-      '研習2_自動避障': { icon:'🚧', label:'自動避障' },
-      '研習3_SLAM導航':{ icon:'🗺', label:'SLAM 導航' },
-      '常用工具':       { icon:'🔧', label:'常用工具' },
-    }[id] || { icon:'◉', label:id };
+  document.getElementById('pageDesc').textContent = cmdData.description || '';
+}
+
+// ── Show section ──
+function showSection(id) {
+  currentSection = id;
+  searchQuery = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').classList.remove('show');
+  document.getElementById('searchCount').textContent = '';
+  location.hash = encodeURIComponent(id);
+
+  // Update nav active
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.getAttribute('data-section') === id);
+  });
+
+  const content = document.getElementById('content');
+
+  if (id === 'developmentOrder') {
+    renderDevOrder(content);
+    return;
   }
 
-  function buildCmdItem(c, sectionId) {
-    return `<div class="cmd-item" data-search="${escHtml(c.id||'')} ${escHtml(c.category||'')} ${escHtml(c.cmd||'')} ${escHtml(c.desc||'')} ${escHtml(c.note||'')}">
-      <div class="cmd-body">
-        ${c.category ? `<div class="cmd-category">${escHtml(c.category)}</div>` : ''}
-        ${c.desc ? `<div class="cmd-name">${escHtml(c.desc)}</div>` : ''}
-        <div class="cmd-code">${escHtml(c.cmd||'')}</div>
-        ${c.note ? `<div class="cmd-note">📌 ${escHtml(c.note)}</div>` : ''}
+  const cat = CATEGORIES.find(c => c.key === id);
+  const d = cmdData[id];
+  if (!d || !cat) {
+    content.innerHTML = '<div class="empty-search">找不到這個分類</div>';
+    return;
+  }
+
+  const items = d.items || [];
+  content.innerHTML = `
+    <div class="cmd-section">
+      <div class="section-header">
+        <span class="section-icon">${cat.icon}</span>
+        <span class="section-title">${d.title || cat.label}</span>
+        <span class="section-count">${items.length} 指令</span>
       </div>
-      <div class="cmd-copy-wrap">
-        <button class="cmd-copy" onclick="copyCmd(this, '${escHtml(c.cmd||'')}')">複製</button>
+      <p class="section-desc">${d.desc || ''}</p>
+      <div class="cmd-list" id="cmdList">
+        ${items.map((item, i) => buildCmdItem(item, id, i)).join('')}
       </div>
     </div>`;
-  }
+}
 
-  // ── Search ──
-  function onSearch(q) {
-    searchQuery = q.toLowerCase().trim();
-    const clear = document.getElementById('searchClear');
-    clear.classList.toggle('show', searchQuery.length > 0);
+function buildCmdItem(item, sectionId, index) {
+  const searchText = `${item.cmd || ''} ${item.desc || ''}`.toLowerCase();
+  return `<div class="cmd-item" data-search="${escHtml(searchText)}">
+    <div class="cmd-body">
+      ${item.desc ? `<div class="cmd-name">${escHtml(item.desc)}</div>` : ''}
+      ${item.cmd ? `<div class="cmd-code">${escHtml(item.cmd)}</div>` : ''}
+      ${item.note ? `<div class="cmd-note">📌 ${escHtml(item.note)}</div>` : ''}
+    </div>
+    <div class="cmd-copy-wrap">
+      ${item.cmd ? `<button class="cmd-copy" onclick="copyCmd(this, '${escHtml(item.cmd || '')}')">複製</button>` : ''}
+    </div>
+  </div>`;
+}
 
-    if (!currentSection) return;
+function renderDevOrder(container) {
+  const steps = cmdData.developmentOrder || [];
+  container.innerHTML = `
+    <div class="cmd-section">
+      <div class="section-header">
+        <span class="section-icon">📋</span>
+        <span class="section-title">開發順序</span>
+        <span class="section-count">${steps.length} 步驟</span>
+      </div>
+      <p class="section-desc">從環境建置到整合計時，7項 Mission 的實作順序</p>
+      <div class="step-list" id="stepList">
+        ${steps.map(s => `
+        <div class="step-item">
+          <div class="step-num">${s.step}</div>
+          <div>
+            <div class="step-title">${escHtml(s.title || '')}</div>
+            ${s.focus ? `<div class="step-focus">${escHtml(s.focus)}</div>` : ''}
+            ${s.commands?.length ? `<div class="step-cmds">${s.commands.map(c => `<span class="step-cmd">${escHtml(c)}</span>`).join('')}</div>` : ''}
+            ${s.output ? `<div class="step-output">→ ${escHtml(s.output)}</div>` : ''}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
 
-    const d = cmdData[currentSection];
-    if (!d || !d.commands) return;
+// ── Search ──
+function onSearch(q) {
+  searchQuery = q.toLowerCase().trim();
+  const clear = document.getElementById('searchClear');
+  clear.classList.toggle('show', searchQuery.length > 0);
 
-    const items = document.querySelectorAll('.cmd-item');
+  if (!currentSection) return;
+
+  // Special handling for dev order
+  if (currentSection === 'developmentOrder') {
+    const items = document.querySelectorAll('.step-item');
     let visible = 0;
     items.forEach(item => {
-      const text = item.getAttribute('data-search') || '';
-      const match = text.toLowerCase().includes(searchQuery);
-      item.classList.toggle('hidden', !match);
+      const text = item.textContent?.toLowerCase() || '';
+      const match = text.includes(searchQuery);
+      item.style.display = match ? '' : 'none';
       if (match) visible++;
     });
-
-    const total = d.commands.length;
+    const total = cmdData.developmentOrder?.length || 0;
     document.getElementById('searchCount').textContent = searchQuery ? `${visible}/${total}` : '';
+    return;
   }
 
-  function clearSearch() {
-    document.getElementById('searchInput').value = '';
-    onSearch('');
-  }
+  const d = cmdData[currentSection];
+  if (!d) return;
 
-  // ── Copy ──
-  function copyCmd(btn, cmd) {
-    navigator.clipboard.writeText(cmd).then(() => {
-      btn.classList.add('copied');
-      btn.textContent = '✓';
-      showToast('已複製：' + cmd.slice(0,40) + (cmd.length > 40 ? '...' : ''));
-      setTimeout(() => {
-        btn.classList.remove('copied');
-        btn.textContent = '複製';
-      }, 2000);
-    }).catch(() => {
-      // fallback
-      const ta = document.createElement('textarea');
-      ta.value = cmd;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      btn.textContent = '✓';
-      setTimeout(() => { btn.textContent = '複製'; }, 2000);
-    });
-  }
+  const items = document.querySelectorAll('.cmd-item');
+  let visible = 0;
+  items.forEach(item => {
+    const text = item.getAttribute('data-search') || '';
+    const match = text.includes(searchQuery);
+    item.classList.toggle('hidden', !match);
+    if (match) visible++;
+  });
 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    clearTimeout(t._timer);
-    t._timer = setTimeout(() => t.classList.remove('show'), 2500);
-  }
+  const total = d.items?.length || 0;
+  document.getElementById('searchCount').textContent = searchQuery ? `${visible}/${total}` : '';
+}
 
-  // ── Format step (bold code parts) ──
-  function formatStep(s) {
-    // detect code fragments (monospace parts)
-    const parts = s.split(/(`[^`]+`)/g);
-    return parts.map(p => {
-      if (p.startsWith('`') && p.endsWith('`')) return `<code>${escHtml(p.slice(1,-1))}</code>`;
-      return escHtml(p);
-    }).join('');
-  }
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  onSearch('');
+}
 
-  // ── Helpers ──
-  function escHtml(s) {
-    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+// ── Copy ──
+function copyCmd(btn, cmd) {
+  navigator.clipboard.writeText(cmd).then(() => {
+    btn.classList.add('copied');
+    btn.textContent = '✓';
+    showToast('已複製：' + cmd.slice(0, 40) + (cmd.length > 40 ? '…' : ''));
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.textContent = '複製';
+    }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = cmd;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓';
+    setTimeout(() => { btn.textContent = '複製'; }, 2000);
+  });
+}
 
-  // ── Init ──
-  document.addEventListener('DOMContentLoaded', loadData);
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── Helpers ──
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', loadData);
 </script>
 
 </body>
