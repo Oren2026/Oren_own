@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal — 黑客命令列</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --green: #00ff41;
+      --green-dim: rgba(0,255,65,0.6);
+      --green-dark: rgba(0,255,65,0.12);
+      --amber: #ffb700;
+      --red: #ff3c3c;
+      --muted: rgba(0,255,65,0.35);
+      --border: rgba(0,255,65,0.2);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--green);
+      font-family: "Courier New", "Lucida Console", "Consolas", monospace;
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .container { max-width: 780px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* ── Header ── */
+    header { margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 24px; }
+    .prompt { color: var(--muted); }
+    .cmd { color: var(--green); font-weight: bold; }
+    .cmd output { color: var(--green); }
+    .output { color: rgba(0,255,65,0.7); padding-left: 16px; }
+    .comment { color: rgba(0,255,65,0.35); }
+    .warning { color: var(--amber); }
+    .error { color: var(--red); }
+    .accent { color: var(--green); font-weight: bold; }
+
+    /* ── Blinking cursor ── */
+    .cursor::after { content: '█'; animation: blink 1s step-end infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ── Sections ── */
+    .section { margin-bottom: 32px; }
+    .section-title { color: var(--accent); font-weight: bold; margin-bottom: 12px; font-size: 1em; }
+    .divider { color: var(--border); margin: 16px 0; overflow: hidden; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; color: var(--accent); border-bottom: 1px solid var(--border); padding: 6px 8px; font-size: 0.9em; }
+    td { padding: 6px 8px; border-bottom: 1px solid rgba(0,255,65,0.07); vertical-align: top; }
+    tr:hover td { background: var(--green-dark); }
+    .status-done { color: var(--green); }
+    .status-wip { color: var(--amber); }
+    .status-todo { color: var(--muted); }
+
+    /* ── Progress bar ── */
+    .prog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .prog-label { min-width: 140px; font-size: 0.85em; }
+    .prog-bar { flex: 1; height: 12px; background: rgba(0,255,65,0.08); border: 1px solid var(--border); position: relative; }
+    .prog-fill { height: 100%; background: var(--green); transition: width 1s ease; box-shadow: 0 0 8px var(--green-dim); }
+    .prog-pct { font-size: 0.85em; min-width: 36px; text-align: right; }
+
+    /* ── Tag ── */
+    .tag { display: inline-block; font-size: 0.72em; padding: 1px 6px; border: 1px solid; border-radius: 2px; margin-right: 4px; }
+    .tag-tdk   { color: var(--red); border-color: var(--red); }
+    .tag-tb3   { color: #7fb3ff; border-color: #7fb3ff; }
+    .tag-hiwin { color: #7fffff; border-color: #7fffff; }
+
+    /* ── Footer ── */
+    footer { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 16px; font-size: 0.8em; color: var(--muted); }
+
+    @media (max-width: 540px) {
+      .prog-label { min-width: 80px; }
+      table { font-size: 0.85em; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <div><span class="prompt">root@blackskin:~$</span> <span class="cmd cursor">cat roadmap.txt</span></div>
+    <div class="output"># 黑皮團隊 2026 學習路線圖</div>
+    <div class="output comment"># 三條競賽路線 · 技能追蹤系統</div>
+  </header>
+
+  <div class="section">
+    <div><span class="prompt">root@blackskin:~$</span> <span class="cmd">ls -la milestones/</span></div>
+    <div class="divider">─────────────────────────────────────────</div>
+    <table>
+      <thead>
+        <tr>
+          <th>日期</th>
+          <th>事件</th>
+          <th>路線</th>
+          <th>狀態</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2026-03-30</td>
+          <td>賽程日曆系統上線</td>
+          <td><span class="tag tag-tdk">TDK</span></td>
+          <td><span class="status-done">[完成]</span></td>
+        </tr>
+        <tr>
+          <td>2026-04-25</td>
+          <td>FIRA AutoRace</td>
+          <td><span class="tag tag-tb3">TB3</span></td>
+          <td><span class="status-wip">[進行中]</span></td>
+        </tr>
+        <tr>
+          <td>2026-05-22</td>
+          <td>上銀複審影片截止</td>
+          <td><span class="tag tag-hiwin">HIWIN</span></td>
+          <td><span class="status-wip">[進行中]</span></td>
+        </tr>
+        <tr>
+          <td>2026-09-20</td>
+          <td>TDK 第二階段作品截止</td>
+          <td><span class="tag tag-tdk">TDK</span></td>
+          <td><span class="status-todo">[待辨]</span></td>
+        </tr>
+        <tr>
+          <td>2026-10-15</td>
+          <td>TDK 初賽</td>
+          <td><span class="tag tag-tdk">TDK</span></td>
+          <td><span class="status-todo">[待辨]</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div><span class="prompt">root@blackskin:~$</span> <span class="cmd">cat skills-progress.log</span></div>
+    <div class="divider">─────────────────────────────────────────</div>
+    <div class="prog-row">
+      <div class="prog-label">視覺辨識</div>
+      <div class="prog-bar"><div class="prog-fill" data-w="35"></div></div>
+      <div class="prog-pct">35%</div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-label">機構設計</div>
+      <div class="prog-bar"><div class="prog-fill" data-w="20"></div></div>
+      <div class="prog-pct">20%</div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-label">ROS 控制</div>
+      <div class="prog-bar"><div class="prog-fill" data-w="15"></div></div>
+      <div class="prog-pct">15%</div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-label">運動控制</div>
+      <div class="prog-bar"><div class="prog-fill" data-w="10"></div></div>
+      <div class="prog-pct">10%</div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-label">機電整合</div>
+      <div class="prog-bar"><div class="prog-fill" data-w="5"></div></div>
+      <div class="prog-pct">5%</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div><span class="prompt">root@blackskin:~$</span> <span class="cmd">cat system-status.json</span></div>
+    <div class="divider">─────────────────────────────────────────</div>
+    <div><span class="output">{</span></div>
+    <div><span class="output">  "system":     "OK",</span></div>
+    <div><span class="output">  "milestones": "12 tracked",</span></div>
+    <div><span class="output">  "skills":     "16 developing",</span></div>
+    <div><span class="output">  "next":       "FIRA AutoRace [2026-04-25]"</span></div>
+    <div><span class="output">}</span></div>
+  </div>
+
+  <footer>
+    <div><span class="prompt">root@blackskin:~$</span> <span class="cmd">uptime</span></div>
+    <div class="output">黑皮團隊 · 黑客維護 · 2026-03-30 · 零外部依賴</div>
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.prog-fill').forEach(el => {
+    const w = el.getAttribute('data-w');
+    if (!w) return;
+    setTimeout(() => { el.style.width = w + '%'; }, 300);
+  });
+</script>
+
+</body>
+</html>

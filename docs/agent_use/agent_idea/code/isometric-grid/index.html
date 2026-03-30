@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Isometric — 立體技能方塊</title>
+  <style>
+    :root {
+      --bg: #e8e4dc;
+      --cube-top: rgba(255,255,255,0.9);
+      --cube-left: rgba(0,0,0,0.12);
+      --cube-right: rgba(0,0,0,0.07);
+      --accent-tdk: #e85555;
+      --accent-tb3: #5580e8;
+      --accent-hiwin: #3cbc8c;
+      --text: #1a1816;
+      --muted: #8a8278;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header { text-align: center; padding: 56px 24px 40px; background: var(--bg); }
+    .eyebrow { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+    h1 { font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 10px; }
+    .subtitle { font-size: 0.88rem; color: var(--muted); }
+
+    /* ── Isometric Grid ── */
+    .iso-wrap { max-width: 900px; margin: 0 auto; padding: 0 24px 60px; }
+
+    .iso-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    /* Isometric cube */
+    .cube {
+      width: 120px;
+      height: 160px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .cube:hover { transform: translateY(-6px); }
+
+    .cube-face {
+      position: absolute;
+      width: 120px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px;
+      transition: filter 0.3s;
+    }
+    .cube:hover .cube-face { filter: brightness(1.08); }
+
+    .cube-top {
+      background: var(--cube-top);
+      border: 1px solid rgba(0,0,0,0.08);
+      top: 0;
+      border-radius: 4px 4px 0 0;
+      z-index: 3;
+    }
+    .cube-left {
+      background: var(--cube-left);
+      top: 40px;
+      left: 0;
+      transform: skewY(26.5deg);
+      border-radius: 0 0 0 4px;
+      z-index: 2;
+    }
+    .cube-right {
+      background: var(--cube-right);
+      top: 40px;
+      right: 0;
+      transform: skewY(-26.5deg);
+      border-radius: 0 0 4px 0;
+      z-index: 1;
+    }
+
+    /* Cube connector (stacking) */
+    .cube-stacked {
+      position: relative;
+    }
+    .cube-stacked .cube:nth-child(2) { margin-top: -20px; }
+
+    /* Cube content */
+    .cube-icon { font-size: 1.4rem; margin-bottom: 4px; }
+    .cube-name { font-size: 0.78rem; font-weight: 700; line-height: 1.2; }
+    .cube-sub { font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; gap: 7px; font-size: 0.8rem; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; transform: rotate(45deg); }
+
+    /* ── Info panel ── */
+    .info-panel {
+      max-width: 700px;
+      margin: 0 auto 48px;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .info-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; }
+    .info-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; }
+    .info-num { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.04em; color: var(--text); }
+    .info-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    footer { text-align: center; padding: 24px; font-size: 0.72rem; color: var(--muted); }
+
+    @media (max-width: 540px) {
+      .cube { width: 90px; height: 125px; }
+      .cube-face { width: 90px; height: 62px; }
+      .cube-left { top: 31px; }
+      .cube-right { top: 31px; }
+      .info-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Isometric Grid · 立體技能方塊</p>
+  <h1>技能發展的立體地圖</h1>
+  <p class="subtitle">每個方塊代表一項核心能力，高度代表緊急程度</p>
+</header>
+
+<div class="iso-wrap">
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#e85555"></div>TDK</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#5580e8"></div>TB3</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3cbc8c"></div>上銀撞球</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(0,0,0,0.15)"></div>通用技能</div>
+  </div>
+
+  <!-- Row 1: TDK line -->
+  <div class="iso-row">
+    <div class="cube" style="--c: #e85555">
+      <div class="cube-face cube-top" style="background:rgba(232,85,85,0.15);border-color:rgba(232,85,85,0.3)">
+        <div>
+          <div class="cube-icon">👁</div>
+          <div class="cube-name">視覺辨識</div>
+          <div class="cube-sub">優先最高</div>
+        </div>
+      </div>
+      <div class="cube-face cube-left" style="background:rgba(232,85,85,0.25)"></div>
+      <div class="cube-face cube-right" style="background:rgba(232,85,85,0.15)"></div>
+    </div>
+    <div class="cube">
+      <div class="cube-face cube-top" style="background:rgba(232,85,85,0.1);border-color:rgba(232,85,85,0.2)">
+        <div>
+          <div class="cube-icon">⚙</div>
+          <div class="cube-name">機構設計</div>
+          <div class="cube-sub">3D 列印</div>
+        </div>
+      </div>
+      <div class="cube-face cube-left" style="background:rgba(232,85,85,0.18)"></div>
+      <div class="cube-face cube-right" style="background:rgba(232,85,85,0.1)"></div>
+    </div>
+    <div class="cube">
+      <div class="cube-face cube-top" style="background:rgba(232,85,85,0.07);border-color:rgba(232,85,85,0.15)">
+        <div>
+          <div class="cube-icon">🤖</div>
+          <div class="cube-name">運動控制</div>
+          <div class="cube-sub">待實作</div>
+        </div>
+      </div>
+      <div class="cube-face cube-left" style="background:rgba(232,85,85,0.12)"></div>
+      <div class="cube-face cube-right" style="background:rgba(232,85,85,0.07)"></div>
+    </div>
+  </div>
+
+  <!-- Row 2: TB3 line -->
+  <div class="iso-row">
+    <div class="cube">
+      <div class="cube-face cube-top" style="background:rgba(85,128,232,0.12);border-color:rgba(85,128,232,0.25)">
+        <div>
+          <div class="cube-icon">🚦</div>
+          <div class="cube-name">號誌偵測</div>
+          <div class="cube-sub">Mission 1</div>
+        </div>
+      </div>
+      <div class="cube-face cube-left" style="background:rgba(85,128,232,0.2)"></div>
+      <div class="cube-face cube-right" style="background:rgba(85,128,232,0.12)"></div>
+    </div>
+    <div class="cube">
+      <div class="cube-face cube-top" style="background:rgba(85,128,232,0.09);border-color:rgba(85,128,232,0.2)">
+        <div>
+          <div class="cube-icon">〰️</div>
+          <div class="cube-name">車道維持</div>
+          <div class="cube-sub">PID 控制</div>
+        </div>
+      </div>
+      <div class="cube-face cube-left" style="background:rgba(85,128,232,0.15)"></div>
+      <div class="cube-face cube-right" style="background:rgba(85,128,232,0.09)"></div>
+    </div>
+    <div class="cube">
+      <div class="cube-face cube-top" style="background:rgba(85,128,232,0.06);border-color:rgba(85,128,232,0.12)">
+        <div>
+          <div class="cube-icon">🚇</div>
+          <div class="cube-name">隧道備援</div>
+          <div class="cube-sub">待實作</div>
+        </div>
+      </div>
+      <div class="cube-face cube-left" style="background:rgba(85,128,232,0.1)"></div>
+      <div class="cube-face cube-right" style="background:rgba(85,128,232,0.06)"></div>
+    </div>
+  </div>
+
+  <!-- Row 3: HIWIN + shared -->
+  <div class="iso-row">
+    <div class="cube">
+      <div class="cube-face cube-top" style="background:rgba(60,188,140,0.12);border-color:rgba(60,188,140,0.25)">
+        <div>
+          <div class="cube-icon">🎯</div>
+          <div class="cube-name">撞球定位</div>
+          <div class="cube-sub">視覺核心</div>
+        </div>
+      </div>
+      <div class="cube-face cube-left" style="background:rgba(60,188,140,0.2)"></div>
+      <div class="cube-face cube-right" style="background:rgba(60,188,140,0.12)"></div>
+    </div>
+    <div class="cube">
+      <div class="cube-face cube-top" style="background:rgba(60,188,140,0.08);border-color:rgba(60,188,140,0.15)">
+        <div>
+          <div class="cube-icon">🦾</div>
+          <div class="cube-name">運動學整合</div>
+          <div class="cube-sub">06/30</div>
+        </div>
+      </div>
+      <div class="cube-face cube-left" style="background:rgba(60,188,140,0.13)"></div>
+      <div class="cube-face cube-right" style="background:rgba(60,188,140,0.08)"></div>
+    </div>
+    <div class="cube">
+      <div class="cube-face cube-top">
+        <div>
+          <div class="cube-icon">📊</div>
+          <div class="cube-name">策略 AI</div>
+          <div class="cube-sub">07/31</div>
+        </div>
+      </div>
+      <div class="cube-face cube-left"></div>
+      <div class="cube-face cube-right"></div>
+    </div>
+  </div>
+
+  <!-- Info panel -->
+  <div class="info-panel">
+    <div class="info-title">技能板概覽</div>
+    <div class="info-row">
+      <div>
+        <div class="info-num">16</div>
+        <div class="info-label">技能總數</div>
+      </div>
+      <div>
+        <div class="info-num">3</div>
+        <div class="info-label">競賽路線</div>
+      </div>
+      <div>
+        <div class="info-num">4/25</div>
+        <div class="info-label">下一個里程</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Isometric Grid · 黑皮團隊 · 立體技能地圖</footer>
+
+</body>
+</html>

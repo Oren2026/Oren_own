@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Kiosk — 霓虹攤位</title>
+  <style>
+    :root {
+      --bg: #0c0c14;
+      --neon-pink: #ff2d78;
+      --neon-cyan: #00f5d4;
+      --neon-yellow: #ffe600;
+      --neon-green: #39ff14;
+      --text: #f0f0f0;
+      --muted: rgba(240,240,240,0.45);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Neon text mixin ── */
+    .neon-text {
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-shadow:
+        0 0 7px currentColor,
+        0 0 15px currentColor,
+        0 0 30px currentColor;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      padding: 48px 24px 36px;
+      position: relative;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255,45,120,0.08) 0%, transparent 60%),
+        linear-gradient(0deg, rgba(0,245,212,0.06) 0%, transparent 40%);
+      pointer-events: none;
+    }
+    h1 {
+      font-size: clamp(2rem, 8vw, 3.8rem);
+      color: var(--neon-pink);
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    h1 .neon-text { color: var(--neon-cyan); }
+    .subtitle {
+      font-size: 0.88rem;
+      color: var(--muted);
+      max-width: 400px;
+      margin: 0 auto 28px;
+      line-height: 1.7;
+    }
+
+    /* ── Marquee ── */
+    .marquee {
+      overflow: hidden;
+      border-top: 1px solid rgba(255,45,120,0.3);
+      border-bottom: 1px solid rgba(0,245,212,0.3);
+      padding: 10px 0;
+      margin-bottom: 40px;
+    }
+    .marquee-inner { display: flex; gap: 40px; white-space: nowrap; animation: marquee 20s linear infinite; }
+    .marquee-item { font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--neon-yellow); }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ── Cards ── */
+    .cards-wrap { max-width: 860px; margin: 0 auto; padding: 0 24px 60px; }
+    .card-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+    .card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, border-color 0.25s;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .card:hover { transform: translateY(-4px); }
+    .card:hover { border-color: rgba(255,45,120,0.3); }
+
+    .card-a::before { background: linear-gradient(90deg, var(--neon-pink), transparent); }
+    .card-b::before { background: linear-gradient(90deg, var(--neon-cyan), transparent); }
+    .card-c::before { background: linear-gradient(90deg, var(--neon-yellow), transparent); }
+    .card-d::before { background: linear-gradient(90deg, var(--neon-green), transparent); }
+
+    .card-glow { font-size: 1.8rem; font-weight: 900; margin-bottom: 8px; }
+    .card-a .card-glow { color: var(--neon-pink); }
+    .card-b .card-glow { color: var(--neon-cyan); }
+    .card-c .card-glow { color: var(--neon-yellow); }
+    .card-d .card-glow { color: var(--neon-green); }
+
+    .card-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 6px; }
+    .card-body { font-size: 0.78rem; color: var(--muted); line-height: 1.65; }
+    .card-date { font-size: 0.7rem; color: var(--neon-yellow); margin-top: 8px; letter-spacing: 0.1em; }
+
+    /* ── Section title ── */
+    .section-title {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 16px;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--neon-cyan);
+      border-bottom: 1px solid rgba(0,245,212,0.2);
+    }
+
+    /* ── Status list ── */
+    .status-wrap { max-width: 860px; margin: 0 auto; padding: 0 24px 60px; }
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.85rem;
+    }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .status-name { flex: 1; font-weight: 600; }
+    .status-tag { font-size: 0.7rem; padding: 1px 7px; border-radius: 10px; }
+    .status-days { font-size: 0.72rem; color: var(--muted); min-width: 48px; text-align: right; }
+
+    /* ── Neon divider ── */
+    .neon-divider {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      text-align: center;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      color: var(--neon-pink);
+      text-transform: uppercase;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    @media (max-width: 600px) {
+      .card-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>賽程<span class="neon-text">霓虹</span></h1>
+  <p class="subtitle">三條線路的行程，用霓虹燈的方式呈現。明亮、直接、不保留。</p>
+</header>
+
+<!-- Marquee -->
+<div class="marquee">
+  <div class="marquee-inner">
+    <span class="marquee-item">⚡ FIRA 04/25 倒數中</span>
+    <span class="marquee-item">◆ TDK 初賽 10/15</span>
+    <span class="marquee-item">◆ 上銀複審 05/22 截止</span>
+    <span class="marquee-item">⚡ 視覺辨識 最優先</span>
+    <span class="marquee-item">◆ 機構設計 3D列印</span>
+    <span class="marquee-item">⚡ FIRA 04/25 倒數中</span>
+    <span class="marquee-item">◆ TDK 初賽 10/15</span>
+    <span class="marquee-item">◆ 上銀複審 05/22 截止</span>
+    <span class="marquee-item">⚡ 視覺辨識 最優先</span>
+    <span class="marquee-item">◆ 機構設計 3D列印</span>
+  </div>
+</div>
+
+<!-- Cards -->
+<div class="cards-wrap">
+  <div class="card-row">
+    <div class="card card-a">
+      <div class="card-glow">04/25</div>
+      <div class="card-title">FIRA AutoRace</div>
+      <div class="card-body">TB3 自動駕駛正式比賽，7項 Mission 檢驗。</div>
+      <div class="card-date">倒數 26 天</div>
+    </div>
+    <div class="card card-b">
+      <div class="card-glow">05/22</div>
+      <div class="card-title">上銀複審影片</div>
+      <div class="card-body">撞球組複審繳交截止，17:30 前上傳。</div>
+      <div class="card-date">倒數 53 天</div>
+    </div>
+    <div class="card card-c">
+      <div class="card-glow">09/20</div>
+      <div class="card-title">TDK 第二階段</div>
+      <div class="card-body">作品繳交截止，需已完成第一階段審查。</div>
+      <div class="card-date">倒數 144 天</div>
+    </div>
+  </div>
+  <div class="card-row">
+    <div class="card card-d">
+      <div class="card-glow">10/15</div>
+      <div class="card-title">TDK 初賽</div>
+      <div class="card-body">雲林科技大學，文蛤分級關卡。</div>
+      <div class="card-date">倒數 169 天</div>
+    </div>
+    <div class="card card-a">
+      <div class="card-glow">03/11</div>
+      <div class="card-title">TDK 規則公告</div>
+      <div class="card-body">第30屆文蛤分級關卡已確認。</div>
+      <div class="card-date">已完成</div>
+    </div>
+    <div class="card card-b">
+      <div class="card-glow">03/27</div>
+      <div class="card-title">上銀初審通過</div>
+      <div class="card-body">撞球組入選，進入複審衝刺階段。</div>
+      <div class="card-date">已完成 ✓</div>
+    </div>
+  </div>
+</div>
+
+<!-- Status list -->
+<div class="section-title">近期緊急程度</div>
+<div class="status-wrap">
+  <div class="status-row">
+    <div class="status-dot" style="background:var(--neon-pink);box-shadow:0 0 8px var(--neon-pink)"></div>
+    <div class="status-name">FIRA AutoRace</div>
+    <span class="status-tag" style="background:rgba(255,45,120,0.15);color:var(--neon-pink)">⚡ 急迫</span>
+    <div class="status-days">26天</div>
+  </div>
+  <div class="status-row">
+    <div class="status-dot" style="background:var(--neon-cyan)"></div>
+    <div class="status-name">上銀複審影片截止</div>
+    <span class="status-tag" style="background:rgba(0,245,212,0.15);color:var(--neon-cyan)">進行中</span>
+    <div class="status-days">53天</div>
+  </div>
+  <div class="status-row">
+    <div class="status-dot" style="background:var(--neon-yellow)"></div>
+    <div class="status-name">機構製作第一階段</div>
+    <span class="status-tag" style="background:rgba(255,230,0,0.1);color:var(--neon-yellow)">04/30</span>
+    <div class="status-days">31天</div>
+  </div>
+  <div class="status-row">
+    <div class="status-dot" style="background:var(--neon-green)"></div>
+    <div class="status-name">撞球視覺定位系統</div>
+    <span class="status-tag" style="background:rgba(57,255,20,0.1);color:var(--neon-green)">進行中</span>
+    <div class="status-days">41天</div>
+  </div>
+  <div class="status-row">
+    <div class="status-dot" style="background:rgba(240,240,240,0.2)"></div>
+    <div class="status-name">TDK 運動控制實作</div>
+    <span class="status-tag" style="background:rgba(255,255,255,0.05);color:rgba(240,240,240,0.4)">規劃中</span>
+    <div class="status-days">144天</div>
+  </div>
+</div>
+
+<div class="neon-divider">— 黑皮團隊 · 霓虹攤位 · 2026 —</div>
+
+<footer>零外部 CDN · 純 HTML + CSS · 霓虹視覺</footer>
+
+</body>
+</html>

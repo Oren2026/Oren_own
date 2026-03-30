@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glass Panel — 知識毛玻璃</title>
+  <style>
+    :root {
+      --bg: #0d0b1e;
+      --glass-bg: rgba(255,255,255,0.06);
+      --glass-border: rgba(255,255,255,0.12);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.5);
+      --accent: rgba(167,139,250,0.8);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 80% 60% at 20% 30%, rgba(139,92,246,0.25) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 50% at 75% 70%, rgba(34,211,238,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 40% at 50% 90%, rgba(251,146,60,0.1) 0%, transparent 50%);
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 860px; margin: 0 auto; padding: 60px 24px 80px; }
+
+    /* ── Header ── */
+    header { text-align: center; margin-bottom: 52px; }
+    .eyebrow { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+    h1 { font-size: clamp(1.8rem, 6vw, 2.8rem); font-weight: 800; letter-spacing: -0.03em; background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(167,139,250,0.8)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; }
+    .subtitle { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── Glass mixin ── */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+    }
+
+    /* ── Feature cards ── */
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .card {
+      padding: 24px 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(167,139,250,0.2);
+      border-color: rgba(167,139,250,0.3);
+    }
+    .card-icon { font-size: 1.6rem; margin-bottom: 12px; }
+    .card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+    .card-body { font-size: 0.8rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── Main content ── */
+    .content-glass { padding: 32px; margin-bottom: 24px; }
+    .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .content-half {}
+    .section-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em; }
+    p { font-size: 0.85rem; color: var(--muted); line-height: 1.75; }
+
+    /* ── Progress bars ── */
+    .skill-list { display: flex; flex-direction: column; gap: 14px; }
+    .skill-item {}
+    .skill-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .skill-name { font-size: 0.82rem; font-weight: 600; }
+    .skill-pct { font-size: 0.75rem; color: var(--muted); }
+    .skill-bar-bg { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+    .skill-bar { height: 100%; border-radius: 2px; background: linear-gradient(90deg, rgba(167,139,250,0.6), rgba(34,211,238,0.6)); transition: width 1.2s cubic-bezier(0.22,1,0.36,1); }
+
+    /* ── Timeline ── */
+    .milestone-list { display: flex; flex-direction: column; gap: 12px; }
+    .milestone { display: flex; align-items: flex-start; gap: 12px; }
+    .milestone-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-top: 5px; flex-shrink: 0; box-shadow: 0 0 8px rgba(167,139,250,0.6); }
+    .milestone-date { font-size: 0.72rem; color: var(--muted); min-width: 48px; }
+    .milestone-title { font-size: 0.85rem; font-weight: 600; }
+
+    /* ── Bottom cards ── */
+    .bottom-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .bottom-card { padding: 20px; }
+    .bottom-num { font-size: 2.4rem; font-weight: 900; letter-spacing: -0.04em; background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(167,139,250,0.6)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: 8px; }
+    .bottom-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+    footer { text-align: center; padding: 32px 24px; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; }
+
+    @media (max-width: 640px) {
+      .card-grid { grid-template-columns: 1fr; }
+      .content-grid { grid-template-columns: 1fr; }
+      .bottom-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <p class="eyebrow">Glass Panel · 毛玻璃視覺</p>
+    <h1>知識毛玻璃</h1>
+    <p class="subtitle">在透明與模糊之間，層次分明的資訊結構</p>
+  </header>
+
+  <!-- Feature cards -->
+  <div class="card-grid">
+    <div class="card glass">
+      <div class="card-icon">◈</div>
+      <div class="card-title">動態模糊</div>
+      <div class="card-body">backdrop-filter 毛玻璃效果，資訊層次一目了然</div>
+    </div>
+    <div class="card glass">
+      <div class="card-icon">◎</div>
+      <div class="card-title">浮動陰影</div>
+      <div class="card-body">懸停時卡片上浮，邊框暈光，焦點自動集中</div>
+    </div>
+    <div class="card glass">
+      <div class="card-icon">◇</div>
+      <div class="card-title">漸層背景</div>
+      <div class="card-body">多色 radial-gradient 暈染，空間感更立體</div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="content-glass glass">
+    <div class="content-grid">
+      <div class="content-half">
+        <div class="section-label">技能發展</div>
+        <h2>三條路線的技能追蹤</h2>
+        <p>視覺辨識、機構設計、ROS 控制——三個比賽的核心技能，用統一的毛玻璃面板呈現。</p>
+        <div class="skill-list" style="margin-top: 20px;">
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">視覺辨識</span><span class="skill-pct">35%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar" data-w="35"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">機構設計</span><span class="skill-pct">20%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar" data-w="20"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span class="skill-name">ROS 控制</span><span class="skill-pct">15%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar" data-w="15"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="content-half">
+        <div class="section-label">關鍵里程</div>
+        <h2>近期重要節點</h2>
+        <div class="milestone-list" style="margin-top: 16px;">
+          <div class="milestone"><div class="milestone-dot"></div><div><div class="milestone-date">04/25</div><div class="milestone-title">FIRA AutoRace</div></div></div>
+          <div class="milestone"><div class="milestone-dot" style="background:rgba(34,211,238,0.8)"></div><div><div class="milestone-date">05/22</div><div class="milestone-title">上銀複審影片截止</div></div></div>
+          <div class="milestone"><div class="milestone-dot" style="background:rgba(251,146,60,0.8)"></div><div><div class="milestone-date">09/20</div><div class="milestone-title">TDK 第二階段截止</div></div></div>
+          <div class="milestone"><div class="milestone-dot" style="background:rgba(255,255,255,0.3)"></div><div><div class="milestone-date">10/15</div><div class="milestone-title">TDK 初賽</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom stats -->
+  <div class="bottom-grid">
+    <div class="bottom-card glass">
+      <div class="bottom-num">12</div>
+      <div class="bottom-label">關鍵里程追蹤中</div>
+    </div>
+    <div class="bottom-card glass">
+      <div class="bottom-num">3</div>
+      <div class="bottom-label">競賽路線同步</div>
+    </div>
+    <div class="bottom-card glass">
+      <div class="bottom-num">16</div>
+      <div class="bottom-label">核心技能發展</div>
+    </div>
+    <div class="bottom-card glass">
+      <div class="bottom-num">2026</div>
+      <div class="bottom-label">競賽年份</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Glass Panel · 黑皮團隊 · 零外部 CDN</footer>
+
+<script>
+  document.querySelectorAll('.skill-bar').forEach(bar => {
+    const w = bar.getAttribute('data-w');
+    if (!w) return;
+    setTimeout(() => { bar.style.width = w + '%'; }, 300);
+  });
+</script>
+
+</body>
+</html>
