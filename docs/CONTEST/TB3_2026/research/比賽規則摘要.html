@@ -34,21 +34,19 @@
     </div>
 
     <div class="section">
-      <div class="section-header"><span class="icon">🏁</span><h2>逆時針行進流程</h2></div>
+      <div class="section-header"><span class="icon">🏁</span><h2>行進流程</h2></div>
       <div class="section-content">
-        <p style="margin-bottom:1rem;">依逆時針方向，機器人從上方紅線起點出發，依次經過：</p>
+        <p style="margin-bottom:1rem;">機器人從上方紅線起點出發，依序通過以下關卡：</p>
         <ol class="mission-flow">
           <li><span class="miss-name">🚦 交通號誌</span>起點左側三色號誌燈，紅燈停、綠燈行</li>
-          <li><span class="miss-name">🚧 障礙區</span>左側三個紅色三角障礙標誌</li>
           <li><span class="miss-name">〰️ S 型彎道</span>左側連續彎道，跟隨黃白車道線行進</li>
+          <li><span class="miss-name">🚧 障礙區</span>左側三個紅色三角障礙標誌</li>
           <li><span class="miss-name">🅿️ 停車區</span>底部岔路，白色虛線車格，藍色 P 標誌入口，定點停入</li>
-          <li><span class="miss-name">↩️ 圓環/路口</span>藍色圓形箭頭標誌，識別方向並決策出口</li>
+          <li><span class="miss-name">〰️ M 型彎道</span>右下角鋸齒狀 M 型區域，狹窄彎道控制</li>
           <li><span class="miss-name">🚞 平交道</span>右下角紅白相間柵欄，識別並等待通行</li>
-          <li><span class="miss-name">〰️ M 型急彎</span>右下角鋸齒狀 M 型區域，狹窄彎道控制</li>
           <li><span class="miss-name">🚇 隧道</span>右上方大面積黑色區域，光照補償失效時需備援機制</li>
           <li><span class="miss-name">🏁 返回終點線</span>繞完一圈回到上方紅線</li>
         </ol>
-
       </div>
     </div>
 
@@ -91,13 +89,14 @@
         <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">詳細實作狀態見 <a href="../architecture/系統架構規劃.html">系統架構</a> 頁面。</p>
         <div class="info-grid">
           <div class="info-card"><h3>🚦</h3><div class="value">交通號誌</div><div class="desc">辨識紅/黃/綠燈，控制停與行</div></div>
-          <div class="info-card"><h3>〰️</h3><div class="value">障礙區</div><div class="desc">三個紅色三角標誌，分散在左側與隧道內</div></div>
-          <div class="info-card"><h3>〰️</h3><div class="value">S/M 型彎道</div><div class="desc">狹窄彎道跟車道線行進</div></div>
+          <div class="info-card"><h3>〰️</h3><div class="value">S 型彎道</div><div class="desc">左側連續彎道，狹窄彎道控制</div></div>
+          <div class="info-card"><h3>🚧</h3><div class="value">障礙區</div><div class="desc">三個紅色三角標誌</div></div>
           <div class="info-card"><h3>🅿️</h3><div class="value">停車區</div><div class="desc">底部岔路，定點停入雙車格</div></div>
-          <div class="info-card"><h3>↩️</h3><div class="value">圓環路口</div><div class="desc">藍色圓形箭頭，識別方向決策出口</div></div>
+          <div class="info-card"><h3>〰️</h3><div class="value">M 型彎道</div><div class="desc">右下角鋸齒狀 M 型區域</div></div>
           <div class="info-card"><h3>🚞</h3><div class="value">平交道</div><div class="desc">右下角紅白柵欄，等待通行</div></div>
           <div class="info-card"><h3>🚇</h3><div class="value">隧道</div><div class="desc">右上黑色區域，光照失效時備援</div></div>
-          <div class="info-card"><h3>🚗</h3><div class="value">車道跟隨</div><div class="desc">基礎：黃白線偵測 + PID 控制</div></div>
+          <div class="info-card"><h3>🏁</h3><div class="value">返回終點</div><div class="desc">繞完一圈回到上方紅線</div></div>
+          <div class="info-card"><h3>◉</h3><div class="value">循線置中</div><div class="desc">全程維持車道中央行駛，PID 即時修正</div></div>
         </div>
       </div>
     </div>
