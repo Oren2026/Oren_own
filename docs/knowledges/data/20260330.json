@@ -109,5 +109,14 @@
       "經濟學",
       "電網級儲能"
     ]
+  },
+  {
+    "title": "多機器人協調：十個機器人誰說了算",
+    "summary": "去中心化 swarm intelligence 成主流，三大協調模式：模仿蟻群pheromone、以本地規則替代中央控制、人機混合協作。",
+    "tags": [
+      "機器人",
+      "多智慧體",
+      "SwarmIntelligence"
+    ]
   }
 ]
