@@ -12,14 +12,14 @@
 const MISSION_ICONS = {
   traffic_light:  '🚦', construction:   '🚧',
   parking:        '🅿️', level_crossing: '🚞',
-  s_curve:      '🔄', tunnel:         '🚇',
-  lane_center:  '◉', lane:           '🚗',
-  integration:  '🔗'
+  intersection: '🔄', tunnel:         '🚇',
+  s_curve:      '⤵️', lane_center:   '◉',
+  lane:         '🚗', integration:   '🔗'
 };
 
 const MISSION_IDS = [
-  'traffic_light','s_curve','construction',
-  'parking','m_curve','level_crossing','tunnel','lane_center','lane',
+  'traffic_light','intersection','s_curve','construction',
+  'parking','level_crossing','tunnel','lane_center','lane',
   'integration'
 ];
 
