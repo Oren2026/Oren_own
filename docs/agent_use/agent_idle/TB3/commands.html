@@ -234,14 +234,15 @@ let searchQuery = '';
 
 // ── Category metadata ──
 const CATEGORIES = [
-  { key: 'category1_環境建置',    icon: '⚙',  label: '環境建置' },
-  { key: 'category2_號誌偵測_研習1', icon: '🚦', label: '號誌偵測' },
-  { key: 'category3_車道跟隨_研習1', icon: '🛤', label: '車道跟隨' },
-  { key: 'category4_岔路決策_研習1', icon: '↪', label: '岔路決策' },
-  { key: 'category5_障礙偵測_研習2', icon: '🚧', label: '障礙偵測' },
-  { key: 'category6_自動停車_研習2', icon: '🅿', label: '自動停車' },
-  { key: 'category7_平交道_研習3',  icon: '🚞', label: '平交道' },
-  { key: 'category8_隧道導航_研習3', icon: '⚡', label: '隧道導航' },
+  { key: 'environment',      icon: '⚙',  label: '環境建置' },
+  { key: 'rosCore',          icon: '🔥', label: 'ROS 核心' },
+  { key: '研習1_道路駕駛',   icon: '🚦', label: '研習1：道路駕駛' },
+  { key: '研習2_自動避障',   icon: '🚧', label: '研習2：自動避障' },
+  { key: '研習3_SLAM導航',   icon: '🗺️', label: '研習3：SLAM導航' },
+  { key: '常用工具',          icon: '🔧', label: '常用工具' },
+  { key: 'launchFiles',      icon: '📄', label: 'Launch 檔案' },
+  { key: 'topics',            icon: '📡', label: 'Topic 對照' },
+  { key: 'quickReference',    icon: '⚡', label: '快速參考' },
 ];
 
 // ── Load JSON ──
@@ -267,19 +268,19 @@ async function loadData() {
 function buildNav() {
   const nav = document.getElementById('navList');
   nav.innerHTML = CATEGORIES.map(c => {
-    const items = cmdData[c.key]?.items || [];
+    const section = cmdData[c.key];
+    let count = 0;
+    if (section) {
+      if (Array.isArray(section.commands)) count = section.commands.length;
+      else if (Array.isArray(section.files)) count = section.files.length;
+      else if (Array.isArray(section.subscribers) && Array.isArray(section.publishers)) {
+        count = section.subscribers.length + section.publishers.length;
+      }
+    }
     return `<div class="nav-item" data-section="${c.key}" onclick="showSection('${c.key}')">
-      ${c.icon} ${c.label} <span class="nav-count">${items.length}</span>
+      ${c.icon} ${c.label} <span class="nav-count">${count}</span>
     </div>`;
   }).join('');
-
-  // Add dev order
-  if (cmdData.developmentOrder) {
-    nav.innerHTML += `<div class="sidebar-title" style="margin-top:16px;border-top:1px solid var(--border);padding-top:10px;margin-bottom:8px;">開發順序</div>
-      <div class="nav-item" data-section="developmentOrder" onclick="showSection('developmentOrder')">
-        📋 開發順序 <span class="nav-count">${cmdData.developmentOrder.length}</span>
-      </div>`;
-  }
 
   document.getElementById('pageDesc').textContent = cmdData.description || '';
 }
@@ -293,26 +294,44 @@ function showSection(id) {
   document.getElementById('searchCount').textContent = '';
   location.hash = encodeURIComponent(id);
 
-  // Update nav active
   document.querySelectorAll('.nav-item').forEach(el => {
     el.classList.toggle('active', el.getAttribute('data-section') === id);
   });
 
   const content = document.getElementById('content');
-
-  if (id === 'developmentOrder') {
-    renderDevOrder(content);
-    return;
-  }
-
   const cat = CATEGORIES.find(c => c.key === id);
   const d = cmdData[id];
-  if (!d || !cat) {
+
+  if (!d) {
     content.innerHTML = '<div class="empty-search">找不到這個分類</div>';
     return;
   }
 
-  const items = d.items || [];
+  // launchFiles
+  if (id === 'launchFiles' && Array.isArray(d.files)) {
+    renderLaunchFiles(content, d, cat.icon);
+    return;
+  }
+
+  // topics
+  if (id === 'topics') {
+    renderTopics(content, d, cat.icon);
+    return;
+  }
+
+  // quickReference
+  if (id === 'quickReference' && Array.isArray(d.workflows)) {
+    renderQuickRef(content, d, cat.icon);
+    return;
+  }
+
+  // Standard command list (environment, rosCore, 研習1/2/3, 常用工具)
+  const items = d.commands || [];
+  if (items.length === 0) {
+    content.innerHTML = '<div class="empty-search">這個分類還沒有指令</div>';
+    return;
+  }
+
   content.innerHTML = `
     <div class="cmd-section">
       <div class="section-header">
@@ -320,17 +339,19 @@ function showSection(id) {
         <span class="section-title">${d.title || cat.label}</span>
         <span class="section-count">${items.length} 指令</span>
       </div>
-      <p class="section-desc">${d.desc || ''}</p>
+      ${d.description ? `<p class="section-desc">${d.description}</p>` : ''}
+      ${d.source ? `<p class="section-desc" style="color:var(--accent2)">來源：${d.source}</p>` : ''}
       <div class="cmd-list" id="cmdList">
-        ${items.map((item, i) => buildCmdItem(item, id, i)).join('')}
+        ${items.map((item, i) => buildCmdItem(item)).join('')}
       </div>
     </div>`;
 }
 
-function buildCmdItem(item, sectionId, index) {
-  const searchText = `${item.cmd || ''} ${item.desc || ''}`.toLowerCase();
+function buildCmdItem(item) {
+  const searchText = `${item.cmd || ''} ${item.desc || ''} ${item.category || ''}`.toLowerCase();
   return `<div class="cmd-item" data-search="${escHtml(searchText)}">
     <div class="cmd-body">
+      ${item.category ? `<div class="cmd-name" style="color:var(--accent2);font-size:0.75rem;margin-bottom:4px;">【${escHtml(item.category)}】</div>` : ''}
       ${item.desc ? `<div class="cmd-name">${escHtml(item.desc)}</div>` : ''}
       ${item.cmd ? `<div class="cmd-code">${escHtml(item.cmd)}</div>` : ''}
       ${item.note ? `<div class="cmd-note">📌 ${escHtml(item.note)}</div>` : ''}
@@ -341,25 +362,86 @@ function buildCmdItem(item, sectionId, index) {
   </div>`;
 }
 
-function renderDevOrder(container) {
-  const steps = cmdData.developmentOrder || [];
+function renderLaunchFiles(container, d, icon) {
+  const files = d.files || [];
   container.innerHTML = `
     <div class="cmd-section">
       <div class="section-header">
-        <span class="section-icon">📋</span>
-        <span class="section-title">開發順序</span>
-        <span class="section-count">${steps.length} 步驟</span>
+        <span class="section-icon">${icon}</span>
+        <span class="section-title">${d.title}</span>
+        <span class="section-count">${files.length} 檔案</span>
       </div>
-      <p class="section-desc">從環境建置到整合計時，7項 Mission 的實作順序</p>
-      <div class="step-list" id="stepList">
-        ${steps.map(s => `
+      <p class="section-desc">${d.description || ''}</p>
+      <div class="cmd-list">
+        ${files.map(f => `
+        <div class="cmd-item" data-search="${escHtml((f.name||'')+' '+(f.desc||''))}">
+          <div class="cmd-body">
+            <div class="cmd-name">${escHtml(f.name)}</div>
+            <div class="cmd-code">${escHtml(f.package)}</div>
+            ${f.desc ? `<div class="cmd-note">${escHtml(f.desc)}</div>` : ''}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderTopics(container, d, icon) {
+  const subs = d.subscribers || [];
+  const pubs = d.publishers || [];
+  container.innerHTML = `
+    <div class="cmd-section">
+      <div class="section-header">
+        <span class="section-icon">${icon}</span>
+        <span class="section-title">${d.title}</span>
+        <span class="section-count">${subs.length + pubs.length} Topic</span>
+      </div>
+      <p class="section-desc">${d.description || ''}</p>
+      ${subs.length ? `
+      <div style="margin-bottom:20px;">
+        <div style="font-size:0.8rem;color:var(--accent);margin-bottom:8px;">📥 訂閱（Subscribers）</div>
+        <div class="cmd-list">
+          ${subs.map(t => `<div class="cmd-item" data-search="${escHtml((t.name||'')+' '+(t.desc||''))}">
+            <div class="cmd-body">
+              <div class="cmd-code" style="color:var(--accent2)">${escHtml(t.name)}</div>
+              <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px;">Type: ${escHtml(t.type)}</div>
+              ${t.desc ? `<div class="cmd-note">${escHtml(t.desc)}</div>` : ''}
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>` : ''}
+      ${pubs.length ? `
+      <div>
+        <div style="font-size:0.8rem;color:var(--accent2);margin-bottom:8px;">📤 發布（Publishers）</div>
+        <div class="cmd-list">
+          ${pubs.map(t => `<div class="cmd-item" data-search="${escHtml((t.name||'')+' '+(t.desc||''))}">
+            <div class="cmd-body">
+              <div class="cmd-code" style="color:var(--hiwin)">${escHtml(t.name)}</div>
+              <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px;">Type: ${escHtml(t.type)}</div>
+              ${t.desc ? `<div class="cmd-note">${escHtml(t.desc)}</div>` : ''}
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>` : ''}
+    </div>`;
+}
+
+function renderQuickRef(container, d, icon) {
+  const workflows = d.workflows || [];
+  container.innerHTML = `
+    <div class="cmd-section">
+      <div class="section-header">
+        <span class="section-icon">${icon}</span>
+        <span class="section-title">${d.title}</span>
+        <span class="section-count">${workflows.length} 工作流</span>
+      </div>
+      <p class="section-desc">${d.description || ''}</p>
+      <div class="step-list">
+        ${workflows.map(w => `
         <div class="step-item">
-          <div class="step-num">${s.step}</div>
+          <div class="step-num">✓</div>
           <div>
-            <div class="step-title">${escHtml(s.title || '')}</div>
-            ${s.focus ? `<div class="step-focus">${escHtml(s.focus)}</div>` : ''}
-            ${s.commands?.length ? `<div class="step-cmds">${s.commands.map(c => `<span class="step-cmd">${escHtml(c)}</span>`).join('')}</div>` : ''}
-            ${s.output ? `<div class="step-output">→ ${escHtml(s.output)}</div>` : ''}
+            <div class="step-title">${escHtml(w.title || '')}</div>
+            ${Array.isArray(w.steps) ? `<div class="step-cmds">${w.steps.map(s => `<span class="step-cmd">${escHtml(s)}</span>`).join('')}</div>` : ''}
           </div>
         </div>`).join('')}
       </div>
@@ -374,24 +456,6 @@ function onSearch(q) {
 
   if (!currentSection) return;
 
-  // Special handling for dev order
-  if (currentSection === 'developmentOrder') {
-    const items = document.querySelectorAll('.step-item');
-    let visible = 0;
-    items.forEach(item => {
-      const text = item.textContent?.toLowerCase() || '';
-      const match = text.includes(searchQuery);
-      item.style.display = match ? '' : 'none';
-      if (match) visible++;
-    });
-    const total = cmdData.developmentOrder?.length || 0;
-    document.getElementById('searchCount').textContent = searchQuery ? `${visible}/${total}` : '';
-    return;
-  }
-
-  const d = cmdData[currentSection];
-  if (!d) return;
-
   const items = document.querySelectorAll('.cmd-item');
   let visible = 0;
   items.forEach(item => {
@@ -401,7 +465,7 @@ function onSearch(q) {
     if (match) visible++;
   });
 
-  const total = d.items?.length || 0;
+  const total = items.length;
   document.getElementById('searchCount').textContent = searchQuery ? `${visible}/${total}` : '';
 }
 
