@@ -8,7 +8,7 @@ import sys
 import os
 from datetime import datetime
 
-DATA_DIR = "/tmp/oren_github/docs/knowledges/data"
+DATA_DIR = "/Users/oren/Desktop/Oren_own/docs/knowledges/data"
 
 def get_today():
     return datetime.now().strftime("%Y%m%d")
