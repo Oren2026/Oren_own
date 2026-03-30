@@ -249,6 +249,21 @@
     }
     .add-hint strong { color: var(--accent); }
 
+    /* ── Competition nav cards ── */
+    .comp-nav { max-width: 760px; margin: 0 auto; padding: 0 24px 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .comp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; text-decoration: none; color: var(--text); transition: border-color 0.2s, transform 0.2s; }
+    .comp-card:hover { border-color: var(--border-color,rgba(255,255,255,0.2)); transform: translateY(-3px); }
+    .comp-card-tdk   { --border-color: rgba(255,127,127,0.35); border-left: 3px solid var(--tdk); }
+    .comp-card-tb3   { --border-color: rgba(127,179,255,0.35); border-left: 3px solid var(--tb3); }
+    .comp-card-hiwin  { --border-color: rgba(127,255,255,0.35); border-left: 3px solid var(--hiwin); }
+    .comp-eyebrow { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+    .comp-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+    .comp-card-tdk   .comp-name { color: var(--tdk); }
+    .comp-card-tb3   .comp-name { color: var(--tb3); }
+    .comp-card-hiwin .comp-name { color: var(--hiwin); }
+    .comp-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+    .comp-link { font-size: 0.72rem; margin-top: 8px; display: flex; align-items: center; gap: 4px; color: var(--accent); opacity: 0.6; }
+
     /* ── Last update ── */
     .last-update { text-align: center; font-size: 0.8rem; color: var(--muted); padding: 0 24px 40px; letter-spacing: 0.06em; }
 
@@ -315,6 +330,27 @@
 <div class="upcoming-wrap">
   <div class="upcoming-title">近期行程</div>
   <ul class="upcoming-list" id="upcomingList"></ul>
+</div>
+
+<div class="comp-nav">
+  <a href="TDK/" class="comp-card comp-card-tdk">
+    <div class="comp-eyebrow">TDK 第30屆</div>
+    <div class="comp-name">文蛤分級</div>
+    <div class="comp-desc">3D 列印文蛤 + 兩階段審查<br>初賽 2026/10/15</div>
+    <div class="comp-link">→ 進入頁面</div>
+  </a>
+  <a href="TB3/" class="comp-card comp-card-tb3">
+    <div class="comp-eyebrow">FIRA AutoRace</div>
+    <div class="comp-name">TB3 自動駕駛</div>
+    <div class="comp-desc">7項 Mission · 研習1-3<br>比賽 2026/04/25</div>
+    <div class="comp-link">→ 進入頁面</div>
+  </a>
+  <a href="HIWIN/" class="comp-card comp-card-hiwin">
+    <div class="comp-eyebrow">上銀撞球</div>
+    <div class="comp-name">第十八屆</div>
+    <div class="comp-desc">初審通過 · 複審影片截止<br>決賽 2026/08/19-20</div>
+    <div class="comp-link">→ 進入頁面</div>
+  </a>
 </div>
 
 <div class="add-hint">
