@@ -135,6 +135,7 @@ async function openModal(id) {
   document.getElementById('modal-body').innerHTML = `
     <p><span class="modal-status ${s}">${s === 'done' ? '✅ 已完成' : '🚧 施工中'}</span></p>
     ${m.description ? `<p style="margin-top:0.75rem;">${m.description}</p>` : ''}
+    ${m.video ? `<div class="modal-section"><h3>🎬 測試影片</h3><video src="${m.video}" controls style="width:100%;border-radius:8px;margin-top:0.5rem;"></video></div>` : ''}
     ${subs ? `<div class="modal-section"><h3>實作細節</h3><ul>${subs}</ul></div>` : ''}
     ${outputs ? `<div class="modal-section"><h3>輸出 Topic</h3><ul>${outputs}</ul></div>` : ''}
     ${files ? `<div class="modal-section"><h3>對應檔案</h3><ul>${files}</ul></div>` : ''}`;
