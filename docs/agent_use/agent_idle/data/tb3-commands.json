@@ -1,108 +1,503 @@
 {
-  "title": "TB3 AutoRace 指令手冊",
+  "title": "TB3 AutoRace 完整指令手冊",
   "lastUpdated": "2026-03-30",
-  "description": "基於三份 AutoRace 研習資料整合，7項 Mission 開發順序",
+  "description": "基於三份 AutoRace 研習資料（採智科技）整合，所有實際用過的指令",
 
-  "category1_環境建置": {
-    "description": "最先做，完成後才能遠端操控 TB3",
+  "environment": {
+    "title": "環境建置",
+    "description": "TB3 與 PC 的網路連線、SSH、遠端操控環境",
     "commands": [
-      { "id": "wifi-edit", "cmd": "sudo nano /etc/netplan/50-cloud-init.yaml", "desc": "編輯WiFi設定檔" },
-      { "id": "wifi-apply", "cmd": "sudo netplan apply", "desc": "重啟網路設定" },
-      { "id": "wifi-check", "cmd": "ifconfig", "desc": "查詢wlan0 IP位址" },
-      { "id": "ssh-connect", "cmd": "ssh ubuntu@192.168.10.101", "desc": "遠端連線TB3（密碼：turtlebot）" },
-      { "id": "env-edit", "cmd": "nano ~/.bashrc", "desc": "編輯環境變數（PC與TB3都要設定）" }
+      {
+        "id": "env-01",
+        "category": "WiFi設定",
+        "cmd": "sudo nano /etc/netplan/50-cloud-init.yaml",
+        "desc": "編輯 WiFi 網路設定檔，修改 WIFI_SSID 和 WIFI_PASSWORD",
+        "note": "需要管理員權限"
+      },
+      {
+        "id": "env-02",
+        "category": "WiFi設定",
+        "cmd": "sudo netplan apply",
+        "desc": "重啟網路設定，使 WiFi 設定生效",
+        "note": "修改 netplan 後執行"
+      },
+      {
+        "id": "env-03",
+        "category": "WiFi設定",
+        "cmd": "ifconfig",
+        "desc": "查詢網路介面資訊（特別是 wlan0 的 IP 位址）",
+        "note": "確認 TB3 的 IP 是 192.168.10.101"
+      },
+      {
+        "id": "env-04",
+        "category": "SSH連線",
+        "cmd": "ssh ubuntu@192.168.10.101",
+        "desc": "從 PC 遠端連線到 TB3 主機",
+        "note": "預設密碼：turtlebot"
+      },
+      {
+        "id": "env-05",
+        "category": "環境變數",
+        "cmd": "nano ~/.bashrc",
+        "desc": "編輯 bash 環境變數設定檔（PC 與 TB3 都要設定）",
+        "note": "ROS_MASTER_URI、TURTLEBOT3_MODEL 等變數在這裡設定"
+      },
+      {
+        "id": "env-06",
+        "category": "環境變數",
+        "cmd": "source ~/.bashrc",
+        "desc": "讓環境變數立即生效（不用重開終端機）",
+        "note": "修改 bashrc 後執行"
+      },
+      {
+        "id": "env-07",
+        "category": "環境變數",
+        "cmd": "echo $ROS_MASTER_URI",
+        "desc": "確認 ROS Master 的 URI 設定",
+        "note": "正常應顯示 http://localhost:11311"
+      }
     ]
   },
 
-  "category2_號誌偵測_研習1": {
-    "mission": "Mission 1 — 交通號誌",
-    "description": "Step 2，今天優先實作",
+  "rosCore": {
+    "title": "ROS 核心程序",
+    "description": "TB3 自駕系統的基礎執行環境，所有節點必須在 roscore 啟動後才能運作",
     "commands": [
-      { "id": "hsv-filter", "cmd": "cv2.inRange(hsv, lower_green, upper_green)", "desc": "HSV綠燈遮罩過濾" },
-      { "id": "hsv-red", "cmd": "cv2.inRange(hsv, lower_red, upper_red)", "desc": "HSV紅燈遮罩過濾" },
-      { "id": "hough-circle", "cmd": "cv2.HoughCircles(crop, cv2.HOUGH_GRADIENT, dp, minDist)", "desc": "霍夫圓變換找燈號圓形" },
-      { "id": "signal-decision", "cmd": "if green_detected: go() elif red_detected: stop()", "desc": "號誌決策：綠走紅停" }
-    ],
-    "skills": ["tb3-hsv", "tb3-hough", "tb3-signal"]
+      {
+        "id": "ros-01",
+        "category": "核心程序",
+        "cmd": "roscore",
+        "desc": "啟動 ROS Master，是所有 ROS 節點的通訊中心",
+        "note": "每次開機後只需執行一次，通常在 TB3 上執行"
+      },
+      {
+        "id": "ros-02",
+        "category": "核心程序",
+        "cmd": "roslaunch [package] [launchfile.launch]",
+        "desc": "啟動多個 ROS 節點的標準方式，自動處理參數和依賴",
+        "note": "範例：roslaunch turtlebot3_bringup turtlebot3_robot.launch"
+      },
+      {
+        "id": "ros-03",
+        "category": "核心程序",
+        "cmd": "rosrun [package] [node]",
+        "desc": "執行單一 ROS 節點",
+        "note": "通常用於測試或单独功能模組"
+      },
+      {
+        "id": "ros-04",
+        "category": "節點管理",
+        "cmd": "rosnode list",
+        "desc": "列出目前所有運行的 ROS 節點",
+        "note": "確認節點是否成功啟動"
+      },
+      {
+        "id": "ros-05",
+        "category": "Topic管理",
+        "cmd": "rostopic list",
+        "desc": "列出目前所有發布/訂閱的 Topic",
+        "note": "確認資料流是否存在"
+      },
+      {
+        "id": "ros-06",
+        "category": "Topic管理",
+        "cmd": "rostopic echo /[topic_name]",
+        "desc": "查看特定 Topic 的即時資料內容",
+        "note": "用於除錯：確認感測器資料是否正常發布"
+      },
+      {
+        "id": "ros-07",
+        "category": "節點管理",
+        "cmd": "rosnode info /[node_name]",
+        "desc": "查看特定節點的詳細資訊（發布的Topic、訂閱的Topic、連線狀況）",
+        "note": "用於除錯節點間的通訊問題"
+      }
+    ]
   },
 
-  "category3_車道跟隨_研習1": {
-    "mission": "Mission 3 — S型彎道",
-    "description": "Step 3",
+  "研習1_道路駕駛": {
+    "title": "研習1：道路駕駛、影像辨識",
+    "description": "號誌判斷、岔路決策、車道跟隨，TB3 從起點 A 到終點 B",
+    "source": "AutoRace_研習1_學員.pdf",
     "commands": [
-      { "id": "perspective", "cmd": "cv2.getPerspectiveTransform(src, dst)", "desc": "透視轉換為top-down視角" },
-      { "id": "slide-window", "cmd": "滑動視窗掃描黃白線", "desc": "找出左側黃線、右側白線" },
-      { "id": "pid-steer", "cmd": "PID(error, kp, ki, kd) → steering_angle", "desc": "PID控制輸出轉向角度" },
-      { "id": "lane-follow", "cmd": "center = (left_fit + right_fit) / 2; error = center - image_center", "desc": "車道跟隨核心公式" }
-    ],
-    "skills": ["tb3-lane", "tb3-perspective"]
+      {
+        "id": "study1-01",
+        "category": "環境確認",
+        "cmd": "roslaunch turtlebot3_bringup turtlebot3_robot.launch",
+        "desc": "啟動 TB3 硬體驅動（馬達、感測器）",
+        "note": "在 TB3 本機或透過 SSH 執行"
+      },
+      {
+        "id": "study1-02",
+        "category": "環境確認",
+        "cmd": "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch",
+        "desc": "啟動鍵盤遙控，確認 TB3 基本運動正常",
+        "note": "WASD 鍵控制方向，Q 結束"
+      },
+      {
+        "id": "study1-03",
+        "category": "影像辨識",
+        "cmd": "rosrun image_view image_view image:=/camera/image_raw",
+        "desc": "即時顯示 TB3 相機影像（確認相機正常運作）",
+        "note": "影像話題名稱可能因設定而異"
+      },
+      {
+        "id": "study1-04",
+        "category": "號誌偵測",
+        "cmd": "roslaunch detect detect_traffic_light.launch",
+        "desc": "啟動交通號誌偵測節點",
+        "note": "通常發布 /detected_color 或 /traffic_light_state"
+      },
+      {
+        "id": "study1-05",
+        "category": "號誌偵測",
+        "cmd": "rostopic echo /detected_color",
+        "desc": "查看號誌偵測結果（紅/綠/黃）",
+        "note": "確認 HSV 閾值設定是否正確"
+      },
+      {
+        "id": "study1-06",
+        "category": "岔路決策",
+        "cmd": "roslaunch detect detect_intersection.launch",
+        "desc": "啟動岔路號誌偵測節點（左右箭頭方向）",
+        "note": "與號誌偵測分開，獨立的節點"
+      },
+      {
+        "id": "study1-07",
+        "category": "岔路決策",
+        "cmd": "rostopic echo /intersection_direction",
+        "desc": "查看岔路方向偵測結果（left/right/forward）",
+        "note": "確認轉向判斷邏輯是否正確"
+      },
+      {
+        "id": "study1-08",
+        "category": "車道跟隨",
+        "cmd": "roslaunch lane_follow lane_follow.launch",
+        "desc": "啟動車道跟隨節點",
+        "note": "讀取車道線資料，輸出 steering angle"
+      },
+      {
+        "id": "study1-09",
+        "category": "車道跟隨",
+        "cmd": "rostopic echo /steering_angle",
+        "desc": "查看車道跟隨輸出的轉向角度",
+        "note": "正值左轉、負值右轉"
+      },
+      {
+        "id": "study1-10",
+        "category": "整合測試",
+        "cmd": "roslaunch autorace mission_intersection.launch",
+        "desc": "啟動完整岔路任務（號誌+車道+決策）",
+        "note": "從起點到終點的整合測試"
+      }
+    ]
   },
 
-  "category4_岔路決策_研習1": {
-    "mission": "Mission 5 — 圓環路口",
-    "description": "Step 4",
+  "研習2_自動避障": {
+    "title": "研習2：自動避障、自動停車",
+    "description": "障礙物偵測、停車格辨識、定點停車，TB3 從 A 到 B 停車場再到 C",
+    "source": "AutoRace_研習2_學員.pdf",
     "commands": [
-      { "id": "intersection-detect", "cmd": "偵測岔路號誌（左右箭頭）", "desc": "顏色+形狀識別岔路方向" },
-      { "id": "turn-decision", "cmd": "if left_arrow: turn_left() elif right_arrow: turn_right()", "desc": "岔路轉向決策" }
-    ],
-    "skills": ["tb3-signal", "tb3-roundabout"]
+      {
+        "id": "study2-01",
+        "category": "障礙偵測",
+        "cmd": "roslaunch detect detect_obstacle.launch",
+        "desc": "啟動障礙物偵測節點（紅色三角標誌）",
+        "note": "固定位置障礙物偵測"
+      },
+      {
+        "id": "study2-02",
+        "category": "障礙偵測",
+        "cmd": "rostopic echo /obstacle_detected",
+        "desc": "查看障礙偵測結果（true/false）",
+        "note": "確認障礙物辨識是否正常"
+      },
+      {
+        "id": "study2-03",
+        "category": "停車控制",
+        "cmd": "roslaunch parking parking_detect.launch",
+        "desc": "啟動停車格偵測節點",
+        "note": "掃描停車場，找出空車格"
+      },
+      {
+        "id": "study2-04",
+        "category": "停車控制",
+        "cmd": "rostopic echo /parking_slot",
+        "desc": "查看停車格偵測結果（位置座標）",
+        "note": "空車格的相對位置"
+      },
+      {
+        "id": "study2-05",
+        "category": "停車控制",
+        "cmd": "roslaunch parking parking_control.launch",
+        "desc": "啟動定點停車控制節點",
+        "note": "接收目標座標，執行倒車入庫"
+      },
+      {
+        "id": "study2-06",
+        "category": "停車控制",
+        "cmd": "rostopic pub /parking_goal geometry_msgs/PoseStamped '{header: {}, pose: {position: {x: 0.5, y: 0.0, z: 0.0}}}'",
+        "desc": "發布停車目標座標（測試用）",
+        "note": "手動指定停車位置"
+      },
+      {
+        "id": "study2-07",
+        "category": "整合測試",
+        "cmd": "roslaunch autorace mission_parking.launch",
+        "desc": "啟動完整停車任務（障礙+停車+駛出）",
+        "note": "從 A 到 B 停車場再到 C 的整合測試"
+      }
+    ]
   },
 
-  "category5_障礙偵測_研習2": {
-    "mission": "Mission 2 — 障礙偵測",
-    "description": "Step 5",
+  "研習3_SLAM導航": {
+    "title": "研習3：SLAM 導航",
+    "description": "SLAM建圖、平交道等待、隧道導航，TB3 從 A 到 C（經過平交道+隧道）",
+    "source": "AutoRace_研習3_學員.pdf",
     "commands": [
-      { "id": "obstacle-red-triangle", "cmd": "紅色三角形標誌偵測", "desc": "固定障礙物（場地左側三個）" },
-      { "id": "obstacle-stop", "cmd": "障礙物前方停等或繞行", "desc": "障礙偵測後的應對策略" }
-    ],
-    "skills": ["tb3-obstacle"]
+      {
+        "id": "study3-01",
+        "category": "SLAM建圖",
+        "cmd": "roslaunch turtlebot3_slam turtlebot3_slam.launch",
+        "desc": "啟動 SLAM 建圖模式",
+        "note": "使用 Gmapping，同時定位與地圖建構"
+      },
+      {
+        "id": "study3-02",
+        "category": "SLAM建圖",
+        "cmd": "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch",
+        "desc": "鍵盤遙控 TB3 移動，同時進行地圖建構",
+        "note": "盡量覆蓋所有區域，建構完整地圖"
+      },
+      {
+        "id": "study3-03",
+        "category": "SLAM建圖",
+        "cmd": "rosrun map_server map_saver -f ~/map",
+        "desc": "將建構好的地圖儲存到檔案",
+        "note": "儲存為 map.yaml + map.pgm"
+      },
+      {
+        "id": "study3-04",
+        "category": "SLAM導航",
+        "cmd": "roslaunch turtlebot3_navigation move_base.launch",
+        "desc": "啟動導航堆疊（基於已儲存的地圖）",
+        "note": "接收目標座標，自主導航到目標"
+      },
+      {
+        "id": "study3-05",
+        "category": "平交道偵測",
+        "cmd": "roslaunch detect detect_gate.launch",
+        "desc": "啟動平交道柵欄偵測節點",
+        "note": "紅白條紋辨識"
+      },
+      {
+        "id": "study3-06",
+        "category": "平交道偵測",
+        "cmd": "rostopic echo /gate_state",
+        "desc": "查看柵欄狀態（open/closed）",
+        "note": "closed = 柵欄放下需等待"
+      },
+      {
+        "id": "study3-07",
+        "category": "隧道光源補償",
+        "cmd": "roslaunch tunnel tunnel_compensation.launch",
+        "desc": "啟動隧道光源補償節點",
+        "note": "偵測到隧道時自動切換補償模式"
+      },
+      {
+        "id": "study3-08",
+        "category": "隧道光源補償",
+        "cmd": "rostopic echo /in_tunnel",
+        "desc": "查看是否處於隧道內（true/false）",
+        "note": "進入隧道時光源補償失效，需切換 PID 盲走"
+      },
+      {
+        "id": "study3-09",
+        "category": "整合測試",
+        "cmd": "roslaunch autorace mission_slam.launch",
+        "desc": "啟動完整 SLAM 任務（平交道+隧道）",
+        "note": "從 A 到 C 的整合導航測試"
+      }
+    ]
   },
 
-  "category6_自動停車_研習2": {
-    "mission": "Mission 4 — 停車區",
-    "description": "Step 6",
+  "常用工具": {
+    "title": "常用工具指令",
+    "description": "日常開發、除錯、系統管理常用的指令",
     "commands": [
-      { "id": "parking-scan", "cmd": "超聲波或視覺掃描停車格", "desc": "找出空車格位置" },
-      { "id": "parking-empty", "cmd": "空車格判斷演算法", "desc": "隨機空位的自動化選擇" },
-      { "id": "parking-control", "cmd": "倒車入庫控制", "desc": "定點停入停車格" },
-      { "id": "parking-exit", "cmd": "停車場駛出導引至C點", "desc": "停好後繼續前進" }
-    ],
-    "skills": ["tb3-parking", "tb3-kinematics"]
+      {
+        "id": "tool-01",
+        "category": "系統資訊",
+        "cmd": "hostname -I",
+        "desc": "查詢本機 IP 位址",
+        "note": "快速確認網路是否正常"
+      },
+      {
+        "id": "tool-02",
+        "category": "系統資訊",
+        "cmd": "ping 192.168.10.101",
+        "desc": "測試 TB3 是否網路可達",
+        "note": "確認網路連線是否正常"
+      },
+      {
+        "id": "tool-03",
+        "category": "系統資訊",
+        "cmd": "cat /etc/ros/noetic/distribution.yaml | grep turtlebot",
+        "desc": "確認已安裝的 TurtleBot3 套件版本",
+        "note": "確認套件完整性"
+      },
+      {
+        "id": "tool-04",
+        "category": "ROS除錯",
+        "cmd": "rqt_graph",
+        "desc": "開啟節點連線視覺化圖（所有節點和 Topic 的連線關係）",
+        "note": "確認節點間的通訊架構是否正確"
+      },
+      {
+        "id": "tool-05",
+        "category": "ROS除錯",
+        "cmd": "rostopic hz /[topic_name]",
+        "desc": "查看 Topic 的更新頻率（Hz）",
+        "note": "確認感測器發布頻率是否正常"
+      },
+      {
+        "id": "tool-06",
+        "category": "ROS除錯",
+        "cmd": "rosrun rqt_reconfigure rqt_reconfigure",
+        "desc": "動態調整節點參數（不用重啟節點）",
+        "note": "調整 HSV 閾值、PID 參數等"
+      },
+      {
+        "id": "tool-07",
+        "category": "資料處理",
+        "cmd": "rosbag record -a",
+        "desc": "錄製所有 Topic 的資料（用於事後回放分析）",
+        "note": "Ctrl+C 結束錄製，產生 .bag 檔案"
+      },
+      {
+        "id": "tool-08",
+        "category": "資料處理",
+        "cmd": "rosbag play [filename.bag]",
+        "desc": "回放之前錄製的 bag 檔案",
+        "note": "用於除錯：重現之前的感測器資料"
+      },
+      {
+        "id": "tool-09",
+        "category": "程序管理",
+        "cmd": "ps aux | grep ros",
+        "desc": "查看所有與 ROS 相關的行程",
+        "note": "確認哪些節點在執行中"
+      },
+      {
+        "id": "tool-10",
+        "category": "程序管理",
+        "cmd": "kill -9 [PID]",
+        "desc": "強制結束特定行程（使用 PID）",
+        "note": "當節點卡住無法正常結束時使用"
+      },
+      {
+        "id": "tool-11",
+        "category": "檔案傳輸",
+        "cmd": "scp ubuntu@192.168.10.101:/path/to/file .",
+        "desc": "從 TB3 複製檔案到本機",
+        "note": "備份地圖、日誌等檔案"
+      },
+      {
+        "id": "tool-12",
+        "category": "檔案傳輸",
+        "cmd": "scp /path/to/file ubuntu@192.168.10.101:/path/to/",
+        "desc": "從本機複製檔案到 TB3",
+        "note": "部署程式碼、參數檔案等"
+      }
+    ]
   },
 
-  "category7_平交道_研習3": {
-    "mission": "Mission 6 — 平交道",
-    "description": "Step 7",
-    "commands": [
-      { "id": "crossing-gate", "cmd": "紅白柵欄辨識", "desc": "偵測平交道柵欄狀態" },
-      { "id": "crossing-wait", "cmd": "while gate_closed: stop()", "desc": "柵欄未升起前停等" },
-      { "id": "crossing-go", "cmd": "gate_open → go()", "desc": "柵欄升起後繼續前進" }
-    ],
-    "skills": ["tb3-crossing"]
+  "launchFiles": {
+    "title": "Launch 檔案對照表",
+    "description": "各功能模組的主要 launch 檔案名稱和用途",
+    "files": [
+      { "name": "turtlebot3_robot.launch", "package": "turtlebot3_bringup", "desc": "TB3 硬體驅動啟動（馬達、感測器初始化）" },
+      { "name": "turtlebot3_slam.launch", "package": "turtlebot3_slam", "desc": "SLAM 建圖模式" },
+      { "name": "turtlebot3_navigation.launch", "package": "turtlebot3_navigation", "desc": "自主導航模式" },
+      { "name": "turtlebot3_teleop_key.launch", "package": "turtlebot3_teleop", "desc": "鍵盤遙控" },
+      { "name": "detect_traffic_light.launch", "package": "detect", "desc": "交通號誌偵測（紅/綠/黃燈）" },
+      { "name": "detect_intersection.launch", "package": "detect", "desc": "岔路方向偵測（左右箭頭）" },
+      { "name": "detect_obstacle.launch", "package": "detect", "desc": "障礙物偵測（紅色三角）" },
+      { "name": "detect_gate.launch", "package": "detect", "desc": "平交道柵欄偵測（紅白條紋）" },
+      { "name": "parking_detect.launch", "package": "parking", "desc": "停車格偵測" },
+      { "name": "parking_control.launch", "package": "parking", "desc": "定點停車控制" },
+      { "name": "lane_follow.launch", "package": "lane_follow", "desc": "車道跟隨" },
+      { "name": "tunnel_compensation.launch", "package": "tunnel", "desc": "隧道光源補償" },
+      { "name": "mission_intersection.launch", "package": "autorace", "desc": "研習1整合：岔路任務" },
+      { "name": "mission_parking.launch", "package": "autorace", "desc": "研習2整合：停車任務" },
+      { "name": "mission_slam.launch", "package": "autorace", "desc": "研習3整合：SLAM導航任務" },
+      { "name": "core.launch", "package": "core", "desc": "自駕核心程序（所有底層節點）" }
+    ]
   },
 
-  "category8_隧道導航_研習3": {
-    "mission": "Mission 7 — 隧道",
-    "description": "Step 8",
-    "commands": [
-      { "id": "slam-build", "cmd": "roslaunch turtlebot3_slam turtlebot3_slam.launch", "desc": "SLAM建圖模式啟動" },
-      { "id": "slam-nav", "cmd": "roslaunch turtlebot3_navigation move_base.launch", "desc": "導航模式啟動" },
-      { "id": "tunnel-dark", "cmd": "光源補償失效偵測", "desc": "偵測是否進入隧道（全黑區域）" },
-      { "id": "tunnel-pid", "cmd": "切換至PID盲走模式", "desc": "隧道內無光源時用PID控制前進" },
-      { "id": "tunnel-obstacle", "cmd": "隧道內障礙物偵測", "desc": "隧道隨機障礙的應對" }
+  "topics": {
+    "title": "常見 Topic 對照表",
+    "description": "各節點發布/訂閱的重要 Topic",
+    "subscribers": [
+      { "name": "/cmd_vel", "type": "geometry_msgs/Twist", "desc": "速度命令（linear.x前進速度、angular.z轉向速度）" },
+      { "name": "/camera/image_raw", "type": "sensor_msgs/Image", "desc": "相機原始影像" },
+      { "name": "/parking_goal", "type": "geometry_msgs/PoseStamped", "desc": "停車目標座標" }
     ],
-    "skills": ["tb3-tunnel", "tb3-ros"]
+    "publishers": [
+      { "name": "/detected_color", "type": "std_msgs/String", "desc": "號誌偵測結果（red/green/yellow）" },
+      { "name": "/intersection_direction", "type": "std_msgs/String", "desc": "岔路方向（left/right/forward）" },
+      { "name": "/obstacle_detected", "type": "std_msgs/Bool", "desc": "障礙物偵測結果（true/false）" },
+      { "name": "/parking_slot", "type": "geometry_msgs/PoseStamped", "desc": "空車格位置" },
+      { "name": "/gate_state", "type": "std_msgs/String", "desc": "柵欄狀態（open/closed）" },
+      { "name": "/in_tunnel", "type": "std_msgs/Bool", "desc": "是否在隧道內（true/false）" },
+      { "name": "/steering_angle", "type": "std_msgs/Float32", "desc": "車道跟隨轉向角度" },
+      { "name": "/scan", "type": "sensor_msgs/LaserScan", "desc": "雷射雷達掃描資料" }
+    ]
   },
 
-  "developmentOrder": [
-    { "step": 1, "today": true, "focus": "環境建置", "desc": "WiFi → SSH → bashrc，TB3可連線操控" },
-    { "step": 2, "today": true, "focus": "號誌偵測", "desc": "HSV + 霍夫圓，紅停綠走" },
-    { "step": 3, "focus": "車道跟隨", "desc": "透視轉換 + PID，車道線自動行駛" },
-    { "step": 4, "focus": "岔路決策", "desc": "號誌方向偵測，左右轉判斷" },
-    { "step": 5, "focus": "障礙偵測", "desc": "紅色三角障礙物識別" },
-    { "step": 6, "focus": "自動停車", "desc": "停車格掃描 + 定點停車" },
-    { "step": 7, "focus": "平交道", "desc": "柵欄偵測 + 等待邏輯" },
-    { "step": 8, "focus": "隧道導航", "desc": "SLAM + PID盲走 + 隧道障礙" },
-    { "step": 9, "focus": "整合測試", "desc": "7項Mission串聯，計時優化" }
-  ]
+  "quickReference": {
+    "title": "快速參考",
+    "description": "最常用的指令組合，按任務快速查詢",
+    "workflows": [
+      {
+        "title": "開機後標配流程",
+        "steps": [
+          "1. 確認 PC 與 TB3 同 WiFi",
+          "2. SSH 連線 TB3：ssh ubuntu@192.168.10.101",
+          "3. 在 TB3 執行：roscore",
+          "4. 在 TB3 執行：roslaunch turtlebot3_bringup turtlebot3_robot.launch",
+          "5. 在 PC 執行對應任務的 launch 檔"
+        ]
+      },
+      {
+        "title": "號誌任務測試流程",
+        "steps": [
+          "1. core.launch（核心程序）",
+          "2. turtlebot3_robot.launch（硬體）",
+          "3. detect_traffic_light.launch（號誌偵測）",
+          "4. lane_follow.launch（車道跟隨）",
+          "5. 觀察 /detected_color 輸出"
+        ]
+      },
+      {
+        "title": "停車任務測試流程",
+        "steps": [
+          "1. core.launch",
+          "2. turtlebot3_robot.launch",
+          "3. parking_detect.launch（找空位）",
+          "4. parking_control.launch（執行停車）",
+          "5. 觀察 /parking_slot 和執行結果"
+        ]
+      },
+      {
+        "title": "SLAM建圖流程",
+        "steps": [
+          "1. core.launch",
+          "2. turtlebot3_slam.launch",
+          "3. turtlebot3_teleop_key.launch（遙控走一圈）",
+          "4. 走完後：rosrun map_server map_saver -f ~/map"
+        ]
+      }
+    ]
+  }
 }
