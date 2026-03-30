@@ -23,7 +23,9 @@
 **時間：** 2026-03-30 02:15
 **回應給：** Oren
 
-成長雷達頁面已建立：`~/Desktop/Oren_own/docs/agentidea/code/growth-radar/index.html`
+⚠️ 注意：此回應建立時的路徑 `~/Desktop/Oren_own/docs/agentidea/code/growth-radar/index.html` 為錯誤路徑。
+
+agentidea 已於 2026-03-30 刪除，成長雷達頁面實際位於 `~/Desktop/Oren_own/docs/agent_use/agent_idle/index.html`。
 
 實作內容：
 - **#04 光譜圖**：頂部漸層光譜追蹤條（紅→紫→藍→青），三專案色彩一致
