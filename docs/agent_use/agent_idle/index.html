@@ -346,7 +346,7 @@
       allEvents.sort((a, b) => (a.parsed || 0) - (b.parsed || 0));
 
       updateCountdown(hiwin, tdk);
-      updateLastUpdate([tdk, tb3, hiwin]);
+      updateLastUpdate(...[tdk, tb3, hiwin]);
 
       renderCalendar();
       renderUpcoming();
@@ -440,7 +440,7 @@
   }
 
   // ── Last update ──
-  function updateLastUpdate([tdk, tb3, hiwin]) {
+  function updateLastUpdate(tdk, tb3, hiwin) {
     const updates = [tdk, tb3, hiwin].filter(Boolean)
       .map(d => d.lastUpdated).filter(Boolean)
       .map(d => { const m = String(d).match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(m[1],m[2]-1,m[3]) : null; })
