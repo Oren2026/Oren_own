@@ -1,0 +1,29 @@
+{
+  "id": "lane_center",
+  "name": { "zh": "循線置中", "en": "Lane Centering" },
+  "category": "mission",
+  "description": "精確維持車道中央行駛，配合 PID 控制即時修正偏移量。",
+  "status": "todo",
+  "subConcepts": [
+    {
+      "id": "center_offset",
+      "name": { "zh": "中心偏移計算", "en": "Center Offset" },
+      "status": "todo",
+      "description": "計算車身中心與車道中心的像素偏移量"
+    },
+    {
+      "id": "pid_steering",
+      "name": { "zh": "PID 轉向控制", "en": "PID Steering" },
+      "status": "todo",
+      "description": "根據偏移量輸出 steering angle，保持正中行駛"
+    },
+    {
+      "id": "speed_profile",
+      "name": { "zh": "速度曲線", "en": "Speed Profile" },
+      "status": "todo",
+      "description": "直道加速、彎道減速的動態速度控制"
+    }
+  ],
+  "files": ["detect_lane.py"],
+  "testStatus": "untested"
+}
