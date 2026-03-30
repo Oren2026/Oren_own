@@ -2,29 +2,28 @@
   "id": "s_curve",
   "name": { "zh": "圓環左右轉", "en": "Roundabout Turn" },
   "category": "mission",
-  "description": "圓環路口的左右轉向控制，完成 S 型左右轉測試驗證。",
-  "status": "done",
-  "video": "assets/videos/s_curve_test.mp4",
+  "description": "圓環路口的左右轉向控制。",
+  "status": "todo",
   "subConcepts": [
     {
       "id": "lane_following",
       "name": { "zh": "車道維持", "en": "Lane Following" },
-      "status": "done",
-      "description": "PID 控制維持車子在彎道中央行駛 — 循線完成"
+      "status": "todo",
+      "description": "PID 控制維持車子在彎道中央行駛"
     },
     {
       "id": "sharp_turn",
       "name": { "zh": "急彎處理", "en": "Sharp Turn Handling" },
-      "status": "done",
-      "description": "連續變向時的轉向控制 — S 型左右轉測試完成"
+      "status": "todo",
+      "description": "連續變向時的轉向控制"
     },
     {
       "id": "speed_control",
       "name": { "zh": "速度控制", "en": "Speed Control" },
-      "status": "done",
+      "status": "todo",
       "description": "彎道減速，避免脫離車道"
     }
   ],
   "files": ["detect_lane.py"],
-  "testStatus": "passed"
+  "testStatus": "untested"
 }
