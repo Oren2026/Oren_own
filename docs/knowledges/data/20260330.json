@@ -77,5 +77,14 @@
       "台灣團隊",
       "人形機器人"
     ]
+  },
+  {
+    "title": "世界模型學牛頓力學的三大障礙",
+    "summary": "物理約束是具身AI最大瓶頸：長時域誤差累積、3D幾何表示不足、像素品質與物理一致性脫鉤。清華RoboScape以明確牛頓約束嵌入求解。",
+    "tags": [
+      "world-model",
+      "physics-constraints",
+      "embodied-AI"
+    ]
   }
 ]
