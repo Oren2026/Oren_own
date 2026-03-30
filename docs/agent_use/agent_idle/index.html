@@ -3,624 +3,505 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>成長雷達 — 黑皮的學習路徑</title>
+  <title>賽程日曆 — 黑皮的學習路徑</title>
   <style>
     :root {
       --bg: #06060c;
-      --text: #dcdad4;
-      --muted: #686460;
+      --surface: rgba(255,255,255,0.03);
+      --surface-hover: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.07);
+      --text: #e8e4de;
+      --muted: #5a6478;
       --tdk: #ff7f7f;
       --tb3: #7fb3ff;
       --hiwin: #7fffff;
       --accent: #b87fff;
+      --urgent-red: #ff4d4d;
+      --soon-orange: #ff9f3c;
+      --upcoming-yellow: #ffd060;
+      --normal: #5a6478;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 2px; }
     body { background: var(--bg); color: var(--text); font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif; min-height: 100vh; }
 
-    /* ── Hero ── */
-    .hero {
+    /* ── Header ── */
+    header {
+      padding: 56px 24px 40px;
       text-align: center;
-      padding: 64px 24px 48px;
       position: relative;
       overflow: hidden;
     }
-    .hero::before {
+    header::before {
       content: '';
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(184,127,255,0.08) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 40% at 20% 50%, rgba(127,179,255,0.05) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(127,255,255,0.05) 0%, transparent 60%);
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(184,127,255,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 20% 80%, rgba(127,179,255,0.04) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(127,255,255,0.04) 0%, transparent 55%);
       pointer-events: none;
     }
-    .eyebrow { font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+    .eyebrow { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
     .page-title {
-      font-size: clamp(2.2rem, 6vw, 3.2rem);
-      font-weight: 700;
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 800;
       letter-spacing: -0.03em;
       background: linear-gradient(135deg, #ff7f7f 0%, #b87fff 40%, #7fb3ff 70%, #7fffff 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       line-height: 1.15;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
-    .page-sub { font-size: 1rem; color: var(--muted); line-height: 1.7; max-width: 520px; margin: 0 auto 48px; }
+    .page-sub { font-size: 1rem; color: var(--muted); max-width: 480px; margin: 0 auto 32px; line-height: 1.7; }
 
-    /* ── 光譜追蹤條 ── */
-    .spectrum-container { width: 100%; max-width: 700px; margin: 0 auto 12px; }
-    .spectrum-track { position: relative; height: 6px; border-radius: 3px; background: linear-gradient(90deg, rgba(255,127,127,0.3), rgba(184,127,255,0.3), rgba(127,179,255,0.3), rgba(127,255,255,0.3)); overflow: hidden; }
-    .spectrum-progress { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: linear-gradient(90deg, #ff7f7f, #b87fff, #7fb3ff, #7fffff); transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); width: 0%; }
-    .spectrum-labels { display: flex; justify-content: space-between; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+    /* ── Radar SVG ── */
+    .radar-wrap { display: flex; justify-content: center; margin-bottom: 32px; }
+    .radar-wrap svg { width: 80px; height: 80px; opacity: 0.85; }
 
-    /* ── Switch Bar ── */
-    .switch-bar { display: flex; justify-content: center; gap: 4px; margin-bottom: 48px; padding: 0 24px; flex-wrap: wrap; }
-    .switch-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); color: var(--muted); padding: 8px 20px; border-radius: 6px; font-size: 0.9rem; letter-spacing: 0.06em; cursor: pointer; transition: all 0.25s ease; font-family: inherit; }
-    .switch-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.15); transform: translateY(-1px); }
-    .switch-btn.active[data-view="all"]  { background: rgba(184,127,255,0.15); border-color: rgba(184,127,255,0.4); color: var(--accent); }
-    .switch-btn.active[data-view="tdk"] { background: rgba(255,127,127,0.12); border-color: rgba(255,127,127,0.4); color: var(--tdk); }
-    .switch-btn.active[data-view="tb3"] { background: rgba(127,179,255,0.12); border-color: rgba(127,179,255,0.4); color: var(--tb3); }
-    .switch-btn.active[data-view="hiwin"]{ background: rgba(127,255,255,0.12); border-color: rgba(127,255,255,0.4); color: var(--hiwin); }
-
-    /* ── Content ── */
-    .content-section { padding: 0 24px 80px; max-width: 860px; margin: 0 auto; }
-    .project-view { display: none; animation: pulse-in 0.4s ease forwards; }
-    .project-view.active { display: block; }
-    @keyframes pulse-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* ── Radar Card ── */
-    .radar-card { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 32px; margin-bottom: 32px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
-    .radar-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
-    .radar-card h2 { font-size: 1.3rem; font-weight: 600; margin-bottom: 10px; letter-spacing: -0.02em; }
-    .radar-card > p { font-size: 1rem; color: var(--muted); line-height: 1.75; }
-
-    /* ── Tags ── */
-    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
-    .tag { font-size: 10px; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.05em; border: 1px solid; }
-
-    /* ── Stat Row ── */
-    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
-    .stat-box { text-align: center; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 16px 12px; }
-    .stat-num { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1; margin-bottom: 8px; }
-    .stat-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-
-    /* ── Timeline ── */
-    .timeline { position: relative; margin-top: 32px; padding-left: 24px; }
-    .timeline::before { content: ''; position: absolute; left: 6px; top: 4px; bottom: 4px; width: 1px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.12) 10%, rgba(255,255,255,0.12) 90%, transparent); }
-    .timeline-item { position: relative; margin-bottom: 24px; opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.5s ease; }
-    .timeline-item.visible { opacity: 1; transform: translateY(0); }
-    .timeline-item::before { content: ''; position: absolute; left: -22px; top: 8px; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid; background: var(--bg); transition: transform 0.2s ease; }
-    .timeline-item:hover::before { transform: scale(1.4); }
-    .tl-date  { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
-    .tl-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 5px; }
-    .tl-desc  { font-size: 0.95rem; color: var(--muted); line-height: 1.65; }
-
-    /* ── Expandable ── */
-    .expand-btn { background: none; border: none; color: var(--muted); font-size: 0.75rem; cursor: pointer; padding: 4px 0; font-family: inherit; display: flex; align-items: center; gap: 4px; transition: color 0.2s; margin-top: 12px; }
-    .expand-btn:hover { color: var(--text); }
-    .expand-icon { transition: transform 0.25s ease; display: inline-block; }
-    .expand-btn.open .expand-icon { transform: rotate(90deg); }
-    .expand-content { display: none; padding: 10px 0 4px; font-size: 0.95rem; color: var(--muted); line-height: 1.7; }
-    .expand-content.open { display: block; }
-
-    /* ── Skill Grid ── */
-    .radar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 20px; }
-    .radar-skill { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 14px; transition: border-color 0.2s, transform 0.2s; }
-    .radar-skill:hover { border-color: rgba(184,127,255,0.3); transform: translateY(-2px); }
-    .skill-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
-    .skill-bar-bg { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
-    .skill-bar { height: 100%; border-radius: 2px; transition: width 1s cubic-bezier(0.22, 1, 0.36, 1); width: 0%; }
-    .skill-note { font-size: 11px; color: var(--muted); margin-top: 6px; letter-spacing: 0.04em; }
-
-    /* ── Countdown ── */
-    .countdown-tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 20px; }
-
-    /* ── Footer ── */
-    .footer-note { text-align: center; padding: 40px 24px; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; border-top: 1px solid rgba(255,255,255,0.04); }
-
-    /* ── Loading ── */
-    .loading-msg { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 40px; }
-    .error-msg { text-align: center; color: #ff7f7f; font-size: 0.85rem; padding: 40px; }
-
-    /* ── System Status Panel ── */
-    .sys-panel {
+    /* ── Countdown strip ── */
+    .countdown-strip {
       display: flex;
       justify-content: center;
-      gap: 1px;
-      margin: 0 auto 40px;
-      max-width: 700px;
+      gap: 24px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      padding: 0 24px;
+    }
+    .cd-item {
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      min-width: 100px;
+    }
+    .cd-num {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+    .cd-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+    /* ── Filter tabs ── */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 36px;
+      padding: 0 24px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.06);
+      color: var(--muted);
+      padding: 7px 18px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .filter-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+    .filter-btn.active[data-filter="all"]    { background: rgba(184,127,255,0.15); border-color: rgba(184,127,255,0.4); color: var(--accent); }
+    .filter-btn.active[data-filter="tdk"]   { background: rgba(255,127,127,0.12); border-color: rgba(255,127,127,0.4); color: var(--tdk); }
+    .filter-btn.active[data-filter="tb3"]    { background: rgba(127,179,255,0.12); border-color: rgba(127,179,255,0.4); color: var(--tb3); }
+    .filter-btn.active[data-filter="hiwin"]  { background: rgba(127,255,255,0.12); border-color: rgba(127,255,255,0.4); color: var(--hiwin); }
+    .filter-btn.active[data-filter="urgent"] { background: rgba(255,77,77,0.12); border-color: rgba(255,77,77,0.4); color: var(--urgent-red); }
+
+    /* ── Schedule list ── */
+    .schedule-wrap { max-width: 760px; margin: 0 auto; padding: 0 24px 80px; }
+    .loading-msg { text-align: center; color: var(--muted); font-size: 0.95rem; padding: 40px; }
+    .error-msg { text-align: center; color: var(--urgent-red); font-size: 0.95rem; padding: 40px; }
+
+    .schedule-list { list-style: none; }
+
+    .sch-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 18px;
       border-radius: 10px;
-      overflow: hidden;
+      margin-bottom: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      animation: itemIn 0.4s ease forwards;
+      opacity: 0;
     }
-    .sys-item {
-      flex: 1;
+    @keyframes itemIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .sch-item:hover { background: var(--surface-hover); transform: translateX(3px); }
+
+    .sch-item[data-urgent="red"]   { border-left: 3px solid var(--urgent-red); }
+    .sch-item[data-urgent="orange"] { border-left: 3px solid var(--soon-orange); }
+    .sch-item[data-urgent="yellow"] { border-left: 3px solid var(--upcoming-yellow); }
+    .sch-item[data-urgent="normal"] { border-left: 3px solid var(--border); }
+
+    .sch-date-col {
+      min-width: 80px;
       text-align: center;
-      padding: 14px 12px;
-      border-right: 1px solid rgba(255,255,255,0.04);
-      transition: background 0.2s;
+      padding-top: 2px;
     }
-    .sys-item:last-child { border-right: none; }
-    .sys-item:hover { background: rgba(255,255,255,0.03); }
-    .sys-value { font-size: 1rem; font-weight: 600; color: var(--text); letter-spacing: -0.02em; margin-bottom: 4px; }
-    .sys-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-    .sys-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
-    .sys-dot-green  { background: #7fffff; box-shadow: 0 0 6px rgba(127,255,255,0.6); }
-    .sys-dot-yellow { background: #ffff7f; box-shadow: 0 0 6px rgba(255,255,127,0.6); }
-    .sys-dot-purple { background: #b87fff; box-shadow: 0 0 6px rgba(184,127,255,0.6); }
+    .sch-month { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .sch-day { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: var(--text); }
+    .sch-countdown { font-size: 9px; color: var(--muted); margin-top: 3px; }
 
-    /* ── Keyboard Hint ── */
-    .kbd-hint { text-align: center; font-size: 10px; color: var(--muted); margin-bottom: 40px; letter-spacing: 0.06em; }
-    .kbd { display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 3px; padding: 1px 6px; font-size: 9px; }
-
-    /* ── Enhanced Radar Card with #07 Flow depth ── */
-    .radar-card {
-      background: rgba(255,255,255,0.025);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 12px;
-      padding: 32px;
-      margin-bottom: 32px;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-                  box-shadow 0.35s ease,
-                  border-color 0.25s ease;
-    }
-    .radar-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 60% 40% at 20% 0%, rgba(255,255,255,0.03) 0%, transparent 60%);
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-    .radar-card:hover {
-      transform: translateY(-6px) scale(1.01);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.12);
-    }
-    .radar-card:hover::before { opacity: 1; }
-
-    /* ── Enhanced Timeline with #07 Flow ── */
-    .timeline-item {
-      position: relative;
-      margin-bottom: 28px;
-      opacity: 0;
-      transform: translateX(-12px);
-      transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-                  transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .timeline-item.visible {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -22px;
-      top: 8px;
-      width: 9px;
-      height: 9px;
+    .sch-dot {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      border: 1.5px solid;
-      background: var(--bg);
-      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-                  box-shadow 0.25s ease;
-    }
-    .timeline-item:hover::before {
-      transform: scale(1.6);
-      box-shadow: 0 0 10px currentColor;
-    }
-    .tl-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-      transition: color 0.2s;
-    }
-    .timeline-item:hover .tl-title { color: var(--text); }
-
-    /* ── Skill depth ── */
-    .radar-skill {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 8px;
-      padding: 14px;
-      transition: border-color 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-                  transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-                  box-shadow 0.25s ease;
-    }
-    .radar-skill:hover {
-      border-color: rgba(184,127,255,0.4);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      margin-top: 6px;
+      flex-shrink: 0;
     }
 
-    @media (max-width: 600px) { .radar-card { padding: 20px; } .radar-grid { grid-template-columns: repeat(2, 1fr); } .stat-row { gap: 8px; } .sys-panel { flex-wrap: wrap; } .sys-item { min-width: 50%; } }
+    .sch-body { flex: 1; padding-top: 2px; }
+    .sch-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 3px; }
+    .sch-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .sch-tag { font-size: 10px; padding: 2px 8px; border-radius: 20px; }
+    .sch-tag-tdk   { background: rgba(255,127,127,0.1); color: var(--tdk); border: 1px solid rgba(255,127,127,0.25); }
+    .sch-tag-tb3   { background: rgba(127,179,255,0.1); color: var(--tb3); border: 1px solid rgba(127,179,255,0.25); }
+    .sch-tag-hiwin { background: rgba(127,255,255,0.1); color: var(--hiwin); border: 1px solid rgba(127,255,255,0.25); }
+    .sch-tag-urgent { background: rgba(255,77,77,0.1); color: var(--urgent-red); border: 1px solid rgba(255,77,77,0.25); }
+    .sch-tag-soon   { background: rgba(255,159,60,0.1); color: var(--soon-orange); border: 1px solid rgba(255,159,60,0.25); }
+    .sch-desc { font-size: 0.82rem; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+
+    /* ── Legend ── */
+    .legend {
+      max-width: 760px;
+      margin: 0 auto 48px;
+      padding: 0 24px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; gap: 7px; font-size: 0.8rem; color: var(--muted); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── Add button ── */
+    .add-hint {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 40px;
+      padding: 0 24px;
+      line-height: 1.6;
+    }
+    .add-hint strong { color: var(--accent); }
+
+    /* ── Last updated ── */
+    .last-update {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      padding: 0 24px 48px;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 540px) {
+      .sch-item { flex-wrap: wrap; }
+      .sch-date-col { min-width: 60px; }
+      .sch-day { font-size: 1.3rem; }
+      .countdown-strip { gap: 12px; }
+      .cd-item { min-width: 80px; padding: 10px 14px; }
+    }
   </style>
 </head>
 <body>
 
-<div class="hero">
-  <p class="eyebrow">成長雷達 · Learning Radar</p>
-  <h1 class="page-title">成長雷達</h1>
-  <p class="page-sub">黑皮的三條學習路徑：TDK 機器人、TB3 自動駕駛、上銀撞球手臂。<br>追蹤每條路徑的進度與關鍵技能發展。</p>
+<header>
+  <p class="eyebrow">黑皮團隊 · 賽程整合</p>
+  <h1 class="page-title">賽程日曆</h1>
+  <p class="page-sub">TDK、TB3、上銀撞球三條路的行程統一檢視，按時間急迫性排序。</p>
 
-  <div class="spectrum-container">
-    <div class="spectrum-track">
-      <div class="spectrum-progress" id="heroProgress"></div>
+  <div class="radar-wrap">
+    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="40" r="36" stroke="rgba(184,127,255,0.15)" stroke-width="1"/>
+      <circle cx="40" cy="40" r="26" stroke="rgba(184,127,255,0.15)" stroke-width="1"/>
+      <circle cx="40" cy="40" r="16" stroke="rgba(184,127,255,0.15)" stroke-width="1"/>
+      <circle cx="40" cy="40" r="6"  stroke="rgba(184,127,255,0.25)" stroke-width="1.5"/>
+      <line x1="40" y1="4"  x2="40" y2="76" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="4"  y1="40" x2="76" y2="40" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      <line x1="14" y1="14" x2="66" y2="66" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      <line x1="66" y1="14" x2="14" y2="66" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      <circle cx="40" cy="40" r="3" fill="rgba(184,127,255,0.8)"/>
+      <circle cx="40" cy="40" r="3" fill="rgba(184,127,255,0.8)">
+        <animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.8;0;0.8" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <!-- sweep line -->
+      <line x1="40" y1="40" x2="40" y2="6" stroke="rgba(184,127,255,0.5)" stroke-width="1.5" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" from="0 40 40" to="360 40 40" dur="4s" repeatCount="indefinite"/>
+      </line>
+    </svg>
+  </div>
+
+  <div class="countdown-strip" id="countdownStrip">
+    <div class="cd-item">
+      <div class="cd-num" style="color: var(--hiwin)" id="cdVideo">—</div>
+      <div class="cd-label">上銀複審倒數</div>
     </div>
-    <div class="spectrum-labels">
-      <span style="color: var(--tdk)">TDK · 文蛤分級</span>
-      <span style="color: var(--tb3)">TB3 · 自動駕駛</span>
-      <span style="color: var(--hiwin)">上銀 · 撞球手臂</span>
+    <div class="cd-item">
+      <div class="cd-num" style="color: var(--hiwin)" id="cdFinal">—</div>
+      <div class="cd-label">上銀決賽倒數</div>
+    </div>
+    <div class="cd-item">
+      <div class="cd-num" style="color: var(--tdk)" id="cdTdk">—</div>
+      <div class="cd-label">TDK 初賽倒數</div>
     </div>
   </div>
+</header>
+
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all"   onclick="setFilter('all')">全部行程</button>
+  <button class="filter-btn"        data-filter="urgent" onclick="setFilter('urgent')">⚡ 急迫</button>
+  <button class="filter-btn"        data-filter="tdk"   onclick="setFilter('tdk')">TDK</button>
+  <button class="filter-btn"        data-filter="tb3"   onclick="setFilter('tb3')">TB3</button>
+  <button class="filter-btn"        data-filter="hiwin" onclick="setFilter('hiwin')">上銀</button>
 </div>
 
-<div class="kbd-hint">按 <span class="kbd">1</span> <span class="kbd">2</span> <span class="kbd">3</span> <span class="kbd">4</span> 快速切換視角</div>
-
-<div class="sys-panel" id="sysPanel">
-  <div class="sys-item">
-    <div class="sys-value" id="sysLastUpdate">—</div>
-    <div class="sys-label">上次研究</div>
-  </div>
-  <div class="sys-item">
-    <div class="sys-value" id="sysSkills">— <span class="sys-label" style="display:inline;font-size:9px">項技能</span></div>
-    <div class="sys-label">總技能數</div>
-  </div>
-  <div class="sys-item">
-    <div class="sys-value" id="sysMilestones">— <span class="sys-label" style="display:inline;font-size:9px">項里程</span></div>
-    <div class="sys-label">總里程</div>
-  </div>
-  <div class="sys-item">
-    <div class="sys-value"><span class="sys-dot sys-dot-purple"></span><span id="sysJsonStatus">檢查中</span></div>
-    <div class="sys-label">JSON 狀態</div>
-  </div>
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--urgent-red)"></div>7天內</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--soon-orange)"></div>30天內</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--upcoming-yellow)"></div>60天內</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--muted)"></div>更遠</div>
 </div>
 
-<div class="switch-bar">
-  <button class="switch-btn active" data-view="all"   onclick="switchView('all')">全部一覽</button>
-  <button class="switch-btn"        data-view="tdk"   onclick="switchView('tdk')">TDK 2026</button>
-  <button class="switch-btn"        data-view="tb3"   onclick="switchView('tb3')">TB3 2026</button>
-  <button class="switch-btn"        data-view="hiwin" onclick="switchView('hiwin')">上銀撞球</button>
+<div class="add-hint">
+  想加入新行程？告訴 <strong>Coder</strong>（我）或直接編輯 <code>agent_idle/data/*.json</code> 的 <code>milestones[]</code> 陣列。
 </div>
 
-<div class="content-section">
-  <div class="loading-msg" id="loadingMsg">正在載入資料...</div>
+<div class="schedule-wrap">
+  <div class="loading-msg" id="loadingMsg">正在載入行程...</div>
   <div class="error-msg" id="errorMsg" style="display:none"></div>
-
-  <!-- ALL VIEW -->
-  <div class="project-view" id="view-all"></div>
-  <!-- TDK -->
-  <div class="project-view" id="view-tdk"></div>
-  <!-- TB3 -->
-  <div class="project-view" id="view-tb3"></div>
-  <!-- HIWIN -->
-  <div class="project-view" id="view-hiwin"></div>
+  <ul class="schedule-list" id="scheduleList"></ul>
 </div>
 
-<div class="footer-note" id="footerNote"></div>
+<div class="last-update" id="lastUpdate"></div>
 
 <script>
-  // ── Global state ──
-  let jsonData = {};
+  // ── State ──
+  let allEvents = [];
+  let currentFilter = 'all';
 
-  // ── Fetch all JSON ──
-  async function loadAllData() {
+  // ── Load all JSON ──
+  async function loadAll() {
     try {
-      const [tdkRes, tb3Res, hiwinRes] = await Promise.all([
-        fetch('data/tdk.json'),
-        fetch('data/tb3.json'),
-        fetch('data/hiwin.json')
+      const [tdk, tb3, hiwin] = await Promise.all([
+        fetch('data/tdk.json').then(r => r.ok ? r.json() : null),
+        fetch('data/tb3.json').then(r => r.ok ? r.json() : null),
+        fetch('data/hiwin.json').then(r => r.ok ? r.json() : null)
       ]);
-      if (!tdkRes.ok || !tb3Res.ok || !hiwinRes.ok) throw new Error('JSON 載入失敗');
-      jsonData = {
-        tdk:   await tdkRes.json(),
-        tb3:   await tb3Res.json(),
-        hiwin: await hiwinRes.json()
-      };
+
+      allEvents = [];
+
+      if (tdk)   allEvents.push(...extractEvents(tdk,   'tdk',   '#ff7f7f'));
+      if (tb3)   allEvents.push(...extractEvents(tb3,   'tb3',   '#7fb3ff'));
+      if (hiwin) allEvents.push(...extractEvents(hiwin, 'hiwin', '#7fffff'));
+
+      // Sort by parsed date
+      allEvents.sort((a, b) => (a.parsed || 0) - (b.parsed || 0));
+
+      // Update countdown strip
+      updateCountdown(hiwin, tdk);
+
+      // Update last updated
+      const updates = [tdk, tb3, hiwin]
+        .filter(Boolean)
+        .map(d => d.lastUpdated)
+        .filter(Boolean)
+        .map(d => {
+          const m = String(d).match(/^(\d{4})-(\d{2})-(\d{2})/);
+          return m ? new Date(m[1], m[2]-1, m[3]) : null;
+        })
+        .filter(d => d && !isNaN(d));
+
+      if (updates.length > 0) {
+        const latest = new Date(Math.max(...updates));
+        const el = document.getElementById('lastUpdate');
+        if (el) el.textContent = `資料更新：${latest.getFullYear()}/${latest.getMonth()+1}/${latest.getDate()}`;
+      }
+
       document.getElementById('loadingMsg').style.display = 'none';
-      renderAllViews();
-      switchView('all');
-    } catch (e) {
+      render();
+    } catch(e) {
       document.getElementById('loadingMsg').style.display = 'none';
       document.getElementById('errorMsg').style.display = 'block';
-      document.getElementById('errorMsg').textContent = '載入失敗：' + e.message + '（路徑：data/*.json）';
+      document.getElementById('errorMsg').textContent = '載入失敗：' + e.message;
     }
   }
 
-  // ── Render all three project cards ──
-  function renderAllViews() {
-    renderSingle('view-all', [jsonData.tdk, jsonData.tb3, jsonData.hiwin], 'all');
-    renderSingle('view-tdk',  [jsonData.tdk],  'tdk');
-    renderSingle('view-tb3',  [jsonData.tb3],  'tb3');
-    renderSingle('view-hiwin', [jsonData.hiwin], 'hiwin');
-    document.getElementById('footerNote').textContent =
-      '成長雷達 · 黑皮的學習路徑追蹤  |  資料動態讀取：tdk.json · tb3.json · hiwin.json';
-    buildSysPanel();
+  // ── Extract events from one project JSON ──
+  function extractEvents(project, type, color) {
+    const events = [];
+    // milestones
+    (project.milestones || []).forEach(m => {
+      if (!m.date || !m.title) return;
+      const parsed = parseDate(m.date);
+      if (!parsed) return;
+      events.push({ date: m.date, parsed, title: m.title, desc: m.desc || '', type, color, source: project.name || type });
+    });
+    // dates fields (flat key-value dates)
+    Object.entries(project.dates || {}).forEach(([key, val]) => {
+      if (!val || typeof val !== 'string') return;
+      if (['announcement','correction'].includes(key)) return; // skip old dates
+      const titleMap = {
+        phase1_deadline: '第一階段繳交截止',
+        phase2_deadline: '第二階段作品繳交截止',
+        preliminary: '初賽',
+        final: '決賽',
+        award: '頒獎',
+        preliminary_pass: '初審通過',
+        safety_training: '安全講習',
+        video_deadline: '複審影片繳交截止',
+        preliminary_result: '複審結果公告',
+      };
+      const title = titleMap[key] || key;
+      const parsed = parseDate(val);
+      if (!parsed) return;
+      // skip if already in milestones (dedup)
+      if (!events.find(e => e.title === title && e.parsed && Math.abs(e.parsed - parsed) < 86400000)) {
+        events.push({ date: val, parsed, title, desc: '', type, color, source: project.name || type });
+      }
+    });
+    return events;
   }
 
-  // ── System Status Panel ──
-  function buildSysPanel() {
-    // Last update = lastUpdated field from each JSON (set by Researcher on each edit)
-    const lastUpdates = [
-      jsonData.tdk    && jsonData.tdk.lastUpdated,
-      jsonData.tb3    && jsonData.tb3.lastUpdated,
-      jsonData.hiwin  && jsonData.hiwin.lastUpdated
-    ].filter(d => d);
+  // ── Parse date string → Date ──
+  function parseDate(str) {
+    if (!str) return null;
+    // "2026-03-11" or "2026-03-11 23:59"
+    let m = String(str).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return new Date(m[1], m[2]-1, m[3]);
+    // "2026-03 ~ 04" → March 15
+    m = String(str).match(/^(\d{4})-(\d{2})/);
+    if (m) return new Date(m[1], m[2]-1, 15);
+    // "2026-08-19-20" → Aug 19
+    m = String(str).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return new Date(m[1], m[2]-1, m[3]);
+    return null;
+  }
 
-    let lastUpdate = '—';
-    if (lastUpdates.length > 0) {
-      const parsed = lastUpdates
-        .map(d => { const m = String(d).match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(m[1], m[2]-1, m[3]) : null; })
-        .filter(d => d && !isNaN(d));
-      if (parsed.length > 0) {
-        const latest = new Date(Math.max(...parsed));
-        lastUpdate = `${latest.getMonth()+1}月${latest.getDate()}日`;
+  // ── Urgency ──
+  function getUrgency(parsed) {
+    if (!parsed) return 'normal';
+    const now = new Date();
+    const diff = (parsed - now) / 86400000; // days
+    if (diff < 0)   return 'past';
+    if (diff < 7)   return 'red';
+    if (diff < 30)  return 'orange';
+    if (diff < 60)  return 'yellow';
+    return 'normal';
+  }
+
+  function formatCountdown(parsed) {
+    if (!parsed) return '';
+    const now = new Date();
+    const diff = Math.round((parsed - now) / 86400000);
+    if (diff < 0)  return '已過';
+    if (diff === 0) return '今天';
+    return `＋${diff}天`;
+  }
+
+  // ── Countdown strip ──
+  function updateCountdown(hiwin, tdk) {
+    const today = new Date();
+    const cd = (dateStr, elId) => {
+      const d = parseDate(dateStr);
+      if (!d) return;
+      const diff = Math.round((d - today) / 86400000);
+      const el = document.getElementById(elId);
+      if (el) el.textContent = diff > 0 ? diff : '—';
+    };
+    if (hiwin && hiwin.countdown) {
+      const v = document.getElementById('cdVideo');
+      if (v) v.textContent = hiwin.countdown.video || '—';
+      const f = document.getElementById('cdFinal');
+      if (f) f.textContent = hiwin.countdown.final || '—';
+    }
+    if (tdk && tdk.dates && tdk.dates.preliminary) {
+      const d = parseDate(tdk.dates.preliminary);
+      if (d) {
+        const diff = Math.round((d - today) / 86400000);
+        const el = document.getElementById('cdTdk');
+        if (el) el.textContent = diff > 0 ? diff : '—';
       }
     }
-
-    // Skill / milestone counts
-    const skillCount = [
-      ...(jsonData.tdk    && jsonData.tdk.skills    || []),
-      ...(jsonData.tb3    && jsonData.tb3.skills     || []),
-      ...(jsonData.hiwin  && jsonData.hiwin.skills   || [])
-    ].length;
-
-    const mileCount = [
-      ...(jsonData.tdk    && jsonData.tdk.milestones    || []),
-      ...(jsonData.tb3    && jsonData.tb3.milestones    || []),
-      ...(jsonData.hiwin  && jsonData.hiwin.milestones  || [])
-    ].filter(m => m && m.date).length;
-
-    document.getElementById('sysLastUpdate').textContent = lastUpdate;
-    document.getElementById('sysSkills').innerHTML = String(skillCount) + ' <span class="sys-label" style="display:inline;font-size:9px">項技能</span>';
-    document.getElementById('sysMilestones').innerHTML = String(mileCount) + ' <span class="sys-label" style="display:inline;font-size:9px">項里程</span>';
-
-    // JSON health
-    const hasContent = jsonData.tdk || jsonData.tb3 || jsonData.hiwin;
-    const statusEl = document.getElementById('sysJsonStatus');
-    if (hasContent) {
-      statusEl.textContent = '正常';
-      const dot = document.querySelector('.sys-dot-purple');
-      if (dot) { dot.className = 'sys-dot sys-dot-green'; }
-    } else {
-      statusEl.textContent = '異常';
-    }
   }
 
-  // ── Render one project view (one or more cards) ──
-  function renderSingle(viewId, projects, type) {
-    const container = document.getElementById(viewId);
-    container.innerHTML = projects.map(p => buildCard(p, type)).join('');
-  }
+  // ── Render ──
+  function render() {
+    const list = document.getElementById('scheduleList');
+    let events = allEvents;
 
-  // ── Build one project card ──
-  function buildCard(p, type) {
-    const color = getColor(type);
-    const tags  = buildTags(p, type);
-    const stats = buildStats(p, type);
-    const timeline = buildTimeline(p, type);
-    const skills = buildSkills(p, type);
-    const expand = buildExpand(p, type);
-
-    return `
-      <div class="radar-card" style="border-left: 3px solid ${color};">
-        <h2 style="color:${color}">${escHtml(p.fullName || p.name)}</h2>
-        <p>${escHtml(p.notes || '')}</p>
-        ${tags}
-        ${stats}
-        ${timeline}
-        ${expand}
-        ${skills}
-      </div>
-    `;
-  }
-
-  // ── Tag row ──
-  function buildTags(p, type) {
-    const parts = [];
-
-    if (type === 'tdk') {
-      parts.push(tag('第30屆', 'tdk'));
-      if (p.dates && p.dates.preliminary) parts.push(tag('預計 ' + fmtDate(p.dates.preliminary), 'soon'));
-      parts.push(tag('自動組', 'active'));
-    } else if (type === 'tb3') {
-      parts.push(tag('ROS', 'tb3'));
-      parts.push(tag('OpenCV', 'tb3'));
-      parts.push(tag('施工中', 'active'));
-      if (p.missions) parts.push(tag(p.missions.total + ' 項 Mission', 'soon'));
-    } else if (type === 'hiwin') {
-      const status = p.status === 'preliminary_passed' ? '初審通過 🎉' : p.status;
-      parts.push(tag(status, 'hiwin'));
-      if (p.countdown) {
-        const vd = p.countdown.video;
-        const fd = p.countdown.final;
-        parts.push(tag(`複審倒數 ${vd} 天`, 'soon'));
-        parts.push(tag(`決賽倒數 ${fd} 天`, 'active'));
-      }
+    if (currentFilter === 'urgent') {
+      events = allEvents.filter(e => ['red','orange'].includes(getUrgency(e.parsed)));
+    } else if (currentFilter !== 'all') {
+      events = allEvents.filter(e => e.type === currentFilter);
     }
 
-    return `<div class="tag-row">${parts.join('')}</div>`;
-  }
-
-  // ── Stat row ──
-  function buildStats(p, type) {
-    const stat = (num, label, color) =>
-      `<div class="stat-box"><div class="stat-num" style="color:${color}">${escHtml(num)}</div><div class="stat-label">${escHtml(label)}</div></div>`;
-
-    if (type === 'tdk') {
-      return `<div class="stat-row">
-        ${stat('30', '第30屆', '#ff7f7f')}
-        ${stat('Sep', '初賽預計', '#ff7f7f')}
-        ${stat('3D', '文蛤列印', '#ff7f7f')}
-      </div>`;
-    } else if (type === 'tb3') {
-      return `<div class="stat-row">
-        ${stat(String(p.missions ? p.missions.total : '7'), '關卡總數', '#7fb3ff')}
-        ${stat(String(p.missions ? p.missions.completed : 0), '已完成', '#7fb3ff')}
-        ${stat('🚧', '施工中', '#7fb3ff')}
-      </div>`;
-    } else if (type === 'hiwin') {
-      const vd = p.countdown ? String(p.countdown.video) : '—';
-      const fd = p.countdown ? String(p.countdown.final) : '—';
-      return `<div class="stat-row">
-        ${stat('✅', '初審通過', '#7fffff')}
-        ${stat(vd, '複審倒數天', '#7fffff')}
-        ${stat(fd, '決賽倒數天', '#7fffff')}
-      </div>`;
+    if (!events.length) {
+      list.innerHTML = '<li class="loading-msg">此分類目前沒有行程。</li>';
+      return;
     }
-    return '';
-  }
 
-  // ── Timeline ──
-  function buildTimeline(p, type) {
-    if (!p.milestones || !p.milestones.length) return '';
-    const dotClass = type + '-dot';
-    const items = p.milestones.map(m => `
-      <div class="timeline-item ${dotClass}">
-        <div class="tl-date">${escHtml(m.date)}</div>
-        <div class="tl-title">${escHtml(m.title)}</div>
-        <div class="tl-desc">${escHtml(m.desc || '')}</div>
-      </div>`).join('');
-    return `<div class="timeline">${items}</div>`;
-  }
-
-  // ── Expandable section ──
-  function buildExpand(p, type) {
-    let content = '';
-    if (type === 'tdk' && p.scoring) {
-      content = `<p>${escHtml(p.scoring.note || p.scoring.clarification || '')}</p>`;
-    } else if (type === 'tb3') {
-      content = `<p>HSV 顏色空間（號誌偵測）、霍夫圓變換（燈號確認）、透視轉換（top-down）、滑動視窗（車道線）、PID 控制（轉向）、光源補償（隧道備援）、障礙物偵測（紅色三角）。</p>`;
-    } else if (type === 'hiwin' && p.prizes) {
-      const ps = p.prizes;
-      let lines = [];
-      if (ps.champion)  lines.push(`冠軍 ${ps.champion}`);
-      if (ps.second)    lines.push(`亞軍 ${ps.second}`);
-      if (ps.third)     lines.push(`季軍 ${ps.third} × 2`);
-      if (ps.special)   lines.push(`評審特別獎 ${ps.special}`);
-      content = `<p>${lines.join(' / ')}</p>`;
-    }
-    if (!content) return '';
-    return `
-      <button class="expand-btn" onclick="toggleExpand(this)">
-        <span class="expand-icon">▸</span> 更多資訊
-      </button>
-      <div class="expand-content">${content}</div>`;
-  }
-
-  // ── Skills grid ──
-  function buildSkills(p, type) {
-    if (!p.skills || !p.skills.length) return '';
-    const color = getColor(type);
-    const skillItems = p.skills.map(s => {
-      const level = Math.round((s.weeks || 1) * 5);
-      const statusMap = { high: '🔴', medium: '🟡', planning: '🔴', learning: '🟡', ready: '🟢' };
-      const statusIcon = statusMap[s.priority] || '🔴';
-      return `
-        <div class="radar-skill">
-          <div class="skill-name" style="color:${color}">${statusIcon} ${escHtml(s.name)}</div>
-          <div class="skill-bar-bg">
-            <div class="skill-bar" style="background:${color}" data-w="${Math.min(level,100)}"></div>
+    list.innerHTML = events.map((e, i) => {
+      const urg = getUrgency(e.parsed);
+      const d = e.parsed;
+      const month = d ? ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'][d.getMonth()] : '日期';
+      const day   = d ? d.getDate() : '?';
+      const cd    = formatCountdown(d);
+      const urgClass = urg === 'past' ? 'normal' : urg;
+      const tagClass  = { tdk: 'sch-tag-tdk', tb3: 'sch-tag-tb3', hiwin: 'sch-tag-hiwin' }[e.type] || 'sch-tag-tdk';
+      const urgTag = urg === 'red' ? '<span class="sch-tag sch-tag-urgent">⚡ 急迫</span>' : urg === 'orange' ? '<span class="sch-tag sch-tag-soon">即將到來</span>' : '';
+      return `<li class="sch-item" data-urgent="${urgClass}" style="animation-delay:${i * 0.05}s">
+        <div class="sch-date-col">
+          <div class="sch-month">${month}</div>
+          <div class="sch-day">${day}</div>
+          ${cd ? `<div class="sch-countdown">${cd}</div>` : ''}
+        </div>
+        <div class="sch-dot" style="background:${e.color}"></div>
+        <div class="sch-body">
+          <div class="sch-title">${escHtml(e.title)}</div>
+          <div class="sch-meta">
+            <span class="sch-tag ${tagClass}">${escHtml(e.source)}</span>
+            ${urgTag}
           </div>
-          <div class="skill-note">${escHtml(s.note || s.priority || '')}</div>
-        </div>`;
+          ${e.desc ? `<div class="sch-desc">${escHtml(e.desc)}</div>` : ''}
+        </div>
+      </li>`;
     }).join('');
-    return `<div class="radar-grid">${skillItems}</div>`;
+  }
+
+  // ── Filter ──
+  function setFilter(f) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.filter-btn[data-filter="${f}"]`).classList.add('active');
+    render();
   }
 
   // ── Helpers ──
-  function getColor(type) {
-    return ({ tdk: '#ff7f7f', tb3: '#7fb3ff', hiwin: '#7fffff', all: '#b87fff' })[type] || '#b87fff';
-  }
-
-  function tag(text, type) {
-    const cls = ({ tdk:'tag-tdk', tb3:'tag-tb3', hiwin:'tag-hiwin', active:'tag-active', soon:'tag-soon' })[type] || 'tag-active';
-    return `<span class="tag ${cls}">${escHtml(text)}</span>`;
-  }
-
-  function escHtml(str) {
-    return String(str)
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;');
-  }
-
-  function fmtDate(d) {
-    if (!d) return '';
-    return String(d).replace(/^(\d{4})-(\d{2})(?:-.*)?$/, '$2月');
-  }
-
-  // ── View switcher ──
-  function switchView(view) {
-    document.querySelectorAll('.project-view').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.switch-btn').forEach(btn => btn.classList.remove('active'));
-    const target = document.getElementById('view-' + view);
-    if (target) target.classList.add('active');
-    const btn = document.querySelector('.switch-btn[data-view="' + view + '"]');
-    if (btn) btn.classList.add('active');
-    setTimeout(animateTimeline, 100);
-    setTimeout(animateSkills, 200);
-  }
-
-  // ── Expandable ──
-  function toggleExpand(btn) {
-    btn.classList.toggle('open');
-    const content = btn.nextElementSibling;
-    if (content) content.classList.toggle('open');
-  }
-
-  // ── Timeline scroll animation ──
-  function animateTimeline() {
-    document.querySelectorAll('.timeline-item').forEach((item, i) => {
-      if (item.classList.contains('visible')) return;
-      const obs = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setTimeout(() => item.classList.add('visible'), i * 80);
-            obs.unobserve(item);
-          }
-        });
-      }, { threshold: 0.2 });
-      obs.observe(item);
-    });
-  }
-
-  // ── Skill bar animation ──
-  function animateSkills() {
-    document.querySelectorAll('.skill-bar').forEach(bar => {
-      const w = bar.getAttribute('data-w');
-      if (!w) return;
-      setTimeout(() => { bar.style.width = w + '%'; }, 100);
-    });
-  }
-
-  // ── Hero spectrum ──
-  function animateSpectrum() {
-    const progress = document.getElementById('heroProgress');
-    if (!progress) return;
-    setTimeout(() => { progress.style.width = '100%'; }, 400);
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   // ── Keyboard shortcuts ──
   document.addEventListener('keydown', e => {
-    const map = { '1': 'all', '2': 'tdk', '3': 'tb3', '4': 'hiwin' };
-    if (map[e.key]) { switchView(map[e.key]); }
+    const map = { '1': 'all', '2': 'urgent', '3': 'tdk', '4': 'tb3', '5': 'hiwin' };
+    if (map[e.key]) setFilter(map[e.key]);
   });
 
   // ── Init ──
-  document.addEventListener('DOMContentLoaded', () => {
-    loadAllData();
-    animateSpectrum();
-  });
+  document.addEventListener('DOMContentLoaded', loadAll);
 </script>
 
 </body>
