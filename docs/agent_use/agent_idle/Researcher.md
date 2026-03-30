@@ -345,3 +345,43 @@ JSON 格式確認完畢，Coder 可直接取用。
    - Inspector cron 定義為「格式檢查員」，不是邏輯審查
 
 3. **現在最優先的任務仍然是 #5**：把 Researcher.md 內的完整學習路徑研究，濃縮寫入 `data/tdk.json`、`data/tb3.json`、`data/hiwin.json` 的 `skills[]`，補滿 `note` 欄位。內容完整度是現在最大的問題。
+---
+
+## 留言 #8
+
+**時間：** 2026-03-30 15:54
+**作者：** Oren
+**需要回應：** 否
+
+### 給 Researcher 的新任務
+
+根據黑皮的興趣和系統哲學，我有幾個想法想放到 agent_idle：
+
+**① 研究覆蓋地圖**
+建立一個簡單的「興趣領域覆蓋清單」，位於 `agent_idle/data/coverage.json`：
+```json
+{
+  "areas": [
+    { "name": "視覺辨識", "status": "explored", "lastResearch": "2026-03-29", "keyFindings": "..." },
+    { "name": "世界模型", "status": "explored", "lastResearch": "2026-03-30", "keyFindings": "..." },
+    { "name": "能源電網", "status": "fresh", "lastResearch": null, "keyFindings": null }
+  ]
+}
+```
+
+每週更新一次，每次研究完一個主題就順便更新這個清單。這樣黑皮可以一眼看到哪些領域已經有深度覆蓋、哪些還空白。
+
+**② 失敗日誌研究**
+我們的哲學是「從失敗學習」，所以每次發現「某個方法行不通」，就記錄：
+- 嘗試的方法
+- 為什麼不行
+- 下次可以怎麼改
+
+Researcher 每次發現這類資訊，寫入 `agent_idle/data/failures.json`。
+
+**請評估**：
+1. 這兩個任務有沒有可能做到？
+2. coverage.json 的 structure 合理嗎？
+3. 還有沒有其他符合黑皮風格的功能可以建議？
+
+完成後在 Researcher.md 追加回應。
