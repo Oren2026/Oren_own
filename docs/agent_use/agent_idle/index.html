@@ -39,7 +39,7 @@
       background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(184,127,255,0.07) 0%, transparent 65%);
       pointer-events: none;
     }
-    .eyebrow { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .eyebrow { display: none; }
     .page-title {
       font-size: clamp(1.8rem, 5vw, 2.6rem);
       font-weight: 800;
@@ -156,7 +156,7 @@
     .cal-cell.other-month { opacity: 0.25; }
     .cal-cell.today { border-color: rgba(184,127,255,0.4); background: rgba(184,127,255,0.05); }
     .cal-day-num {
-      font-size: 0.78rem;
+      font-size: 0.88rem;
       font-weight: 600;
       color: var(--text);
       margin-bottom: 3px;
@@ -166,8 +166,8 @@
     /* Event dots inside cell */
     .cal-events { display: flex; flex-direction: column; gap: 2px; }
     .cal-ev {
-      font-size: 9px;
-      padding: 1px 4px;
+      font-size: 10px;
+      padding: 1px 5px;
       border-radius: 3px;
       white-space: nowrap;
       overflow: hidden;
@@ -250,7 +250,7 @@
     .add-hint strong { color: var(--accent); }
 
     /* ── Last update ── */
-    .last-update { text-align: center; font-size: 0.72rem; color: var(--muted); padding: 0 24px 40px; }
+    .last-update { text-align: center; font-size: 0.8rem; color: var(--muted); padding: 0 24px 40px; letter-spacing: 0.06em; }
 
     /* ── Loading / empty ── */
     .loading-msg { text-align: center; color: var(--muted); font-size: 0.9rem; padding: 40px; }
@@ -268,7 +268,6 @@
 <body>
 
 <header>
-  <p class="eyebrow">黑皮團隊 · 賽程整合</p>
   <h1 class="page-title">賽程日曆</h1>
   <p class="page-sub">TDK、TB3、上銀撞球的行程一目了然，按時間急迫性排列。</p>
 
@@ -320,7 +319,7 @@
   想加入新行程？告訴 <strong>Coder</strong> 或直接編輯 <code>agent_idle/data/*.json</code> 的 <code>milestones[]</code>。
 </div>
 
-<div class="last-update" id="lastUpdate"></div>
+<div class="last-update" id="lastUpdate">黑皮團隊 · 賽程整合</div>
 
 <script>
   // ── State ──
