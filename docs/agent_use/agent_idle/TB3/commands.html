@@ -19,19 +19,14 @@
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb { background:var(--muted); border-radius:2px; }
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      font-family: "PingFang TC","Microsoft JhengHei",-apple-system,sans-serif;
       min-height: 100vh;
       display: flex;
     }
-
-    /* ── Back ── */
-    .back { position: absolute; top: 20px; left: 24px; z-index: 10; }
-    .back a { font-size: 0.75rem; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: color 0.2s; }
-    .back a:hover { color: var(--text); }
 
     /* ── Sidebar ── */
     .sidebar {
@@ -45,11 +40,11 @@
       height: 100vh;
       overflow-y: auto;
     }
-    .sidebar-title { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); padding: 0 16px 10px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+    .sidebar-title { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); padding: 0 16px 10px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
     .nav-item {
       display: block;
-      padding: 9px 16px;
-      font-size: 0.82rem;
+      padding: 10px 16px;
+      font-size: 0.98rem;
       color: var(--muted);
       cursor: pointer;
       transition: background 0.15s, color 0.15s;
@@ -61,7 +56,7 @@
       color: var(--accent);
       border-left-color: var(--accent);
     }
-    .nav-item .nav-count { font-size: 0.7rem; color: var(--muted); float: right; }
+    .nav-item .nav-count { font-size: 0.84rem; color: var(--muted); float: right; }
 
     /* ── Main ── */
     .main { flex: 1; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
@@ -75,19 +70,22 @@
       background: var(--bg);
       z-index: 5;
     }
-    .main-header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; color: var(--accent); margin-bottom: 4px; }
-    .main-header p { font-size: 0.78rem; color: var(--muted); }
+    .main-header .back { display: block; margin-bottom: 12px; }
+    .main-header .back a { font-size: 0.9rem; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: color 0.2s; }
+    .main-header .back a:hover { color: var(--text); }
+    .main-header h1 { font-size: 1.68rem; font-weight: 700; letter-spacing: -0.02em; color: var(--accent); margin-bottom: 4px; }
+    .main-header p { font-size: 0.94rem; color: var(--muted); }
 
     /* ── Search ── */
     .search-wrap { padding: 16px 28px; border-bottom: 1px solid var(--border); }
     .search-box { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; }
     .search-box:focus-within { border-color: rgba(127,179,255,0.3); }
-    .search-icon { color: var(--muted); font-size: 0.85rem; flex-shrink: 0; }
-    .search-input { background: none; border: none; outline: none; color: var(--text); font-size: 0.88rem; width: 100%; font-family: inherit; }
+    .search-icon { color: var(--muted); font-size: 1rem; flex-shrink: 0; }
+    .search-input { background: none; border: none; outline: none; color: var(--text); font-size: 1.05rem; width: 100%; font-family: inherit; }
     .search-input::placeholder { color: var(--muted); }
-    .search-clear { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.85rem; padding: 0; display: none; }
+    .search-clear { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: 0; display: none; }
     .search-clear.show { display: block; }
-    .search-count { font-size: 0.72rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+    .search-count { font-size: 0.86rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
 
     /* ── Content ── */
     .content { padding: 20px 28px 60px; overflow-y: auto; }
@@ -95,10 +93,10 @@
     /* ── Section ── */
     .cmd-section { margin-bottom: 36px; }
     .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-    .section-icon { font-size: 1rem; }
-    .section-title { font-size: 1rem; font-weight: 700; color: var(--accent); }
-    .section-count { font-size: 0.72rem; color: var(--muted); }
-    .section-desc { font-size: 0.78rem; color: var(--muted); margin-bottom: 10px; line-height: 1.6; }
+    .section-icon { font-size: 1.2rem; }
+    .section-title { font-size: 1.2rem; font-weight: 700; color: var(--accent); }
+    .section-count { font-size: 0.86rem; color: var(--muted); }
+    .section-desc { font-size: 0.94rem; color: var(--muted); margin-bottom: 10px; line-height: 1.6; }
 
     /* ── Command list ── */
     .cmd-list { display: flex; flex-direction: column; gap: 6px; }
@@ -106,25 +104,25 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 12px 14px;
+      padding: 14px 16px;
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 10px;
+      gap: 12px;
       align-items: start;
       transition: border-color 0.15s;
     }
     .cmd-item:hover { border-color: rgba(127,179,255,0.2); }
     .cmd-item.hidden { display: none; }
     .cmd-body { min-width: 0; }
-    .cmd-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+    .cmd-name { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
     .cmd-code {
       font-family: "Courier New", Consolas, monospace;
-      font-size: 0.78rem;
+      font-size: 0.94rem;
       color: var(--accent2);
       background: rgba(0,0,0,0.4);
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 5px;
-      padding: 6px 10px;
+      padding: 7px 12px;
       margin-bottom: 5px;
       word-break: break-all;
       white-space: pre-wrap;
@@ -135,9 +133,9 @@
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.08);
       color: var(--muted);
-      padding: 5px 10px;
+      padding: 6px 12px;
       border-radius: 5px;
-      font-size: 0.72rem;
+      font-size: 0.86rem;
       cursor: pointer;
       font-family: inherit;
       transition: background 0.15s, color 0.15s;
@@ -145,23 +143,23 @@
     }
     .cmd-copy:hover { background: var(--accent-dim); color: var(--accent); border-color: rgba(127,179,255,0.3); }
     .cmd-copy.copied { background: rgba(127,255,255,0.1); color: var(--hiwin); border-color: rgba(127,255,255,0.3); }
-    .cmd-note { font-size: 0.72rem; color: var(--muted); margin-top: 4px; font-style: italic; }
+    .cmd-note { font-size: 0.86rem; color: var(--muted); margin-top: 4px; font-style: italic; }
 
     /* ── Dev order steps ── */
     .step-list { display: flex; flex-direction: column; gap: 8px; }
-    .step-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; }
+    .step-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; transition: border-color 0.2s; }
     .step-item:hover { border-color: rgba(127,179,255,0.2); }
-    .step-num { font-size: 1rem; font-weight: 900; color: var(--accent); text-align: center; line-height: 1.6; }
-    .step-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
-    .step-focus { font-size: 0.75rem; color: var(--accent2); margin-bottom: 6px; }
-    .step-cmds { display: flex; flex-wrap: wrap; gap: 5px; }
-    .step-cmd { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.07); color: var(--muted); }
-    .step-output { font-size: 0.72rem; color: var(--muted); margin-top: 4px; font-style: italic; }
+    .step-num { font-size: 1.2rem; font-weight: 900; color: var(--accent); text-align: center; line-height: 1.5; }
+    .step-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 5px; }
+    .step-focus { font-size: 0.9rem; color: var(--accent2); margin-bottom: 7px; }
+    .step-cmds { display: flex; flex-wrap: wrap; gap: 6px; }
+    .step-cmd { font-size: 0.84rem; padding: 3px 10px; border-radius: 4px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.07); color: var(--muted); }
+    .step-output { font-size: 0.86rem; color: var(--muted); margin-top: 5px; font-style: italic; }
 
     /* ── Empty state ── */
-    .empty-search { text-align: center; padding: 48px; color: var(--muted); font-size: 0.88rem; }
+    .empty-search { text-align: center; padding: 48px; color: var(--muted); font-size: 1rem; }
     .empty-search strong { color: var(--accent); }
-    .load-error { text-align: center; padding: 48px; color: #ff7f7f; font-size: 0.88rem; }
+    .load-error { text-align: center; padding: 48px; color: #ff7f7f; font-size: 1rem; }
 
     /* ── Toast ── */
     .toast {
@@ -174,7 +172,7 @@
       color: var(--hiwin);
       padding: 10px 20px;
       border-radius: 8px;
-      font-size: 0.82rem;
+      font-size: 0.98rem;
       transition: transform 0.3s ease;
       z-index: 100;
       pointer-events: none;
@@ -182,31 +180,50 @@
     .toast.show { transform: translateX(-50%) translateY(0); }
 
     /* ── Footer ── */
-    footer { padding: 16px 28px; border-top: 1px solid var(--border); font-size: 0.72rem; color: var(--muted); text-align: center; }
+    footer { padding: 16px 28px; border-top: 1px solid var(--border); font-size: 0.86rem; color: var(--muted); text-align: center; }
 
     @media (max-width: 700px) {
       body { flex-direction: column; }
-      .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 16px 0 8px; }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 0;
+      }
       .sidebar-title { display: none; }
-      .nav-item { display: inline-block; padding: 6px 12px; border-left: none; border-bottom: 2px solid transparent; }
+      .nav-list-wrap { display: flex; flex-wrap: wrap; gap: 0; padding: 8px 12px; }
+      .nav-item {
+        display: inline-block;
+        padding: 6px 10px;
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        font-size: 0.88rem;
+      }
       .nav-item.active { border-bottom-color: var(--accent); background: none; }
-      .main-header { padding: 20px 20px 16px; }
+      .nav-item .nav-count { display: none; }
+      .main-header {
+        padding: 16px 16px 14px;
+      }
+      .main-header .back { margin-bottom: 8px; }
+      .search-wrap { padding: 12px 16px; }
+      .content { padding: 16px 16px 60px; }
     }
   </style>
 </head>
 <body>
 
-<div class="back"><a href="../">← 賽程日曆</a></div>
-
 <!-- Sidebar navigation -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-title">指令分類</div>
-  <div id="navList"></div>
+  <div class="nav-list-wrap" id="navList"></div>
 </nav>
 
 <!-- Main content -->
 <div class="main">
   <div class="main-header">
+    <div class="back"><a href="../">← 月曆</a></div>
     <h1>TB3 指令手冊</h1>
     <p id="pageDesc">從 tb3-commands.json 載入</p>
   </div>
@@ -240,7 +257,7 @@ const CATEGORIES = [
   { key: '研習2_自動避障',   icon: '🚧', label: '研習2：自動避障' },
   { key: '研習3_SLAM導航',   icon: '🗺️', label: '研習3：SLAM導航' },
   { key: '常用工具',          icon: '🔧', label: '常用工具' },
-  { key: 'launchFiles',      icon: '📄', label: 'Launch 檔案' },
+  { key: 'launchFiles',       icon: '📄', label: 'Launch 檔案' },
   { key: 'topics',            icon: '📡', label: 'Topic 對照' },
   { key: 'quickReference',    icon: '⚡', label: '快速參考' },
 ];
@@ -307,25 +324,21 @@ function showSection(id) {
     return;
   }
 
-  // launchFiles
   if (id === 'launchFiles' && Array.isArray(d.files)) {
     renderLaunchFiles(content, d, cat.icon);
     return;
   }
 
-  // topics
   if (id === 'topics') {
     renderTopics(content, d, cat.icon);
     return;
   }
 
-  // quickReference
   if (id === 'quickReference' && Array.isArray(d.workflows)) {
     renderQuickRef(content, d, cat.icon);
     return;
   }
 
-  // Standard command list (environment, rosCore, 研習1/2/3, 常用工具)
   const items = d.commands || [];
   if (items.length === 0) {
     content.innerHTML = '<div class="empty-search">這個分類還沒有指令</div>';
@@ -351,7 +364,7 @@ function buildCmdItem(item) {
   const searchText = `${item.cmd || ''} ${item.desc || ''} ${item.category || ''}`.toLowerCase();
   return `<div class="cmd-item" data-search="${escHtml(searchText)}">
     <div class="cmd-body">
-      ${item.category ? `<div class="cmd-name" style="color:var(--accent2);font-size:0.75rem;margin-bottom:4px;">【${escHtml(item.category)}】</div>` : ''}
+      ${item.category ? `<div class="cmd-name" style="color:var(--accent2);font-size:0.9rem;margin-bottom:4px;">【${escHtml(item.category)}】</div>` : ''}
       ${item.desc ? `<div class="cmd-name">${escHtml(item.desc)}</div>` : ''}
       ${item.cmd ? `<div class="cmd-code">${escHtml(item.cmd)}</div>` : ''}
       ${item.note ? `<div class="cmd-note">📌 ${escHtml(item.note)}</div>` : ''}
@@ -398,12 +411,12 @@ function renderTopics(container, d, icon) {
       <p class="section-desc">${d.description || ''}</p>
       ${subs.length ? `
       <div style="margin-bottom:20px;">
-        <div style="font-size:0.8rem;color:var(--accent);margin-bottom:8px;">📥 訂閱（Subscribers）</div>
+        <div style="font-size:0.96rem;color:var(--accent);margin-bottom:8px;">📥 訂閱（Subscribers）</div>
         <div class="cmd-list">
           ${subs.map(t => `<div class="cmd-item" data-search="${escHtml((t.name||'')+' '+(t.desc||''))}">
             <div class="cmd-body">
               <div class="cmd-code" style="color:var(--accent2)">${escHtml(t.name)}</div>
-              <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px;">Type: ${escHtml(t.type)}</div>
+              <div style="font-size:0.86rem;color:var(--muted);margin-bottom:4px;">Type: ${escHtml(t.type)}</div>
               ${t.desc ? `<div class="cmd-note">${escHtml(t.desc)}</div>` : ''}
             </div>
           </div>`).join('')}
@@ -411,12 +424,12 @@ function renderTopics(container, d, icon) {
       </div>` : ''}
       ${pubs.length ? `
       <div>
-        <div style="font-size:0.8rem;color:var(--accent2);margin-bottom:8px;">📤 發布（Publishers）</div>
+        <div style="font-size:0.96rem;color:var(--accent2);margin-bottom:8px;">📤 發布（Publishers）</div>
         <div class="cmd-list">
           ${pubs.map(t => `<div class="cmd-item" data-search="${escHtml((t.name||'')+' '+(t.desc||''))}">
             <div class="cmd-body">
               <div class="cmd-code" style="color:var(--hiwin)">${escHtml(t.name)}</div>
-              <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px;">Type: ${escHtml(t.type)}</div>
+              <div style="font-size:0.86rem;color:var(--muted);margin-bottom:4px;">Type: ${escHtml(t.type)}</div>
               ${t.desc ? `<div class="cmd-note">${escHtml(t.desc)}</div>` : ''}
             </div>
           </div>`).join('')}
