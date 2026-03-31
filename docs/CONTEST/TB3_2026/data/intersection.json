@@ -25,7 +25,7 @@
     }
   ],
   "files": ["detect_intersection.py"],
-  "video": "../assets/videos/intersection_test.mp4",
-  "images": ["../assets/images/intersection_01.jpg", "../assets/images/intersection_02.jpg", "../assets/images/intersection_03.jpg"],
+  "video": "assets/videos/intersection_test.mp4",
+  "images": ["assets/images/intersection_01.jpg", "assets/images/intersection_02.jpg", "assets/images/intersection_03.jpg"],
   "testStatus": "passed"
 }
