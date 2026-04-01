@@ -178,12 +178,15 @@
     .stock-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px 20px 16px;
+      border-radius: 12px 12px 0 0;
+      padding: 20px 20px 0;
       position: relative;
       overflow: hidden;
       cursor: pointer;
       transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
     }
 
     .stock-card::before {
@@ -201,12 +204,15 @@
     .stock-card[data-category="機器人/自動化"]::before { background: linear-gradient(90deg, var(--accent-robot), transparent); }
     .stock-card[data-category="低基期/補漲"]::before { background: linear-gradient(90deg, var(--accent-lowbase), transparent); }
 
-    /* hover states */
+    /* hover states — only scale info area, not chart */
     .stock-card:hover {
-      transform: scale(1.03);
       border-color: var(--border-hover);
       background: var(--bg-card-hover);
       z-index: 10;
+    }
+
+    .stock-card:hover .card-info {
+      transform: scale(1.03);
     }
 
     .stock-card[data-category="AI半導體供應鏈"]:hover { box-shadow: 0 8px 40px rgba(110, 231, 247, 0.12); }
@@ -217,6 +223,13 @@
 
     /* dim siblings on hover */
     .category-group:hover .stock-card:not(:hover) { opacity: 0.5; }
+
+    /* ── Card info area (scales on hover) ── */
+    .card-info {
+      padding-bottom: 16px;
+      transition: transform 0.25s ease;
+      transform-origin: center center;
+    }
 
     .card-top {
       display: flex;
@@ -280,9 +293,9 @@
     /* ── Hover detail overlay ── */
     .card-detail {
       position: absolute;
-      inset: 0;
+      top: 0; left: 0; right: 0;
       background: rgba(15, 17, 23, 0.94);
-      border-radius: 12px;
+      border-radius: 12px 12px 0 0;
       padding: 20px;
       display: flex;
       flex-direction: column;
@@ -296,6 +309,20 @@
     .stock-card:hover .card-detail {
       opacity: 1;
       pointer-events: auto;
+    }
+
+    /* ── TradingView chart ── */
+    .stock-chart {
+      margin: 0.75rem -1rem -1rem;
+      background: #0f1117;
+      border-radius: 0 0 12px 12px;
+      overflow: hidden;
+    }
+
+    .stock-chart iframe {
+      width: 100%;
+      height: 150px;
+      display: block;
     }
 
     .card-detail-label {
@@ -349,6 +376,7 @@
       .date-switcher { justify-content: flex-start; }
       .container { padding: 32px 24px 60px; }
       .cards-grid { grid-template-columns: 1fr; }
+      .stock-chart iframe { height: 120px; }
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
@@ -495,22 +523,35 @@
 
   function renderCard(stock) {
     const catColor = CATEGORY_COLORS[stock.category] || '#6ee7f7';
-    // Truncate summary to ~50 chars for card preview
+    // Truncate summary to ~52 chars for card preview
     const summary = stock.why_undervalued.length > 52
       ? stock.why_undervalued.slice(0, 52) + '…'
       : stock.why_undervalued;
 
+    const symbol = `${stock.code}.TW`;
+    const tvSrc = `https://www.tradingview.com/widgetembed/?symbol=${symbol}&interval=D&width=100%&height=150&theme=dark&style=1&locale=zh_TW&toolbar_bg=0f1117&hide_top_toolbar=true&save=true&studies=[]&hidelegend=true`;
+
     return `
       <div class="stock-card" data-category="${stock.category || ''}">
-        <div class="card-top">
-          <span class="card-code">${stock.code}</span>
-          <span class="card-name">${stock.name}</span>
+        <div class="card-info">
+          <div class="card-top">
+            <span class="card-code">${stock.code}</span>
+            <span class="card-name">${stock.name}</span>
+          </div>
+          <p class="card-summary">${summary}</p>
+          <span class="card-trend-tag">${stock.trend_alignment || ''}</span>
+          <div class="card-detail">
+            <div class="card-detail-label" style="color:${catColor}">為何被低估</div>
+            <div class="card-detail-text">${stock.why_undervalued}</div>
+          </div>
         </div>
-        <p class="card-summary">${summary}</p>
-        <span class="card-trend-tag">${stock.trend_alignment || ''}</span>
-        <div class="card-detail">
-          <div class="card-detail-label" style="color:${catColor}">為何被低估</div>
-          <div class="card-detail-text">${stock.why_undervalued}</div>
+        <div class="stock-chart">
+          <iframe
+            src="${tvSrc}"
+            frameborder="0"
+            scrolling="no"
+            allowtransparency="true">
+          </iframe>
         </div>
       </div>
     `;
