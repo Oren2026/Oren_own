@@ -37,6 +37,8 @@
         radial-gradient(ellipse 50% 40% at 80% 90%, rgba(110,231,247,0.12) 0%, transparent 55%);
       pointer-events: none;
     }
+    .folder-item a[download] { color: var(--accent-text); font-weight: 600; }
+    .folder-item a[download]:hover { color: var(--accent); }
   </style>
 </head>
 <body>
@@ -126,6 +128,12 @@
             <span class="folder-icon">📝</span>
             <div class="folder-info">
               <a href="tech/開發日誌.html" class="folder-name">開發日誌</a>
+            </div>
+          </li>
+          <li class="folder-item" data-delay="4">
+            <span class="folder-icon">📦</span>
+            <div class="folder-info">
+              <a href="autorace_idminer-training-devel.zip" class="folder-name" download>訓練程式碼下載</a>
             </div>
           </li>
         </ul>
