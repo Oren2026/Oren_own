@@ -588,7 +588,7 @@ async function loadEvents() {
       project: ev.project || '',
       location: ev.location || '',
       detail: ev.detail || ev.notes || '',
-      important: true // 所有事件都出現在「重要日程」
+      important: ev.type === 'deadline'
     }));
     console.log('[Calendar] Loaded', allEvents.length, 'events from JSON');
   } catch (err) {
