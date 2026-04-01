@@ -713,7 +713,14 @@
     fetchAllMissions('./').then(function(missions) {
       renderMissionGrid(missions, 'mission-grid');
 
-      // missionIo already handles stagger on the grid container
+      // missionIo may have fired before cards were added; ensure all cards are visible
+      var mc = document.getElementById('mission-grid');
+      if (mc) {
+        var cards = mc.querySelectorAll('.mission-card');
+        cards.forEach(function(card, i) {
+          setTimeout(function() { card.classList.add('in-view'); }, i * 100);
+        });
+      }
 
       var done = missions.filter(function(m) { return m.category !== 'base' && computeMissionStatus(m) === 'done'; }).length;
       var total = missions.filter(function(m) { return m.category !== 'base'; }).length;
