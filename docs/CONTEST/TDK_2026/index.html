@@ -341,25 +341,25 @@
       </div>
       <div class="section-content">
         <div class="mission-grid">
-          <div class="mission-card" onclick="openMission(0)">
+          <div class="mission-card" data-delay="0" onclick="openMission(0)">
             <div class="mission-icon">🌿</div>
             <div class="mission-name">成龍濕地生態守護</div>
             <div class="mission-desc">扶正 3 個倒下的裝置藝術 + 將尖叫雞、天鵝娃娃送往救護站</div>
             <div class="mission-arrow">點我看詳情 →</div>
           </div>
-          <div class="mission-card" onclick="openMission(1)">
+          <div class="mission-card" data-delay="1" onclick="openMission(1)">
             <div class="mission-icon">🐚</div>
             <div class="mission-name">文蛤分級</div>
             <div class="mission-desc">掃文蛤進篩選區，透過不同孔徑篩網分級</div>
             <div class="mission-arrow">點我看詳情 →</div>
           </div>
-          <div class="mission-card" onclick="openMission(2)">
+          <div class="mission-card" data-delay="2" onclick="openMission(2)">
             <div class="mission-icon">🌾</div>
             <div class="mission-name">稻草卷堆放</div>
             <div class="mission-desc">將散落的稻草卷堆成三角形結構</div>
             <div class="mission-arrow">點我看詳情 →</div>
           </div>
-          <div class="mission-card" onclick="openMission(3)">
+          <div class="mission-card" data-delay="3" onclick="openMission(3)">
             <div class="mission-icon">🏮</div>
             <div class="mission-name">北港迎媽祖</div>
             <div class="mission-desc">文旦、柳丁、砂糖橘放入供桌水果盤 + 擲筊動作</div>
@@ -641,8 +641,8 @@
     });
     if (document.querySelector('.badge-row')) io.observe(document.querySelector('.badge-row'));
 
-    // Observe sections and info-cards
-    document.querySelectorAll('.info-card, .section').forEach(function(el) {
+    // Observe sections, info-cards, and mission-cards
+    document.querySelectorAll('.info-card, .section, .mission-card').forEach(function(el) {
       io.observe(el);
     });
 
