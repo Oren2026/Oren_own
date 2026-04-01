@@ -6,17 +6,18 @@
   <title>比賽專區 — 黑皮團隊</title>
   <style>
     :root {
-      --bg: #08090f;
-      --bg-deep: #04050a;
-      --surface: #0d1019;
-      --surface-2: #111525;
-      --border: rgba(255,255,255,0.07);
+      --bg: #f4f6f2;
+      --bg-deep: #eef0ec;
+      --surface: #ffffff;
+      --border: rgba(110,231,247,0.15);
       --accent: #6ee7f7;
-      --accent-dim: rgba(110,231,247,0.1);
-      --accent-glow: rgba(110,231,247,0.15);
-      --text: #dde4f0;
-      --muted: #5a6478;
-      --muted-2: #3d4556;
+      --accent-dim: rgba(110,231,247,0.12);
+      --accent-text: #0899b2;
+      --text: #1a1a1a;
+      --muted: #4a4a4a;
+      --muted-2: #888;
+      --card-shadow: 0 8px 32px rgba(110,231,247,0.08);
+      --card-shadow-hover: 0 20px 56px rgba(110,231,247,0.18);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -42,16 +43,16 @@
       align-items: center;
       justify-content: space-between;
       padding: 18px 5%;
-      background: rgba(8,9,15,0.8);
+      background: rgba(244,246,242,0.8);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid transparent;
       transition: background 0.35s, border-color 0.35s, box-shadow 0.35s;
     }
 
     nav.scrolled {
-      background: rgba(8,9,15,0.96);
+      background: rgba(244,246,242,0.96);
       border-bottom-color: var(--border);
-      box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 32px rgba(110,231,247,0.12);
     }
 
     .nav-logo {
@@ -62,7 +63,7 @@
       letter-spacing: 0.06em;
       transition: color 0.2s;
     }
-    .nav-logo:hover { color: var(--text); }
+    .nav-logo:hover { color: var(--accent-text); }
 
     .nav-back {
       font-size: 12px;
@@ -75,7 +76,7 @@
     }
     .nav-back:hover {
       border-color: var(--accent);
-      color: var(--accent);
+      color: var(--accent-text);
       box-shadow: 0 0 16px var(--accent-dim);
     }
 
@@ -95,20 +96,20 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 70% 50% at 50% -10%, rgba(110,231,247,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(110,231,247,0.04) 0%, transparent 50%),
-        radial-gradient(ellipse 50% 40% at 20% 60%, rgba(59,130,246,0.03) 0%, transparent 50%),
-        linear-gradient(to bottom, #04050a 0%, #08090f 100%);
+        radial-gradient(ellipse 80% 60% at 50% -5%, rgba(110,231,247,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 85% 85%, rgba(110,231,247,0.07) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 50% at 15% 70%, rgba(100,180,220,0.05) 0%, transparent 50%),
+        linear-gradient(to bottom, #0a0e14 0%, #111827 50%, #0f1520 100%);
     }
 
     .hero-grid {
       position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(rgba(110,231,247,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(110,231,247,0.04) 1px, transparent 1px);
+        linear-gradient(rgba(110,231,247,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(110,231,247,0.07) 1px, transparent 1px);
       background-size: 56px 56px;
-      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+      mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 25%, transparent 100%);
     }
 
     .hero-content {
@@ -135,7 +136,7 @@
       margin-bottom: 18px;
       opacity: 0;
       animation: fadeUp 0.8s ease 0.25s forwards;
-      background: linear-gradient(180deg, #ffffff 0%, rgba(221,228,240,0.7) 100%);
+      background: linear-gradient(180deg, #ffffff 0%, rgba(220,230,240,0.75) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -143,7 +144,7 @@
 
     .hero-sub {
       font-size: 0.92rem;
-      color: var(--muted);
+      color: rgba(200,210,220,0.65);
       max-width: 380px;
       margin: 0 auto;
       line-height: 1.75;
@@ -168,7 +169,7 @@
       transform: translateX(-50%);
       font-size: 10px;
       letter-spacing: 0.2em;
-      color: var(--muted-2);
+      color: rgba(150,165,180,0.5);
       animation: bounce 2.4s ease-in-out infinite;
       z-index: 2;
     }
@@ -194,7 +195,7 @@
       font-size: 10px;
       letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--accent-text);
       text-align: center;
       margin-bottom: 12px;
       opacity: 0;
@@ -242,7 +243,7 @@
       position: absolute;
       inset: 0;
       border-radius: 16px;
-      background: linear-gradient(135deg, var(--accent-dim) 0%, transparent 60%);
+      background: linear-gradient(135deg, rgba(110,231,247,0.06) 0%, transparent 60%);
       opacity: 0;
       transition: opacity 0.35s;
       pointer-events: none;
@@ -250,12 +251,9 @@
     }
 
     .card:hover {
-      transform: translateY(-8px);
-      border-color: rgba(110,231,247,0.25);
-      box-shadow:
-        0 24px 64px rgba(0,0,0,0.5),
-        0 0 0 1px rgba(110,231,247,0.08),
-        0 0 48px rgba(110,231,247,0.06);
+      transform: translateY(-6px);
+      border-color: rgba(110,231,247,0.35);
+      box-shadow: var(--card-shadow-hover);
     }
 
     .card:hover::before { opacity: 1; }
@@ -277,7 +275,7 @@
     .card-visual-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to bottom, transparent 25%, rgba(13,16,25,0.92) 100%);
+      background: linear-gradient(to bottom, transparent 25%, rgba(255,255,255,0.85) 100%);
     }
 
     .card-badge {
@@ -292,9 +290,9 @@
       z-index: 2;
     }
 
-    .badge-tdk    { background: rgba(239,130,60,0.18); color: #ef8340; border: 1px solid rgba(239,130,60,0.35); }
-    .badge-fira   { background: rgba(110,231,247,0.12); color: var(--accent); border: 1px solid rgba(110,231,247,0.25); }
-    .badge-hiwin  { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+    .badge-tdk    { background: rgba(110,231,247,0.15); color: var(--accent-text); border: 1px solid rgba(110,231,247,0.3); }
+    .badge-fira   { background: rgba(110,231,247,0.15); color: var(--accent-text); border: 1px solid rgba(110,231,247,0.3); }
+    .badge-hiwin  { background: rgba(110,231,247,0.15); color: var(--accent-text); border: 1px solid rgba(110,231,247,0.3); }
 
     .card-body {
       padding: 24px;
@@ -331,8 +329,8 @@
       font-size: 10px;
       padding: 3px 9px;
       border-radius: 4px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(110,231,247,0.08);
+      border: 1px solid rgba(110,231,247,0.15);
       color: var(--muted);
       letter-spacing: 0.02em;
     }
@@ -340,7 +338,7 @@
     .card-arrow {
       margin-top: 18px;
       font-size: 12px;
-      color: var(--accent);
+      color: var(--accent-text);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -353,7 +351,7 @@
 
     /* ── Footer ── */
     footer {
-      background: var(--bg-deep);
+      background: #ffffff;
       border-top: 1px solid var(--border);
       padding: 52px 5% 36px;
       margin-top: auto;
@@ -369,7 +367,7 @@
       align-items: flex-start;
       justify-content: space-between;
       padding-bottom: 32px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid var(--border);
       margin-bottom: 24px;
       gap: 32px;
       flex-wrap: wrap;
@@ -384,7 +382,7 @@
     }
 
     .footer-brand .footer-logo span {
-      color: var(--accent);
+      color: var(--accent-text);
     }
 
     .footer-brand p {
@@ -403,7 +401,7 @@
       font-size: 10px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--accent-text);
       margin-bottom: 14px;
     }
 
@@ -467,7 +465,7 @@
 
       <a href="./TDK_2026/" class="card" data-delay="0">
         <div class="card-visual">
-          <div class="card-visual-bg" style="background: linear-gradient(135deg,#1a0d05 0%,#2c1a08 50%,#1a0d05 100%);"></div>
+          <div class="card-visual-bg" style="background: linear-gradient(135deg,#fef3e2 0%,#fde8c8 50%,#fef3e2 100%);"></div>
           <div class="card-visual-overlay"></div>
           <span class="card-badge badge-tdk">遙控組</span>
         </div>
@@ -486,7 +484,7 @@
 
       <a href="./TB3_2026/" class="card" data-delay="1">
         <div class="card-visual">
-          <div class="card-visual-bg" style="background: linear-gradient(135deg,#051218 0%,#081e2c 50%,#051822 100%);"></div>
+          <div class="card-visual-bg" style="background: linear-gradient(135deg,#e0f7fb 0%,#b2ebf2 50%,#e0f7fb 100%);"></div>
           <div class="card-visual-overlay"></div>
           <span class="card-badge badge-fira">AutoRace</span>
         </div>
@@ -505,7 +503,7 @@
 
       <a href="./上銀撞球/" class="card" data-delay="2">
         <div class="card-visual">
-          <div class="card-visual-bg" style="background: linear-gradient(135deg,#0d0a05 0%,#1a1508 50%,#0d0d05 100%);"></div>
+          <div class="card-visual-bg" style="background: linear-gradient(135deg,#fffde7 0%,#fff9c4 50%,#fffde7 100%);"></div>
           <div class="card-visual-overlay"></div>
           <span class="card-badge badge-hiwin">創新應用</span>
         </div>
