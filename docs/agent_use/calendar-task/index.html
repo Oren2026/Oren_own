@@ -494,8 +494,15 @@
     /* ── Responsive ── */
     @media (max-width: 640px) {
       .sidebar { display: none; }
-      .day-cell { min-height: 72px; padding: 5px; }
-      .day-event-pill { display: none; }
+      .day-cell { min-height: 88px; padding: 6px; }
+      .day-events { gap: 2px; }
+      .day-event-pill {
+        font-size: 10px;
+        padding: 2px 5px;
+        white-space: normal;
+        overflow: visible;
+        line-height: 1.3;
+      }
       .day-cell.has-events .day-number::after { top: 5px; left: 30px; }
     }
   </style>
@@ -581,7 +588,7 @@ async function loadEvents() {
       project: ev.project || '',
       location: ev.location || '',
       detail: ev.detail || ev.notes || '',
-      important: ev.important === true || ev.type === 'deadline'
+      important: true // 所有事件都出現在「重要日程」
     }));
     console.log('[Calendar] Loaded', allEvents.length, 'events from JSON');
   } catch (err) {
