@@ -311,21 +311,32 @@
       pointer-events: auto;
     }
 
-    /* ── TradingView chart ── */
+    /* ── TradingView chart link ── */
     .stock-chart {
       margin: 0.75rem -1rem -1rem;
-      background: #0f1117;
-      border-radius: 0 0 12px 12px;
-      overflow: hidden;
-      line-height: 0;
+      padding: 0.6rem 1rem;
+      background: rgba(110,231,247,0.05);
+      border-top: 1px solid rgba(110,231,247,0.10);
+      text-align: center;
     }
 
-    .stock-chart img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      display: block;
-      background: #0f1117;
+    .stock-chart a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 0.4rem 1rem;
+      border: 1px solid rgba(110,231,247,0.25);
+      border-radius: 20px;
+      transition: all 0.2s;
+    }
+    .stock-chart a:hover {
+      background: rgba(110,231,247,0.10);
+      border-color: var(--accent);
+    }
     }
 
     .card-detail-label {
@@ -379,7 +390,7 @@
       .date-switcher { justify-content: flex-start; }
       .container { padding: 32px 24px 60px; }
       .cards-grid { grid-template-columns: 1fr; }
-      .stock-chart img { height: 100px; }
+      .stock-chart a { font-size: 0.75rem; }
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
@@ -531,7 +542,7 @@
       ? stock.why_undervalued.slice(0, 52) + '…'
       : stock.why_undervalued;
 
-    const chartSrc = `https://stockcharts.com/c-sc/sc?s=${stock.code}.TW&p=D&b=5&g=0&i=0`;
+    const tvUrl = `https://www.tradingview.com/chart/${stock.code}.TW/`;
 
     return `
       <div class="stock-card" data-category="${stock.category || ''}">
@@ -547,7 +558,7 @@
             <div class="card-detail-text">${stock.why_undervalued}</div>
           </div>
         </div>
-        <div class="stock-chart"><img src="${chartSrc}" alt="${stock.name} K線" loading="lazy"></div>
+        <div class="stock-chart"><a href="${tvUrl}" target="_blank" rel="noopener">📈 查看 K 線</a></div>
       </div>
     `;
   }
