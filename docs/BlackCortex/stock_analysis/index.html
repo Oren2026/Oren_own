@@ -1,35 +1,538 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stock Analysis | BlackCortex</title>
+  <title>BlackCortex 股票分析</title>
   <style>
+    :root {
+      --bg: #0f1117;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --bg-card-hover: rgba(255, 255, 255, 0.06);
+      --border: rgba(255, 255, 255, 0.07);
+      --border-hover: rgba(255, 255, 255, 0.15);
+      --text: #e8e8f0;
+      --text-muted: rgba(232, 232, 240, 0.45);
+      --accent: #6ee7f7;
+      --accent-ai: #6ee7f7;
+      --accent-power: #fbbf24;
+      --accent-grid: #fb923c;
+      --accent-robot: #a78bfa;
+      --accent-lowbase: #86efac;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
+      background: var(--bg);
+      color: var(--text);
       font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
-      background: #f4f6f2;
-      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .report-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 40px 48px 24px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .report-meta { flex: 1; min-width: 240px; }
+
+    .report-title {
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .report-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .report-subtitle .researcher {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ── Date switcher ── */
+    .date-switcher {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .date-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 5px 14px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      letter-spacing: 0.05em;
+    }
+
+    .date-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(110, 231, 247, 0.06);
+    }
+
+    .date-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(110, 231, 247, 0.1);
+    }
+
+    /* ── Marquee ── */
+    .marquee {
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+      background: rgba(110, 231, 247, 0.02);
+    }
+
+    .marquee-inner {
+      display: flex;
+      gap: 0;
+      white-space: nowrap;
+      width: max-content;
+    }
+
+    .marquee-inner span {
+      display: inline-block;
+      padding: 0 40px;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      opacity: 0.7;
+    }
+
+    .marquee-inner span::before {
+      content: '◆';
+      margin-right: 12px;
+      opacity: 0.4;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .marquee-inner { animation: marquee 30s linear infinite; }
+    .marquee-inner:hover { animation-play-state: paused; }
+
+    /* ── Container ── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 48px 80px;
+    }
+
+    /* ── Category group ── */
+    .category-group { margin-bottom: 48px; }
+
+    .category-header {
       display: flex;
       align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .category-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .category-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* ── Cards grid ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── Stock card ── */
+    .stock-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 20px 16px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+
+    .stock-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 12px 12px 0 0;
+    }
+
+    /* top glow line colors by category */
+    .stock-card[data-category="AI半導體供應鏈"]::before { background: linear-gradient(90deg, var(--accent-ai), transparent); }
+    .stock-card[data-category="電力/散熱"]::before { background: linear-gradient(90deg, var(--accent-power), transparent); }
+    .stock-card[data-category="電力/電網"]::before { background: linear-gradient(90deg, var(--accent-grid), transparent); }
+    .stock-card[data-category="機器人/自動化"]::before { background: linear-gradient(90deg, var(--accent-robot), transparent); }
+    .stock-card[data-category="低基期/補漲"]::before { background: linear-gradient(90deg, var(--accent-lowbase), transparent); }
+
+    /* hover states */
+    .stock-card:hover {
+      transform: scale(1.03);
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+      z-index: 10;
+    }
+
+    .stock-card[data-category="AI半導體供應鏈"]:hover { box-shadow: 0 8px 40px rgba(110, 231, 247, 0.12); }
+    .stock-card[data-category="電力/散熱"]:hover { box-shadow: 0 8px 40px rgba(251, 191, 36, 0.12); }
+    .stock-card[data-category="電力/電網"]:hover { box-shadow: 0 8px 40px rgba(251, 146, 60, 0.12); }
+    .stock-card[data-category="機器人/自動化"]:hover { box-shadow: 0 8px 40px rgba(167, 139, 250, 0.12); }
+    .stock-card[data-category="低基期/補漲"]:hover { box-shadow: 0 8px 40px rgba(134, 239, 172, 0.12); }
+
+    /* dim siblings on hover */
+    .category-group:hover .stock-card:not(:hover) { opacity: 0.5; }
+
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .card-code {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+
+    .card-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .card-summary {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+
+    .card-trend-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: 0.06em;
+    }
+
+    .stock-card[data-category="AI半導體供應鏈"] .card-trend-tag {
+      background: rgba(110, 231, 247, 0.1);
+      color: var(--accent-ai);
+    }
+    .stock-card[data-category="電力/散熱"] .card-trend-tag {
+      background: rgba(251, 191, 36, 0.1);
+      color: var(--accent-power);
+    }
+    .stock-card[data-category="電力/電網"] .card-trend-tag {
+      background: rgba(251, 146, 60, 0.1);
+      color: var(--accent-grid);
+    }
+    .stock-card[data-category="機器人/自動化"] .card-trend-tag {
+      background: rgba(167, 139, 250, 0.1);
+      color: var(--accent-robot);
+    }
+    .stock-card[data-category="低基期/補漲"] .card-trend-tag {
+      background: rgba(134, 239, 172, 0.1);
+      color: var(--accent-lowbase);
+    }
+
+    /* ── Hover detail overlay ── */
+    .card-detail {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 17, 23, 0.94);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
       justify-content: center;
-      min-height: 100vh;
-      margin: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      backdrop-filter: blur(4px);
     }
-    .placeholder {
+
+    .stock-card:hover .card-detail {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .card-detail-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .card-detail-text {
+      font-size: 0.78rem;
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    /* ── Note footer ── */
+    .report-note {
       text-align: center;
-      padding: 2rem;
+      font-size: 0.68rem;
+      color: rgba(232, 232, 240, 0.25);
+      padding: 24px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
     }
-    .placeholder-icon { font-size: 4rem; margin-bottom: 1rem; }
-    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-    p { color: #4a4a4a; }
+
+    /* ── Loading ── */
+    .loading {
+      text-align: center;
+      padding: 80px 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+
+    .loading::after {
+      content: '⋯';
+      animation: dots 1.2s infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: '⋯'; }
+      40% { content: '●⋯'; }
+      60% { content: '●●⋯'; }
+      80%, 100% { content: '●●●'; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .report-header { padding: 28px 24px 20px; flex-direction: column; }
+      .date-switcher { justify-content: flex-start; }
+      .container { padding: 32px 24px 60px; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1025px) {
+      .cards-grid { grid-template-columns: repeat(3, 1fr); }
+    }
   </style>
 </head>
 <body>
-  <div class="placeholder">
-    <div class="placeholder-icon">📊</div>
-    <h1>Stock Analysis</h1>
-    <p>數據即將載入，請稍候。</p>
-    <p style="margin-top:1rem;font-size:0.85rem;color:#888;">等待資料更新中...</p>
+
+<div id="app">
+  <header class="report-header">
+    <div class="report-meta">
+      <h1 class="report-title" id="report-title"></h1>
+      <p class="report-subtitle" id="report-subtitle"></p>
+    </div>
+    <div class="date-switcher" id="date-switcher"></div>
+  </header>
+
+  <div class="marquee" id="marquee-wrap" style="display:none;">
+    <div class="marquee-inner" id="marquee-inner"></div>
   </div>
+
+  <main class="container" id="main-content">
+    <div class="loading">讀取中</div>
+  </main>
+
+  <div class="report-note" id="report-note"></div>
+</div>
+
+<script>
+  // ── Config ──────────────────────────────────────────
+  const DATA_DIR = 'data/';
+  const AVAILABLE_DATES = ['20260401']; // extend when more JSON files added
+
+  const CATEGORY_COLORS = {
+    'AI半導體供應鏈': '#6ee7f7',
+    '電力/散熱':      '#fbbf24',
+    '電力/電網':      '#fb923c',
+    '機器人/自動化':   '#a78bfa',
+    '低基期/補漲':    '#86efac'
+  };
+
+  // ── State ──────────────────────────────────────────
+  let currentDate = null;
+
+  // ── Init ────────────────────────────────────────────
+  async function init() {
+    renderDateSwitcher();
+    if (AVAILABLE_DATES.length > 0) {
+      await loadReport(AVAILABLE_DATES[0]);
+    }
+  }
+
+  // ── Date switcher ──────────────────────────────────
+  function renderDateSwitcher() {
+    const container = document.getElementById('date-switcher');
+    // Sort newest first
+    const sorted = [...AVAILABLE_DATES].sort().reverse();
+    container.innerHTML = sorted.map(d => {
+      const label = d.replace(/^(\d{4})(\d{2})(\d{2})$/, '$1/$2/$3');
+      return `<button class="date-btn${d === currentDate ? ' active' : ''}" data-date="${d}">${label}</button>`;
+    }).join('');
+
+    container.querySelectorAll('.date-btn').forEach(btn => {
+      btn.addEventListener('click', () => loadReport(btn.dataset.date));
+    });
+  }
+
+  // ── Load report ─────────────────────────────────────
+  async function loadReport(dateStr) {
+    currentDate = dateStr;
+
+    // update active button
+    document.querySelectorAll('.date-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.date === dateStr);
+    });
+
+    document.getElementById('main-content').innerHTML = '<div class="loading">讀取中</div>';
+
+    try {
+      const res = await fetch(`${DATA_DIR}${dateStr}_stocks.json`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      renderReport(data);
+    } catch (e) {
+      document.getElementById('main-content').innerHTML =
+        `<div class="loading" style="color:#fb923c">載入失敗：${e.message}</div>`;
+    }
+  }
+
+  // ── Render ──────────────────────────────────────────
+  function renderReport(data) {
+    // Header
+    document.getElementById('report-title').textContent = data.report_title;
+    document.getElementById('report-subtitle').innerHTML =
+      `<span class="researcher">${data.researcher}</span>　·　${data.report_date}`;
+    document.getElementById('report-note').textContent =
+      (data.note || '研究參考用，非投資建議，投資人須自行判斷');
+
+    // Marquee
+    renderMarquee(data.trends_summary || []);
+
+    // Main content
+    const main = document.getElementById('main-content');
+    main.innerHTML = '';
+
+    // Group stocks by category
+    const groups = {};
+    for (const stock of (data.stocks || [])) {
+      const cat = stock.category || '其他';
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(stock);
+    }
+
+    // Category order
+    const ORDER = ['AI半導體供應鏈', '電力/散熱', '電力/電網', '機器人/自動化', '低基期/補漲'];
+    const orderedCategories = [
+      ...ORDER.filter(c => groups[c]),
+      ...Object.keys(groups).filter(c => !ORDER.includes(c))
+    ];
+
+    for (const cat of orderedCategories) {
+      const stocks = groups[cat];
+      const color = CATEGORY_COLORS[cat] || '#6ee7f7';
+
+      const group = document.createElement('div');
+      group.className = 'category-group';
+      group.innerHTML = `
+        <div class="category-header">
+          <div class="category-dot" style="background:${color};box-shadow:0 0 6px ${color}66"></div>
+          <div class="category-name" style="color:${color}">${cat}</div>
+        </div>
+        <div class="cards-grid">
+          ${stocks.map(s => renderCard(s)).join('')}
+        </div>
+      `;
+      main.appendChild(group);
+    }
+  }
+
+  function renderCard(stock) {
+    const catColor = CATEGORY_COLORS[stock.category] || '#6ee7f7';
+    // Truncate summary to ~50 chars for card preview
+    const summary = stock.why_undervalued.length > 52
+      ? stock.why_undervalued.slice(0, 52) + '…'
+      : stock.why_undervalued;
+
+    return `
+      <div class="stock-card" data-category="${stock.category || ''}">
+        <div class="card-top">
+          <span class="card-code">${stock.code}</span>
+          <span class="card-name">${stock.name}</span>
+        </div>
+        <p class="card-summary">${summary}</p>
+        <span class="card-trend-tag">${stock.trend_alignment || ''}</span>
+        <div class="card-detail">
+          <div class="card-detail-label" style="color:${catColor}">為何被低估</div>
+          <div class="card-detail-text">${stock.why_undervalued}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderMarquee(trends) {
+    const wrap = document.getElementById('marquee-wrap');
+    const inner = document.getElementById('marquee-inner');
+    if (!trends || trends.length === 0) {
+      wrap.style.display = 'none';
+      return;
+    }
+    wrap.style.display = 'block';
+    // Duplicate items so seamless loop works before content repeats
+    const text = trends.join('　◆　');
+    const doubled = `<span>${text}</span><span>${text}</span>`;
+    inner.innerHTML = doubled;
+  }
+
+  // ── Boot ─────────────────────────────────────────────
+  init();
+</script>
+
 </body>
 </html>
