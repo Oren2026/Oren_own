@@ -4,8 +4,90 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>上銀撞球 2026 | 第十八屆上銀智慧機器手實作競賽</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/shared.css">
   <style>
+    :root {
+      --bg: #f4f6f2;
+      --surface: #ffffff;
+      --border: rgba(251,191,36,0.18);
+      --accent: #fbbf24;
+      --accent-dim: rgba(251,191,36,0.10);
+      --accent-text: #b45309;
+      --accent-mid: rgba(251,191,36,0.15);
+      --text: #1a1a1a;
+      --muted: #4a4a4a;
+      --muted-2: #888;
+      --card-shadow: 0 4px 16px rgba(251,191,36,0.08);
+      --card-shadow-hover: 0 12px 40px rgba(251,191,36,0.18);
+      --success: #10b981;
+      --danger: #ef4444;
+      --accent-rgb: 251, 191, 36;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--bg);
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% -10%, rgba(251,191,36,0.12) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 80% 90%, rgba(251,191,36,0.08) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .header-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+      margin-bottom: 12px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .header-eyebrow.in-view { opacity: 1; transform: translateY(0); }
+    .header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 8px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s;
+    }
+    .header h1.in-view { opacity: 1; transform: translateY(0); }
+    .header .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+    }
+    .header .subtitle.in-view { opacity: 1; transform: translateY(0); }
+    .badge-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+      justify-content: center;
+    }
+    .badge-tag {
+      display: inline-block;
+      font-size: 0.8rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      background: rgba(251,191,36,0.15);
+      border: 1px solid rgba(251,191,36,0.30);
+      color: var(--accent-text);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
+    }
+    .badge-tag.in-view { opacity: 1; transform: translateY(0); }
+
     /* ── Timeline ── */
     .timeline {
       position: relative;
@@ -35,36 +117,61 @@
       width: 14px;
       height: 14px;
       border-radius: 50%;
-      background: var(--card-bg);
+      background: var(--surface);
       border: 2px solid var(--border);
     }
-    .timeline-item.done::before { background: var(--success); border-color: var(--success); }
-    .timeline-item.active::before { background: var(--accent); border-color: var(--accent); animation: pulse 2s infinite; }
+    .timeline-item.done::before {
+      background: var(--success);
+      border-color: var(--success);
+    }
+    .timeline-item.active::before {
+      background: var(--accent);
+      border-color: var(--accent);
+      animation: pulse-tl 2s infinite;
+    }
     .timeline-item .t-date { font-weight: 600; color: var(--text); }
     .timeline-item.done .t-date { color: var(--success); }
     .timeline-item.active .t-date { color: var(--accent); }
-    .timeline-item .t-label { color: var(--text-light); font-size: 0.85rem; }
+    .timeline-item .t-label { color: var(--muted); font-size: 0.85rem; }
 
-    /* ── Accordion ── */
-    .accordion-item {
-      border-bottom: 1px solid var(--border);
+    @keyframes pulse-tl {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(251,191,36,0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(251,191,36,0); }
     }
-    .accordion-item:last-child { border-bottom: none; }
-    .accordion-header {
-      padding: 0.85rem 0;
-      display: flex;
-      align-items: center;
+
+    /* ── Prize Cards ── */
+    .prize-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 0.75rem;
-      cursor: pointer;
-      user-select: none;
     }
-    .accordion-header:hover .accordion-title { color: var(--primary); }
-    .accordion-icon { font-size: 1.2rem; flex-shrink: 0; }
-    .accordion-title { flex: 1; font-weight: 600; font-size: 0.95rem; transition: color 0.2s; }
-    .accordion-arrow { font-size: 0.8rem; color: var(--text-light); transition: transform 0.3s; }
-    .accordion-item.open .accordion-arrow { transform: rotate(180deg); }
-    .accordion-body { display: none; padding: 0 0 0.75rem 2rem; }
-    .accordion-item.open .accordion-body { display: block; }
+    .prize-card {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.75rem;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    .prize-card.gold {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border: 2px solid #f59e0b;
+    }
+    .prize-card.silver {
+      background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+      border: 2px solid #94a3b8;
+    }
+    .prize-card.bronze {
+      background: linear-gradient(135deg, #fff7ed, #fed7aa);
+      border: 2px solid #fb923c;
+    }
+    .prize-card.special {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border: 2px solid #22c55e;
+    }
+    .prize-rank { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .prize-name { font-weight: 700; font-size: 0.9rem; }
+    .prize-money { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+    .prize-count { font-size: 0.8rem; color: var(--muted); }
 
     /* ── Quick Links ── */
     .quick-links {
@@ -85,62 +192,115 @@
       font-size: 0.9rem;
       transition: background 0.2s, border-color 0.2s;
     }
-    .quick-link:hover { background: white; border-color: var(--primary); color: var(--primary); }
+    .quick-link:hover {
+      background: var(--surface);
+      border-color: var(--accent);
+      color: var(--accent-text);
+    }
     .quick-link .ql-icon { font-size: 1.1rem; }
     .quick-link .ql-label { flex: 1; }
     .quick-link .ql-arrow { font-size: 0.8rem; opacity: 0.5; }
 
-    /* ── Prize Cards ── */
-    .prize-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 0.75rem;
-    }
-    .prize-card {
-      background: var(--bg);
-      border-radius: 8px;
-      padding: 0.75rem;
-      text-align: center;
-    }
-    .prize-card.gold { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px solid #f59e0b; }
-    .prize-card.silver { background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border: 2px solid #94a3b8; }
-    .prize-card.bronze { background: linear-gradient(135deg, #fff7ed, #fed7aa); border: 2px solid #fb923c; }
-    .prize-card.special { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 2px solid #22c55e; }
-    .prize-rank { font-size: 1.5rem; margin-bottom: 0.25rem; }
-    .prize-name { font-weight: 700; font-size: 0.9rem; }
-    .prize-money { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
-    .prize-count { font-size: 0.8rem; color: var(--text-light); }
-
     /* ── Progress ── */
     .progress-container { margin-bottom: 1rem; }
-    .progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--success) 0%, var(--accent) 100%); border-radius: 4px; transition: width 0.5s ease; }
-    .progress-text { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem; }
+    .progress-bar-sm {
+      height: 8px;
+      background: rgba(251,191,36,0.15);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill-sm {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success) 0%, var(--accent) 100%);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+    .progress-text-sm {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
 
     /* ── Task List ── */
     .task-list { list-style: none; }
-    .task-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; }
-    .task-item .check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
-    .task-item .check.done { background: var(--success); border-color: var(--success); color: white; }
-    .task-item .check.pending { background: transparent; border-color: var(--secondary); }
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+    }
+    .task-item .check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+    .task-item .check.done {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+    .task-item .check.pending {
+      background: transparent;
+      border-color: var(--muted-2);
+    }
     .task-item .task-text { flex: 1; }
-    .task-item .task-text.done { color: var(--text-light); text-decoration: line-through; }
-
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-      50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+    .task-item .task-text.done {
+      color: var(--muted-2);
+      text-decoration: line-through;
     }
 
-    /* ── Badge row ── */
-    .badge-row { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-top: 0.75rem; }
-    .badge-tag { display: inline-block; font-size: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 20px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; }
+    /* ── Accordion ── */
+    .accordion-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .accordion-item:last-child { border-bottom: none; }
+    .accordion-header {
+      padding: 0.85rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .accordion-header:hover .accordion-title { color: var(--accent-text); }
+    .accordion-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .accordion-title {
+      flex: 1;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+      color: var(--text);
+    }
+    .accordion-arrow {
+      font-size: 0.8rem;
+      color: var(--muted-2);
+      transition: transform 0.3s;
+    }
+    .accordion-item.open .accordion-arrow { transform: rotate(180deg); }
+    .accordion-body { display: none; padding: 0 0 0.75rem 2rem; }
+    .accordion-item.open .accordion-body { display: block; }
+
+    /* ── Info Card warning variant ── */
+    .info-card .value.warning {
+      color: var(--accent-text);
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
   <header class="header">
-    <h1>🎱 上銀撞球 2026</h1>
-    <p class="subtitle">第十八屆上銀智慧機器手實作競賽 — 撞球組</p>
-    <div class="badge-row">
+    <div class="header-eyebrow" data-delay="0">🎱 上銀撞球 2026</div>
+    <h1 data-delay="1">第十八屆上銀智慧機器手實作競賽</h1>
+    <p class="subtitle" data-delay="2">第十八屆上銀智慧機器手實作競賽 — 撞球組</p>
+    <div class="badge-row" data-delay="3">
       <span class="badge-tag">🎱 撞球組</span>
       <span class="badge-tag">🏆 獎金最高 10 萬</span>
       <span class="badge-tag">📅 決賽 8/19-20</span>
@@ -159,12 +319,12 @@
       <div class="info-card">
         <h3>安全講習</h3>
         <div class="value" id="safety-status">2026/05/17</div>
-        <div class="value warning" style="font-size:0.9rem;" id="safety-countdown">倒數計算中...</div>
+        <div class="value warning" id="safety-countdown">倒數計算中...</div>
       </div>
       <div class="info-card">
         <h3>複審截止</h3>
         <div class="value" id="review-deadline">2026/05/22</div>
-        <div class="value warning" style="font-size:0.9rem;" id="review-countdown">倒數計算中...</div>
+        <div class="value warning" id="review-countdown">倒數計算中...</div>
       </div>
       <div class="info-card">
         <h3>決賽倒數</h3>
@@ -245,8 +405,8 @@
             <div class="prize-count">１隊</div>
           </div>
         </div>
-        <div style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-light); background: var(--bg); padding: 0.75rem; border-radius: 8px;">
-          💡 <strong>外島補助</strong>：金門隸屬外島，參賽補助最高 <strong style="color: var(--primary);">15,000 元</strong>（決賽後申請）
+        <div style="margin-top: 1rem; font-size: 0.9rem; color: var(--muted); background: var(--bg); padding: 0.75rem; border-radius: 8px;">
+          💡 <strong>外島補助</strong>：金門隸屬外島，參賽補助最高 <strong style="color: var(--accent);">15,000 元</strong>（決賽後申請）
         </div>
       </div>
     </section>
@@ -263,17 +423,17 @@
           <div style="background:var(--bg); border-radius:8px; padding:1rem;">
             <div style="font-size:1.2rem; margin-bottom:0.5rem;">🏅</div>
             <strong>小組賽</strong>
-            <p style="font-size:0.9rem; color:var(--text-light); margin-top:0.25rem;">分為 A、B 兩組<br>各組前兩名晉級四強</p>
+            <p style="font-size:0.9rem; color:var(--muted); margin-top:0.25rem;">分為 A、B 兩組<br>各組前兩名晉級四強</p>
           </div>
           <div style="background:var(--bg); border-radius:8px; padding:1rem;">
             <div style="font-size:1.2rem; margin-bottom:0.5rem;">⚔️</div>
             <strong>四強雙敗淘汰</strong>
-            <p style="font-size:0.9rem; color:var(--text-light); margin-top:0.25rem;">最後一輪勝者奪冠<br>敗者進入季軍賽</p>
+            <p style="font-size:0.9rem; color:var(--muted); margin-top:0.25rem;">最後一輪勝者奪冠<br>敗者進入季軍賽</p>
           </div>
           <div style="background:var(--bg); border-radius:8px; padding:1rem;">
             <div style="font-size:1.2rem; margin-bottom:0.5rem;">📹</div>
             <strong>複審：任務影片</strong>
-            <p style="font-size:0.9rem; color:var(--text-light); margin-top:0.25rem;">線上繳交指定任務影片<br>截止 5/22 17:30</p>
+            <p style="font-size:0.9rem; color:var(--muted); margin-top:0.25rem;">線上繳交指定任務影片<br>截止 5/22 17:30</p>
           </div>
         </div>
       </div>
@@ -287,10 +447,10 @@
       </div>
       <div class="section-content">
         <div class="progress-container">
-          <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+          <div class="progress-bar-sm">
+            <div class="progress-fill-sm" id="progress-fill" style="width: 0%"></div>
           </div>
-          <div class="progress-text">
+          <div class="progress-text-sm">
             <span>總完成度</span>
             <span id="progress-text">🚧 0%</span>
           </div>
@@ -523,43 +683,63 @@
 
   <footer class="footer">
     <p>上銀撞球 2026 | 最後更新：<span id="footer-updated">2026-03-27</span></p>
-    <p style="margin-top: 0.5rem;">由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+    <p style="margin-top: 0.5rem;">由 <a href="https://github.com/Oren2026" style="color: var(--accent-text);">Oren</a> 維護</p>
   </footer>
 
   <button class="refresh-btn" id="refresh-btn" title="重新整理">↻</button>
 
   <script>
+    // ── IO Animation for header ──
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var delay = parseInt(entry.target.dataset.delay || 0);
+          setTimeout(function() {
+            entry.target.classList.add('in-view');
+          }, delay * 100);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.header-eyebrow, .header h1, .header .subtitle, .badge-row .badge-tag').forEach(function(el) {
+      io.observe(el);
+    });
+    if (document.querySelector('.badge-row')) io.observe(document.querySelector('.badge-row'));
+
+    // Observe sections and info-cards
+    document.querySelectorAll('.info-card, .section').forEach(function(el) {
+      io.observe(el);
+    });
+
     // ── Countdown ──
     function updateCountdowns() {
-      const now = new Date();
+      var now = new Date();
 
-      // Safety training countdown
-      const safetyDate = new Date('2026-05-17T09:00:00+08:00');
-      const diff0 = safetyDate - now;
-      const days0 = Math.floor(diff0 / (1000 * 60 * 60 * 24));
-      const el0 = document.getElementById('safety-countdown');
+      var safetyDate = new Date('2026-05-17T09:00:00+08:00');
+      var diff0 = safetyDate - now;
+      var days0 = Math.floor(diff0 / (1000 * 60 * 60 * 24));
+      var el0 = document.getElementById('safety-countdown');
       if (el0) {
-        if (diff0 > 0) el0.textContent = `倒數 ${days0} 天`;
+        if (diff0 > 0) el0.textContent = '倒數 ' + days0 + ' 天';
         else el0.textContent = '⚠️ 已過';
       }
 
-      // Review deadline
-      const reviewDate = new Date('2026-05-22T17:30:00+08:00');
-      const diff1 = reviewDate - now;
-      const days1 = Math.floor(diff1 / (1000 * 60 * 60 * 24));
-      const el1 = document.getElementById('review-countdown');
+      var reviewDate = new Date('2026-05-22T17:30:00+08:00');
+      var diff1 = reviewDate - now;
+      var days1 = Math.floor(diff1 / (1000 * 60 * 60 * 24));
+      var el1 = document.getElementById('review-countdown');
       if (el1) {
-        if (diff1 > 0) el1.textContent = `倒數 ${days1} 天`;
+        if (diff1 > 0) el1.textContent = '倒數 ' + days1 + ' 天';
         else el1.textContent = '⚠️ 已截止';
       }
 
-      // Finals countdown
-      const finalsDate = new Date('2026-08-19T09:00:00+08:00');
-      const diff2 = finalsDate - now;
-      const days2 = Math.floor(diff2 / (1000 * 60 * 60 * 24));
-      const el2 = document.getElementById('finals-countdown');
+      var finalsDate = new Date('2026-08-19T09:00:00+08:00');
+      var diff2 = finalsDate - now;
+      var days2 = Math.floor(diff2 / (1000 * 60 * 60 * 24));
+      var el2 = document.getElementById('finals-countdown');
       if (el2) {
-        if (diff2 > 0) el2.textContent = `2026/08/19（倒數 ${days2} 天）`;
+        if (diff2 > 0) el2.textContent = '2026/08/19（倒數 ' + days2 + ' 天）';
         else el2.textContent = '2026/08/19';
       }
     }
@@ -571,17 +751,17 @@
 
     // ── Progress ──
     function updateProgress() {
-      const allTasks = document.querySelectorAll('.accordion .task-item');
-      let done = 0;
-      allTasks.forEach(t => {
+      var allTasks = document.querySelectorAll('.accordion .task-item');
+      var done = 0;
+      allTasks.forEach(function(t) {
         if (t.querySelector('.check.done')) done++;
       });
-      const total = allTasks.length;
-      const pct = total > 0 ? Math.round(done / total * 100) : 0;
-      const fill = document.getElementById('progress-fill');
-      const text = document.getElementById('progress-text');
+      var total = allTasks.length;
+      var pct = total > 0 ? Math.round(done / total * 100) : 0;
+      var fill = document.getElementById('progress-fill');
+      var text = document.getElementById('progress-text');
       if (fill) fill.style.width = pct + '%';
-      if (text) text.textContent = pct === 100 ? `✅ 完成（${done}/${total}）` : `🚧 ${done}/${total} 完成（${pct}%）`;
+      if (text) text.textContent = pct === 100 ? '✅ 完成（' + done + '/' + total + '）' : '🚧 ' + done + '/' + total + ' 完成（' + pct + '%）';
     }
 
     // ── Init ──

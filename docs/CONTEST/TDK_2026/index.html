@@ -4,58 +4,102 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TDK 2026 | 讓世界看見雲林</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/shared.css">
   <style>
-    /* ── Modal ── */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
+    :root {
+      --bg: #f4f6f2;
+      --surface: #ffffff;
+      --border: rgba(251,191,36,0.18);
+      --accent: #f59e0b;
+      --accent-dim: rgba(245,158,11,0.10);
+      --accent-text: #b45309;
+      --accent-mid: rgba(245,158,11,0.15);
+      --text: #1a1a1a;
+      --muted: #4a4a4a;
+      --muted-2: #888;
+      --card-shadow: 0 4px 16px rgba(245,158,11,0.08);
+      --card-shadow-hover: 0 12px 40px rgba(245,158,11,0.18);
+      --success: #10b981;
+      --danger: #ef4444;
+      --accent-rgb: 245, 158, 11;
     }
-    .modal.open { display: flex; }
-    .modal-content {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      max-width: 600px;
-      width: 100%;
-      max-height: 80vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-    .modal-header {
-      padding: 1.25rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      background: var(--card-bg);
-      z-index: 1;
-    }
-    .modal-header h2 { font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--text-light);
-      padding: 0 0.25rem;
-    }
-    .modal-close:hover { color: var(--text); }
-    .modal-body { padding: 1.25rem; }
-    .modal-body h3 { font-size: 0.95rem; color: var(--text-light); margin-bottom: 0.5rem; font-weight: normal; }
-    .modal-body ul { padding-left: 1.25rem; margin-top: 0.75rem; }
-    .modal-body li { margin-bottom: 0.4rem; line-height: 1.6; }
-    .modal-body .task-list-modal { margin-top: 1rem; }
-    .modal-body .task-list-modal .task-item { padding: 0.4rem 0; }
 
-    /* ── Mission Cards (grid) ── */
+    /* ── Header ── */
+    .header {
+      background: var(--bg);
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% -10%, rgba(245,158,11,0.12) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 80% 90%, rgba(245,158,11,0.08) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .header-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+      margin-bottom: 12px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .header-eyebrow.in-view { opacity: 1; transform: translateY(0); }
+    .header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 8px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s;
+    }
+    .header h1.in-view { opacity: 1; transform: translateY(0); }
+    .header .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+    }
+    .header .subtitle.in-view { opacity: 1; transform: translateY(0); }
+    .header .badge {
+      display: inline-block;
+      background: var(--accent-mid);
+      border: 1px solid rgba(245,158,11,0.30);
+      color: var(--accent-text);
+      padding: 5px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
+    }
+    .header .badge.in-view { opacity: 1; transform: translateY(0); }
+    .badge-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+      justify-content: center;
+    }
+    .badge-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: rgba(245,158,11,0.10);
+      border: 1px solid rgba(245,158,11,0.25);
+      color: var(--accent-text);
+    }
+
+    /* ── Mission Cards ── */
     .mission-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -64,20 +108,20 @@
     .mission-card {
       background: var(--bg);
       border: 2px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: 12px;
       padding: 1.25rem;
       cursor: pointer;
       transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
     }
     .mission-card:hover {
-      border-color: var(--primary);
+      border-color: var(--accent);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(37,99,235,0.15);
+      box-shadow: 0 4px 12px rgba(245,158,11,0.15);
     }
     .mission-card .mission-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-    .mission-card .mission-name { font-weight: 600; margin-bottom: 0.25rem; }
-    .mission-card .mission-desc { font-size: 0.85rem; color: var(--text-light); line-height: 1.5; }
-    .mission-card .mission-arrow { font-size: 0.85rem; color: var(--primary); margin-top: 0.5rem; }
+    .mission-card .mission-name { font-weight: 600; margin-bottom: 0.25rem; color: var(--text); }
+    .mission-card .mission-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+    .mission-card .mission-arrow { font-size: 0.85rem; color: var(--accent); margin-top: 0.5rem; }
 
     /* ── Quick Links ── */
     .quick-links {
@@ -98,7 +142,11 @@
       font-size: 0.9rem;
       transition: background 0.2s, border-color 0.2s;
     }
-    .quick-link:hover { background: white; border-color: var(--primary); color: var(--primary); }
+    .quick-link:hover {
+      background: var(--surface);
+      border-color: var(--accent);
+      color: var(--accent-text);
+    }
     .quick-link .ql-icon { font-size: 1.1rem; }
     .quick-link .ql-label { flex: 1; }
     .quick-link .ql-arrow { font-size: 0.8rem; opacity: 0.5; }
@@ -118,18 +166,24 @@
     .score-mini .score-num {
       font-size: 1.4rem;
       font-weight: 700;
-      color: var(--primary);
-    }
-    .score-mini .score-label {
-      font-size: 0.75rem;
-      color: var(--text-light);
-    }
-    .score-mini .score-note {
-      font-size: 0.7rem;
       color: var(--accent);
     }
+    .score-mini .score-label { font-size: 0.75rem; color: var(--muted); }
+    .score-mini .score-note { font-size: 0.7rem; color: var(--muted-2); }
 
-    /* ── Progress Accordion ── */
+    /* ── Progress Category Header ── */
+    .progress-category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0 0.25rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Accordion (task-list variant) ── */
     .accordion-item {
       border-bottom: 1px solid var(--border);
     }
@@ -142,54 +196,115 @@
       cursor: pointer;
       user-select: none;
     }
-    .accordion-header:hover .accordion-title { color: var(--primary); }
+    .accordion-header:hover .accordion-title { color: var(--accent-text); }
     .accordion-icon { font-size: 1.2rem; flex-shrink: 0; }
-    .accordion-title { flex: 1; font-weight: 600; font-size: 0.95rem; transition: color 0.2s; }
-    .accordion-arrow { font-size: 0.8rem; color: var(--text-light); transition: transform 0.3s; }
-    .accordion-item.open .accordion-arrow { transform: rotate(180deg); }
-    .accordion-body {
-      display: none;
-      padding: 0 0 0.75rem 2rem;
+    .accordion-title {
+      flex: 1;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+      color: var(--text);
     }
+    .accordion-arrow {
+      font-size: 0.8rem;
+      color: var(--muted-2);
+      transition: transform 0.3s;
+    }
+    .accordion-item.open .accordion-arrow { transform: rotate(180deg); }
+    .accordion-body { display: none; padding: 0 0 0.75rem 2rem; }
     .accordion-item.open .accordion-body { display: block; }
 
-    /* ── New progress items ── */
-    .progress-category-header {
+    /* ── Task List ── */
+    .task-list { list-style: none; }
+    .task-item {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0 0.25rem;
-      font-size: 0.8rem;
-      color: var(--text-light);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+    }
+    .task-item .check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+    .task-item .check.done {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+    .task-item .check.pending {
+      background: transparent;
+      border-color: var(--muted-2);
+    }
+    .task-item .task-text { flex: 1; }
+    .task-item .task-text.done {
+      color: var(--muted-2);
+      text-decoration: line-through;
     }
 
-    /* ── Badge ── */
-    .badge-row {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-top: 0.75rem;
+    /* ── Modal ── */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
       justify-content: center;
+      padding: 1rem;
     }
-    .badge-tag {
-      display: inline-block;
-      font-size: 0.75rem;
-      padding: 0.15rem 0.5rem;
-      border-radius: 4px;
-      background: var(--bg);
+    .modal.open { display: flex; }
+    .modal-content {
+      background: var(--surface);
+      border-radius: 12px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
       border: 1px solid var(--border);
-      color: var(--text-light);
     }
+    .modal-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+    }
+    .modal-header h2 { font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text); }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 0 0.25rem;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 1.25rem; }
+    .modal-body h3 { font-size: 0.95rem; color: var(--accent-text); margin-bottom: 0.5rem; font-weight: 600; }
+    .modal-body ul { padding-left: 1.25rem; margin-top: 0.75rem; }
+    .modal-body li { margin-bottom: 0.4rem; line-height: 1.6; color: var(--muted); }
+    .modal-body p { color: var(--muted); line-height: 1.75; }
   </style>
 </head>
 <body>
   <header class="header">
-    <h1>🏆 TDK 2026</h1>
-    <p class="subtitle">第30屆 TDK 盃全國大專校院創思設計與製作競賽</p>
-    <p class="subtitle" style="font-size: 1.3rem; margin-top: 0.5rem;">🌾 讓世界看見雲林</p>
-    <div class="badge-row">
+    <div class="header-eyebrow" data-delay="0">🏆 TDK 2026</div>
+    <h1 data-delay="1">讓世界看見雲林</h1>
+    <p class="subtitle" data-delay="2">第30屆 TDK 盃全國大專校院創思設計與製作競賽</p>
+    <p class="subtitle" data-delay="3" style="font-size: 1.3rem; margin-top: 0.5rem;">🌾 讓世界看見雲林</p>
+    <div class="badge-row" data-delay="4">
       <span class="badge">🎮 遙控組</span>
       <span class="badge">📍 國立雲林科技大學</span>
       <span class="badge">📅 2026-05</span>
@@ -210,7 +325,7 @@
       </div>
       <div class="info-card">
         <h3>機構設計進度</h3>
-        <div class="value warning" id="mech-status">研究中</div>
+        <div class="value" id="mech-status">研究中</div>
       </div>
       <div class="info-card">
         <h3>最後更新</h3>
@@ -501,13 +616,36 @@
 
   <footer class="footer">
     <p>TDK 2026 | 最後更新：<span id="footer-updated">2026-03-27</span></p>
-    <p style="margin-top: 0.5rem;">由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+    <p style="margin-top: 0.5rem;">由 <a href="https://github.com/Oren2026" style="color: var(--accent-text);">Oren</a> 維護</p>
   </footer>
 
   <button class="refresh-btn" id="refresh-btn" title="重新整理">↻</button>
 
   <script src="assets/js/main.js"></script>
   <script>
+    // ── IO Animation for header ──
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var delay = parseInt(entry.target.dataset.delay || 0);
+          setTimeout(function() {
+            entry.target.classList.add('in-view');
+          }, delay * 100);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.header-eyebrow, .header h1, .header .subtitle, .header .badge-row .badge').forEach(function(el) {
+      io.observe(el);
+    });
+    if (document.querySelector('.badge-row')) io.observe(document.querySelector('.badge-row'));
+
+    // Observe sections and info-cards
+    document.querySelectorAll('.info-card, .section').forEach(function(el) {
+      io.observe(el);
+    });
+
     // ── Mission Data ──
     const missions = [
       {
@@ -560,25 +698,25 @@
     // ── Modal Logic ──
     function openMission(index) {
       const m = missions[index];
-      document.getElementById('modal-title').innerHTML = `<span style="font-size:1.3rem">${m.icon}</span> ${m.title}`;
-      
-      let html = `<p style="color:var(--text-light);font-size:0.9rem;margin-bottom:0.5rem;">${m.subtitle}</p>`;
-      html += `<p>${m.description}</p>`;
-      
-      html += `<h3 style="margin-top:1rem;">所需機構</h3><ul>`;
-      m.tasks.forEach(t => {
-        const checked = t.done ? 'done' : 'pending';
-        const lineThrough = t.done ? 'style="text-decoration:line-through;color:var(--text-light)"' : '';
-        html += `<li class="task-item"><span class="check ${checked}"></span><span class="task-text" ${lineThrough}>${t.text}</span></li>`;
+      document.getElementById('modal-title').innerHTML = '<span style="font-size:1.3rem">' + m.icon + '</span> ' + m.title;
+
+      let html = '<p style="color:var(--muted);font-size:0.9rem;margin-bottom:0.5rem;">' + m.subtitle + '</p>';
+      html += '<p>' + m.description + '</p>';
+
+      html += '<h3 style="margin-top:1rem;">所需機構</h3><ul>';
+      m.tasks.forEach(function(t) {
+        var checked = t.done ? 'done' : 'pending';
+        var lineThrough = t.done ? 'style="text-decoration:line-through;color:var(--muted-2)"' : '';
+        html += '<li class="task-item"><span class="check ' + checked + '"></span><span class="task-text" ' + lineThrough + '>' + t.text + '</span></li>';
       });
-      html += `</ul>`;
-      
-      html += `<div style="background:var(--bg);border-radius:8px;padding:1rem;margin-top:1rem;border-left:4px solid var(--primary);">`;
-      html += `<strong>💡 ${m.keyPoint}</strong></div>`;
-      
-      html += `<h3 style="margin-top:1rem;">設計要求</h3><ul>`;
-      m.requirements.forEach(r => { html += `<li>${r}</li>`; });
-      html += `</ul>`;
+      html += '</ul>';
+
+      html += '<div style="background:var(--bg);border-radius:8px;padding:1rem;margin-top:1rem;border-left:4px solid var(--accent);">';
+      html += '<strong>💡 ' + m.keyPoint + '</strong></div>';
+
+      html += '<h3 style="margin-top:1rem;">設計要求</h3><ul>';
+      m.requirements.forEach(function(r) { html += '<li>' + r + '</li>'; });
+      html += '</ul>';
 
       document.getElementById('modal-body').innerHTML = html;
       document.getElementById('mission-modal').classList.add('open');
@@ -590,12 +728,10 @@
       document.body.style.overflow = '';
     }
 
-    // Close on backdrop click
     document.getElementById('mission-modal').addEventListener('click', function(e) {
       if (e.target === this) closeMission();
     });
 
-    // Close on Escape
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closeMission();
     });
@@ -607,35 +743,37 @@
 
     // ── Progress Logic ──
     function updateProgress() {
-      const allTasks = document.querySelectorAll('.accordion .task-item');
-      let done = 0;
-      allTasks.forEach(t => {
-        const check = t.querySelector('.check');
+      var allTasks = document.querySelectorAll('.accordion .task-item');
+      var done = 0;
+      allTasks.forEach(function(t) {
+        var check = t.querySelector('.check');
         if (check.classList.contains('done')) done++;
       });
-      const total = allTasks.length;
-      const pct = total > 0 ? Math.round(done / total * 100) : 0;
-      const fill = document.getElementById('progress-fill');
-      const text = document.getElementById('progress-text');
+      var total = allTasks.length;
+      var pct = total > 0 ? Math.round(done / total * 100) : 0;
+      var fill = document.getElementById('progress-fill');
+      var text = document.getElementById('progress-text');
       if (fill) fill.style.width = pct + '%';
       if (text) {
-        text.textContent = pct === 100 ? `✅ 完成（${done}/${total}）` : `🚧 ${done}/${total} 完成`;
+        text.textContent = pct === 100 ? '✅ 完成（' + done + '/' + total + '）' : '🚧 ' + done + '/' + total + ' 完成';
       }
 
-      // Mech status
-      const mechTasks = document.querySelectorAll('[data-category="mech"] .task-item');
-      const mechDone = Array.from(mechTasks).filter(t => t.querySelector('.check.done').length > 0).length;
-      const mechStatus = document.getElementById('mech-status');
+      var mechTasks = document.querySelectorAll('[data-category="mech"] .task-item');
+      var mechDone = 0;
+      mechTasks.forEach(function(t) {
+        if (t.querySelector('.check.done')) mechDone++;
+      });
+      var mechStatus = document.getElementById('mech-status');
       if (mechStatus) {
         if (mechDone === mechTasks.length && mechTasks.length > 0) {
           mechStatus.textContent = '✅ 完成';
           mechStatus.className = 'value success';
         } else if (mechDone > 0) {
-          mechStatus.textContent = `🔧 ${mechDone}/${mechTasks.length} 完成`;
-          mechStatus.className = 'value warning';
+          mechStatus.textContent = '🔧 ' + mechDone + '/' + mechTasks.length + ' 完成';
+          mechStatus.className = 'value';
         } else {
           mechStatus.textContent = '研究中';
-          mechStatus.className = 'value warning';
+          mechStatus.className = 'value';
         }
       }
     }
