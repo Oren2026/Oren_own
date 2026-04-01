@@ -579,9 +579,9 @@
 let allEvents = [];
 
 // ── 狀態 ──
-let currentYear = 2026;
-let currentMonth = 3; // 0-indexed → April
-const today = { year: 2026, month: 3, day: 1 };
+const today = new Date();
+const currentYear = today.getFullYear();
+const currentMonth = today.getMonth(); // 0-indexed
 
 let hoverTimeout = null;
 let highlightedDate = null;
@@ -771,7 +771,7 @@ function renderCalendar() {
   }
 
   for (let d = 1; d <= daysInMonth; d++) {
-    const isToday = (currentYear === today.year && currentMonth === today.month && d === today.day);
+    const isToday = (currentYear === today.getFullYear() && currentMonth === today.getMonth() && d === today.getDate());
     const ds = dateStr(currentYear, currentMonth, d);
     const dayEvents = getEventsForDate(ds);
 
@@ -828,8 +828,8 @@ function renderCalendar() {
 
 // ── 回到今天 ──
 function goToToday() {
-  currentYear = today.year;
-  currentMonth = today.month;
+  currentYear = today.getFullYear();
+  currentMonth = today.getMonth();
   renderCalendar();
 
   requestAnimationFrame(() => {
