@@ -36,7 +36,9 @@
     .header .back-link { display: inline-block; margin-top: 1rem; color: #4a4a4a; text-decoration: none; opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s, color 0.2s; }
     .header .back-link.in-view { opacity: 1; transform: translateY(0); }
     .header .back-link:hover { color: #b45309; }
-    .doc-content { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 1rem 2rem; }
+
     .info-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 2rem; }
     .info-table th { background: var(--primary); color: white; padding: 0.75rem 1rem; text-align: left; width: 30%; }
     .info-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
@@ -78,7 +80,7 @@
     </div>
   </header>
 
-  <main class="doc-content">
+  <main class="container">
 
     <!-- 基本資訊 -->
     <table class="info-table">
@@ -227,8 +229,8 @@
 
   </main>
 
-  <footer style="text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.85rem;">
-    <p>TDK 2026 第30屆 | 由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+  <footer class="footer">
+    <p>TDK 2026 第30屆 | 由 <a href="https://github.com/Oren2026">Oren</a> 維護</p>
   </footer>
 
   <script>
@@ -243,7 +245,7 @@
         }
       });
     }, { threshold: 0.08 });
-    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .header .badge-tdk').forEach(function(el) {
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link').forEach(function(el) {
       io.observe(el);
     });
   </script>

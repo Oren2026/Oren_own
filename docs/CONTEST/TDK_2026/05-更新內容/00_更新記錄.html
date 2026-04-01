@@ -164,8 +164,8 @@
 
   </main>
 
-  <footer style="text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.85rem;">
-    <p>TDK 2026 第30屆 | 由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
+  <footer class="footer">
+    <p>TDK 2026 第30屆 | 由 <a href="https://github.com/Oren2026">Oren</a> 維護</p>
   </footer>
 
   <script>
@@ -180,7 +180,7 @@
         }
       });
     }, { threshold: 0.08 });
-    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .section, .info-card').forEach(function(el) {
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link').forEach(function(el) {
       io.observe(el);
     });
   </script>

@@ -11,8 +11,13 @@
       --accent-rgb: 251, 191, 36;
     }
     body { background: var(--bg); }
-    .container { max-width: 1100px; margin: 0 auto; padding: 1rem 2rem; }
-    .header { background: #f4f6f2; border-radius: 0 0 16px 16px; overflow: hidden; position: relative; }
+
+    .header {
+      background: #f4f6f2;
+      border-radius: 0 0 16px 16px;
+      overflow: hidden;
+      position: relative;
+    }
     .header::before {
       content: "";
       position: absolute;
@@ -21,8 +26,40 @@
       pointer-events: none;
     }
     .header-content { position: relative; z-index: 1; }
-    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: #4a4a4a; text-decoration: none; font-size: 0.85rem; margin-bottom: 1rem; }
-    .back-link:hover { color: var(--accent); }
+    .header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 8px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .header h1.in-view { opacity: 1; transform: translateY(0); }
+    .header .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .header .subtitle.in-view { opacity: 1; transform: translateY(0); }
+    .header .back-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: #4a4a4a;
+      text-decoration: none;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s, color 0.2s;
+    }
+    .header .back-link.in-view { opacity: 1; transform: translateY(0); }
+    .header .back-link:hover { color: var(--accent); }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 1rem 2rem; }
+
     .content-card { background: var(--card-bg); border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 1.5rem; }
     .placeholder { text-align: center; padding: 3rem; color: var(--text-light); }
     .placeholder-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
@@ -30,14 +67,15 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <a href="../index.html" class="back-link" data-delay="0">← 返回首頁</a>
-      <div class="header-content">
-        <h1 data-delay="1">⚙️ 系統架構</h1>
-        <p class="subtitle" data-delay="2">技術架構規劃（建構中）</p>
-      </div>
-    </header>
+  <header class="header">
+    <div class="header-content">
+      <h1 data-delay="0">⚙️ 系統架構</h1>
+      <p class="subtitle" data-delay="1">技術架構規劃（建構中）</p>
+      <a href="../index.html" class="back-link" data-delay="2">← 返回首頁</a>
+    </div>
+  </header>
+
+  <main class="container">
     <div class="content-card">
       <div class="placeholder">
         <div class="placeholder-icon">🚧</div>
@@ -56,7 +94,12 @@
         <li>⚡ <strong>控制整合</strong>：手臂運動學 +力道控制</li>
       </ul>
     </div>
-  </div>
+  </main>
+
+  <footer class="footer">
+    <p>上銀撞球 2026 | 由 <a href="https://github.com/Oren2026">Oren</a> 維護</p>
+  </footer>
+
   <script>
     var io = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
