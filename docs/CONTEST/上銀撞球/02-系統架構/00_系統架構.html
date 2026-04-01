@@ -4,14 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>系統架構 | 上銀撞球 2026</title>
-  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../../assets/css/shared.css">
   <style>
+    :root {
+      --accent: #fbbf24;
+      --accent-rgb: 251, 191, 36;
+    }
     body { background: var(--bg); }
     .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
     .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); text-decoration: none; font-size: 0.9rem; margin-bottom: 1.5rem; }
     .back-link:hover { text-decoration: underline; }
-    .page-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 2rem; border-radius: var(--radius); margin-bottom: 2rem; }
-    .page-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .header { background: #f4f6f2; border-radius: var(--radius); margin-bottom: 2rem; }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% -10%, rgba(251,191,36,0.15) 0%, transparent 65%);
+      pointer-events: none;
+      border-radius: var(--radius);
+    }
+    .header .back-link { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s, color 0.2s; }
+    .header .back-link.in-view { opacity: 1; transform: translateY(0); }
     .content-card { background: var(--card-bg); border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 1.5rem; }
     .placeholder { text-align: center; padding: 3rem; color: var(--text-light); }
     .placeholder-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
@@ -20,11 +33,13 @@
 </head>
 <body>
   <div class="container">
-    <a href="../index.html" class="back-link">← 返回首頁</a>
-    <div class="page-header">
-      <h1>⚙️ 系統架構</h1>
-      <p>技術架構規劃（建構中）</p>
-    </div>
+    <a href="../index.html" class="back-link" data-delay="0">← 返回首頁</a>
+    <header class="header">
+      <div class="header-content">
+        <h1 data-delay="0">⚙️ 系統架構</h1>
+        <p class="subtitle" data-delay="1">技術架構規劃（建構中）</p>
+      </div>
+    </header>
     <div class="content-card">
       <div class="placeholder">
         <div class="placeholder-icon">🚧</div>
@@ -44,5 +59,21 @@
       </ul>
     </div>
   </div>
+  <script>
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var delay = parseInt(entry.target.dataset.delay || 0);
+          setTimeout(function() {
+            entry.target.classList.add('in-view');
+          }, delay * 100);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link').forEach(function(el) {
+      io.observe(el);
+    });
+  </script>
 </body>
 </html>

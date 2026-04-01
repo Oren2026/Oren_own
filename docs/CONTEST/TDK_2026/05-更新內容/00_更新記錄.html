@@ -4,19 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>更新內容 | TDK 2026</title>
-  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../../assets/css/shared.css">
   <style>
-    body { background: var(--bg); }
-    .doc-header {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      color: white;
-      padding: 2rem 1rem;
-      text-align: center;
+    :root {
+      --accent: #f59e0b;
+      --accent-rgb: 245, 158, 11;
     }
-    .doc-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
-    .doc-header .subtitle { opacity: 0.85; }
-    .back-link { display: inline-block; margin-top: 1rem; color: white; text-decoration: none; opacity: 0.8; }
-    .back-link:hover { opacity: 1; text-decoration: underline; }
+    body { background: var(--bg); }
+
+    .header {
+      background: #f4f6f2;
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% -10%, rgba(245,158,11,0.15) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .header .back-link { display: inline-block; margin-top: 1rem; color: #4a4a4a; text-decoration: none; opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s, color 0.2s; }
+    .header .back-link.in-view { opacity: 1; transform: translateY(0); }
+    .header .back-link:hover { color: #b45309; }
     .doc-content { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
     .update-entry {
       background: white;
@@ -55,10 +63,12 @@
   </style>
 </head>
 <body>
-  <header class="doc-header">
-    <h1>📋 TDK 2026 更新內容</h1>
-    <p class="subtitle">所有異動記錄</p>
-    <a href="../index.html" class="back-link">← 返回儀表板</a>
+  <header class="header">
+    <div class="header-content">
+      <h1 data-delay="0">📋 TDK 2026 更新內容</h1>
+      <p class="subtitle" data-delay="1">所有異動記錄</p>
+      <a href="../index.html" class="back-link" data-delay="2">← 返回儀表板</a>
+    </div>
   </header>
 
   <main class="doc-content">
@@ -156,5 +166,22 @@
   <footer style="text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.85rem;">
     <p>TDK 2026 第30屆 | 由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
   </footer>
+
+  <script>
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var delay = parseInt(entry.target.dataset.delay || 0);
+          setTimeout(function() {
+            entry.target.classList.add('in-view');
+          }, delay * 100);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link').forEach(function(el) {
+      io.observe(el);
+    });
+  </script>
 </body>
 </html>

@@ -4,27 +4,37 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>比賽規則摘要 | TDK 2026</title>
-  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../../assets/css/shared.css">
   <style>
-    body { background: var(--bg); }
-    .doc-header {
-      background: linear-gradient(135deg, #059669 0%, #047857 100%);
-      color: white;
-      padding: 2rem 1rem;
-      text-align: center;
+    :root {
+      --accent: #f59e0b;
+      --accent-rgb: 245, 158, 11;
     }
-    .doc-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
-    .doc-header .subtitle { opacity: 0.85; }
-    .doc-header .badge-tdk {
+    body { background: var(--bg); }
+
+    .header {
+      background: #f4f6f2;
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% -10%, rgba(245,158,11,0.15) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .header .badge-tdk {
       display: inline-block;
-      background: rgba(255,255,255,0.2);
+      background: rgba(245,158,11,0.15);
+      border: 1px solid rgba(245,158,11,0.30);
+      color: #b45309;
       padding: 0.25rem 0.75rem;
       border-radius: 20px;
       font-size: 0.85rem;
       margin-top: 0.5rem;
     }
-    .back-link { display: inline-block; margin-top: 1rem; color: white; text-decoration: none; opacity: 0.8; }
-    .back-link:hover { opacity: 1; text-decoration: underline; }
+    .header .back-link { display: inline-block; margin-top: 1rem; color: #4a4a4a; text-decoration: none; opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s, color 0.2s; }
+    .header .back-link.in-view { opacity: 1; transform: translateY(0); }
+    .header .back-link:hover { color: #b45309; }
     .doc-content { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
     .info-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 2rem; }
     .info-table th { background: var(--primary); color: white; padding: 0.75rem 1rem; text-align: left; width: 30%; }
@@ -58,11 +68,13 @@
   </style>
 </head>
 <body>
-  <header class="doc-header">
-    <h1>📋 比賽規則摘要</h1>
-    <p class="subtitle">第30屆 TDK 盃 — 遙控組</p>
-    <span class="badge-tdk">🏆 雲林在地風貌</span>
-    <a href="../index.html" class="back-link">← 返回儀表板</a>
+  <header class="header">
+    <div class="header-content">
+      <h1 data-delay="0">📋 比賽規則摘要</h1>
+      <p class="subtitle" data-delay="1">第30屆 TDK 盃 — 遙控組</p>
+      <span class="badge-tdk">🏆 雲林在地風貌</span>
+      <a href="../index.html" class="back-link" data-delay="2">← 返回儀表板</a>
+    </div>
   </header>
 
   <main class="doc-content">
@@ -217,5 +229,22 @@
   <footer style="text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.85rem;">
     <p>TDK 2026 第30屆 | 由 <a href="https://github.com/Oren2026" style="color: var(--primary);">Oren</a> 維護</p>
   </footer>
+
+  <script>
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var delay = parseInt(entry.target.dataset.delay || 0);
+          setTimeout(function() {
+            entry.target.classList.add('in-view');
+          }, delay * 100);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .header .badge-tdk').forEach(function(el) {
+      io.observe(el);
+    });
+  </script>
 </body>
 </html>
