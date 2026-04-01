@@ -21,6 +21,44 @@
       "type": "deadline",
       "project": "TB3",
       "notes": ""
+    },
+    {
+      "date": "2026-07-12",
+      "title": "TDK 第一階段繳交截止",
+      "type": "deadline",
+      "project": "TDK",
+      "notes": "書面審查，通過後才可參加第二階段"
+    },
+    {
+      "date": "2026-09-20",
+      "title": "TDK 第二階段作品繳交截止",
+      "type": "deadline",
+      "project": "TDK",
+      "notes": "需已通過第一階段"
+    },
+    {
+      "date": "2026-10-15",
+      "title": "TDK 初賽",
+      "type": "deadline",
+      "project": "TDK",
+      "location": "雲林科技大學",
+      "notes": ""
+    },
+    {
+      "date": "2026-10-16",
+      "title": "TDK 決賽",
+      "type": "deadline",
+      "project": "TDK",
+      "location": "雲林科技大學",
+      "notes": ""
+    },
+    {
+      "date": "2026-10-17",
+      "title": "TDK 頒獎",
+      "type": "event",
+      "project": "TDK",
+      "location": "雲林科技大學",
+      "notes": ""
     }
   ]
 }
