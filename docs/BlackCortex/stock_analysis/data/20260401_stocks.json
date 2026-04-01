@@ -2,7 +2,7 @@
   "report_date": "2026-04-01",
   "report_title": "全球五大產業趨勢・台灣可能被低估概念股",
   "researcher": "BlackProbe（黑探）",
-  "source": "黑探研究分析，資料來源為公開新聞與機構報告（2026年4月）",
+  "source": "黑探研究分析，資料來源為公開新聞與機構報告（2026年4月），股票代號已逐一驗證",
   "note": "研究參考用，非投資建議，投資人須自行判斷",
   "trends_summary": [
     "半導體：功率半導體/GaN/SiC進入商用，AI記憶體供給吃緊",
@@ -22,7 +22,7 @@
     },
     {
       "id": 2,
-      "code": "6257",
+      "code": "7769",
       "name": "鴻勁",
       "category": "AI半導體供應鏈",
       "why_undervalued": "半導體測試機台國產化代表，股價已創天價但本夢比可能未到頂",
@@ -30,15 +30,15 @@
     },
     {
       "id": 3,
-      "code": "6781",
+      "code": "2360",
       "name": "致茂",
       "category": "AI半導體供應鏈",
-      "why_undervalued": "半導體測試設備受惠AI晶片量大中國台灣檢測商機",
+      "why_undervalued": "半導體測試設備受惠AI晶片量大，台灣檢測商機明確",
       "trend_alignment": "半導體測試"
     },
     {
       "id": 4,
-      "code": "3013",
+      "code": "3131",
       "name": "弘塑",
       "category": "AI半導體供應鏈",
       "why_undervalued": "CoWoS濕製程設備供應商，受惠先進封裝擴產",
@@ -46,6 +46,14 @@
     },
     {
       "id": 5,
+      "code": "3583",
+      "name": "辛耘",
+      "category": "AI半導體供應鏈",
+      "why_undervalued": "半導體濕製程設備，受惠CoWoS、先進封裝擴產趨勢",
+      "trend_alignment": "半導體設備"
+    },
+    {
+      "id": 6,
       "code": "2308",
       "name": "台達電",
       "category": "電力/散熱",
@@ -53,15 +61,15 @@
       "trend_alignment": "電力基礎設施"
     },
     {
-      "id": 6,
+      "id": 7,
       "code": "3324",
       "name": "雙鴻",
       "category": "電力/散熱",
-      "why_undervalued": "AI資料中心液冷散熱主流供應商，資料中心散熱從風冷轉液冷的主要受益者",
+      "why_undervalued": "AI資料中心液冷散熱主流供應商，散熱從風冷轉液冷的主要受益者",
       "trend_alignment": "散熱革命"
     },
     {
-      "id": 7,
+      "id": 8,
       "code": "3322",
       "name": "建準",
       "category": "電力/散熱",
@@ -69,7 +77,7 @@
       "trend_alignment": "備援電力"
     },
     {
-      "id": 8,
+      "id": 9,
       "code": "3017",
       "name": "奇鋐",
       "category": "電力/散熱",
@@ -77,7 +85,7 @@
       "trend_alignment": "散熱"
     },
     {
-      "id": 9,
+      "id": 10,
       "code": "1519",
       "name": "華城",
       "category": "電力/電網",
@@ -85,36 +93,28 @@
       "trend_alignment": "電網現代化"
     },
     {
-      "id": 10,
-      "code": "1583",
+      "id": 11,
+      "code": "4583",
       "name": "台灣精銳",
       "category": "機器人/自動化",
       "why_undervalued": "機器人減速機國產替代，受惠台灣機器人供應鏈崛起",
       "trend_alignment": "機器人"
     },
     {
-      "id": 11,
-      "code": "2341",
+      "id": 12,
+      "code": "2359",
       "name": "所羅門",
       "category": "機器人/自動化",
       "why_undervalued": "AI視覺+機器人整合，已漲一波但應用供應鏈才剛開始",
       "trend_alignment": "AI視覺機器人"
     },
     {
-      "id": 12,
-      "code": "3265",
-      "name": "欣銳",
-      "category": "低基期/補漲",
-      "why_undervalued": "半導體測試，基期低，AI半導體測試需求成長",
-      "trend_alignment": "半導體測試"
-    },
-    {
       "id": 13,
-      "code": "1513",
-      "name": "中興電",
+      "code": "3265",
+      "name": "台星科",
       "category": "低基期/補漲",
-      "why_undervalued": "重電+能源，電網建設受惠，股價相對低基期",
-      "trend_alignment": "電網/能源"
+      "why_undervalued": "半導體封測廠，受惠AI晶片封測需求，基期相對低",
+      "trend_alignment": "半導體封測"
     },
     {
       "id": 14,
@@ -126,7 +126,7 @@
     },
     {
       "id": 15,
-      "code": "2385",
+      "code": "3481",
       "name": "群創",
       "category": "低基期/補漲",
       "why_undervalued": "面板/半導體題材，基期低，股價落後大盤但有AI相關應用想像",
