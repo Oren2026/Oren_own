@@ -5,36 +5,132 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>開發日誌 | TB3 2026</title>
   <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    :root {
+      --bg:           #f4f6f2;
+      --text:         #1a1a1a;
+      --muted:        #4a4a4a;
+      --muted-2:      #888;
+      --accent:       #6ee7f7;
+      --accent-dim:   rgba(110,231,247,0.08);
+      --accent-text:  #0899b2;
+      --accent-mid:   rgba(110,231,247,0.15);
+      --card-bg:      #ffffff;
+      --border:       rgba(110,231,247,0.12);
+    }
+    body { background: var(--bg); }
+
+    .header {
+      position: relative;
+      background: var(--bg);
+      padding: 2rem 5% 1.5rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% -10%, rgba(110,231,247,0.22) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 80% 90%, rgba(110,231,247,0.12) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .header-content { position: relative; z-index: 1; }
+
+    .header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 8px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .header h1.in-view { opacity: 1; transform: translateY(0); }
+
+    .header .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .header .subtitle.in-view { opacity: 1; transform: translateY(0); }
+
+    .header .back-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--muted-2);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s, color 0.2s;
+    }
+    .header .back-link.in-view { opacity: 1; transform: translateY(0); }
+    .header .back-link:hover { color: var(--accent-text); }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 1rem 5%; }
+
+    .update-entry { background: white; border-radius: 12px; box-shadow: 0 4px 16px rgba(110,231,247,0.08); margin-bottom: 1.5rem; overflow: hidden; border: 1px solid var(--border); }
+    .update-header { background: rgba(110,231,247,0.06); padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .update-header h2 { font-size: 1.1rem; margin: 0; color: var(--text); }
+    .update-date { font-size: 0.85rem; color: var(--muted-2); background: white; padding: 0.25rem 0.75rem; border-radius: 20px; border: 1px solid var(--border); white-space: nowrap; flex-shrink: 0; }
+    .update-body { padding: 1.25rem; }
+    .update-body .tag { display: inline-block; font-size: 0.75rem; padding: 0.1rem 0.4rem; border-radius: 4px; margin-bottom: 0.5rem; }
+    .tag.sys { background: var(--accent-mid); color: var(--accent-text); }
+    .tag.hw { background: rgba(245,158,11,0.12); color: #b45309; }
+  </style>
 </head>
 <body>
-  <header class="header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-    <h1>📝 開發日誌</h1>
-    <p class="subtitle">按時間排列的實作記錄</p>
-    <a href="../index.html" style="display:inline-block;margin-top:1rem;color:white;opacity:0.85;">← 返回儀表板</a>
+  <header class="header">
+    <div class="header-content">
+      <h1 data-delay="0">📝 開發日誌</h1>
+      <p class="subtitle" data-delay="1">按時間排列的實作記錄</p>
+      <a href="../index.html" class="back-link" data-delay="2">← 返回儀表板</a>
+    </div>
   </header>
 
   <main class="container">
     <div class="section">
       <div class="section-header"><span class="icon">📅</span><h2>開發記錄</h2></div>
       <div class="section-content" id="diary-list">
-        <p style="color:var(--text-light);padding:1rem;">載入中...</p>
+        <p style="color:var(--muted-2);padding:1rem;">載入中...</p>
       </div>
     </div>
   </main>
 
   <footer class="footer">
-    <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
+    <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026">Oren</a> 維護</p>
   </footer>
 
   <script src="../assets/js/main.js"></script>
   <script>
+    // IntersectionObserver: header fade-in
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var delay = parseInt(entry.target.dataset.delay || 0);
+          setTimeout(function() {
+            entry.target.classList.add('in-view');
+          }, delay * 100);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link').forEach(function(el) {
+      io.observe(el);
+    });
+
     (async function() {
       var el = document.getElementById('diary-list');
       try {
         var res = await fetch('../updates/updates.json');
         var data = await res.json();
         if (!data || !data.length) {
-          el.innerHTML = '<p style="color:var(--text-light);padding:1rem;">暫無開發記錄</p>';
+          el.innerHTML = '<p style="color:var(--muted-2);padding:1rem;">暫無開發記錄</p>';
           return;
         }
         el.innerHTML = data
@@ -47,12 +143,12 @@
               '</div>' +
               '<div class="update-body">' +
                 '<p class="tag ' + (e.category === '硬體更新' ? 'hw' : 'sys') + '">' + e.category + '</p>' +
-                '<p style="margin-top:0.5rem;">' + e.summary + '</p>' +
+                '<p style="margin-top:0.5rem;color:var(--muted);">' + e.summary + '</p>' +
               '</div>' +
             '</div>';
           }).join('');
       } catch(err) {
-        el.innerHTML = '<p style="color:var(--danger);padding:1rem;">載入失敗：' + err.message + '</p>';
+        el.innerHTML = '<p style="color:#ef4444;padding:1rem;">載入失敗：' + err.message + '</p>';
       }
     })();
   </script>

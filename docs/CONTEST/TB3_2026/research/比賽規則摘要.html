@@ -6,21 +6,90 @@
   <title>比賽規則摘要 | TB3 2026</title>
   <link rel="stylesheet" href="../assets/css/style.css">
   <style>
+    :root {
+      --bg:           #f4f6f2;
+      --text:         #1a1a1a;
+      --muted:        #4a4a4a;
+      --muted-2:      #888;
+      --accent:       #6ee7f7;
+      --accent-dim:   rgba(110,231,247,0.08);
+      --accent-text:  #0899b2;
+      --accent-mid:   rgba(110,231,247,0.15);
+      --card-bg:      #ffffff;
+      --border:       rgba(110,231,247,0.12);
+    }
+    body { background: var(--bg); }
+
+    .header {
+      position: relative;
+      background: var(--bg);
+      padding: 2rem 5% 1.5rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% -10%, rgba(110,231,247,0.22) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 80% 90%, rgba(110,231,247,0.12) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .header-content { position: relative; z-index: 1; }
+
+    .header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 8px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .header h1.in-view { opacity: 1; transform: translateY(0); }
+
+    .header .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .header .subtitle.in-view { opacity: 1; transform: translateY(0); }
+
+    .header .back-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--muted-2);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s, color 0.2s;
+    }
+    .header .back-link.in-view { opacity: 1; transform: translateY(0); }
+    .header .back-link:hover { color: var(--accent-text); }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 1rem 5%; }
+
     .track-img { width: 100%; max-width: 800px; display: block; margin: 0 auto 1.5rem; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
     .mission-flow { list-style: none; padding: 0; counter-reset: step; }
     .mission-flow li { counter-increment: step; padding: 0.75rem 0.75rem 0.75rem 3rem; border-left: 3px solid var(--border); margin-bottom: 0.5rem; position: relative; font-size: 0.95rem; }
-    .mission-flow li::before { content: counter(step); position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
-    .mission-flow li:first-child { border-left-color: var(--danger); }
-    .mission-flow li:first-child::before { background: var(--danger); }
+    .mission-flow li::before { content: counter(step); position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; background: var(--accent-text); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
+    .mission-flow li:first-child { border-left-color: #ef4444; }
+    .mission-flow li:first-child::before { background: #ef4444; }
     .mission-flow .miss-name { font-weight: 600; margin-right: 0.5rem; }
     .mission-flow .miss-icon { margin-right: 0.25rem; }
   </style>
 </head>
 <body>
-  <header class="header" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);">
-    <h1>📋 FIRA AutoRace 比賽規則摘要</h1>
-    <p class="subtitle">2026-03-26</p>
-    <a href="../index.html" style="display:inline-block;margin-top:1rem;color:white;opacity:0.85;">← 返回儀表板</a>
+  <header class="header">
+    <div class="header-content">
+      <h1 data-delay="0">📋 FIRA AutoRace 比賽規則摘要</h1>
+      <p class="subtitle" data-delay="1">2026-03-26</p>
+      <a href="../index.html" class="back-link" data-delay="2">← 返回儀表板</a>
+    </div>
   </header>
 
   <main class="container">
@@ -29,7 +98,7 @@
       <div class="section-header"><span class="icon">🗺️</span><h2>賽道圖</h2></div>
       <div class="section-content">
         <img src="../assets/images/track-map.jpg" alt="FIRA AutoRace 賽道圖" class="track-img">
-        <p style="text-align:center;font-size:0.85rem;color:var(--text-light);">▲ 終點線位於上方紅色實線。行進方向：逆時針。</p>
+        <p style="text-align:center;font-size:0.85rem;color:var(--muted-2);">▲ 終點線位於上方紅色實線。行進方向：逆時針。</p>
       </div>
     </div>
 
@@ -86,7 +155,7 @@
     <div class="section">
       <div class="section-header"><span class="icon">🎯</span><h2>各關卡說明</h2></div>
       <div class="section-content">
-        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">詳細實作狀態見 <a href="../architecture/系統架構規劃.html">系統架構</a> 頁面。</p>
+        <p style="font-size:0.85rem;color:var(--muted-2);margin-bottom:1rem;">詳細實作狀態見 <a href="../architecture/系統架構規劃.html">系統架構</a> 頁面。</p>
         <div class="info-grid">
           <div class="info-card"><h3>🚦</h3><div class="value">交通號誌</div><div class="desc">辨識紅/黃/綠燈，控制停與行</div></div>
           <div class="info-card"><h3>〰️</h3><div class="value">S 型彎道</div><div class="desc">左側連續彎道，狹窄彎道控制</div></div>
@@ -104,7 +173,26 @@
   </main>
 
   <footer class="footer">
-    <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
+    <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026">Oren</a> 維護</p>
   </footer>
+
+  <script>
+    // IntersectionObserver: header fade-in
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var delay = parseInt(entry.target.dataset.delay || 0);
+          setTimeout(function() {
+            entry.target.classList.add('in-view');
+          }, delay * 100);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link').forEach(function(el) {
+      io.observe(el);
+    });
+  </script>
 </body>
 </html>

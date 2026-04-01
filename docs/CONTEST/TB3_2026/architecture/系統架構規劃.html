@@ -5,12 +5,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>系統架構規劃 | TB3 2026</title>
   <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    :root {
+      --bg:           #f4f6f2;
+      --text:         #1a1a1a;
+      --muted:        #4a4a4a;
+      --muted-2:      #888;
+      --accent:       #6ee7f7;
+      --accent-dim:   rgba(110,231,247,0.08);
+      --accent-text:  #0899b2;
+      --accent-mid:   rgba(110,231,247,0.15);
+      --card-bg:      #ffffff;
+      --border:       rgba(110,231,247,0.12);
+    }
+    body { background: var(--bg); }
+
+    .header {
+      position: relative;
+      background: var(--bg);
+      padding: 2rem 5% 1.5rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% -10%, rgba(110,231,247,0.22) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 80% 90%, rgba(110,231,247,0.12) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .header-content { position: relative; z-index: 1; }
+
+    .header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 8px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .header h1.in-view { opacity: 1; transform: translateY(0); }
+
+    .header .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .header .subtitle.in-view { opacity: 1; transform: translateY(0); }
+
+    .header .back-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--muted-2);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s, color 0.2s;
+    }
+    .header .back-link.in-view { opacity: 1; transform: translateY(0); }
+    .header .back-link:hover { color: var(--accent-text); }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 1rem 5%; }
+  </style>
 </head>
 <body>
-  <header class="header" style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);">
-    <h1>⚙️ 系統架構規劃</h1>
-    <p class="subtitle">TurtleBot 3 × ROS × OpenCV</p>
-    <a href="../index.html" style="display:inline-block;margin-top:1rem;color:white;opacity:0.85;">← 返回儀表板</a>
+  <header class="header">
+    <div class="header-content">
+      <h1 data-delay="0">⚙️ 系統架構規劃</h1>
+      <p class="subtitle" data-delay="1">TurtleBot 3 × ROS × OpenCV</p>
+      <a href="../index.html" class="back-link" data-delay="2">← 返回儀表板</a>
+    </div>
   </header>
 
   <main class="container">
@@ -33,7 +103,7 @@
     <div class="section">
       <div class="section-header"><span class="icon">📦</span><h2>偵測節點索引</h2></div>
       <div class="section-content">
-        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1rem;">
+        <p style="font-size:0.85rem;color:var(--muted-2);margin-bottom:1rem;">
           點擊任一節點可查看實作狀態與輸出 topic。完整實作記錄見 <a href="../tech/開發日誌.html">開發日誌</a>。
         </p>
         <div class="mission-grid" id="mission-grid"></div>
@@ -94,11 +164,28 @@
   </div>
 
   <footer class="footer">
-    <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026" style="color:var(--primary);">Oren</a> 維護</p>
+    <p>TB3 2026 FIRA AutoRace | 由 <a href="https://github.com/Oren2026">Oren</a> 維護</p>
   </footer>
 
   <script src="../assets/js/main.js"></script>
   <script>
+    // IntersectionObserver: header fade-in
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var delay = parseInt(entry.target.dataset.delay || 0);
+          setTimeout(function() {
+            entry.target.classList.add('in-view');
+          }, delay * 100);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link').forEach(function(el) {
+      io.observe(el);
+    });
+
     fetchAllMissions('../').then(function(missions) {
       renderMissionGrid(missions, 'mission-grid');
     });
