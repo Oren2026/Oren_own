@@ -571,7 +571,7 @@ const hoverModal = document.getElementById('hoverModal');
 // ── 從 JSON 載入事件 ──
 async function loadEvents() {
   try {
-    const res = await fetch('events.json');
+    const res = await fetch('../calendar/events.json');
     if (!res.ok) throw new Error('Failed to load events.json');
     const data = await res.json();
     allEvents = (data.events || []).map(ev => ({
