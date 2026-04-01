@@ -317,12 +317,15 @@
       background: #0f1117;
       border-radius: 0 0 12px 12px;
       overflow: hidden;
+      line-height: 0;
     }
 
-    .stock-chart iframe {
+    .stock-chart img {
       width: 100%;
       height: 150px;
+      object-fit: cover;
       display: block;
+      background: #0f1117;
     }
 
     .card-detail-label {
@@ -376,7 +379,7 @@
       .date-switcher { justify-content: flex-start; }
       .container { padding: 32px 24px 60px; }
       .cards-grid { grid-template-columns: 1fr; }
-      .stock-chart iframe { height: 120px; }
+      .stock-chart img { height: 100px; }
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
@@ -528,8 +531,7 @@
       ? stock.why_undervalued.slice(0, 52) + '…'
       : stock.why_undervalued;
 
-    const symbol = `${stock.code}.TW`;
-    const tvSrc = `https://www.tradingview.com/widgetembed/?symbol=${symbol}&interval=D&width=100%&height=150&theme=dark&style=1&locale=zh_TW&toolbar_bg=0f1117&hide_top_toolbar=true&save=true&studies=[]&hidelegend=true`;
+    const chartSrc = `https://stockcharts.com/c-sc/sc?s=${stock.code}.TW&p=D&b=5&g=0&i=0`;
 
     return `
       <div class="stock-card" data-category="${stock.category || ''}">
@@ -545,14 +547,7 @@
             <div class="card-detail-text">${stock.why_undervalued}</div>
           </div>
         </div>
-        <div class="stock-chart">
-          <iframe
-            src="${tvSrc}"
-            frameborder="0"
-            scrolling="no"
-            allowtransparency="true">
-          </iframe>
-        </div>
+        <div class="stock-chart"><img src="${chartSrc}" alt="${stock.name} K線" loading="lazy"></div>
       </div>
     `;
   }
