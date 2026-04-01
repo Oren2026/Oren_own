@@ -588,18 +588,15 @@ const hoverModal = document.getElementById('hoverModal');
 
 function getEventsForDate(dateStr) {
   if (!dateStr || typeof dateStr !== 'string') return [];
-  // 強制標準化：parse 成 YYYY-MM-DD
   const parts = dateStr.trim().match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
   if (!parts) return [];
   const std = `${parts[1]}-${parts[2].padStart(2,'0')}-${parts[3].padStart(2,'0')}`;
-  const found = events.filter(e => {
+  return events.filter(e => {
     const ep = e.date.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
     if (!ep) return false;
     const es = `${ep[1]}-${ep[2].padStart(2,'0')}-${ep[3].padStart(2,'0')}`;
     return std === es;
   });
-  console.log('[DEBUG getEventsForDate] input:', dateStr, '| std:', std, '| found:', found.length, found.map(e=>e.title));
-  return found;
 }
 
 function formatDateLabel(year, month, day) {
@@ -665,7 +662,6 @@ function renderImportantList() {
         currentMonth = m - 1;
         renderCalendar();
       }
-      console.log('[DEBUG sidebar click] item.date:', item.date);
       openModal(item.date);
     });
 
@@ -819,8 +815,6 @@ function openModal(dateStr) {
   const [y, m, d] = dateStr.split('-').map(Number);
   const dayEvents = getEventsForDate(dateStr);
 
-  console.log('[DEBUG openModal] dateStr:', dateStr, '| dayEvents:', dayEvents);
-
   document.getElementById('modalDate').textContent = formatDateLabel(y, m - 1, d);
 
   const body = document.getElementById('modalBody');
@@ -828,7 +822,7 @@ function openModal(dateStr) {
     body.innerHTML = '<div class="modal-noevents">這一天沒有代辦事項</div>';
   } else {
     body.innerHTML = dayEvents.map(ev => `
-      <div class="modal-event" style="border-left-color:${ev.type === 'deadline' ? '#fe9b45' : 'var(--accent)'}">
+      <div class="modal-event">
         <div class="modal-event-title">${ev.title}</div>
         ${ev.detail ? `<div class="modal-event-detail">${ev.detail}</div>` : ''}
       </div>
