@@ -17,7 +17,11 @@
       --today-border: #fe9b45;
       --hover: #f0f0ef;
       --dot: #da4453;
-      --shadow: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+      --radius: 8px;
+      --transition: 0.15s ease;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -34,33 +38,63 @@
     header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 14px 20px;
+      gap: 10px;
+      padding: 12px 20px;
       border-bottom: 1px solid var(--border);
       font-size: 14px;
+      flex-shrink: 0;
+    }
+    header h1 {
+      font-size: 15px;
+      letter-spacing: -0.3px;
       font-weight: 600;
       color: var(--text);
     }
-    header h1 { font-size: 15px; letter-spacing: -0.3px; }
+    .header-actions {
+      display: flex;
+      gap: 6px;
+      margin-left: auto;
+    }
+    .btn-today {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0 12px;
+      height: 30px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      transition: background var(--transition), box-shadow var(--transition);
+      letter-spacing: 0.2px;
+    }
+    .btn-today:hover {
+      background: var(--hover);
+      box-shadow: var(--shadow-sm);
+    }
     .month-nav {
       display: flex;
       gap: 4px;
-      margin-left: auto;
     }
     .month-nav button {
       background: none;
       border: 1px solid var(--border);
-      border-radius: 4px;
-      width: 28px;
-      height: 28px;
+      border-radius: var(--radius);
+      width: 30px;
+      height: 30px;
       cursor: pointer;
       font-size: 13px;
       color: var(--text-muted);
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background var(--transition), color var(--transition), box-shadow var(--transition);
     }
-    .month-nav button:hover { background: var(--hover); color: var(--text); }
+    .month-nav button:hover {
+      background: var(--hover);
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
 
     /* ── Layout ── */
     .container {
@@ -91,10 +125,13 @@
       border-radius: 6px;
       cursor: pointer;
       margin-bottom: 4px;
-      transition: background 0.1s;
+      transition: background var(--transition), transform var(--transition);
     }
-    .todo-item:hover { background: var(--hover); }
-    .todo-item.active { background: #ddf4ff; }
+    .todo-item:hover {
+      background: var(--hover);
+      transform: translateX(2px);
+    }
+    .todo-item.active { background: var(--accent-light); }
     .todo-date {
       font-size: 11px;
       color: var(--text-muted);
@@ -128,7 +165,9 @@
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       border-bottom: 1px solid var(--border);
-      padding: 8px 0;
+      padding: 10px 0;
+      background: var(--bg);
+      flex-shrink: 0;
     }
     .weekday {
       text-align: center;
@@ -138,47 +177,66 @@
       letter-spacing: 0.5px;
       text-transform: uppercase;
     }
+    .weekday:first-child, .weekday:last-child {
+      color: #c4c2bf;
+    }
+
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       flex: 1;
       overflow-y: auto;
+      background: var(--bg);
     }
+
     .day-cell {
       border-right: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      min-height: 100px;
+      min-height: 108px;
       padding: 8px;
       position: relative;
       cursor: pointer;
-      transition: background 0.1s;
+      transition: background var(--transition), box-shadow var(--transition);
     }
     .day-cell:nth-child(7n) { border-right: none; }
-    .day-cell:hover { background: var(--hover); }
-    .day-cell.empty { background: var(--sidebar-bg); cursor: default; }
-    .day-cell.empty:hover { background: var(--sidebar-bg); }
+    .day-cell:hover {
+      background: var(--hover);
+      box-shadow: inset 0 0 0 1px var(--border);
+      z-index: 1;
+    }
+    .day-cell.empty {
+      background: var(--sidebar-bg);
+      cursor: default;
+    }
+    .day-cell.empty:hover {
+      background: var(--sidebar-bg);
+      box-shadow: none;
+    }
 
     .day-number {
       font-size: 13px;
       font-weight: 500;
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
       color: var(--text);
+      transition: background var(--transition), color var(--transition);
     }
     .day-cell.today .day-number {
       background: var(--today-border);
       color: #fff;
       font-weight: 700;
+      box-shadow: 0 2px 6px rgba(254,155,69,0.4);
     }
+
     .day-cell.has-events .day-number::after {
       content: '';
       position: absolute;
-      top: 10px;
-      left: 36px;
+      top: 11px;
+      left: 40px;
       width: 6px;
       height: 6px;
       border-radius: 50%;
@@ -186,86 +244,166 @@
     }
 
     .day-events {
-      margin-top: 4px;
+      margin-top: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
     }
     .day-event-pill {
       font-size: 11px;
       background: var(--accent-light);
       color: #1a7bb9;
-      border-radius: 3px;
-      padding: 2px 5px;
-      margin-bottom: 2px;
+      border-radius: 4px;
+      padding: 3px 6px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
     }
-    .day-event-pill:hover { background: #c5e9ff; }
+    .day-event-pill:hover {
+      background: #c5e9ff;
+      transform: translateX(1px);
+    }
 
-    /* ── Detail Modal ── */
+    /* ── Hover Modal ── */
+    .hover-modal {
+      position: fixed;
+      z-index: 200;
+      background: var(--bg);
+      border-radius: 10px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      width: 260px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      overflow: hidden;
+    }
+    .hover-modal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .hover-modal-header {
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hover-modal-date {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .hover-modal-body {
+      padding: 10px 14px 12px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .hover-modal-event {
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: #f9f9f8;
+      border-left: 3px solid var(--accent);
+      margin-bottom: 6px;
+      transition: background var(--transition);
+    }
+    .hover-modal-event:last-child { margin-bottom: 0; }
+    .hover-modal-event:hover { background: var(--accent-light); }
+    .hover-modal-event-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .hover-modal-event-detail {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .hover-modal-empty {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    /* ── Click Modal (Detail) ── */
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.3);
-      z-index: 100;
+      background: rgba(0,0,0,0.35);
+      z-index: 300;
       align-items: center;
       justify-content: center;
+      backdrop-filter: blur(2px);
+      transition: opacity 0.2s ease;
     }
     .modal-overlay.show { display: flex; }
     .modal {
       background: var(--bg);
-      border-radius: 10px;
-      width: 420px;
+      border-radius: 12px;
+      width: 440px;
       max-width: 90vw;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      box-shadow: var(--shadow-lg);
       overflow: hidden;
+      animation: modalIn 0.2s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.97) translateY(4px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
     }
     .modal-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 20px 12px;
+      padding: 18px 20px 14px;
       border-bottom: 1px solid var(--border);
     }
     .modal-date {
       font-size: 12px;
       color: var(--text-muted);
       font-weight: 500;
+      letter-spacing: 0.3px;
     }
     .modal-close {
       background: none;
       border: none;
-      font-size: 20px;
+      font-size: 22px;
       cursor: pointer;
       color: var(--text-muted);
-      width: 28px;
-      height: 28px;
-      border-radius: 4px;
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background var(--transition), color var(--transition);
+      line-height: 1;
     }
     .modal-close:hover { background: var(--hover); color: var(--text); }
     .modal-body { padding: 16px 20px 20px; }
     .modal-event {
       padding: 12px 14px;
-      border-radius: 6px;
+      border-radius: 8px;
       border-left: 3px solid var(--accent);
       background: #f9f9f8;
       margin-bottom: 10px;
+      transition: background var(--transition);
     }
+    .modal-event:hover { background: #f2f2f0; }
     .modal-event:last-child { margin-bottom: 0; }
     .modal-event-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
     .modal-event-detail { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
-    .modal-noevents { font-size: 13px; color: var(--text-muted); text-align: center; padding: 20px 0; }
+    .modal-noevents { font-size: 13px; color: var(--text-muted); text-align: center; padding: 24px 0; }
 
     /* ── Responsive ── */
     @media (max-width: 640px) {
       .sidebar { display: none; }
-      .day-cell { min-height: 70px; padding: 4px; }
+      .day-cell { min-height: 72px; padding: 5px; }
       .day-event-pill { display: none; }
-      .day-cell.has-events .day-number::after { top: 4px; left: 28px; }
+      .day-cell.has-events .day-number::after { top: 5px; left: 30px; }
     }
   </style>
 </head>
@@ -273,9 +411,12 @@
 
 <header>
   <h1 id="monthLabel">2026 年 4 月</h1>
-  <div class="month-nav">
-    <button onclick="changeMonth(-1)">←</button>
-    <button onclick="changeMonth(1)">→</button>
+  <div class="header-actions">
+    <button class="btn-today" id="btnToday" onclick="goToToday()">今天</button>
+    <div class="month-nav">
+      <button onclick="changeMonth(-1)" title="上個月">←</button>
+      <button onclick="changeMonth(1)" title="下個月">→</button>
+    </div>
   </div>
 </header>
 
@@ -301,7 +442,15 @@
   </main>
 </div>
 
-<!-- Detail Modal -->
+<!-- Hover Modal -->
+<div class="hover-modal" id="hoverModal">
+  <div class="hover-modal-header">
+    <div class="hover-modal-date" id="hoverModalDate"></div>
+  </div>
+  <div class="hover-modal-body" id="hoverModalBody"></div>
+</div>
+
+<!-- Click Detail Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-header">
@@ -325,20 +474,78 @@ const events = [
 // ── 狀態 ──
 let currentYear = 2026;
 let currentMonth = 3; // 0-indexed → April
-const today = { year: 2026, month: 3, day: 1 }; // 硬標 today
+const today = { year: 2026, month: 3, day: 1 };
+
+let hoverTimeout = null;
+const hoverModal = document.getElementById('hoverModal');
 
 function getEventsForDate(dateStr) {
   return events.filter(e => e.date === dateStr);
 }
 
 function formatDateLabel(year, month, day) {
-  const mon = (month + 1).toString().padStart(2, '0');
-  const d = day.toString().padStart(2, '0');
-  return `${year} 年 ${month + 1} 月 ${d} 日`;
+  return `${year} 年 ${month + 1} 月 ${day} 日`;
+}
+
+function formatHoverDate(year, month, day) {
+  const weekDays = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
+  const d = new Date(year, month, day);
+  const wd = weekDays[d.getDay()];
+  return `${month + 1} 月 ${day} 日 ${wd}`;
 }
 
 function dateStr(year, month, day) {
   return `${year}-${(month+1).toString().padStart(2,'0')}-${day.toString().padStart(2,'0')}`;
+}
+
+// ── Hover Modal ──
+function showHoverModal(cell, dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dayEvents = getEventsForDate(dateStr);
+
+  document.getElementById('hoverModalDate').textContent = formatHoverDate(y, m - 1, d);
+
+  const body = document.getElementById('hoverModalBody');
+  if (dayEvents.length === 0) {
+    body.innerHTML = '<div class="hover-modal-empty">尚無代辦事項</div>';
+  } else {
+    body.innerHTML = dayEvents.map(ev => `
+      <div class="hover-modal-event">
+        <div class="hover-modal-event-title">${ev.title}</div>
+        ${ev.detail ? `<div class="hover-modal-event-detail">${ev.detail}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  // 定位 modal
+  const rect = cell.getBoundingClientRect();
+  const modalW = 260;
+  const modalH = hoverModal.offsetHeight || 120;
+
+  let left = rect.left;
+  let top = rect.bottom + 8;
+
+  // 超出右邊界
+  if (left + modalW > window.innerWidth - 16) {
+    left = window.innerWidth - modalW - 16;
+  }
+  // 超出底部
+  if (top + modalH > window.innerHeight - 16) {
+    top = rect.top - modalH - 8;
+  }
+  if (left < 8) left = 8;
+
+  hoverModal.style.left = left + 'px';
+  hoverModal.style.top = top + 'px';
+
+  // 淡入
+  requestAnimationFrame(() => {
+    hoverModal.classList.add('visible');
+  });
+}
+
+function hideHoverModal() {
+  hoverModal.classList.remove('visible');
 }
 
 // ── 渲染月曆 ──
@@ -346,7 +553,7 @@ function renderCalendar() {
   const grid = document.getElementById('calendarGrid');
   grid.innerHTML = '';
 
-  const firstDay = new Date(currentYear, currentMonth, 1).getDay(); // 0=Sun
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
   document.getElementById('monthLabel').textContent =
@@ -366,6 +573,8 @@ function renderCalendar() {
 
     const cell = document.createElement('div');
     cell.className = 'day-cell' + (isToday ? ' today' : '') + (dayEvents.length > 0 ? ' has-events' : '');
+    cell.dataset.date = ds;
+
     cell.innerHTML = `<div class="day-number">${d}</div>`;
 
     if (dayEvents.length > 0) {
@@ -381,7 +590,23 @@ function renderCalendar() {
       cell.appendChild(evDiv);
     }
 
-    cell.onclick = () => openModal(ds);
+    // Hover 事件
+    cell.addEventListener('mouseenter', (e) => {
+      clearTimeout(hoverTimeout);
+      hoverTimeout = setTimeout(() => showHoverModal(cell, ds), 120);
+    });
+    cell.addEventListener('mouseleave', () => {
+      clearTimeout(hoverTimeout);
+      hoverTimeout = setTimeout(hideHoverModal, 80);
+    });
+
+    // 點擊
+    cell.addEventListener('click', () => {
+      clearTimeout(hoverTimeout);
+      hideHoverModal();
+      openModal(ds);
+    });
+
     grid.appendChild(cell);
   }
 
@@ -408,7 +633,15 @@ function renderSidebar() {
     const [y, m, d] = ev.date.split('-').map(Number);
     const item = document.createElement('div');
     item.className = 'todo-item';
-    item.onclick = () => openModal(ev.date);
+    item.onclick = () => {
+      // 切到那個月（如果不在當前月）
+      if (currentYear !== y || currentMonth !== m - 1) {
+        currentYear = y;
+        currentMonth = m - 1;
+        renderCalendar();
+      }
+      openModal(ev.date);
+    };
     item.innerHTML = `
       <div class="todo-date">${m} 月 ${d} 日</div>
       <div class="todo-title">${ev.title}</div>
@@ -418,7 +651,22 @@ function renderSidebar() {
   });
 }
 
-// ── Modal ──
+// ── 回到今天 ──
+function goToToday() {
+  currentYear = today.year;
+  currentMonth = today.month;
+  renderCalendar();
+
+  // 滾動到今天格子
+  requestAnimationFrame(() => {
+    const todayCell = document.querySelector('.day-cell.today');
+    if (todayCell) {
+      todayCell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+}
+
+// ── Click Modal ──
 function openModal(dateStr) {
   const [y, m, d] = dateStr.split('-').map(Number);
   const dayEvents = getEventsForDate(dateStr);
