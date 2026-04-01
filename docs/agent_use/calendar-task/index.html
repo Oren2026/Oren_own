@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>月曆｜代辦事項</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --sidebar-bg: #f7f6f3;
+      --border: #e9e9e7;
+      --text: #37352f;
+      --text-muted: #9b9a97;
+      --accent: #2eaadc;
+      --accent-light: #ddf4ff;
+      --today-bg: #fff5e1;
+      --today-border: #fe9b45;
+      --hover: #f0f0ef;
+      --dot: #da4453;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    header h1 { font-size: 15px; letter-spacing: -0.3px; }
+    .month-nav {
+      display: flex;
+      gap: 4px;
+      margin-left: auto;
+    }
+    .month-nav button {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .month-nav button:hover { background: var(--hover); color: var(--text); }
+
+    /* ── Layout ── */
+    .container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar (Left) ── */
+    .sidebar {
+      width: 260px;
+      min-width: 260px;
+      border-right: 1px solid var(--border);
+      background: var(--sidebar-bg);
+      overflow-y: auto;
+      padding: 16px 12px;
+    }
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      padding: 0 4px 10px;
+    }
+    .todo-item {
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 4px;
+      transition: background 0.1s;
+    }
+    .todo-item:hover { background: var(--hover); }
+    .todo-item.active { background: #ddf4ff; }
+    .todo-date {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+    .todo-title {
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .todo-detail {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+    .empty-todo {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 12px 4px;
+    }
+
+    /* ── Calendar (Right) ── */
+    .calendar-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .weekday-header {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 0;
+    }
+    .weekday {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      flex: 1;
+      overflow-y: auto;
+    }
+    .day-cell {
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      min-height: 100px;
+      padding: 8px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .day-cell:nth-child(7n) { border-right: none; }
+    .day-cell:hover { background: var(--hover); }
+    .day-cell.empty { background: var(--sidebar-bg); cursor: default; }
+    .day-cell.empty:hover { background: var(--sidebar-bg); }
+
+    .day-number {
+      font-size: 13px;
+      font-weight: 500;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: var(--text);
+    }
+    .day-cell.today .day-number {
+      background: var(--today-border);
+      color: #fff;
+      font-weight: 700;
+    }
+    .day-cell.has-events .day-number::after {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 36px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--dot);
+    }
+
+    .day-events {
+      margin-top: 4px;
+    }
+    .day-event-pill {
+      font-size: 11px;
+      background: var(--accent-light);
+      color: #1a7bb9;
+      border-radius: 3px;
+      padding: 2px 5px;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+    .day-event-pill:hover { background: #c5e9ff; }
+
+    /* ── Detail Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: var(--bg);
+      border-radius: 10px;
+      width: 420px;
+      max-width: 90vw;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-date {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-close:hover { background: var(--hover); color: var(--text); }
+    .modal-body { padding: 16px 20px 20px; }
+    .modal-event {
+      padding: 12px 14px;
+      border-radius: 6px;
+      border-left: 3px solid var(--accent);
+      background: #f9f9f8;
+      margin-bottom: 10px;
+    }
+    .modal-event:last-child { margin-bottom: 0; }
+    .modal-event-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .modal-event-detail { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .modal-noevents { font-size: 13px; color: var(--text-muted); text-align: center; padding: 20px 0; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .sidebar { display: none; }
+      .day-cell { min-height: 70px; padding: 4px; }
+      .day-event-pill { display: none; }
+      .day-cell.has-events .day-number::after { top: 4px; left: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1 id="monthLabel">2026 年 4 月</h1>
+  <div class="month-nav">
+    <button onclick="changeMonth(-1)">←</button>
+    <button onclick="changeMonth(1)">→</button>
+  </div>
+</header>
+
+<div class="container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-title">代辦事項</div>
+    <div id="todoList"></div>
+  </aside>
+
+  <!-- Calendar -->
+  <main class="calendar-panel">
+    <div class="weekday-header">
+      <div class="weekday">週日</div>
+      <div class="weekday">週一</div>
+      <div class="weekday">週二</div>
+      <div class="weekday">週三</div>
+      <div class="weekday">週四</div>
+      <div class="weekday">週五</div>
+      <div class="weekday">週六</div>
+    </div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </main>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-date" id="modalDate"></span>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ── 預設事件 ──
+const events = [
+  { date: "2026-04-01", title: "TDK 機器人練習", detail: "路徑偵測模組調整" },
+  { date: "2026-04-03", title: "TB3 程式檢查", detail: "FIRA AutoRace 任務分配" },
+  { date: "2026-04-07", title: "與 Oren 開會", detail: "檢討 Multi-Agent 協作流程" },
+  { date: "2026-04-15", title: "繳交 TDK 初賽文件", detail: "" },
+  { date: "2026-04-20", title: "期中考週", detail: "資工系：資料結構、線性代數" }
+];
+
+// ── 狀態 ──
+let currentYear = 2026;
+let currentMonth = 3; // 0-indexed → April
+const today = { year: 2026, month: 3, day: 1 }; // 硬標 today
+
+function getEventsForDate(dateStr) {
+  return events.filter(e => e.date === dateStr);
+}
+
+function formatDateLabel(year, month, day) {
+  const mon = (month + 1).toString().padStart(2, '0');
+  const d = day.toString().padStart(2, '0');
+  return `${year} 年 ${month + 1} 月 ${d} 日`;
+}
+
+function dateStr(year, month, day) {
+  return `${year}-${(month+1).toString().padStart(2,'0')}-${day.toString().padStart(2,'0')}`;
+}
+
+// ── 渲染月曆 ──
+function renderCalendar() {
+  const grid = document.getElementById('calendarGrid');
+  grid.innerHTML = '';
+
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay(); // 0=Sun
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+  document.getElementById('monthLabel').textContent =
+    `${currentYear} 年 ${currentMonth + 1} 月`;
+
+  // 空白格子
+  for (let i = 0; i < firstDay; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'day-cell empty';
+    grid.appendChild(cell);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = (currentYear === today.year && currentMonth === today.month && d === today.day);
+    const ds = dateStr(currentYear, currentMonth, d);
+    const dayEvents = getEventsForDate(ds);
+
+    const cell = document.createElement('div');
+    cell.className = 'day-cell' + (isToday ? ' today' : '') + (dayEvents.length > 0 ? ' has-events' : '');
+    cell.innerHTML = `<div class="day-number">${d}</div>`;
+
+    if (dayEvents.length > 0) {
+      const evDiv = document.createElement('div');
+      evDiv.className = 'day-events';
+      dayEvents.forEach(ev => {
+        const pill = document.createElement('div');
+        pill.className = 'day-event-pill';
+        pill.textContent = ev.title;
+        pill.onclick = (e) => { e.stopPropagation(); openModal(ds); };
+        evDiv.appendChild(pill);
+      });
+      cell.appendChild(evDiv);
+    }
+
+    cell.onclick = () => openModal(ds);
+    grid.appendChild(cell);
+  }
+
+  renderSidebar();
+}
+
+function renderSidebar() {
+  const container = document.getElementById('todoList');
+  container.innerHTML = '';
+
+  const sorted = [...events]
+    .filter(e => {
+      const [y, m, d] = e.date.split('-').map(Number);
+      return y === currentYear && m - 1 === currentMonth;
+    })
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  if (sorted.length === 0) {
+    container.innerHTML = '<div class="empty-todo">本月尚無代辦事項</div>';
+    return;
+  }
+
+  sorted.forEach(ev => {
+    const [y, m, d] = ev.date.split('-').map(Number);
+    const item = document.createElement('div');
+    item.className = 'todo-item';
+    item.onclick = () => openModal(ev.date);
+    item.innerHTML = `
+      <div class="todo-date">${m} 月 ${d} 日</div>
+      <div class="todo-title">${ev.title}</div>
+      ${ev.detail ? `<div class="todo-detail">${ev.detail}</div>` : ''}
+    `;
+    container.appendChild(item);
+  });
+}
+
+// ── Modal ──
+function openModal(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dayEvents = getEventsForDate(dateStr);
+
+  document.getElementById('modalDate').textContent = formatDateLabel(y, m - 1, d);
+
+  const body = document.getElementById('modalBody');
+  if (dayEvents.length === 0) {
+    body.innerHTML = '<div class="modal-noevents">這一天沒有代辦事項</div>';
+  } else {
+    body.innerHTML = dayEvents.map(ev => `
+      <div class="modal-event">
+        <div class="modal-event-title">${ev.title}</div>
+        ${ev.detail ? `<div class="modal-event-detail">${ev.detail}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+// ── 月份切換 ──
+function changeMonth(dir) {
+  currentMonth += dir;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  renderCalendar();
+}
+
+// ── 鍵盤關閉 Modal ──
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── Init ──
+renderCalendar();
+</script>
+</body>
+</html>
