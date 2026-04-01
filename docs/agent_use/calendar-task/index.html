@@ -588,8 +588,18 @@ const hoverModal = document.getElementById('hoverModal');
 
 function getEventsForDate(dateStr) {
   if (!dateStr || typeof dateStr !== 'string') return [];
-  const normalized = dateStr.trim();
-  return events.filter(e => e.date === normalized);
+  // 強制標準化：parse 成 YYYY-MM-DD
+  const parts = dateStr.trim().match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (!parts) return [];
+  const std = `${parts[1]}-${parts[2].padStart(2,'0')}-${parts[3].padStart(2,'0')}`;
+  const found = events.filter(e => {
+    const ep = e.date.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if (!ep) return false;
+    const es = `${ep[1]}-${ep[2].padStart(2,'0')}-${ep[3].padStart(2,'0')}`;
+    return std === es;
+  });
+  console.log('[DEBUG getEventsForDate] input:', dateStr, '| std:', std, '| found:', found.length, found.map(e=>e.title));
+  return found;
 }
 
 function formatDateLabel(year, month, day) {
