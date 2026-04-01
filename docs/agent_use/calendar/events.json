@@ -1,11 +1,27 @@
 {
   "events": [
     {
+      "date": "2026-04-02",
+      "title": "飛機 — 台北",
+      "type": "event",
+      "project": "",
+      "location": "",
+      "notes": ""
+    },
+    {
       "date": "2026-04-11",
       "title": "TDK 說明會",
       "type": "event",
       "project": "TDK",
       "location": "高雄",
+      "notes": ""
+    },
+    {
+      "date": "2026-04-12",
+      "title": "飛機 — 金門",
+      "type": "event",
+      "project": "",
+      "location": "",
       "notes": ""
     },
     {
