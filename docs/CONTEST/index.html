@@ -7,15 +7,21 @@
   <style>
     :root {
       --bg: #08090f;
+      --bg-deep: #04050a;
       --surface: #0d1019;
+      --surface-2: #111525;
       --border: rgba(255,255,255,0.07);
       --accent: #6ee7f7;
-      --accent-dim: rgba(110,231,247,0.12);
+      --accent-dim: rgba(110,231,247,0.1);
+      --accent-glow: rgba(110,231,247,0.15);
       --text: #dde4f0;
       --muted: #5a6478;
+      --muted-2: #3d4556;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
@@ -24,27 +30,36 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
 
+    /* ── Navigation ── */
     nav {
-      position: sticky;
-      top: 0;
+      position: fixed;
+      top: 0; left: 0; right: 0;
       z-index: 50;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 18px 5%;
-      background: rgba(8,9,15,0.92);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
+      background: rgba(8,9,15,0.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: background 0.35s, border-color 0.35s, box-shadow 0.35s;
+    }
+
+    nav.scrolled {
+      background: rgba(8,9,15,0.96);
+      border-bottom-color: var(--border);
+      box-shadow: 0 4px 32px rgba(0,0,0,0.4);
     }
 
     .nav-logo {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--muted);
       text-decoration: none;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       transition: color 0.2s;
     }
     .nav-logo:hover { color: var(--text); }
@@ -53,108 +68,200 @@
       font-size: 12px;
       color: var(--muted);
       text-decoration: none;
-      padding: 5px 14px;
+      padding: 6px 16px;
       border: 1px solid var(--border);
       border-radius: 20px;
-      transition: all 0.2s;
+      transition: all 0.25s;
     }
-    .nav-back:hover { border-color: var(--accent); color: var(--accent); }
+    .nav-back:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 16px var(--accent-dim);
+    }
 
     /* ── Hero ── */
     .hero {
-      padding: 80px 5% 60px;
-      text-align: center;
       position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 5%;
       overflow: hidden;
     }
 
-    .hero::before {
-      content: "";
+    .hero-bg {
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 50% 40% at 50% 0%, rgba(110,231,247,0.05) 0%, transparent 70%);
-      pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% -10%, rgba(110,231,247,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(110,231,247,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 40% at 20% 60%, rgba(59,130,246,0.03) 0%, transparent 50%),
+        linear-gradient(to bottom, #04050a 0%, #08090f 100%);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(110,231,247,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(110,231,247,0.04) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
     }
 
     .hero-eyebrow {
       font-size: 10px;
-      letter-spacing: 0.25em;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--accent);
-      margin-bottom: 14px;
+      margin-bottom: 18px;
       opacity: 0;
-      animation: fadeUp 0.7s ease 0.1s forwards;
+      animation: fadeUp 0.8s ease 0.1s forwards;
     }
 
     .hero-title {
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 800;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 900;
       letter-spacing: -0.04em;
-      line-height: 1.1;
-      margin-bottom: 14px;
+      line-height: 1.08;
+      margin-bottom: 18px;
       opacity: 0;
-      animation: fadeUp 0.7s ease 0.2s forwards;
+      animation: fadeUp 0.8s ease 0.25s forwards;
+      background: linear-gradient(180deg, #ffffff 0%, rgba(221,228,240,0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .hero-sub {
-      font-size: 0.88rem;
+      font-size: 0.92rem;
       color: var(--muted);
-      max-width: 400px;
+      max-width: 380px;
       margin: 0 auto;
-      line-height: 1.7;
+      line-height: 1.75;
       opacity: 0;
-      animation: fadeUp 0.7s ease 0.35s forwards;
+      animation: fadeUp 0.8s ease 0.4s forwards;
+    }
+
+    .hero-line {
+      width: 48px;
+      height: 2px;
+      background: var(--accent);
+      margin: 24px auto 0;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.5s forwards;
+      box-shadow: 0 0 12px var(--accent);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--muted-2);
+      animation: bounce 2.4s ease-in-out infinite;
+      z-index: 2;
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(28px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
     /* ── Cards ── */
-    .cards-wrap {
+    .cards-section {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 0 5% 80px;
+      padding: 0 5% 100px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 12px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .section-label.in-view {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+      gap: 24px;
     }
 
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: 16px;
       overflow: hidden;
       text-decoration: none;
       color: inherit;
       display: flex;
       flex-direction: column;
-      transition: transform 0.3s ease, border-color 0.3s, box-shadow 0.3s;
+      position: relative;
       opacity: 0;
-      animation: cardIn 0.6s ease forwards;
+      transform: translateY(40px);
+      transition:
+        opacity 0.7s ease,
+        transform 0.7s ease,
+        border-color 0.3s,
+        box-shadow 0.35s;
     }
 
-    .card:nth-child(1) { animation-delay: 0.1s; }
-    .card:nth-child(2) { animation-delay: 0.22s; }
-    .card:nth-child(3) { animation-delay: 0.34s; }
+    .card.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent-dim) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.35s;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(110,231,247,0.3);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(110,231,247,0.1);
+      transform: translateY(-8px);
+      border-color: rgba(110,231,247,0.25);
+      box-shadow:
+        0 24px 64px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(110,231,247,0.08),
+        0 0 48px rgba(110,231,247,0.06);
     }
 
+    .card:hover::before { opacity: 1; }
+
     .card-visual {
-      height: 130px;
+      height: 140px;
       position: relative;
       overflow: hidden;
     }
@@ -162,15 +269,15 @@
     .card-visual-bg {
       position: absolute;
       inset: 0;
-      transition: transform 0.5s ease;
+      transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
-    .card:hover .card-visual-bg { transform: scale(1.06); }
+    .card:hover .card-visual-bg { transform: scale(1.07); }
 
     .card-visual-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to bottom, transparent 30%, rgba(13,16,25,0.9) 100%);
+      background: linear-gradient(to bottom, transparent 25%, rgba(13,16,25,0.92) 100%);
     }
 
     .card-badge {
@@ -179,96 +286,186 @@
       left: 14px;
       font-size: 10px;
       font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 4px;
+      padding: 4px 11px;
+      border-radius: 5px;
       letter-spacing: 0.08em;
+      z-index: 2;
     }
 
-    .badge-tdk    { background: rgba(239,130,60,0.2); color: #ef8340; border: 1px solid rgba(239,130,60,0.35); }
-    .badge-fira    { background: rgba(110,231,247,0.12); color: var(--accent); border: 1px solid rgba(110,231,247,0.25); }
-    .badge-hiwin   { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+    .badge-tdk    { background: rgba(239,130,60,0.18); color: #ef8340; border: 1px solid rgba(239,130,60,0.35); }
+    .badge-fira   { background: rgba(110,231,247,0.12); color: var(--accent); border: 1px solid rgba(110,231,247,0.25); }
+    .badge-hiwin  { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
 
     .card-body {
-      padding: 22px;
+      padding: 24px;
       flex: 1;
       display: flex;
       flex-direction: column;
+      position: relative;
+      z-index: 1;
     }
 
     .card-title {
-      font-size: 1rem;
-      font-weight: 700;
+      font-size: 1.05rem;
+      font-weight: 800;
       color: var(--text);
-      margin-bottom: 8px;
-      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
     }
 
     .card-desc {
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       color: var(--muted);
-      line-height: 1.7;
+      line-height: 1.72;
       flex: 1;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .card-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
+      gap: 6px;
     }
 
     .card-tag {
       font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 3px;
+      padding: 3px 9px;
+      border-radius: 4px;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.07);
       color: var(--muted);
+      letter-spacing: 0.02em;
     }
 
     .card-arrow {
-      margin-top: 14px;
+      margin-top: 18px;
       font-size: 12px;
       color: var(--accent);
       display: flex;
       align-items: center;
-      gap: 5px;
-      transition: gap 0.2s;
+      gap: 6px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: gap 0.25s ease;
     }
 
-    .card:hover .card-arrow { gap: 9px; }
+    .card:hover .card-arrow { gap: 12px; }
 
+    /* ── Footer ── */
     footer {
-      margin-top: auto;
-      text-align: center;
-      padding: 28px;
-      color: var(--muted);
-      font-size: 11px;
+      background: var(--bg-deep);
       border-top: 1px solid var(--border);
+      padding: 52px 5% 36px;
+      margin-top: auto;
     }
 
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding-bottom: 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 24px;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand .footer-logo {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    .footer-brand .footer-logo span {
+      color: var(--accent);
+    }
+
+    .footer-brand p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 260px;
+    }
+
+    .footer-nav {
+      display: flex;
+      gap: 48px;
+    }
+
+    .footer-col h4 {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.82rem;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--text); }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--muted-2);
+    }
+
+    .footer-bottom span:last-child {
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Responsive ── */
     @media (max-width: 640px) {
-      .hero { padding: 60px 5% 40px; }
+      .hero { min-height: 90vh; }
+      .cards-section { padding: 0 5% 60px; }
+      .footer-top { flex-direction: column; }
+      .footer-nav { gap: 32px; }
     }
   </style>
 </head>
 <body>
 
-  <nav>
+  <nav id="nav">
     <a href="../../" class="nav-logo">← docs</a>
     <a href="../../" class="nav-back">回首頁</a>
   </nav>
 
+  <!-- ── Hero ── -->
   <section class="hero">
-    <div class="hero-eyebrow">黑皮團隊</div>
-    <h1 class="hero-title">比賽專區</h1>
-    <p class="hero-sub">三個機器人比賽的完整記錄與技術文件</p>
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">黑皮團隊</div>
+      <h1 class="hero-title">比賽專區</h1>
+      <p class="hero-sub">三個機器人比賽的完整記錄與技術文件</p>
+      <div class="hero-line"></div>
+    </div>
+    <div class="hero-scroll">↓ SCROLL</div>
   </section>
 
-  <div class="cards-wrap">
+  <!-- ── Cards ── -->
+  <div class="cards-section">
+    <div class="section-label" data-delay="0">競賽項目</div>
     <div class="cards-grid">
 
-      <a href="./TDK_2026/" class="card">
+      <a href="./TDK_2026/" class="card" data-delay="0">
         <div class="card-visual">
           <div class="card-visual-bg" style="background: linear-gradient(135deg,#1a0d05 0%,#2c1a08 50%,#1a0d05 100%);"></div>
           <div class="card-visual-overlay"></div>
@@ -287,7 +484,7 @@
         </div>
       </a>
 
-      <a href="./TB3_2026/" class="card">
+      <a href="./TB3_2026/" class="card" data-delay="1">
         <div class="card-visual">
           <div class="card-visual-bg" style="background: linear-gradient(135deg,#051218 0%,#081e2c 50%,#051822 100%);"></div>
           <div class="card-visual-overlay"></div>
@@ -306,7 +503,7 @@
         </div>
       </a>
 
-      <a href="./上銀撞球/" class="card">
+      <a href="./上銀撞球/" class="card" data-delay="2">
         <div class="card-visual">
           <div class="card-visual-bg" style="background: linear-gradient(135deg,#0d0a05 0%,#1a1508 50%,#0d0d05 100%);"></div>
           <div class="card-visual-overlay"></div>
@@ -328,7 +525,61 @@
     </div>
   </div>
 
-  <footer>黑皮團隊 · 比賽專區 · Researcher × Coder</footer>
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">黑皮<span>.</span>團隊</div>
+          <p>從金門到世界賽場，用代碼與機械書寫每一場競賽。</p>
+        </div>
+        <div class="footer-nav">
+          <div class="footer-col">
+            <h4>競賽</h4>
+            <ul>
+              <li><a href="./TDK_2026/">TDK 遙控組</a></li>
+              <li><a href="./TB3_2026/">FIRA AutoRace</a></li>
+              <li><a href="./上銀撞球/">上銀 HIWIN</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>團隊</h4>
+            <ul>
+              <li><a href="../../">回首頁</a></li>
+              <li><a href="../../">技術文件</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 黑皮團隊 · Researcher × Coder</span>
+        <span>每場比賽，都是一次進化</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Nav scroll effect ──
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('nav');
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // ── IntersectionObserver fade-in ──
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = parseInt(entry.target.dataset.delay || 0);
+          setTimeout(() => entry.target.classList.add('in-view'), delay * 120);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.card, .section-label').forEach(el => {
+      io.observe(el);
+    });
+  </script>
 
 </body>
 </html>
