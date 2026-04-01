@@ -1,0 +1,26 @@
+{
+  "events": [
+    {
+      "date": "2026-04-11",
+      "title": "TDK 說明會",
+      "type": "event",
+      "project": "TDK",
+      "location": "高雄",
+      "notes": ""
+    },
+    {
+      "date": "2026-04-25",
+      "title": "FIRA AutoRace — Day 1",
+      "type": "deadline",
+      "project": "TB3",
+      "notes": ""
+    },
+    {
+      "date": "2026-04-26",
+      "title": "FIRA AutoRace — Day 2",
+      "type": "deadline",
+      "project": "TB3",
+      "notes": ""
+    }
+  ]
+}

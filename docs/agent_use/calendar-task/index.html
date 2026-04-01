@@ -556,26 +556,8 @@
 </div>
 
 <script>
-// ── 固定重要日程（寫死） ──
-const importantDates = [
-  { date: "2026-04-15", title: "TDK 初賽文件繳交", type: "deadline" },
-  { date: "2026-04-20", title: "期中考週（資工系）" },
-  { date: "2026-04-25", title: "FIRA AutoRace 報名截止", type: "deadline" },
-  { date: "2026-05-03", title: "TDK 機器人大賽（雲林）" },
-  { date: "2026-05-17", title: "期中考週（TB3）" }
-];
-
-// ── 當月動態事件 ──
-const events = [
-  { date: "2026-04-01", title: "TDK 機器人練習", detail: "路徑偵測模組調整" },
-  { date: "2026-04-03", title: "TB3 程式檢查", detail: "FIRA AutoRace 任務分配" },
-  { date: "2026-04-07", title: "與 Oren 開會", detail: "檢討 Multi-Agent 協作流程" },
-  { date: "2026-04-15", title: "繳交 TDK 初賽文件", detail: "", type: "deadline" },
-  { date: "2026-04-20", title: "期中考週", detail: "資工系：資料結構、線性代數" },
-  { date: "2026-04-25", title: "FIRA AutoRace 報名截止", detail: "https://fira.org.tw", type: "deadline" },
-  { date: "2026-05-03", title: "TDK 機器人大賽（雲林）", detail: "" },
-  { date: "2026-05-17", title: "TB3 期中考週", detail: "" }
-];
+// ── 事件資料（從 JSON 載入） ──
+let allEvents = [];
 
 // ── 狀態 ──
 let currentYear = 2026;
@@ -586,17 +568,44 @@ let hoverTimeout = null;
 let highlightedDate = null;
 const hoverModal = document.getElementById('hoverModal');
 
-function getEventsForDate(dateStr) {
-  if (!dateStr || typeof dateStr !== 'string') return [];
+// ── 從 JSON 載入事件 ──
+async function loadEvents() {
+  try {
+    const res = await fetch('events.json');
+    if (!res.ok) throw new Error('Failed to load events.json');
+    const data = await res.json();
+    allEvents = (data.events || []).map(ev => ({
+      date: ev.date || '',
+      title: ev.title || '',
+      type: ev.type || 'event',
+      project: ev.project || '',
+      location: ev.location || '',
+      detail: ev.detail || ev.notes || '',
+      important: ev.important === true || ev.type === 'deadline'
+    }));
+    console.log('[Calendar] Loaded', allEvents.length, 'events from JSON');
+  } catch (err) {
+    console.error('[Calendar] Failed to load events:', err);
+    allEvents = [];
+  }
+}
+
+// ── 標準化日期字串比對 ──
+function normalizeDate(dateStr) {
+  if (!dateStr || typeof dateStr !== 'string') return '';
   const parts = dateStr.trim().match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
-  if (!parts) return [];
-  const std = `${parts[1]}-${parts[2].padStart(2,'0')}-${parts[3].padStart(2,'0')}`;
-  return events.filter(e => {
-    const ep = e.date.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
-    if (!ep) return false;
-    const es = `${ep[1]}-${ep[2].padStart(2,'0')}-${ep[3].padStart(2,'0')}`;
-    return std === es;
-  });
+  if (!parts) return '';
+  return `${parts[1]}-${parts[2].padStart(2,'0')}-${parts[3].padStart(2,'0')}`;
+}
+
+function getEventsForDate(dateStr) {
+  const std = normalizeDate(dateStr);
+  if (!std) return [];
+  return allEvents.filter(e => normalizeDate(e.date) === std);
+}
+
+function getImportantEvents() {
+  return allEvents.filter(e => e.important);
 }
 
 function formatDateLabel(year, month, day) {
@@ -627,7 +636,8 @@ function renderImportantList() {
   const container = document.getElementById('importantList');
   container.innerHTML = '';
 
-  importantDates.forEach(item => {
+  const importantItems = getImportantEvents();
+  importantItems.forEach(item => {
     const el = document.createElement('div');
     el.className = 'important-item' + (item.type === 'deadline' ? ' deadline' : '');
     el.dataset.date = item.date;
@@ -687,8 +697,9 @@ function showHoverModal(cell, dateStr) {
     body.innerHTML = '<div class="hover-modal-empty">尚無代辦事項</div>';
   } else {
     body.innerHTML = dayEvents.map(ev => `
-      <div class="hover-modal-event">
+      <div class="hover-modal-event" style="border-left-color:${ev.type === 'deadline' ? '#fe9b45' : 'var(--accent)'}">
         <div class="hover-modal-event-title">${ev.title}</div>
+        ${ev.location ? `<div class="hover-modal-event-detail">📍 ${ev.location}</div>` : ''}
         ${ev.detail ? `<div class="hover-modal-event-detail">${ev.detail}</div>` : ''}
       </div>
     `).join('');
@@ -822,8 +833,10 @@ function openModal(dateStr) {
     body.innerHTML = '<div class="modal-noevents">這一天沒有代辦事項</div>';
   } else {
     body.innerHTML = dayEvents.map(ev => `
-      <div class="modal-event">
+      <div class="modal-event" style="border-left-color:${ev.type === 'deadline' ? '#fe9b45' : 'var(--accent)'}">
         <div class="modal-event-title">${ev.title}</div>
+        ${ev.project ? `<div class="modal-event-detail">專案：${ev.project}</div>` : ''}
+        ${ev.location ? `<div class="modal-event-detail">📍 ${ev.location}</div>` : ''}
         ${ev.detail ? `<div class="modal-event-detail">${ev.detail}</div>` : ''}
       </div>
     `).join('');
@@ -848,7 +861,11 @@ function changeMonth(dir) {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 // ── Init ──
-renderCalendar();
+async function init() {
+  await loadEvents();
+  renderCalendar();
+}
+init();
 </script>
 </body>
 </html>
