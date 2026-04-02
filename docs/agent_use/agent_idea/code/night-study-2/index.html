@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Study 02 — Minimalist Flat</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d1117;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  .scene {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .bg-circle {
+    position: absolute;
+    border-radius: 50%;
+  }
+  .bg-circle-1 {
+    width: 600px; height: 600px;
+    top: -150px; left: 50%;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(240,165,0,0.07) 0%, transparent 70%);
+  }
+  .bg-circle-2 {
+    width: 300px; height: 300px;
+    bottom: 10%; right: 8%;
+    background: radial-gradient(circle, rgba(30,42,58,0.6) 0%, transparent 70%);
+  }
+
+  .wall {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 55%;
+    background: linear-gradient(180deg, #0d1117 0%, #111827 100%);
+  }
+
+  .wall-art {
+    position: absolute;
+    top: 16%;
+    left: 50%;
+    transform: translateX(-200px);
+    width: 48px;
+    height: 38px;
+    background: linear-gradient(135deg, #1e2a3a 0%, #2d3f55 50%, #1e2a3a 100%);
+    border: 2px solid #2d3f55;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+  .wall-art::before {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    height: 10px;
+    background: linear-gradient(180deg, rgba(240,165,0,0.25), rgba(240,165,0,0.05));
+    border-radius: 1px;
+  }
+
+  .floor {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 45%;
+    background: linear-gradient(180deg, #111827 0%, #0d1117 100%);
+  }
+
+  /* Desk */
+  .desk {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 14px;
+    background: #2d1f14;
+    border-radius: 3px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 5;
+  }
+  .desk-front {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 55px;
+    background: linear-gradient(180deg, #2d1f14 0%, #231810 100%);
+    border-radius: 0 0 3px 3px;
+    z-index: 4;
+  }
+  .desk-leg-l {
+    position: absolute;
+    bottom: 18%;
+    left: calc(50% - 220px);
+    width: 10px;
+    height: 68px;
+    background: #1a1008;
+    z-index: 3;
+  }
+  .desk-leg-r {
+    position: absolute;
+    bottom: 18%;
+    right: calc(50% - 220px);
+    width: 10px;
+    height: 68px;
+    background: #1a1008;
+    z-index: 3;
+  }
+
+  /* Lamp */
+  .lamp {
+    position: absolute;
+    bottom: calc(30% + 14px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .lamp-head {
+    width: 68px;
+    height: 26px;
+    background: #2d3f55;
+    clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+    box-shadow: 0 0 20px rgba(240,165,0,0.3);
+  }
+  .lamp-arm {
+    width: 4px;
+    height: 48px;
+    background: #1e2a3a;
+  }
+  .lamp-foot {
+    width: 36px;
+    height: 5px;
+    background: #1e2a3a;
+    border-radius: 2px;
+  }
+
+  .lamp-glow {
+    position: absolute;
+    bottom: calc(30% + 14px + 26px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+    height: 180px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(240,165,0,0.25) 0%, rgba(240,165,0,0.07) 35%, transparent 65%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* Laptop */
+  .laptop {
+    position: absolute;
+    bottom: calc(30% + 14px);
+    left: calc(50% - 80px);
+    z-index: 6;
+  }
+  .laptop-screen {
+    width: 100px;
+    height: 62px;
+    background: #1e2a3a;
+    border-radius: 3px 3px 0 0;
+    border: 2px solid #2d3f55;
+    overflow: hidden;
+    position: relative;
+  }
+  .laptop-screen::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    background: linear-gradient(180deg, #0d1117 0%, #111827 100%);
+  }
+  .laptop-screen::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    height: 3px;
+    background: rgba(240,165,0,0.2);
+    border-radius: 1px;
+    box-shadow: 0 9px 0 rgba(240,165,0,0.1), 0 18px 0 rgba(240,165,0,0.06);
+  }
+  .laptop-base {
+    width: 108px;
+    height: 5px;
+    background: #2d3f55;
+    border-radius: 0 0 2px 2px;
+  }
+
+  /* Book */
+  .book {
+    position: absolute;
+    bottom: calc(30% + 14px);
+    right: calc(50% - 145px);
+    z-index: 6;
+  }
+  .book-cover {
+    width: 48px;
+    height: 34px;
+    background: #2d3f55;
+    border-radius: 2px;
+    position: relative;
+    transform: rotate(-2deg);
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+  }
+  .book-pages {
+    position: absolute;
+    bottom: -3px;
+    left: 3px;
+    width: 42px;
+    height: 28px;
+    background: #d4c5a9;
+    border-radius: 0 2px 2px 0;
+    transform: rotate(1deg);
+  }
+  .book-spine {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 34px;
+    background: #1e2a3a;
+    border-radius: 2px 0 0 2px;
+  }
+
+  /* Plant */
+  .plant {
+    position: absolute;
+    bottom: calc(30% + 14px);
+    right: calc(50% - 62px);
+    z-index: 6;
+  }
+  .pot {
+    width: 22px;
+    height: 18px;
+    background: #8b5e3c;
+    border-radius: 2px 2px 4px 4px;
+    position: relative;
+  }
+  .pot::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -2px;
+    width: 26px;
+    height: 5px;
+    background: #a0704a;
+    border-radius: 2px;
+  }
+  .soil {
+    position: absolute;
+    top: -4px;
+    left: 2px;
+    width: 18px;
+    height: 4px;
+    background: #3d2a1a;
+    border-radius: 50%;
+  }
+  .stem { position: absolute; bottom: 16px; left: 9px; width: 2px; height: 18px; background: #4a7c59; }
+  .leaf1 { position: absolute; bottom: 26px; left: 3px; width: 13px; height: 9px; background: #5a9c6a; border-radius: 50% 0 50% 50%; transform: rotate(-20deg); }
+  .leaf2 { position: absolute; bottom: 28px; left: 10px; width: 11px; height: 8px; background: #4a8c5a; border-radius: 0 50% 50% 50%; transform: rotate(15deg); }
+  .leaf3 { position: absolute; bottom: 32px; left: 7px; width: 9px; height: 7px; background: #6aac7a; border-radius: 50%; transform: rotate(5deg); }
+
+  /* Wine */
+  .wine {
+    position: absolute;
+    bottom: calc(30% + 14px);
+    left: calc(50% + 55px);
+    z-index: 7;
+  }
+  .wine-top {
+    width: 16px;
+    height: 18px;
+    background: rgba(200,150,50,0.55);
+    border-radius: 0 0 8px 8px;
+    border: 1.5px solid rgba(200,180,130,0.3);
+    position: relative;
+    box-shadow: 0 0 8px rgba(240,165,0,0.15);
+  }
+  .wine-top::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 11px;
+    height: 7px;
+    border: 1.5px solid rgba(200,180,130,0.3);
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+  }
+  .wine-stem { width: 2px; height: 10px; background: rgba(200,180,130,0.3); margin: 0 auto; }
+  .wine-base { width: 10px; height: 2px; background: rgba(200,180,130,0.3); margin: 0 auto; border-radius: 50%; }
+
+  /* Title */
+  .title {
+    position: fixed;
+    bottom: 8vh;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .title h1 {
+    font-size: clamp(14px, 2vw, 22px);
+    font-weight: 300;
+    letter-spacing: 0.4em;
+    color: #d4c5a9;
+    text-shadow: 0 0 20px rgba(240,165,0,0.4);
+    margin-bottom: 6px;
+  }
+  .title p {
+    font-size: clamp(9px, 1.1vw, 12px);
+    letter-spacing: 0.5em;
+    color: rgba(212,197,169,0.45);
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+  <div class="bg-circle bg-circle-1"></div>
+  <div class="bg-circle bg-circle-2"></div>
+  <div class="wall"></div>
+  <div class="wall-art"></div>
+  <div class="floor"></div>
+
+  <!-- Desk legs -->
+  <div class="desk-leg-l"></div>
+  <div class="desk-leg-r"></div>
+  <div class="desk"></div>
+  <div class="desk-front"></div>
+
+  <!-- Lamp glow -->
+  <div class="lamp-glow"></div>
+
+  <!-- Lamp -->
+  <div class="lamp">
+    <div class="lamp-head"></div>
+    <div class="lamp-arm"></div>
+    <div class="lamp-foot"></div>
+  </div>
+
+  <!-- Laptop -->
+  <div class="laptop">
+    <div class="laptop-screen"></div>
+    <div class="laptop-base"></div>
+  </div>
+
+  <!-- Book -->
+  <div class="book">
+    <div class="book-cover">
+      <div class="book-spine"></div>
+    </div>
+    <div class="book-pages"></div>
+  </div>
+
+  <!-- Plant -->
+  <div class="plant">
+    <div class="leaf3"></div>
+    <div class="leaf2"></div>
+    <div class="leaf1"></div>
+    <div class="stem"></div>
+    <div class="pot">
+      <div class="soil"></div>
+    </div>
+  </div>
+
+  <!-- Wine -->
+  <div class="wine">
+    <div class="wine-top"></div>
+    <div class="wine-stem"></div>
+    <div class="wine-base"></div>
+  </div>
+</div>
+
+<div class="title">
+  <h1>NIGHT STUDY 02</h1>
+  <p>Minimal Flat · 北歐極簡</p>
+</div>
+
+</body>
+</html>

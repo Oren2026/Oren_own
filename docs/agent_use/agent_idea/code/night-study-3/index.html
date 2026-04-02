@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Study 03 — Cinematic Wide Shot</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0b10;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Georgia", serif;
+  }
+
+  /* LOMO vignette */
+  .lomo-vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
+    background: radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(10,11,16,0.6) 70%, rgba(10,11,16,0.92) 100%);
+  }
+
+  /* Film grain */
+  .grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 19;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    animation: grain-anim 0.25s steps(1) infinite;
+  }
+  @keyframes grain-anim {
+    0%   { background-position: 0 0; }
+    33%  { background-position: -30px 15px; }
+    66%  { background-position: -70px -20px; }
+    100% { background-position: 0 0; }
+  }
+
+  /* Widescreen frame */
+  .widescreen {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    perspective: 800px;
+    background: #0a0b10;
+  }
+
+  /* Room background */
+  .room-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(100deg, #0a0b10 0%, #0e1018 30%, #111520 60%, #0a0b10 100%);
+  }
+
+  /* Window — right side, city lights */
+  .window-frame {
+    position: absolute;
+    top: 8%;
+    right: 8%;
+    width: 180px;
+    height: 130px;
+    background: #1a2535;
+    border: 4px solid #5a4030;
+    box-shadow:
+      inset 0 0 30px rgba(26,37,53,0.9),
+      0 0 0 2px rgba(90,64,48,0.3);
+    z-index: 2;
+  }
+  .window-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 40px,
+      rgba(90,64,48,0.5) 40px, rgba(90,64,48,0.5) 42px
+    ),
+    repeating-linear-gradient(
+      90deg, transparent, transparent 58px,
+      rgba(90,64,48,0.5) 58px, rgba(90,64,48,0.5) 60px
+    );
+  }
+  /* City lights through window */
+  .city-dots {
+    position: absolute;
+    top: 8%;
+    right: 8%;
+    width: 180px;
+    height: 130px;
+    z-index: 1;
+  }
+  .city-dots::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 25%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 85% 15%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 50% 50%, #fff8e1 1px, transparent 2px),
+      radial-gradient(ellipse at 30% 75%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 75% 60%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 60% 30%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 10% 55%, #fff8e1 1px, transparent 2px),
+      radial-gradient(ellipse at 92% 80%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 45% 10%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 70% 85%, #ffe066 1px, transparent 2px);
+    animation: city-blink 4s ease-in-out infinite;
+  }
+  @keyframes city-blink {
+    0%, 85%, 100% { opacity: 0.7; }
+    88% { opacity: 0.15; }
+    93% { opacity: 0.8; }
+  }
+
+  /* Floor */
+  .floor {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 42%;
+    background: linear-gradient(180deg, #0e1018 0%, #0a0b10 100%);
+    transform-origin: bottom center;
+    transform: rotateX(15deg);
+  }
+
+  /* Desk — perspective */
+  .desk-surface {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%) rotateX(25deg);
+    width: 700px;
+    height: 20px;
+    background: linear-gradient(180deg, #4a3020 0%, #3a2010 100%);
+    box-shadow:
+      0 8px 30px rgba(0,0,0,0.8),
+      0 2px 6px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(139,115,85,0.2);
+    z-index: 6;
+  }
+  .desk-front-face {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 50px;
+    background: linear-gradient(180deg, #3a2010 0%, #2a1508 100%);
+    z-index: 5;
+  }
+  .desk-leg-l {
+    position: absolute;
+    bottom: 16%;
+    left: calc(50% - 290px);
+    width: 12px;
+    height: 80px;
+    background: #2a1508;
+    z-index: 4;
+  }
+  .desk-leg-r {
+    position: absolute;
+    bottom: 16%;
+    right: calc(50% - 290px);
+    width: 12px;
+    height: 80px;
+    background: #2a1508;
+    z-index: 4;
+  }
+
+  /* Lamp glow */
+  .main-glow {
+    position: absolute;
+    bottom: 35%;
+    left: 35%;
+    width: 400px;
+    height: 300px;
+    background: radial-gradient(ellipse at 40% 30%, rgba(232,164,48,0.35) 0%, rgba(232,164,48,0.12) 30%, transparent 60%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* Lamp */
+  .lamp {
+    position: absolute;
+    bottom: calc(30% + 20px);
+    left: calc(50% - 130px);
+    z-index: 9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .lamp-shade {
+    width: 90px;
+    height: 45px;
+    background: linear-gradient(180deg, #5a4030 0%, #3a2515 100%);
+    clip-path: polygon(12% 0%, 88% 0%, 100% 100%, 0% 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    position: relative;
+  }
+  .lamp-shade::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 6px;
+    background: #2a1508;
+    border-radius: 0 0 14px 14px;
+  }
+  .lamp-stem {
+    width: 6px;
+    height: 55px;
+    background: linear-gradient(90deg, #3a2515, #5a4030, #3a2515);
+  }
+  .lamp-base {
+    width: 55px;
+    height: 8px;
+    background: linear-gradient(180deg, #5a4030 0%, #2a1508 100%);
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  }
+
+  /* Warm light pool on desk surface */
+  .light-pool {
+    position: absolute;
+    bottom: calc(30% + 18px);
+    left: calc(50% - 180px);
+    width: 200px;
+    height: 60px;
+    background: radial-gradient(ellipse at 50% 50%, rgba(232,164,48,0.3) 0%, rgba(232,164,48,0.1) 50%, transparent 80%);
+    z-index: 7;
+    pointer-events: none;
+  }
+
+  /* Scattered papers on desk */
+  .paper1 {
+    position: absolute;
+    bottom: calc(30% + 20px + 3px);
+    right: calc(50% - 200px);
+    width: 70px;
+    height: 90px;
+    background: #d4c5a9;
+    transform: rotate(-6deg);
+    box-shadow: 3px 4px 10px rgba(0,0,0,0.6);
+    z-index: 7;
+  }
+  .paper1::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 8px;
+    right: 8px;
+    height: 2px;
+    background: rgba(0,0,0,0.12);
+    box-shadow: 0 8px 0 rgba(0,0,0,0.09), 0 16px 0 rgba(0,0,0,0.07), 0 24px 0 rgba(0,0,0,0.05), 0 32px 0 rgba(0,0,0,0.03);
+  }
+  .paper2 {
+    position: absolute;
+    bottom: calc(30% + 20px + 1px);
+    right: calc(50% - 250px);
+    width: 62px;
+    height: 82px;
+    background: #c9b898;
+    transform: rotate(9deg);
+    box-shadow: 3px 4px 10px rgba(0,0,0,0.55);
+    z-index: 6;
+  }
+  .paper2::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 7px;
+    right: 7px;
+    height: 2px;
+    background: rgba(0,0,0,0.1);
+    box-shadow: 0 10px 0 rgba(0,0,0,0.07), 0 20px 0 rgba(0,0,0,0.04);
+  }
+  .paper3 {
+    position: absolute;
+    bottom: calc(30% + 20px + 4px);
+    right: calc(50% - 130px);
+    width: 55px;
+    height: 72px;
+    background: #d8c9ae;
+    transform: rotate(-14deg);
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.4);
+    z-index: 6;
+  }
+
+  /* Guitar — background left, blurred */
+  .guitar-bg {
+    position: absolute;
+    bottom: 30%;
+    left: 5%;
+    z-index: 1;
+    transform: rotate(-5deg) scale(0.85);
+    filter: blur(2px);
+    opacity: 0.6;
+  }
+  .guitar-body {
+    width: 55px;
+    height: 90px;
+    background: radial-gradient(ellipse, #5a3a1a 0%, #3a2010 70%, #2a1508 100%);
+    border-radius: 27px 27px 35px 35px;
+    box-shadow: 4px 4px 20px rgba(0,0,0,0.7);
+  }
+  .guitar-neck-bg {
+    position: absolute;
+    top: -55px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 13px;
+    height: 60px;
+    background: #3a2010;
+    border-radius: 3px;
+  }
+  .guitar-head-bg {
+    position: absolute;
+    top: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 17px;
+    height: 18px;
+    background: #2a1508;
+    border-radius: 3px;
+  }
+
+  /* Laptop */
+  .laptop {
+    position: absolute;
+    bottom: calc(30% + 20px);
+    left: calc(50% - 50px);
+    z-index: 8;
+  }
+  .laptop-screen {
+    width: 130px;
+    height: 82px;
+    background: #111827;
+    border: 2px solid #2d3f55;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 0 20px rgba(232,164,48,0.1),
+      inset 0 0 8px rgba(0,0,0,0.5);
+  }
+  .laptop-screen::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    background: linear-gradient(180deg, #0d1117 0%, #1a2535 100%);
+  }
+  .laptop-screen::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    width: 40%;
+    height: 20px;
+    background: rgba(232,164,48,0.08);
+    border-radius: 2px;
+    box-shadow:
+      0 30px 0 rgba(232,164,48,0.05),
+      0 55px 0 rgba(232,164,48,0.03);
+  }
+  .laptop-keyboard {
+    width: 140px;
+    height: 8px;
+    background: linear-gradient(180deg, #2d3f55 0%, #1a2535 100%);
+    border-radius: 0 0 3px 3px;
+    border: 1px solid #2d3f55;
+    border-top: none;
+  }
+
+  /* Title overlay */
+  .title-overlay {
+    position: fixed;
+    bottom: 10vh;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 18;
+    pointer-events: none;
+  }
+  .title-overlay h1 {
+    font-size: clamp(14px, 2vw, 24px);
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    color: #fff8e1;
+    text-shadow: 0 0 30px rgba(232,164,48,0.5), 0 0 60px rgba(232,164,48,0.2);
+    margin-bottom: 6px;
+  }
+  .title-overlay p {
+    font-size: clamp(9px, 1vw, 12px);
+    letter-spacing: 0.5em;
+    color: rgba(255,248,225,0.45);
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="widescreen">
+  <div class="room-bg"></div>
+
+  <!-- City lights through window -->
+  <div class="city-dots"></div>
+  <div class="window-frame"></div>
+
+  <!-- Floor -->
+  <div class="floor"></div>
+
+  <!-- Guitar background (blurred) -->
+  <div class="guitar-bg">
+    <div class="guitar-head-bg"></div>
+    <div class="guitar-neck-bg"></div>
+    <div class="guitar-body"></div>
+  </div>
+
+  <!-- Desk -->
+  <div class="desk-leg-l"></div>
+  <div class="desk-leg-r"></div>
+  <div class="desk-front-face"></div>
+  <div class="desk-surface"></div>
+
+  <!-- Light -->
+  <div class="main-glow"></div>
+
+  <!-- Lamp -->
+  <div class="lamp">
+    <div class="lamp-shade"></div>
+    <div class="lamp-stem"></div>
+    <div class="lamp-base"></div>
+  </div>
+
+  <!-- Light pool -->
+  <div class="light-pool"></div>
+
+  <!-- Papers -->
+  <div class="paper3"></div>
+  <div class="paper2"></div>
+  <div class="paper1"></div>
+
+  <!-- Laptop -->
+  <div class="laptop">
+    <div class="laptop-screen"></div>
+    <div class="laptop-keyboard"></div>
+  </div>
+</div>
+
+<!-- Effects overlays -->
+<div class="lomo-vignette"></div>
+<div class="grain"></div>
+
+<div class="title-overlay">
+  <h1>NIGHT STUDY 03</h1>
+  <p>2AM Clarity · Cinematic Wide</p>
+</div>
+
+</body>
+</html>

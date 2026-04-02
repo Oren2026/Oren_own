@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Study Mood — Mood Switcher</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0d1117;
+    --glow: rgba(240,165,0,0.25);
+    --glow-strong: rgba(240,165,0,0.08);
+    --obj: #1e2a3a;
+    --desk: #2d1f14;
+    --text: #d4c5a9;
+    --text-dim: rgba(212,197,169,0.45);
+    --wall-top: #0d1117;
+    --wall-bot: #111827;
+    --wine-fill: rgba(200,150,50,0.55);
+    --grain-opacity: 0;
+    --vignette-strength: 0.4;
+    --letterbox: transparent;
+    --glow-spread: 280px;
+    --lamp-head: #2d3f55;
+    --lamp-arm: #1e2a3a;
+  }
+
+  body {
+    background: var(--bg);
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, -apple-system, sans-serif;
+    transition: background 0.5s ease;
+  }
+
+  /* Letterbox — only visible in mood-1 */
+  .letterbox {
+    position: fixed;
+    left: 0; right: 0;
+    height: 10vh;
+    background: var(--letterbox);
+    z-index: 10;
+    transition: background 0.5s ease;
+    pointer-events: none;
+  }
+  .letterbox.top { top: 0; }
+  .letterbox.bottom { bottom: 0; }
+
+  /* Grain — mood-1 and mood-3 */
+  .grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 19;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    transition: opacity 0.5s ease;
+  }
+
+  /* Vignette */
+  .vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 18;
+    background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0,0,0,var(--vignette-strength)) 100%);
+    transition: background 0.5s ease;
+  }
+
+  /* Mood buttons */
+  .mood-controls {
+    position: fixed;
+    top: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    display: flex;
+    gap: 12px;
+  }
+  .mood-btn {
+    padding: 8px 20px;
+    border: 1px solid rgba(212,197,169,0.3);
+    background: rgba(13,17,23,0.7);
+    color: var(--text);
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    border-radius: 2px;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    font-family: inherit;
+  }
+  .mood-btn:hover {
+    border-color: rgba(212,197,169,0.6);
+    background: rgba(30,42,58,0.6);
+  }
+  .mood-btn.active {
+    border-color: rgba(240,165,0,0.6);
+    background: rgba(240,165,0,0.1);
+    color: #ffd166;
+    box-shadow: 0 0 12px rgba(240,165,0,0.15);
+  }
+
+  /* Scene */
+  .scene {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    transition: background 0.5s ease;
+  }
+
+  .wall {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 55%;
+    background: linear-gradient(180deg, var(--wall-top) 0%, var(--wall-bot) 100%);
+    transition: background 0.5s ease;
+  }
+
+  .floor {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 45%;
+    background: linear-gradient(180deg, var(--wall-bot) 0%, var(--bg) 100%);
+    transition: background 0.5s ease;
+  }
+
+  /* Wall art */
+  .wall-art {
+    position: absolute;
+    top: 16%;
+    left: 50%;
+    transform: translateX(-200px);
+    width: 48px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--obj) 0%, #2d3f55 50%, var(--obj) 100%);
+    border: 2px solid #2d3f55;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    transition: background 0.5s ease, border-color 0.5s ease;
+  }
+  .wall-art::before {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    height: 10px;
+    background: linear-gradient(180deg, var(--glow) 0%, transparent 100%);
+    border-radius: 1px;
+    transition: background 0.5s ease;
+  }
+
+  /* Desk */
+  .desk {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 14px;
+    background: var(--desk);
+    border-radius: 3px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 5;
+    transition: background 0.5s ease;
+  }
+  .desk-front {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 55px;
+    background: linear-gradient(180deg, var(--desk) 0%, #1a1008 100%);
+    border-radius: 0 0 3px 3px;
+    z-index: 4;
+    transition: background 0.5s ease;
+  }
+  .desk-leg-l {
+    position: absolute;
+    bottom: 18%;
+    left: calc(50% - 220px);
+    width: 10px;
+    height: 68px;
+    background: #1a1008;
+    z-index: 3;
+  }
+  .desk-leg-r {
+    position: absolute;
+    bottom: 18%;
+    right: calc(50% - 220px);
+    width: 10px;
+    height: 68px;
+    background: #1a1008;
+    z-index: 3;
+  }
+
+  /* Lamp glow */
+  .lamp-glow {
+    position: absolute;
+    bottom: calc(30% + 14px + 26px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--glow-spread);
+    height: 180px;
+    background: radial-gradient(ellipse at 50% 0%, var(--glow) 0%, var(--glow-strong) 35%, transparent 65%);
+    z-index: 3;
+    pointer-events: none;
+    transition: background 0.5s ease, width 0.5s ease;
+  }
+
+  /* Lamp */
+  .lamp {
+    position: absolute;
+    bottom: calc(30% + 14px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .lamp-head {
+    width: 68px;
+    height: 26px;
+    background: var(--lamp-head);
+    clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+    box-shadow: 0 0 20px var(--glow);
+    transition: background 0.5s ease, box-shadow 0.5s ease;
+  }
+  .lamp-arm {
+    width: 4px;
+    height: 48px;
+    background: var(--lamp-arm);
+    transition: background 0.5s ease;
+  }
+  .lamp-foot {
+    width: 36px;
+    height: 5px;
+    background: var(--lamp-arm);
+    border-radius: 2px;
+    transition: background 0.5s ease;
+  }
+
+  /* Laptop */
+  .laptop {
+    position: absolute;
+    bottom: calc(30% + 14px);
+    left: calc(50% - 80px);
+    z-index: 6;
+  }
+  .laptop-screen {
+    width: 100px;
+    height: 62px;
+    background: var(--obj);
+    border-radius: 3px 3px 0 0;
+    border: 2px solid #2d3f55;
+    overflow: hidden;
+    position: relative;
+    transition: background 0.5s ease;
+  }
+  .laptop-screen::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    background: linear-gradient(180deg, var(--bg) 0%, var(--wall-bot) 100%);
+    transition: background 0.5s ease;
+  }
+  .laptop-screen::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    height: 3px;
+    background: var(--glow);
+    border-radius: 1px;
+    box-shadow: 0 9px 0 var(--glow-strong), 0 18px 0 var(--glow-strong);
+    transition: background 0.5s ease;
+  }
+  .laptop-base {
+    width: 108px;
+    height: 5px;
+    background: #2d3f55;
+    border-radius: 0 0 2px 2px;
+  }
+
+  /* Book */
+  .book {
+    position: absolute;
+    bottom: calc(30% + 14px);
+    right: calc(50% - 145px);
+    z-index: 6;
+  }
+  .book-cover {
+    width: 48px;
+    height: 34px;
+    background: var(--obj);
+    border-radius: 2px;
+    position: relative;
+    transform: rotate(-2deg);
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+    transition: background 0.5s ease;
+  }
+  .book-pages {
+    position: absolute;
+    bottom: -3px;
+    left: 3px;
+    width: 42px;
+    height: 28px;
+    background: #d4c5a9;
+    border-radius: 0 2px 2px 0;
+    transform: rotate(1deg);
+  }
+  .book-spine {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 34px;
+    background: var(--lamp-arm);
+    border-radius: 2px 0 0 2px;
+    transition: background 0.5s ease;
+  }
+
+  /* Plant */
+  .plant {
+    position: absolute;
+    bottom: calc(30% + 14px);
+    right: calc(50% - 62px);
+    z-index: 6;
+  }
+  .pot { width: 22px; height: 18px; background: #8b5e3c; border-radius: 2px 2px 4px 4px; position: relative; }
+  .pot::before { content: ''; position: absolute; top: -3px; left: -2px; width: 26px; height: 5px; background: #a0704a; border-radius: 2px; }
+  .soil { position: absolute; top: -4px; left: 2px; width: 18px; height: 4px; background: #3d2a1a; border-radius: 50%; }
+  .stem { position: absolute; bottom: 16px; left: 9px; width: 2px; height: 18px; background: #4a7c59; }
+  .leaf1 { position: absolute; bottom: 26px; left: 3px; width: 13px; height: 9px; background: #5a9c6a; border-radius: 50% 0 50% 50%; transform: rotate(-20deg); }
+  .leaf2 { position: absolute; bottom: 28px; left: 10px; width: 11px; height: 8px; background: #4a8c5a; border-radius: 0 50% 50% 50%; transform: rotate(15deg); }
+  .leaf3 { position: absolute; bottom: 32px; left: 7px; width: 9px; height: 7px; background: #6aac7a; border-radius: 50%; transform: rotate(5deg); }
+
+  /* Wine */
+  .wine {
+    position: absolute;
+    bottom: calc(30% + 14px);
+    left: calc(50% + 55px);
+    z-index: 7;
+  }
+  .wine-top {
+    width: 16px;
+    height: 18px;
+    background: var(--wine-fill);
+    border-radius: 0 0 8px 8px;
+    border: 1.5px solid rgba(200,180,130,0.3);
+    position: relative;
+    box-shadow: 0 0 8px var(--glow-strong);
+    transition: background 0.5s ease, box-shadow 0.5s ease;
+  }
+  .wine-top::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 11px;
+    height: 7px;
+    border: 1.5px solid rgba(200,180,130,0.3);
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+  }
+  .wine-stem { width: 2px; height: 10px; background: rgba(200,180,130,0.3); margin: 0 auto; }
+  .wine-base { width: 10px; height: 2px; background: rgba(200,180,130,0.3); margin: 0 auto; border-radius: 50%; }
+
+  /* Title */
+  .title {
+    position: fixed;
+    bottom: 8vh;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .title h1 {
+    font-size: clamp(14px, 2vw, 22px);
+    font-weight: 300;
+    letter-spacing: 0.4em;
+    color: var(--text);
+    text-shadow: 0 0 20px var(--glow);
+    margin-bottom: 6px;
+    transition: color 0.5s ease, text-shadow 0.5s ease;
+  }
+  .title p {
+    font-size: clamp(9px, 1.1vw, 12px);
+    letter-spacing: 0.5em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    transition: color 0.5s ease;
+  }
+</style>
+</head>
+<body class="mood-2">
+
+<div class="letterbox top"></div>
+<div class="letterbox bottom"></div>
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<div class="mood-controls">
+  <button class="mood-btn" onclick="setMood('mood-1')">🎬 Cinema</button>
+  <button class="mood-btn active" onclick="setMood('mood-2')">□ Minimal</button>
+  <button class="mood-btn" onclick="setMood('mood-3')">🎥 Wide</button>
+</div>
+
+<div class="scene">
+  <div class="wall"></div>
+  <div class="wall-art"></div>
+  <div class="floor"></div>
+
+  <div class="desk-leg-l"></div>
+  <div class="desk-leg-r"></div>
+  <div class="desk"></div>
+  <div class="desk-front"></div>
+
+  <div class="lamp-glow"></div>
+
+  <div class="lamp">
+    <div class="lamp-head"></div>
+    <div class="lamp-arm"></div>
+    <div class="lamp-foot"></div>
+  </div>
+
+  <div class="laptop">
+    <div class="laptop-screen"></div>
+    <div class="laptop-base"></div>
+  </div>
+
+  <div class="book">
+    <div class="book-cover">
+      <div class="book-spine"></div>
+    </div>
+    <div class="book-pages"></div>
+  </div>
+
+  <div class="plant">
+    <div class="leaf3"></div>
+    <div class="leaf2"></div>
+    <div class="leaf1"></div>
+    <div class="stem"></div>
+    <div class="pot">
+      <div class="soil"></div>
+    </div>
+  </div>
+
+  <div class="wine">
+    <div class="wine-top"></div>
+    <div class="wine-stem"></div>
+    <div class="wine-base"></div>
+  </div>
+</div>
+
+<div class="title">
+  <h1>NIGHT STUDY MOOD</h1>
+  <p>Cinema · Minimal · Wide</p>
+</div>
+
+<script>
+function setMood(mood) {
+  document.body.className = mood;
+  document.querySelectorAll('.mood-btn').forEach(function(b) { b.classList.remove('active'); });
+  var btns = document.querySelectorAll('.mood-btn');
+  if (mood === 'mood-1') btns[0].classList.add('active');
+  else if (mood === 'mood-2') btns[1].classList.add('active');
+  else btns[2].classList.add('active');
+}
+</script>
+
+</body>
+</html>

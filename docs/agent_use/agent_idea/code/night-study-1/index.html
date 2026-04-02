@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Study 01 — Cinema Noir</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0c12;
+    color: #d4c5a9;
+    font-family: "Georgia", "Times New Roman", serif;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Letterbox */
+  .letterbox {
+    position: fixed;
+    left: 0; right: 0;
+    height: 10vh;
+    background: #000;
+    z-index: 10;
+  }
+  .letterbox.top { top: 0; }
+  .letterbox.bottom { bottom: 0; }
+
+  /* Film grain overlay */
+  .grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
+    opacity: 0.07;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+    animation: grain-shift 0.3s steps(1) infinite;
+  }
+  @keyframes grain-shift {
+    0%   { background-position: 0 0; }
+    25%  { background-position: -40px 20px; }
+    50%  { background-position: -80px -10px; }
+    75%  { background-position: -20px 60px; }
+    100% { background-position: 0 0; }
+  }
+
+  /* Vignette */
+  .vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 15;
+    background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(3,5,8,0.7) 100%);
+  }
+
+  /* Room scene */
+  .room {
+    position: relative;
+    width: 100vw;
+    height: 80vh;
+    background:
+      radial-gradient(ellipse at 52% 58%, rgba(245,200,66,0.22) 0%, rgba(245,200,66,0.06) 20%, transparent 55%),
+      radial-gradient(ellipse at 48% 80%, rgba(139,115,85,0.15) 0%, transparent 40%),
+      linear-gradient(180deg, #0a0c12 0%, #0e1018 40%, #0a0c12 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  /* Wall subtle gradient */
+  .wall {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(170deg, #0d1018 0%, #0a0c12 60%, #080a10 100%);
+  }
+
+  /* Window — upper right */
+  .window {
+    position: absolute;
+    top: 8vh;
+    right: 12vw;
+    width: 130px;
+    height: 90px;
+    background: #1a2535;
+    border: 3px solid #8b7355;
+    box-shadow:
+      inset 0 0 20px rgba(26,37,53,0.8),
+      0 0 0 1px rgba(139,115,85,0.3);
+  }
+  .window::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(255,240,200,0.15) 0%, transparent 50%),
+      repeating-linear-gradient(0deg, transparent, transparent 43px, rgba(139,115,85,0.4) 43px, rgba(139,115,85,0.4) 45px),
+      repeating-linear-gradient(90deg, transparent, transparent 63px, rgba(139,115,85,0.4) 63px, rgba(139,115,85,0.4) 65px);
+  }
+  /* City lights outside */
+  .city-lights {
+    position: absolute;
+    top: 8vh;
+    right: 12vw;
+    width: 130px;
+    height: 90px;
+    z-index: 1;
+  }
+  .city-lights::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 20%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 80% 15%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 40% 40%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 60% 60%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 25% 70%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 75% 80%, #ffe066 1px, transparent 2px),
+      radial-gradient(ellipse at 55% 25%, #fff8e1 1px, transparent 2px),
+      radial-gradient(ellipse at 90% 45%, #ffe066 1px, transparent 2px);
+    animation: blink 3s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 90%, 100% { opacity: 0.8; }
+    92% { opacity: 0.2; }
+    95% { opacity: 0.9; }
+  }
+
+  /* Desk */
+  .desk {
+    position: absolute;
+    bottom: 18vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 580px;
+    height: 28px;
+    background: linear-gradient(180deg, #5a4030 0%, #3d2a1a 100%);
+    border-radius: 2px;
+    box-shadow:
+      0 4px 20px rgba(0,0,0,0.8),
+      0 2px 4px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(139,115,85,0.3);
+    z-index: 5;
+  }
+  .desk-leg-left {
+    position: absolute;
+    bottom: 8vh;
+    left: calc(50% - 240px);
+    width: 14px;
+    height: 80px;
+    background: linear-gradient(90deg, #3d2a1a 0%, #5a4030 50%, #3d2a1a 100%);
+    box-shadow: 2px 0 8px rgba(0,0,0,0.6);
+    z-index: 4;
+  }
+  .desk-leg-right {
+    position: absolute;
+    bottom: 8vh;
+    right: calc(50% - 240px);
+    width: 14px;
+    height: 80px;
+    background: linear-gradient(90deg, #3d2a1a 0%, #5a4030 50%, #3d2a1a 100%);
+    box-shadow: -2px 0 8px rgba(0,0,0,0.6);
+    z-index: 4;
+  }
+
+  /* Lamp */
+  .lamp {
+    position: absolute;
+    bottom: calc(18vh + 28px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .lamp-shade {
+    width: 80px;
+    height: 40px;
+    background: linear-gradient(180deg, #6b5a3a 0%, #4a3d28 100%);
+    clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    position: relative;
+  }
+  .lamp-shade::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 8px;
+    background: #3d2a1a;
+    border-radius: 0 0 15px 15px;
+  }
+  .lamp-stem {
+    width: 6px;
+    height: 45px;
+    background: linear-gradient(90deg, #4a3d28, #6b5a3a, #4a3d28);
+  }
+  .lamp-base {
+    width: 50px;
+    height: 8px;
+    background: linear-gradient(180deg, #6b5a3a 0%, #3d2a1a 100%);
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  }
+
+  /* Lamp glow */
+  .lamp-glow {
+    position: absolute;
+    bottom: calc(18vh + 28px + 40px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 200px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(245,200,66,0.35) 0%, rgba(245,200,66,0.1) 40%, transparent 70%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* Laptop */
+  .laptop {
+    position: absolute;
+    bottom: calc(18vh + 28px);
+    left: calc(50% - 100px);
+    z-index: 6;
+  }
+  .laptop-screen {
+    width: 120px;
+    height: 76px;
+    background: #1a1a2e;
+    border: 2px solid #3d3d5c;
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+    box-shadow:
+      0 0 20px rgba(245,200,66,0.15),
+      inset 0 0 10px rgba(245,200,66,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+  .laptop-screen::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    background: linear-gradient(135deg, #0d1b2a 0%, #1b2a3a 100%);
+    box-shadow: 0 0 8px rgba(245,200,66,0.1);
+  }
+  .laptop-screen::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    right: 8px;
+    height: 4px;
+    background: rgba(245,200,66,0.2);
+    border-radius: 2px;
+    box-shadow: 0 8px 0 rgba(245,200,66,0.1), 0 16px 0 rgba(245,200,66,0.07), 0 24px 0 rgba(245,200,66,0.04);
+  }
+  .laptop-keyboard {
+    width: 130px;
+    height: 8px;
+    background: linear-gradient(180deg, #2a2a40 0%, #1a1a2e 100%);
+    border-radius: 0 0 2px 2px;
+    border: 1px solid #3d3d5c;
+    border-top: none;
+  }
+
+  /* Research notes */
+  .note1 {
+    position: absolute;
+    bottom: calc(18vh + 28px + 4px);
+    right: calc(50% - 160px);
+    width: 60px;
+    height: 80px;
+    background: #d4c5a9;
+    transform: rotate(-5deg);
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.5);
+    z-index: 6;
+  }
+  .note1::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 8px;
+    right: 8px;
+    height: 2px;
+    background: rgba(0,0,0,0.15);
+    box-shadow: 0 8px 0 rgba(0,0,0,0.1), 0 16px 0 rgba(0,0,0,0.08), 0 24px 0 rgba(0,0,0,0.05);
+  }
+  .note2 {
+    position: absolute;
+    bottom: calc(18vh + 28px);
+    right: calc(50% - 200px);
+    width: 55px;
+    height: 70px;
+    background: #c9b898;
+    transform: rotate(8deg);
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.5);
+    z-index: 5;
+  }
+  .note2::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 6px;
+    right: 6px;
+    height: 2px;
+    background: rgba(0,0,0,0.12);
+    box-shadow: 0 10px 0 rgba(0,0,0,0.08), 0 20px 0 rgba(0,0,0,0.04);
+  }
+  .note3 {
+    position: absolute;
+    bottom: calc(18vh + 28px + 2px);
+    right: calc(50% - 90px);
+    width: 50px;
+    height: 65px;
+    background: #d8c9ae;
+    transform: rotate(-12deg);
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.4);
+    z-index: 5;
+  }
+
+  /* Wine glass */
+  .wine {
+    position: absolute;
+    bottom: calc(18vh + 28px);
+    left: calc(50% + 120px);
+    z-index: 7;
+  }
+  .wine-body {
+    width: 22px;
+    height: 28px;
+    background: linear-gradient(180deg,
+      rgba(200,160,60,0.7) 0%,
+      rgba(180,120,40,0.8) 60%,
+      rgba(160,100,30,0.6) 100%);
+    border-radius: 0 0 10px 10px;
+    position: relative;
+    box-shadow:
+      inset 2px 0 4px rgba(255,220,100,0.2),
+      0 0 10px rgba(245,200,66,0.2);
+  }
+  .wine-body::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 10px;
+    border: 1.5px solid rgba(200,180,130,0.5);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+  }
+  .wine-stem {
+    width: 3px;
+    height: 16px;
+    background: rgba(200,180,130,0.4);
+    margin: 0 auto;
+  }
+  .wine-base {
+    width: 14px;
+    height: 3px;
+    background: rgba(200,180,130,0.4);
+    margin: 0 auto;
+    border-radius: 50%;
+  }
+
+  /* Guitar */
+  .guitar {
+    position: absolute;
+    bottom: 18vh;
+    right: 10vw;
+    z-index: 2;
+    transform: rotate(-3deg);
+  }
+  .guitar-body {
+    width: 50px;
+    height: 80px;
+    background: radial-gradient(ellipse at 50% 50%, #6b4a2a 0%, #4a2f18 70%, #3a2010 100%);
+    border-radius: 25px 25px 30px 30px;
+    box-shadow:
+      4px 4px 20px rgba(0,0,0,0.7),
+      inset -4px -4px 10px rgba(0,0,0,0.3),
+      inset 4px 4px 10px rgba(139,115,85,0.2);
+  }
+  .guitar-neck {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 55px;
+    background: linear-gradient(90deg, #3a2010, #6b4a2a, #3a2010);
+    border-radius: 3px 3px 0 0;
+  }
+  .guitar-head {
+    position: absolute;
+    top: -65px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 18px;
+    background: #3a2010;
+    border-radius: 3px;
+  }
+  .guitar-strings {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 95px;
+  }
+  .guitar-strings::before,
+  .guitar-strings::after {
+    content: '';
+    position: absolute;
+    left: 2px;
+    width: 1px;
+    height: 95px;
+    background: rgba(200,190,160,0.4);
+  }
+  .guitar-strings::after {
+    left: 7px;
+  }
+
+  /* Title overlay */
+  .title-overlay {
+    position: fixed;
+    bottom: 12vh;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 18;
+    pointer-events: none;
+  }
+  .title-overlay h1 {
+    font-size: clamp(16px, 2.5vw, 28px);
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    color: #d4c5a9;
+    text-shadow: 0 0 30px rgba(245,200,66,0.5), 0 0 60px rgba(245,200,66,0.2);
+    margin-bottom: 8px;
+  }
+  .title-overlay p {
+    font-size: clamp(10px, 1.2vw, 13px);
+    letter-spacing: 0.5em;
+    color: rgba(212,197,169,0.5);
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="letterbox top"></div>
+<div class="letterbox bottom"></div>
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<div class="room">
+  <div class="wall"></div>
+
+  <!-- Window + city lights -->
+  <div class="city-lights"></div>
+  <div class="window"></div>
+
+  <!-- Guitar -->
+  <div class="guitar">
+    <div class="guitar-head"></div>
+    <div class="guitar-neck"></div>
+    <div class="guitar-strings"></div>
+    <div class="guitar-body"></div>
+  </div>
+
+  <!-- Desk -->
+  <div class="desk"></div>
+  <div class="desk-leg-left"></div>
+  <div class="desk-leg-right"></div>
+
+  <!-- Lamp glow (behind lamp) -->
+  <div class="lamp-glow"></div>
+
+  <!-- Lamp -->
+  <div class="lamp">
+    <div class="lamp-shade"></div>
+    <div class="lamp-stem"></div>
+    <div class="lamp-base"></div>
+  </div>
+
+  <!-- Laptop -->
+  <div class="laptop">
+    <div class="laptop-screen"></div>
+    <div class="laptop-keyboard"></div>
+  </div>
+
+  <!-- Notes -->
+  <div class="note3"></div>
+  <div class="note2"></div>
+  <div class="note1"></div>
+
+  <!-- Wine -->
+  <div class="wine">
+    <div class="wine-body"></div>
+    <div class="wine-stem"></div>
+    <div class="wine-base"></div>
+  </div>
+</div>
+
+<div class="title-overlay">
+  <h1>NIGHT STUDY 01</h1>
+  <p>Cinema Noir · Dark Academia</p>
+</div>
+
+</body>
+</html>
