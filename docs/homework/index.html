@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>作業呈現 — 黑研所</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: rgba(255,255,255,0.04);
+      --surface-hover: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.08);
+      --text: #e8e8f0;
+      --text-muted: rgba(232,232,240,0.40);
+      --accent: #6ee7f7;
+      --accent-warm: #fbbf24;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Background ── */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(110,231,247,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(110,231,247,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      padding: 3rem 5% 2rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% -10%, rgba(251,191,36,0.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .header-inner { position: relative; z-index: 1; }
+
+    header h1 {
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    header p {
+      margin-top: 0.6rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    main {
+      flex: 1;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 5% 4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+      padding-left: 0.5rem;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent-warm);
+    }
+    .card:hover {
+      background: var(--surface-hover);
+      transform: translateY(-3px);
+      border-color: rgba(251,191,36,0.25);
+    }
+
+    .card-icon { font-size: 1.8rem; }
+    .card-title { font-size: 1rem; font-weight: 700; }
+    .card-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
+    .card-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      background: rgba(251,191,36,0.08);
+      border: 1px solid rgba(251,191,36,0.15);
+      border-radius: 20px;
+      color: var(--accent-warm);
+      align-self: flex-start;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem 5%;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      position: relative;
+      z-index: 1;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>作業呈現</h1>
+    <p>各科課堂作業與專題展示</p>
+  </div>
+</header>
+
+<main>
+  <p class="section-label">課程列表</p>
+  <div class="cards">
+
+    <a href="CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/index.html" class="card">
+      <div class="card-icon">📚</div>
+      <div class="card-title">CCC 作業天地</div>
+      <div class="card-desc">課堂練習與專題實作，包含網頁設計、系統程式等作業成果。</div>
+      <div class="card-tag">授課教師</div>
+    </a>
+
+    <!-- 未來其他課程在此新增 -->
+
+  </div>
+</main>
+
+<footer>
+  <a href="https://oren2026.github.io/Oren_own/docs/">← 黑研所</a>
+</footer>
+
+</body>
+</html>
