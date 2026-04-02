@@ -23,18 +23,6 @@
 
 ---
 
-## ⚙️ Cron 排程
-
-| 任務 | Agent | 頻率 |
-|------|-------|------|
-| 更新加密貨幣價格 | Coder | 每 10 分鐘 |
-| 搜尋興趣主題 | Researcher-test | 每 15 分鐘 |
-| 新增興趣主題 | Researcher-test | 每 4 小時 |
-| 檢驗JSON內容 | Inspector | 每小時 |
-| Coder/Researcher 檢查訊息 | 各 agent | 每小時 |
-
----
-
 ## 💡 關於這個系統
 
 由興趣驅動的個人知識庫。透過 multi-agent 協作，系統可以自動研究、實作、展示。
