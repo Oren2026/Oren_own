@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>黑研所</title>
+  <style>
+    :root {
+      --bg: #08090f;
+      --surface: rgba(255,255,255,0.03);
+      --surface-hover: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.07);
+      --text: #e8e8f0;
+      --text-muted: rgba(232,232,240,0.40);
+      --neon: #6ee7f7;
+      --neon2: #a78bfa;
+      --neon3: #fb923c;
+      --neon4: #86efac;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4rem;
+      overflow: hidden;
+    }
+
+    /* ── Background grid ── */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(110,231,247,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(110,231,247,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Neon sign ── */
+    .neon-wrap {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .neon-title {
+      font-size: clamp(3.5rem, 12vw, 7rem);
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      color: #fff;
+      text-shadow:
+        0 0 7px #fff,
+        0 0 14px #fff,
+        0 0 28px var(--neon),
+        0 0 56px var(--neon),
+        0 0 100px var(--neon);
+      animation: neonFlicker 3.5s infinite;
+    }
+
+    @keyframes neonFlicker {
+      0%,  95%, 100% {
+        text-shadow:
+          0 0 7px #fff,
+          0 0 14px #fff,
+          0 0 28px var(--neon),
+          0 0 56px var(--neon),
+          0 0 100px var(--neon);
+        opacity: 1;
+      }
+      96% {
+        text-shadow:
+          0 0 3px #fff,
+          0 0 8px var(--neon);
+        opacity: 0.85;
+      }
+      97% {
+        text-shadow:
+          0 0 7px #fff,
+          0 0 20px var(--neon),
+          0 0 40px var(--neon);
+        opacity: 1;
+      }
+      98% {
+        text-shadow:
+          0 0 2px rgba(255,255,255,0.3),
+          0 0 6px rgba(110,231,247,0.4);
+        opacity: 0.7;
+      }
+    }
+
+    .neon-sub {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* ── Links grid ── */
+    .links {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      width: min(560px, 90vw);
+      position: relative;
+      z-index: 1;
+    }
+
+    .link-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 1.25rem;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .link-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .link-card:nth-child(1)::before { background: var(--neon); }
+    .link-card:nth-child(2)::before { background: var(--neon2); }
+    .link-card:nth-child(3)::before { background: var(--neon3); }
+    .link-card:nth-child(4)::before { background: var(--neon4); }
+
+    .link-card:hover {
+      background: var(--surface-hover);
+      transform: translateY(-4px);
+    }
+    .link-card:nth-child(1):hover { border-color: rgba(110,231,247,0.3); }
+    .link-card:nth-child(2):hover { border-color: rgba(167,139,250,0.3); }
+    .link-card:nth-child(3):hover { border-color: rgba(251,146,60,0.3); }
+    .link-card:nth-child(4):hover { border-color: rgba(134,239,172,0.3); }
+
+    .link-card-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
+    .link-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .link-card-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+    footer a { color: var(--neon); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .links { grid-template-columns: 1fr; }
+      .neon-title { letter-spacing: 0.08em; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="neon-wrap">
+    <div class="neon-title">黑研所</div>
+    <div class="neon-sub">Black Cortex Lab</div>
+  </div>
+
+  <div class="links">
+    <a href="CONTEST/index.html" class="link-card">
+      <div class="link-card-icon">🏁</div>
+      <div class="link-card-title">比賽專區</div>
+      <div class="link-card-desc">TDK、TB3、上銀撞球</div>
+    </a>
+    <a href="agent_use/index.html" class="link-card">
+      <div class="link-card-icon">🤖</div>
+      <div class="link-card-title">小黑們</div>
+      <div class="link-card-desc">agent_idea · agent_idle</div>
+    </a>
+    <a href="BlackCortex/index.html" class="link-card">
+      <div class="link-card-icon">🧠</div>
+      <div class="link-card-title">黑金</div>
+      <div class="link-card-desc">知識庫 · 股票研究分析</div>
+    </a>
+    <a href="CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/index.html" class="link-card">
+      <div class="link-card-icon">📚</div>
+      <div class="link-card-title">作業呈現</div>
+      <div class="link-card-desc">課堂作業與專題</div>
+    </a>
+  </div>
+
+  <footer>
+    maintained by <a href="https://github.com/Oren2026">Oren</a>
+  </footer>
+
+</body>
+</html>
