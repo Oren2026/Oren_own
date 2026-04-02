@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Study — Pulse</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  background:#0d0d0d;
+  color:#e8e8e8;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── Hero ── */
+.hero{
+  position:relative;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+/* floating particles via box-shadow */
+.particles{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.particle{
+  position:absolute;
+  border-radius:50%;
+  background:#f5a623;
+}
+
+/* Each particle has its own size, position, animation */
+.p1{width:3px;height:3px;top:12%;left:8%;animation:float1 28s ease-in-out infinite;box-shadow:0 0 6px rgba(245,166,35,0.7)}
+.p2{width:2px;height:2px;top:20%;left:22%;animation:float2 35s ease-in-out infinite;box-shadow:0 0 4px rgba(245,166,35,0.5)}
+.p3{width:4px;height:4px;top:8%;left:65%;animation:float3 22s ease-in-out infinite;box-shadow:0 0 8px rgba(245,166,35,0.6)}
+.p4{width:2px;height:2px;top:35%;left:80%;animation:float4 30s ease-in-out infinite;box-shadow:0 0 4px rgba(245,166,35,0.4)}
+.p5{width:3px;height:3px;top:55%;left:15%;animation:float5 25s ease-in-out infinite;box-shadow:0 0 6px rgba(245,166,35,0.5)}
+.p6{width:2px;height:2px;top:70%;left:45%;animation:float6 38s ease-in-out infinite;box-shadow:0 0 4px rgba(245,166,35,0.3)}
+.p7{width:3px;height:3px;top:45%;left:75%;animation:float7 32s ease-in-out infinite;box-shadow:0 0 6px rgba(245,166,35,0.6)}
+.p8{width:2px;height:2px;top:80%;left:30%;animation:float8 27s ease-in-out infinite;box-shadow:0 0 4px rgba(245,166,35,0.4)}
+.p9{width:4px;height:4px;top:15%;left:50%;animation:float9 40s ease-in-out infinite;box-shadow:0 0 8px rgba(245,166,35,0.5)}
+.p10{width:2px;height:2px;top:60%;left:90%;animation:float10 33s ease-in-out infinite;box-shadow:0 0 4px rgba(245,166,35,0.3)}
+.p11{width:3px;height:3px;top:88%;left:60%;animation:float11 29s ease-in-out infinite;box-shadow:0 0 6px rgba(245,166,35,0.4)}
+.p12{width:2px;height:2px;top:40%;left:5%;animation:float12 36s ease-in-out infinite;box-shadow:0 0 4px rgba(245,166,35,0.5)}
+
+@keyframes float1{0%,100%{transform:translate(0,0)}25%{transform:translate(40px,-30px)}50%{transform:translate(20px,20px)}75%{transform:translate(-20px,-10px)}}
+@keyframes float2{0%,100%{transform:translate(0,0)}30%{transform:translate(-50px,20px)}60%{transform:translate(30px,-40px)}}
+@keyframes float3{0%,100%{transform:translate(0,0)}20%{transform:translate(60px,30px)}70%{transform:translate(-30px,-50px)}}
+@keyframes float4{0%,100%{transform:translate(0,0)}40%{transform:translate(-40px,-20px)}80%{transform:translate(20px,40px)}}
+@keyframes float5{0%,100%{transform:translate(0,0)}35%{transform:translate(30px,50px)}65%{transform:translate(-50px,-20px)}}
+@keyframes float6{0%,100%{transform:translate(0,0)}25%{transform:translate(-20px,-40px)}75%{transform:translate(40px,30px)}}
+@keyframes float7{0%,100%{transform:translate(0,0)}45%{transform:translate(50px,-30px)}70%{transform:translate(-30px,20px)}}
+@keyframes float8{0%,100%{transform:translate(0,0)}30%{transform:translate(-30px,40px)}65%{transform:translate(20px,-20px)}}
+@keyframes float9{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,40px)}80%{transform:translate(-60px,-40px)}}
+@keyframes float10{0%,100%{transform:translate(0,0)}20%{transform:translate(-40px,30px)}60%{transform:translate(30px,-30px)}}
+@keyframes float11{0%,100%{transform:translate(0,0)}35%{transform:translate(50px,-20px)}70%{transform:translate(-20px,50px)}}
+@keyframes float12{0%,100%{transform:translate(0,0)}40%{transform:translate(-50px,-40px)}75%{transform:translate(30px,20px)}}
+
+.hero-title{
+  font-size:clamp(2.5rem,7vw,3.5rem);
+  font-weight:700;
+  letter-spacing:0.25em;
+  color:#e8e8e8;
+  position:relative;
+  z-index:1;
+}
+.hero-sub{
+  margin-top:1rem;
+  font-size:0.9rem;
+  letter-spacing:0.3em;
+  color:#f5a623;
+  position:relative;
+  z-index:1;
+}
+.hero-quote{
+  position:absolute;
+  bottom:3rem;
+  font-size:0.8rem;
+  font-style:italic;
+  color:#e8dcc4;
+  opacity:0.5;
+  letter-spacing:0.05em;
+  text-align:center;
+  padding:0 2rem;
+}
+
+/* ── Stats ── */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:2rem;
+  max-width:900px;
+  margin:5rem auto 6rem;
+  padding:0 2rem;
+}
+
+.stat{
+  text-align:center;
+  padding:2rem 1rem;
+  border:1px solid rgba(245,166,35,0.2);
+  border-radius:12px;
+  background:rgba(245,166,35,0.03);
+  opacity:0;
+  transform:translateY(20px);
+  transition:opacity 0.6s ease,transform 0.6s ease;
+}
+.stat.visible{opacity:1;transform:translateY(0)}
+
+.stat-num{
+  font-size:3rem;
+  font-weight:700;
+  color:#f5a623;
+  display:block;
+  font-variant-numeric:tabular-nums;
+}
+.stat-label{
+  font-size:0.78rem;
+  letter-spacing:0.2em;
+  color:#e8dcc4;
+  margin-top:0.5rem;
+  opacity:0.7;
+}
+
+/* ── Tools Grid ── */
+.tools-section{
+  max-width:900px;
+  margin:0 auto 5rem;
+  padding:0 2rem;
+}
+.tools-title{
+  text-align:center;
+  font-size:0.7rem;
+  letter-spacing:0.5em;
+  color:#f5a623;
+  opacity:0.6;
+  margin-bottom:2.5rem;
+}
+.tools-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;
+}
+
+.tool-card{
+  background:#141414;
+  border:1px solid rgba(245,166,35,0.15);
+  border-radius:14px;
+  padding:1.5rem;
+  cursor:pointer;
+  transition:transform 0.3s ease,box-shadow 0.3s ease,border-color 0.3s ease;
+  position:relative;
+  overflow:hidden;
+}
+.tool-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 12px 40px rgba(245,166,35,0.2);
+  border-color:rgba(245,166,35,0.5);
+}
+.tool-card.open{border-color:rgba(245,166,35,0.7)}
+
+.tool-icon{font-size:2rem;margin-bottom:0.8rem;display:block}
+.tool-name{font-size:0.95rem;font-weight:600;color:#e8e8e8;margin-bottom:0.3rem}
+.tool-desc{font-size:0.75rem;color:#e8dcc4;opacity:0.6;letter-spacing:0.03em}
+
+.tool-detail{
+  display:none;
+  margin-top:1rem;
+  padding-top:1rem;
+  border-top:1px solid rgba(245,166,35,0.1);
+}
+.tool-detail.show{display:block}
+.tool-detail p{font-size:0.78rem;color:#e8dcc4;line-height:1.7}
+.tool-tag{font-size:0.65rem;background:rgba(245,166,35,0.12);color:#f5a623;padding:0.2rem 0.6rem;border-radius:20px;display:inline-block;margin-top:0.6rem}
+
+/* ── Footer ── */
+.footer-destination{
+  height:100vh;
+  background:#0d0d0d;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  scroll-margin-top:0;
+}
+.footer-lamp{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:#f5a623;
+  animation:pulse 0.8s ease-in-out infinite;
+  margin-bottom:3rem;
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 30px 10px rgba(245,166,35,0.6),0 0 60px 20px rgba(245,166,35,0.3)}
+  50%{box-shadow:0 0 60px 20px rgba(245,166,35,0.9),0 0 120px 40px rgba(245,166,35,0.5)}
+}
+
+.footer-btn{
+  display:inline-block;
+  padding:0.9rem 2.5rem;
+  background:transparent;
+  border:1px solid rgba(245,166,35,0.5);
+  color:#f5a623;
+  font-size:0.85rem;
+  letter-spacing:0.3em;
+  cursor:pointer;
+  text-decoration:none;
+  transition:background 0.3s ease,border-color 0.3s ease;
+  border-radius:8px;
+}
+.footer-btn:hover{background:rgba(245,166,35,0.1);border-color:#f5a623}
+
+@media(max-width:640px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .tools-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="particles">
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+    <div class="particle p4"></div>
+    <div class="particle p5"></div>
+    <div class="particle p6"></div>
+    <div class="particle p7"></div>
+    <div class="particle p8"></div>
+    <div class="particle p9"></div>
+    <div class="particle p10"></div>
+    <div class="particle p11"></div>
+    <div class="particle p12"></div>
+  </div>
+  <h1 class="hero-title">黑研所</h1>
+  <p class="hero-sub">深夜工具箱 · 知識心跳</p>
+  <p class="hero-quote">「這個實驗室，屬於那些喜歡在安靜的夜裡工作的人。」</p>
+</section>
+
+<!-- Stats -->
+<section class="stats" id="stats">
+  <div class="stat" data-target="4">
+    <span class="stat-num">0</span>
+    <span class="stat-label">個成員</span>
+  </div>
+  <div class="stat" data-target="12">
+    <span class="stat-num">0</span>
+    <span class="stat-label">項研究筆記</span>
+  </div>
+  <div class="stat" data-target="3">
+    <span class="stat-num">0</span>
+    <span class="stat-label">種酒精哲學</span>
+  </div>
+  <div class="stat" data-target="99">
+    <span class="stat-num">0</span>
+    <span class="stat-label">次深夜創作</span>
+  </div>
+</section>
+
+<!-- Tools -->
+<section class="tools-section">
+  <p class="tools-title">— 深夜工具箱 —</p>
+  <div class="tools-grid">
+
+    <div class="tool-card" onclick="toggleCard(this)">
+      <span class="tool-icon">🎤</span>
+      <div class="tool-name">e835 麥克風</div>
+      <div class="tool-desc">人聲的秘密</div>
+      <div class="tool-detail">
+        <p>深夜的人聲錄製，捕捉的是情緒而不是技術。在 2AM 的時刻，對著 e835 說出那些白天不敢說的話。</p>
+        <span class="tool-tag">麥克風使用</span>
+      </div>
+    </div>
+
+    <div class="tool-card" onclick="toggleCard(this)">
+      <span class="tool-icon">🎚</span>
+      <div class="tool-name">Mixer</div>
+      <div class="tool-desc">聲音的雕塑</div>
+      <div class="tool-detail">
+        <p>每一軌都是一塊大理石。Mixer 是深夜的雕刻刀，把情緒的形狀從聲音的混沌中釋放出來。</p>
+        <span class="tool-tag">聲音工程</span>
+      </div>
+    </div>
+
+    <div class="tool-card" onclick="toggleCard(this)">
+      <span class="tool-icon">🎹</span>
+      <div class="tool-name">即興創作</div>
+      <div class="tool-desc">沒有樂譜的音樂</div>
+      <div class="tool-detail">
+        <p>即興是最高級的演奏——沒有排練，沒有修改，只有此時此刻的聲音。深夜的鍵盤，每一個音符都是決定。</p>
+        <span class="tool-tag">創作</span>
+      </div>
+    </div>
+
+    <div class="tool-card" onclick="toggleCard(this)">
+      <span class="tool-icon">🍷</span>
+      <div class="tool-name">酒精哲學</div>
+      <div class="tool-desc">放空的美學</div>
+      <div class="tool-detail">
+        <p>酒杯裡沒有答案，但有一種清醒。一杯酒的時光，是思緒最自由的時刻。</p>
+        <span class="tool-tag">哲學</span>
+      </div>
+    </div>
+
+    <div class="tool-card" onclick="toggleCard(this)">
+      <span class="tool-icon">📖</span>
+      <div class="tool-name">閱讀清單</div>
+      <div class="tool-desc">深夜的知識債</div>
+      <div class="tool-detail">
+        <p>永遠讀不完的書單，是智識生活最好的證明。深夜的閱讀，專注度是白天的三倍。</p>
+        <span class="tool-tag">閱讀</span>
+      </div>
+    </div>
+
+    <div class="tool-card" onclick="toggleCard(this)">
+      <span class="tool-icon">⚡</span>
+      <div class="tool-name">協作系統</div>
+      <div class="tool-desc">黑黑一家的工作流</div>
+      <div class="tool-detail">
+        <p>黑皮、黑輪、和他們的工程師——一個小型特攻隊的工作流系統，在深夜中保持同步。</p>
+        <span class="tool-tag">協作</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Footer destination -->
+<section class="footer-destination" id="deep-night">
+  <div class="footer-lamp"></div>
+  <a href="#deep-night" class="footer-btn" onclick="scrollToNight(event)">走進深夜</a>
+</section>
+
+<script>
+// Scroll to deep night section
+function scrollToNight(e){
+  e.preventDefault();
+  document.getElementById('deep-night').scrollIntoView({behavior:'smooth'});
+}
+
+// Card toggle
+function toggleCard(card){
+  const wasOpen = card.classList.contains('open');
+  document.querySelectorAll('.tool-card').forEach(c=>{c.classList.remove('open');c.querySelector('.tool-detail').classList.remove('show')});
+  if(!wasOpen){
+    card.classList.add('open');
+    card.querySelector('.tool-detail').classList.add('show');
+  }
+}
+
+// Counter animation
+function animateCounter(el, target){
+  const numEl = el.querySelector('.stat-num');
+  const isInfinity = target >= 99;
+  const duration = 1400;
+  const start = performance.now();
+  function step(now){
+    const elapsed = now - start;
+    const progress = Math.min(elapsed/duration,1);
+    const eased = 1 - Math.pow(1-progress,3);
+    const current = Math.round(eased * target);
+    numEl.textContent = isInfinity ? '∞' : current;
+    if(progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// IntersectionObserver for stats
+const stats = document.querySelectorAll('.stat');
+const statIO = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const target = parseInt(entry.target.dataset.target);
+      animateCounter(entry.target, target);
+      statIO.unobserve(entry.target);
+    }
+  });
+},{threshold:0.3});
+stats.forEach(s=>statIO.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Study — Split View</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  min-height:100vh;
+  overflow-x:hidden;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+/* ── Split Container ── */
+.split-container{
+  display:flex;
+  height:100vh;
+  position:relative;
+}
+
+.split-left,.split-right{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+  transition:opacity 0.4s ease;
+}
+
+.split-left{
+  background:#f5e6c8;
+  color:#3d2e1a;
+}
+.split-right{
+  background:#1a2744;
+  color:#c8d8f0;
+}
+
+.split-word{
+  font-size:clamp(3rem,10vw,6rem);
+  font-weight:700;
+  letter-spacing:0.1em;
+  position:relative;
+  z-index:2;
+  user-select:none;
+}
+
+/* ── Divider ── */
+.divider{
+  position:absolute;
+  top:0;bottom:0;
+  left:50%;
+  width:3px;
+  background:rgba(255,255,255,0.7);
+  cursor:ew-resize;
+  z-index:10;
+  transform:translateX(-50%);
+}
+.divider::before,.divider::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.85);
+  box-shadow:0 0 8px rgba(0,0,0,0.2);
+}
+.divider::before{top:calc(50% - 35px)}
+.divider::after{bottom:calc(50% - 35px)}
+
+/* ── Cards ── */
+.note-card{
+  position:absolute;
+  bottom:7rem;
+  width:min(300px,85%);
+  border-radius:16px;
+  padding:1.6rem;
+  z-index:3;
+}
+
+.note-card-left{
+  left:3%;
+  background:#1a1a2e;
+  color:#e8dcc4;
+  /* math formula decoration */
+}
+.note-card-left::before{
+  content:"∫₀^∞ e^{-x²} dx = ½√π";
+  position:absolute;
+  bottom:0.6rem;
+  right:1rem;
+  font-size:0.7rem;
+  font-family:Georgia,serif;
+  color:#f5a623;
+  opacity:0.12;
+  letter-spacing:0.05em;
+  pointer-events:none;
+}
+.note-card-left::after{
+  content:"E = mc²  ∇·B = 0";
+  position:absolute;
+  top:0.6rem;
+  right:1rem;
+  font-size:0.65rem;
+  font-family:Georgia,serif;
+  color:#f5a623;
+  opacity:0.1;
+  letter-spacing:0.05em;
+  pointer-events:none;
+}
+
+.note-card-right{
+  right:3%;
+  background:linear-gradient(160deg,rgba(20,25,60,0.9),rgba(15,20,45,0.95));
+  color:#c8d8f0;
+  border:1px solid rgba(100,140,200,0.15);
+  /* city night stars */
+  background-image:
+    radial-gradient(circle at 20% 15%,rgba(255,255,255,0.12) 1px,transparent 1px),
+    radial-gradient(circle at 60% 10%,rgba(255,255,255,0.08) 1px,transparent 1px),
+    radial-gradient(circle at 80% 25%,rgba(255,255,255,0.1) 1px,transparent 1px),
+    radial-gradient(circle at 35% 20%,rgba(255,255,255,0.07) 1px,transparent 1px),
+    radial-gradient(circle at 90% 18%,rgba(255,255,255,0.09) 1px,transparent 1px),
+    radial-gradient(circle at 10% 30%,rgba(255,255,255,0.06) 1px,transparent 1px),
+    radial-gradient(circle at 70% 35%,rgba(255,220,100,0.15) 1px,transparent 1px),
+    radial-gradient(circle at 45% 8%,rgba(255,255,255,0.08) 1px,transparent 1px),
+    radial-gradient(ellipse at 50% 85%,rgba(255,180,60,0.06) 0%,transparent 40%);
+}
+
+.card-emoji{font-size:1.8rem;margin-bottom:0.6rem;display:block}
+.card-title{font-size:1.1rem;font-weight:700;margin-bottom:0.5rem}
+.card-body{font-size:0.78rem;line-height:1.6;opacity:0.75}
+.highlight{
+  background:linear-gradient(transparent 60%,rgba(245,166,35,0.3) 60%);
+  padding:0 2px;
+}
+
+/* ── Sound Buttons ── */
+.sound-btn{
+  position:absolute;
+  bottom:2.5rem;
+  padding:0.7rem 1.6rem;
+  border-radius:30px;
+  font-size:0.82rem;
+  cursor:pointer;
+  transition:transform 0.2s ease,box-shadow 0.2s ease,opacity 0.2s ease;
+  border:none;
+  letter-spacing:0.08em;
+  z-index:3;
+}
+.sound-btn:hover{transform:scale(1.05)}
+.sound-btn:active{transform:scale(0.97)}
+
+.btn-keyboard{
+  left:3%;
+  background:#f5a623;
+  color:#1a1410;
+}
+.btn-keyboard.playing{
+  background:#e8843c;
+  box-shadow:0 0 20px rgba(245,166,35,0.5);
+}
+
+.btn-rain{
+  right:3%;
+  background:#3a6ea5;
+  color:#e8e8e8;
+}
+.btn-rain.playing{
+  background:#2d5a8a;
+  box-shadow:0 0 20px rgba(58,110,165,0.5);
+}
+
+/* ── Bottom Toggle ── */
+.bottom-toggle{
+  position:fixed;
+  bottom:2rem;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:20;
+}
+.toggle-btn{
+  padding:0.7rem 2rem;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.3);
+  border-radius:30px;
+  color:#fff;
+  font-size:0.8rem;
+  letter-spacing:0.2em;
+  cursor:pointer;
+  transition:background 0.3s ease,border-color 0.3s ease;
+}
+.toggle-btn:hover{background:rgba(255,255,255,0.25);border-color:rgba(255,255,255,0.5)}
+
+/* hidden swapped state */
+.split-left.swapped,.split-right.swapped{opacity:0;pointer-events:none;position:absolute;inset:0;z-index:1}
+.split-container.swapped .split-left{opacity:0;pointer-events:none}
+.split-container.swapped .split-right{opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+
+<div class="split-container" id="splitContainer">
+
+  <!-- Left: Warm / Focus -->
+  <div class="split-left" id="splitLeft">
+    <div class="split-word">專注</div>
+    <div class="note-card note-card-left" id="cardLeft">
+      <span class="card-emoji">📝</span>
+      <div class="card-title">創作筆記</div>
+      <div class="card-body">
+        深夜的鍵盤聲，是思緒的形狀。<br>
+        <span class="highlight">每一個音符，都是一個決定。</span><br>
+        在凌晨三點的安靜裡，創作成為了呼吸的一部分。
+      </div>
+    </div>
+    <button class="sound-btn btn-keyboard" id="btnKeyboard" onclick="toggleKeyboard()">🎹 鍵盤音效</button>
+  </div>
+
+  <!-- Divider -->
+  <div class="divider" id="divider"></div>
+
+  <!-- Right: Cool / Emptiness -->
+  <div class="split-right" id="splitRight">
+    <div class="split-word">放空</div>
+    <div class="note-card note-card-right" id="cardRight">
+      <span class="card-emoji">🍷</span>
+      <div class="card-title">一杯酒的時光</div>
+      <div class="card-body">
+        雨聲在城市上空凝結，<br>
+        <span class="highlight">燈光在水窪裡碎成星。</span><br>
+        酒杯裡的倒影，比答案更值得凝視。
+      </div>
+    </div>
+    <button class="sound-btn btn-rain" id="btnRain" onclick="toggleRain()">🌧 雨聲</button>
+  </div>
+
+</div>
+
+<!-- Bottom toggle -->
+<div class="bottom-toggle">
+  <button class="toggle-btn" onclick="toggleView()">切換視圖</button>
+</div>
+
+<script>
+// ── Divider Drag ──
+const divider = document.getElementById('divider');
+const container = document.getElementById('splitContainer');
+const left = document.getElementById('splitLeft');
+const right = document.getElementById('splitRight');
+let dragging = false;
+
+divider.addEventListener('mousedown',(e)=>{dragging=true;e.preventDefault()});
+document.addEventListener('mousemove',(e)=>{
+  if(!dragging) return;
+  const rect = container.getBoundingClientRect();
+  let pct = ((e.clientX - rect.left) / rect.width) * 100;
+  pct = Math.max(10,Math.min(90,pct));
+  divider.style.left = pct + '%';
+  left.style.flex = `0 0 ${pct}%`;
+  right.style.flex = `0 0 ${100-pct}%`;
+});
+document.addEventListener('mouseup',()=>{dragging=false});
+
+// ── Toggle View ──
+let viewSwapped = false;
+function toggleView(){
+  viewSwapped = !viewSwapped;
+  const leftEl = document.getElementById('splitLeft');
+  const rightEl = document.getElementById('splitRight');
+  const leftCard = document.getElementById('cardLeft');
+  const rightCard = document.getElementById('cardRight');
+  const btnK = document.getElementById('btnKeyboard');
+  const btnR = document.getElementById('btnRain');
+
+  if(viewSwapped){
+    // swap cards
+    leftCard.style.left = 'unset';
+    leftCard.style.right = '3%';
+    leftCard.style.bottom = '7rem';
+    leftCard.style.width = 'min(300px,85%)';
+    rightCard.style.right = 'unset';
+    rightCard.style.left = '3%';
+
+    // swap background colors
+    leftEl.style.background = '#1a2744';
+    leftEl.style.color = '#c8d8f0';
+    rightEl.style.background = '#f5e6c8';
+    rightEl.style.color = '#3d2e1a';
+
+    // swap word
+    leftEl.querySelector('.split-word').textContent = '放空';
+    rightEl.querySelector('.split-word').textContent = '專注';
+
+    // swap buttons
+    btnK.style.left = 'unset';
+    btnK.style.right = '3%';
+    btnK.textContent = '🎹 鍵盤音效';
+    btnK.style.background = '#3a6ea5';
+    btnK.style.color = '#e8e8e8';
+    btnR.style.right = 'unset';
+    btnR.style.left = '3%';
+    btnR.textContent = '🌧 雨聲';
+    btnR.style.background = '#f5a623';
+    btnR.style.color = '#1a1410';
+  } else {
+    leftCard.style.left = '3%';
+    leftCard.style.right = 'unset';
+    rightCard.style.right = '3%';
+    rightCard.style.left = 'unset';
+
+    leftEl.style.background = '#f5e6c8';
+    leftEl.style.color = '#3d2e1a';
+    rightEl.style.background = '#1a2744';
+    rightEl.style.color = '#c8d8f0';
+
+    leftEl.querySelector('.split-word').textContent = '專注';
+    rightEl.querySelector('.split-word').textContent = '放空';
+
+    btnK.style.left = '3%';
+    btnK.style.right = 'unset';
+    btnK.textContent = '🎹 鍵盤音效';
+    btnK.style.background = '#f5a623';
+    btnK.style.color = '#1a1410';
+    btnR.style.right = '3%';
+    btnR.style.left = 'unset';
+    btnR.textContent = '🌧 雨聲';
+    btnR.style.background = '#3a6ea5';
+    btnR.style.color = '#e8e8e8';
+  }
+}
+
+// ── Web Audio API ──
+// Keyboard: short click bursts
+let keyboardOsc = null;
+let keyboardGain = null;
+let keyboardInterval = null;
+let keyboardPlaying = false;
+
+function startKeyboard(){
+  if(keyboardPlaying) return;
+  keyboardPlaying = true;
+  const btn = document.getElementById('btnKeyboard');
+  btn.classList.add('playing');
+  btn.textContent = '⏸ 鍵盤音效';
+
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  const ctx = new AudioCtx();
+  keyboardGain = ctx.createGain();
+  keyboardGain.gain.value = 0;
+  keyboardGain.connect(ctx.destination);
+
+  const notes = [523,659,784,880,659,523,740,659];
+  let idx = 0;
+
+  function clickBurst(){
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.value = notes[idx % notes.length];
+    g.gain.setValueAtTime(0.15,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.08);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime+0.08);
+    idx++;
+  }
+
+  clickBurst();
+  keyboardInterval = setInterval(clickBurst, 120);
+}
+
+function stopKeyboard(){
+  if(!keyboardPlaying) return;
+  keyboardPlaying = false;
+  clearInterval(keyboardInterval);
+  const btn = document.getElementById('btnKeyboard');
+  btn.classList.remove('playing');
+  btn.textContent = '🎹 鍵盤音效';
+}
+
+function toggleKeyboard(){
+  if(keyboardPlaying) stopKeyboard();
+  else startKeyboard();
+}
+
+// Rain: white noise + bandpass
+let rainCtx = null;
+let rainSource = null;
+let rainFilter = null;
+let rainGain = null;
+let rainPlaying = false;
+
+function startRain(){
+  if(rainPlaying) return;
+  rainPlaying = true;
+  const btn = document.getElementById('btnRain');
+  btn.classList.add('playing');
+  btn.textContent = '⏸ 雨聲';
+
+  rainCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // white noise buffer
+  const bufferSize = rainCtx.sampleRate * 2;
+  const buffer = rainCtx.createBuffer(1, bufferSize, rainCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0;i<bufferSize;i++) data[i] = Math.random()*2-1;
+
+  rainSource = rainCtx.createBufferSource();
+  rainSource.buffer = buffer;
+  rainSource.loop = true;
+
+  rainFilter = rainCtx.createBiquadFilter();
+  rainFilter.type = 'bandpass';
+  rainFilter.frequency.value = 1200;
+  rainFilter.Q.value = 0.5;
+
+  rainGain = rainCtx.createGain();
+  rainGain.gain.setValueAtTime(0,rainCtx.currentTime);
+  rainGain.gain.linearRampToValueAtTime(0.3,rainCtx.currentTime+0.5);
+
+  rainSource.connect(rainFilter);
+  rainFilter.connect(rainGain);
+  rainGain.connect(rainCtx.destination);
+  rainSource.start();
+}
+
+function stopRain(){
+  if(!rainPlaying) return;
+  rainPlaying = false;
+  if(rainGain) rainGain.gain.linearRampToValueAtTime(0,rainCtx.currentTime+0.3);
+  const btn = document.getElementById('btnRain');
+  btn.classList.remove('playing');
+  btn.textContent = '🌧 雨聲';
+  setTimeout(()=>{
+    if(rainSource){rainSource.stop();rainSource=null}
+  },400);
+}
+
+function toggleRain(){
+  if(rainPlaying) stopRain();
+  else startRain();
+}
+</script>
+</body>
+</html>

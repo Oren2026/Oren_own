@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Study — Atlas</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  background:#1a1410;
+  color:#e8dcc4;
+  font-family:"Noto Serif TC","PingFang TC",Georgia,serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── Hero ── */
+.hero{
+  position:relative;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 35%,rgba(245,166,35,0.15),transparent 70%);
+  pointer-events:none;
+}
+
+.hero-lamp{
+  position:absolute;
+  top:2.5rem;
+  right:3rem;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:#f5a623;
+  box-shadow:0 0 30px 10px rgba(245,166,35,0.6),0 0 60px 20px rgba(245,166,35,0.3);
+  animation:lampGlow 3s ease-in-out infinite;
+}
+
+@keyframes lampGlow{
+  0%,100%{box-shadow:0 0 30px 10px rgba(245,166,35,0.6),0 0 60px 20px rgba(245,166,35,0.3)}
+  50%{box-shadow:0 0 40px 15px rgba(245,166,35,0.8),0 0 80px 30px rgba(245,166,35,0.4)}
+}
+
+.hero-title{
+  font-family:Georgia,serif;
+  font-size:clamp(3rem,8vw,5.5rem);
+  letter-spacing:0.35em;
+  color:#e8dcc4;
+  text-transform:uppercase;
+  position:relative;
+  z-index:1;
+}
+
+.hero-sub{
+  margin-top:1.2rem;
+  font-size:0.85rem;
+  letter-spacing:0.4em;
+  color:#f5a623;
+  opacity:0.8;
+}
+
+/* ── Map Panel ── */
+.map-panel{
+  position:relative;
+  width:100%;
+  max-width:900px;
+  height:600px;
+  margin:4rem auto 6rem;
+}
+
+.map-bg{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(245,166,35,0.04),transparent);
+}
+
+.map-title{
+  text-align:center;
+  font-size:0.75rem;
+  letter-spacing:0.5em;
+  color:#f5a623;
+  opacity:0.6;
+  padding-top:2rem;
+  margin-bottom:2rem;
+}
+
+/* connection lines via pseudo-elements */
+.map-lines{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.connection{
+  position:absolute;
+  background:rgba(245,166,35,0.25);
+}
+.connection-1{top:35%;left:18%;width:28%;height:2px;transform:rotate(15deg)}
+.connection-2{top:35%;right:18%;width:28%;height:2px;transform:rotate(-15deg);transform-origin:right center}
+.connection-3{top:65%;left:18%;width:28%;height:2px;transform:rotate(-15deg)}
+.connection-4{top:65%;right:18%;width:28%;height:2px;transform:rotate(15deg);transform-origin:right center}
+.connection-5{top:35%;left:45%;width:10%;height:2px;transform:rotate(90deg)}
+
+/* nodes */
+.node{
+  position:absolute;
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  background:#231c14;
+  border:2px solid rgba(245,166,35,0.35);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0.5rem;
+  cursor:pointer;
+  transition:transform 0.3s ease,box-shadow 0.3s ease,border-radius 0.4s ease,border-color 0.3s ease;
+  z-index:2;
+}
+
+.node:hover{
+  transform:translateY(-4px);
+  box-shadow:0 8px 32px rgba(245,166,35,0.35);
+  border-color:rgba(245,166,35,0.7);
+}
+
+.node.expanded{
+  border-radius:16px;
+  width:260px;
+  height:auto;
+  min-height:160px;
+  padding:1.2rem;
+  align-items:flex-start;
+  text-align:left;
+}
+
+.node-emoji{font-size:2.2rem;line-height:1}
+.node-label{font-size:0.9rem;font-weight:bold;color:#f5a623;letter-spacing:0.1em}
+.node-tags{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.3rem}
+.node-tag{font-size:0.65rem;background:rgba(245,166,35,0.15);color:#e8dcc4;padding:0.2rem 0.5rem;border-radius:20px;letter-spacing:0.05em}
+
+/* node detail content (hidden by default) */
+.node-detail{display:none;flex-direction:column;gap:0.4rem;margin-top:0.8rem}
+.node.expanded .node-detail{display:flex}
+.node-detail-item{font-size:0.78rem;color:#e8dcc4;padding-left:0.8rem;border-left:2px solid rgba(245,166,35,0.4)}
+.node-quote{font-size:0.72rem;color:#f5a623;font-style:italic;margin-top:0.5rem;line-height:1.5}
+
+/* positions */
+.node-creation{top:15%;left:8%}
+.node-reading{top:15%;right:8%}
+.node-thinking{top:55%;left:8%}
+.node-emptiness{top:55%;right:8%}
+
+/* fade-in animation */
+.node{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease,box-shadow 0.3s ease,border-radius 0.4s ease,border-color 0.3s ease}
+.node.visible{opacity:1;transform:translateY(0)}
+.node.visible:hover{transform:translateY(-4px)}
+
+/* close hint */
+.node-close{display:none;font-size:0.65rem;color:#f5a623;opacity:0.6;margin-top:0.5rem;letter-spacing:0.1em}
+.node.expanded .node-close{display:block}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-lamp"></div>
+  <h1 class="hero-title">Night Study</h1>
+  <p class="hero-sub">ATLAS &nbsp;·&nbsp; 黑研所 &nbsp;·&nbsp; 深夜知識系統</p>
+</section>
+
+<!-- Knowledge Map -->
+<section class="map-panel" id="map">
+  <p class="map-title">— 知識地圖 —</p>
+  <div class="map-lines">
+    <div class="connection connection-1"></div>
+    <div class="connection connection-2"></div>
+    <div class="connection connection-3"></div>
+    <div class="connection connection-4"></div>
+    <div class="connection connection-5"></div>
+  </div>
+
+  <!-- Creation -->
+  <div class="node node-creation" data-topic="creation" onclick="toggleNode(this)">
+    <div class="node-emoji">🎸</div>
+    <div class="node-label">創作</div>
+    <div class="node-tags">
+      <span class="node-tag">吉他即興</span>
+      <span class="node-tag">旋律創作</span>
+      <span class="node-tag">和弦進行</span>
+    </div>
+    <div class="node-detail">
+      <div class="node-detail-item">→ 在 G 大調裡尋找光明與陰影的交界</div>
+      <div class="node-detail-item">→ 旋律是情緒的形狀，不是技術的展示</div>
+      <div class="node-detail-item">→ 一個和弦可以承載一整個黃昏</div>
+      <div class="node-quote">"好的旋律從不強迫你愛上它，只是讓你無法忘記。"</div>
+    </div>
+    <div class="node-close">點擊收回</div>
+  </div>
+
+  <!-- Reading -->
+  <div class="node node-reading" data-topic="reading" onclick="toggleNode(this)">
+    <div class="node-emoji">📖</div>
+    <div class="node-label">閱讀</div>
+    <div class="node-tags">
+      <span class="node-tag">書籍筆記</span>
+      <span class="node-tag">思維導圖</span>
+      <span class="node-tag">論文摘要</span>
+    </div>
+    <div class="node-detail">
+      <div class="node-detail-item">→ 閱讀是與作者的一場深夜對話</div>
+      <div class="node-detail-item">→ 每本書都有一個未被說出的核心</div>
+      <div class="node-detail-item">→ 筆記是第二遍閱讀的起點</div>
+      <div class="node-quote">"一本書最危險的時刻，是當你以為自己讀懂了。"</div>
+    </div>
+    <div class="node-close">點擊收回</div>
+  </div>
+
+  <!-- Thinking -->
+  <div class="node node-thinking" data-topic="thinking" onclick="toggleNode(this)">
+    <div class="node-emoji">🧠</div>
+    <div class="node-label">思考</div>
+    <div class="node-tags">
+      <span class="node-tag">意識層次</span>
+      <span class="node-tag">系統思考</span>
+      <span class="node-tag">批判分析</span>
+    </div>
+    <div class="node-detail">
+      <div class="node-detail-item">→ 問題的答案往往藏在問題的結構裡</div>
+      <div class="node-detail-item">→ 系統思考是看見看不見的連結</div>
+      <div class="node-detail-item">→ 批判不是否定，是更深的理解</div>
+      <div class="node-quote">"懷疑是思想的鋤頭，挖得夠深，才能看見根系。"</div>
+    </div>
+    <div class="node-close">點擊收回</div>
+  </div>
+
+  <!-- Emptiness -->
+  <div class="node node-emptiness" data-topic="emptiness" onclick="toggleNode(this)">
+    <div class="node-emoji">🍷</div>
+    <div class="node-label">放空</div>
+    <div class="node-tags">
+      <span class="node-tag">酒精與哲學</span>
+      <span class="node-tag">一杯酒的時光</span>
+      <span class="node-tag">深夜電影</span>
+    </div>
+    <div class="node-detail">
+      <div class="node-detail-item">→ 放空是大腦的深夜保養</div>
+      <div class="node-detail-item">→ 有時最好的想法，來自無所事事</div>
+      <div class="node-detail-item">→ 深夜電影是一種有意識的迷路</div>
+      <div class="node-quote">"酒杯裡沒有答案，但有一種清明。"</div>
+    </div>
+    <div class="node-close">點擊收回</div>
+  </div>
+</section>
+
+<script>
+// Toggle node expand/collapse
+function toggleNode(el){
+  const wasExpanded = el.classList.contains('expanded');
+  // collapse all others first
+  document.querySelectorAll('.node').forEach(n=>n.classList.remove('expanded'));
+  if(!wasExpanded) el.classList.add('expanded');
+}
+
+// IntersectionObserver for fade-in
+const nodes = document.querySelectorAll('.node');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach((entry,i)=>{
+    if(entry.isIntersecting){
+      setTimeout(()=>entry.target.classList.add('visible'),i*150);
+      io.unobserve(entry.target);
+    }
+  });
+},{threshold:0.15});
+
+nodes.forEach(n=>io.observe(n));
+</script>
+</body>
+</html>
