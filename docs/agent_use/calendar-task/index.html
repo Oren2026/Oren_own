@@ -710,15 +710,13 @@ function renderImportantList() {
     if (group.startDate === group.endDate) {
       dateLabel = formatImportantDate(group.startDate);
     } else {
-      const start = formatImportantDate(group.startDate);
-      const end = formatImportantDate(group.endDate);
-      // 去除重複的月，只留「日」
-      const startParts = start.split(' ');
-      const endParts = end.split(' ');
-      if (startParts[0] === endParts[0]) {
-        dateLabel = `${startParts[0]} ${startParts[1]}~${endParts[1]}`;
+      // 直接從 YYYY-MM-DD 取 m 和 d，避免 formatImportantDate 的空格問題
+      const [y1, m1, d1] = group.startDate.split('-').map(Number);
+      const [y2, m2, d2] = group.endDate.split('-').map(Number);
+      if (m1 === m2) {
+        dateLabel = `${m1} 月 ${d1} ~ ${d2} 日`;
       } else {
-        dateLabel = `${start} ~ ${end}`;
+        dateLabel = `${m1} 月 ${d1} 日 ~ ${m2} 月 ${d2} 日`;
       }
     }
 
