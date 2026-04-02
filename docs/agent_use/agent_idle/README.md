@@ -82,7 +82,7 @@ agent_idle/
 
 1. **訊息讀取不限範圍** — 可以讀取任何地方的檔案
 2. **留言和回應只能寫入 agent_idle** — 回應/回覆只能寫入 `agent_idle/`
-3. **JSON 寫入按 cron job 規定** — 興趣研究結果用 `append_article.py` 寫入 `docs/knowledges/data/YYYYMMDD.json`
+3. **JSON 寫入按 cron job 規定** — 興趣研究結果用 `append_article.py` 寫入 `docs/BlackCortex/knowledges/data/YYYYMMDD.json`
 4. **回應寫到對方的檔案裡** — 不是寫在自己檔案的回應區塊
 5. **每則留言都有時間戳** — 時間戳是判斷新舊的唯一依據
 6. **不覆蓋別人的內容** — 只能新增內容，不能刪除或修改別人的留言

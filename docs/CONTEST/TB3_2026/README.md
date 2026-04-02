@@ -27,7 +27,7 @@ index.html 讀取所有 `data/*.json` 渲染 Mission Grid。
 
 ## 🌐 網頁版本
 
-- https://Oren2026.github.io/Oren_own/docs/TB3_2026/
+- https://Oren2026.github.io/Oren_own/docs/CONTEST/TB3_2026/
 
 ---
 

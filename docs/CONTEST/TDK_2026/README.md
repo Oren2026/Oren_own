@@ -96,8 +96,8 @@ TDK_2026/
 
 ## 🌐 網頁版本
 
-- 📍 https://Oren2026.github.io/Oren_own/docs/TDK_2026/
-- 📂 https://github.com/Oren2026/Oren_own/tree/main/docs/TDK_2026
+- 📍 https://Oren2026.github.io/Oren_own/docs/CONTEST/TDK_2026/
+- 📂 https://github.com/Oren2026/Oren_own/tree/main/docs/CONTEST/TDK_2026
 
 ---
 
