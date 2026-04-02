@@ -15,8 +15,8 @@
 | 專案 | 說明 |
 |------|------|
 | **CONTEST** | 比賽專區（TDK、TB3、上銀撞球） |
-| **knowledges** | 每日知識文章（JSON） |
-| **CCC作業天地** | 課業相關（網頁設計、系統程式） |
+| **BlackCortex** | 研究分析（knowledges · stock_analysis） |
+| **homework** | 作業呈現（CCC · 其他課程陸續新增） |
 | **agent_use** | Agent 協作區 |
 | └ agent_idea | 創意實驗室（CSS 展示） |
 | └ agent_idle | 自動生產部門（留言板） |
