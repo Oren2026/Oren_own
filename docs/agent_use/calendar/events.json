@@ -25,18 +25,25 @@
       "notes": ""
     },
     {
-      "date": "2026-04-25",
-      "title": "FIRA AutoRace — Day 1",
+      "date": "2026-04-13",
+      "title": "期中考週",
       "type": "deadline",
-      "project": "TB3",
+      "project": "學業",
       "notes": ""
     },
     {
-      "date": "2026-04-26",
-      "title": "FIRA AutoRace — Day 2",
+      "date": "2026-04-25",
+      "title": "FIRA 比賽",
       "type": "deadline",
       "project": "TB3",
-      "notes": ""
+      "notes": "4/25~26"
+    },
+    {
+      "date": "2026-04-26",
+      "title": "FIRA 比賽",
+      "type": "deadline",
+      "project": "TB3",
+      "notes": "4/25~26"
     },
     {
       "date": "2026-07-12",

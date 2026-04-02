@@ -624,7 +624,12 @@ function getEventsForDate(dateStr) {
 }
 
 function getImportantEvents() {
-  return allEvents.filter(e => e.important);
+  const todayStr = new Date().toISOString().split('T')[0];
+  return allEvents.filter(e => {
+    if (!e.important) return false;
+    // 過了今天就不顯示（隔天起隱藏）
+    return e.date >= todayStr;
+  });
 }
 
 function formatDateLabel(year, month, day) {
@@ -651,47 +656,104 @@ function dateStr(year, month, day) {
 }
 
 // ── 左側重要日程 ──
+function groupConsecutiveEvents(events) {
+  // 按日期排序
+  const sorted = [...events].sort((a, b) => a.date.localeCompare(b.date));
+  const groups = [];
+
+  for (const ev of sorted) {
+    const last = groups[groups.length - 1];
+    if (
+      last &&
+      last.title === ev.title &&
+      last.project === ev.project &&
+      isConsecutive(last.endDate, ev.date)
+    ) {
+      last.endDate = ev.date;
+      last.events.push(ev);
+    } else {
+      groups.push({
+        title: ev.title,
+        project: ev.project,
+        startDate: ev.date,
+        endDate: ev.date,
+        type: ev.type,
+        events: [ev]
+      });
+    }
+  }
+  return groups;
+}
+
+function isConsecutive(dateA, dateB) {
+  const a = new Date(dateA);
+  a.setDate(a.getDate() + 1);
+  return a.toISOString().split('T')[0] === dateB;
+}
+
 function renderImportantList() {
   const container = document.getElementById('importantList');
   container.innerHTML = '';
 
   const importantItems = getImportantEvents();
-  importantItems.forEach(item => {
+  const groups = groupConsecutiveEvents(importantItems);
+
+  groups.forEach(group => {
     const el = document.createElement('div');
-    el.className = 'important-item' + (item.type === 'deadline' ? ' deadline' : '');
-    el.dataset.date = item.date;
+    el.className = 'important-item' + (group.type === 'deadline' ? ' deadline' : '');
+
+    // 取該群組的第一個日期當 highlight target
+    el.dataset.date = group.startDate;
+
+    // 日期顯示：單日 vs 區間
+    let dateLabel;
+    if (group.startDate === group.endDate) {
+      dateLabel = formatImportantDate(group.startDate);
+    } else {
+      const start = formatImportantDate(group.startDate);
+      const end = formatImportantDate(group.endDate);
+      // 去除重複的月，只留「日」
+      const startParts = start.split(' ');
+      const endParts = end.split(' ');
+      if (startParts[0] === endParts[0]) {
+        dateLabel = `${startParts[0]} ${startParts[1]}~${endParts[1]}`;
+      } else {
+        dateLabel = `${start} ~ ${end}`;
+      }
+    }
+
     el.innerHTML = `
-      <div class="important-date">${formatImportantDate(item.date)}</div>
-      <div class="important-title">${item.title}</div>
+      <div class="important-date">${dateLabel}</div>
+      <div class="important-title">${group.title}</div>
     `;
 
-    // 滑鼠移入 → highlight 日曆格子
+    // 滑鼠移入 → highlight 整個範圍
     el.addEventListener('mouseenter', () => {
       clearHighlight();
-      highlightedDate = item.date;
-      const cell = document.querySelector(`.day-cell[data-date="${item.date}"]`);
-      if (cell) {
-        cell.classList.add('highlighted');
-        el.classList.add('highlighted');
-        // 視圖內滑入
-        cell.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      highlightedDate = group.startDate;
+      el.classList.add('highlighted');
+      // highlight 所有 group 內的格子
+      group.events.forEach(ev => {
+        const cell = document.querySelector(`.day-cell[data-date="${ev.date}"]`);
+        if (cell) cell.classList.add('highlighted');
+      });
+      // 滑到第一個格子
+      const firstCell = document.querySelector(`.day-cell[data-date="${group.startDate}"]`);
+      if (firstCell) firstCell.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
-    // 滑鼠離開 → 移除 highlight
     el.addEventListener('mouseleave', () => {
       clearHighlight();
     });
 
-    // 點擊 → 跳到那個月的日曆並開啟 modal
     el.addEventListener('click', () => {
-      const [y, m] = item.date.split('-').map(Number);
+      const [y, m] = group.startDate.split('-').map(Number);
       if (currentYear !== y || currentMonth !== m - 1) {
         currentYear = y;
         currentMonth = m - 1;
         renderCalendar();
       }
-      openModal(item.date);
+      openModal(group.startDate);
     });
 
     container.appendChild(el);
