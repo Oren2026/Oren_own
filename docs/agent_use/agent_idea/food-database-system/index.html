@@ -26,6 +26,7 @@
     .slide-title{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:800;letter-spacing:-0.04em;line-height:1.15;margin-bottom:16px}
     .slide-sub{font-size:1rem;color:var(--muted);max-width:600px;line-height:1.75;margin-bottom:32px}
     h3{font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+    h4{font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px}
     .splash{min-height:100vh;display:flex;flex-direction:column;justify-content:center;text-align:center;position:relative}
     .splash::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 60% at 50% 40%,rgba(251,146,60,0.09) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 75% 80%,rgba(74,222,128,0.06) 0%,transparent 60%)}
     .splash-badge{display:inline-block;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--orange);background:var(--orange-dim);border:1px solid var(--orange-border);padding:5px 16px;border-radius:20px;margin-bottom:28px;width:fit-content}
@@ -43,23 +44,6 @@
     .card-icon{font-size:22px;margin-bottom:10px}
     .card-name{font-size:0.9rem;font-weight:700;margin-bottom:5px;color:var(--text)}
     .card-desc{font-size:0.78rem;color:var(--muted);line-height:1.6}
-    .app-frame{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:16px;max-width:280px;margin:0 auto;box-shadow:0 24px 80px rgba(0,0,0,0.6)}
-    .app-screen{background:#0d0d12;border-radius:18px;overflow:hidden;min-height:480px;display:flex;flex-direction:column}
-    .app-header{background:#1a1a24;padding:14px 16px 12px;display:flex;align-items:center}
-    .app-notch{width:80px;height:22px;background:#000;border-radius:12px;margin:0 auto}
-    .app-body{flex:1;padding:14px}
-    .app-title{font-size:13px;font-weight:700;color:var(--orange);margin-bottom:10px}
-    .app-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
-    .ingredient-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-    .ing-tag{font-size:10px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);color:var(--muted);background:rgba(255,255,255,0.04)}
-    .ing-tag.selected{border-color:var(--orange);color:var(--orange);background:var(--orange-dim)}
-    .dish-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
-    .dish-info{flex:1}
-    .dish-name{font-size:11px;font-weight:700;margin-bottom:2px}
-    .dish-meta{font-size:9px;color:var(--muted)}
-    .dish-match{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px}
-    .match-full{background:var(--green-dim);color:var(--green)}
-    .match-partial{background:var(--yellow-dim);color:var(--yellow)}
     .db-table{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
     .db-row{display:grid;grid-template-columns:160px 1fr 100px;gap:12px;padding:13px 20px;border-bottom:1px solid var(--border);align-items:start}
     .db-row:last-child{border-bottom:none}
@@ -77,15 +61,6 @@
     .flow-box.purple{border-color:var(--purple-border);color:var(--purple)}
     .flow-arrow{color:var(--muted);font-size:16px}
     .divider{border:none;border-top:1px solid var(--border);margin:24px 0}
-    .step-row{display:flex;gap:14px;align-items:start;margin-bottom:14px}
-    .step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-    .step-num.s1{background:var(--orange-dim);border:1px solid var(--orange-border);color:var(--orange)}
-    .step-num.s2{background:var(--green-dim);border:1px solid var(--green-border);color:var(--green)}
-    .step-num.s3{background:var(--cyan-dim);border:1px solid var(--cyan-border);color:var(--cyan)}
-    .step-title{font-size:0.88rem;font-weight:700;margin-bottom:3px}
-    .step-desc{font-size:0.75rem;color:var(--muted)}
-    .split{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
-    @media(max-width:700px){.split{grid-template-columns:1fr}}
     .phase-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
     @media(max-width:700px){.phase-grid{grid-template-columns:1fr}}
     .phase-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 20px;text-align:center}
@@ -96,6 +71,28 @@
     .cta-box{background:var(--surface);border:1px solid var(--orange-border);border-radius:16px;padding:28px 32px;text-align:center;margin-top:24px}
     .cta-title{font-size:1.1rem;font-weight:700;margin-bottom:8px}
     .cta-desc{font-size:0.82rem;color:var(--muted)}
+    .mode-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color 0.25s}
+    .mode-card:hover{border-color:rgba(251,146,60,0.3)}
+    .mode-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .mode-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+    .mode-title{font-size:0.9rem;font-weight:700}
+    .mode-desc{font-size:0.76rem;color:var(--muted);line-height:1.6}
+    .chat-bubble{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;margin-bottom:8px;font-size:0.78rem;line-height:1.6}
+    .chat-bubble.user{border-color:var(--orange-border);background:var(--orange-dim);color:var(--orange)}
+    .chat-bubble.ai{border-color:var(--cyan-border);background:var(--cyan-dim);color:var(--cyan)}
+    .chat-label{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px}
+    .expand-flow{display:flex;flex-direction:column;gap:10px}
+    .expand-item{display:flex;align-items:center;gap:12px}
+    .expand-core{flex:1;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:10px;padding:10px 14px;font-size:0.78rem;font-weight:700;color:var(--orange);text-align:center}
+    .expand-arrow{color:var(--muted);font-size:14px}
+    .expand-result{flex:1;background:var(--green-dim);border:1px solid var(--green-border);border-radius:10px;padding:10px 14px;font-size:0.78rem;color:var(--green);text-align:center}
+    .expand-gap{font-size:0.7rem;color:var(--muted);text-align:center;margin-top:2px}
+    .dim-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    @media(max-width:700px){.dim-row{grid-template-columns:1fr}}
+    .dim-card{text-align:center;padding:20px 14px;background:var(--surface);border:1px solid var(--border);border-radius:14px}
+    .dim-icon{font-size:24px;margin-bottom:8px}
+    .dim-title{font-size:0.82rem;font-weight:700;margin-bottom:4px}
+    .dim-desc{font-size:0.72rem;color:var(--muted);line-height:1.5}
     footer{text-align:center;padding:28px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);width:100%;max-width:var(--sw);margin:0 auto}
     @media print{nav,.nav-controls{display:none!important}.deck{padding:0;max-width:100%}.slide{display:flex!important;page-break-after:always;min-height:100vh;padding:48px 40px!important;box-sizing:border-box}}
   </style>
@@ -114,91 +111,107 @@
 
 <div class="deck">
 
+<!-- SLIDE 1: SPLASH -->
 <div class="slide active" id="s1">
   <div class="splash">
-    <div class="splash-badge">情境簡報</div>
+    <div class="splash-badge">情境簡報 v2</div>
     <div class="splash-title"><span class="a">冰箱</span> x <span class="b">餐桌</span><br>食物資料庫系統</div>
-    <div class="splash-sub">打開冰箱，看到紅蘿蔔和高麗菜。<br>勾選 -> 系統立刻告訴你：可以炒什麼。</div>
+    <div class="splash-sub">三種使用模式：節源、買買買、AI對話。<br>不管想吃什麼，系統都幫你算出缺什麼。</div>
     <div class="splash-tags">
-      <span class="splash-tag">食材資料庫</span>
-      <span class="splash-tag">冰箱掃描</span>
-      <span class="splash-tag">食譜推薦</span>
-      <span class="splash-tag">成本計算</span>
+      <span class="splash-tag">節源模式</span>
+      <span class="splash-tag">買買買模式</span>
+      <span class="splash-tag">AI對話模式</span>
+      <span class="splash-tag">Expand 推薦引擎</span>
     </div>
   </div>
 </div>
 
+<!-- SLIDE 2: THREE MODES -->
 <div class="slide" id="s2">
   <div style="padding-top:40px;">
     <div class="tag orange">使用情境</div>
-    <div class="slide-title">從冰箱到餐桌，只要三步</div>
-    <div class="slide-sub">真實使用流程，每一步都有資料庫支撐</div>
-    <div class="split">
-      <div>
-        <div class="app-frame">
-          <div class="app-screen">
-            <div class="app-header"><div class="app-notch"></div></div>
-            <div class="app-body">
-              <div class="app-title">我的冰箱</div>
-              <div class="app-label">家裡有的食材</div>
-              <div class="ingredient-row">
-                <span class="ing-tag selected">紅蘿蔔</span>
-                <span class="ing-tag selected">高麗菜</span>
-                <span class="ing-tag">雞蛋</span>
-                <span class="ing-tag">蒜頭</span>
-                <span class="ing-tag">豬肉</span>
-                <span class="ing-tag">鴻喜菇</span>
-              </div>
-              <div class="app-label" style="margin-top:12px;">推薦餐點</div>
-              <div class="dish-card">
-                <div class="dish-info"><div class="dish-name">紅蘿蔔炒蛋</div><div class="dish-meta">需：紅蘿蔔、雞蛋 · 10分鐘</div></div>
-                <div class="dish-match match-partial">缺雞蛋</div>
-              </div>
-              <div class="dish-card">
-                <div class="dish-info"><div class="dish-name">蒜香高麗菜</div><div class="dish-meta">需：高麗菜、蒜頭 · 8分鐘</div></div>
-                <div class="dish-match match-full">完全符合</div>
-              </div>
-              <div class="dish-card">
-                <div class="dish-info"><div class="dish-name">菇菇炒高麗菜</div><div class="dish-meta">需：鴻喜菇、高麗菜 · 12分鐘</div></div>
-                <div class="dish-match match-full">完全符合</div>
-              </div>
+    <div class="slide-title">三種模式，覆蓋所有進廚房的理由</div>
+    <div class="slide-sub">節源、規劃、探索——各有不同的輸入與輸出邏輯</div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <!-- 節源模式 -->
+      <div class="mode-card">
+        <div class="mode-header">
+          <div class="mode-num" style="background:var(--orange-dim);border:1px solid var(--orange-border);color:var(--orange);">1</div>
+          <div class="mode-title" style="color:var(--orange);">節源模式 — 冰箱剩什麼，就做什麼</div>
+        </div>
+        <div class="mode-desc" style="margin-bottom:12px;">冰箱打開，不知道要吃什麼，就讓系統告訴你。</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;">
+          <div>
+            <div class="chat-label">使用者操作</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div class="chat-bubble user">勾選冰箱食材：紅蘿蔔、高麗菜、蛋</div>
+              <div class="chat-bubble user">勾選：我想看能做什麼</div>
+            </div>
+          </div>
+          <div>
+            <div class="chat-label">系統回應</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div class="chat-bubble ai">紅蘿蔔炒蛋 ✓ 完全符合<br>菇菇炒高麗菜 ✓ 完全符合</div>
             </div>
           </div>
         </div>
       </div>
-      <div>
-        <h3>操作流程</h3>
-        <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
-          <div class="step-row">
-            <div class="step-num s1">1</div>
-            <div><div class="step-title">打開 App，勾選冰箱裡的食材</div><div class="step-desc">家裡有什麼就勾什麼，冰箱掃描也是這個動作</div></div>
-          </div>
-          <div class="step-row">
-            <div class="step-num s2">2</div>
-            <div><div class="step-title">系統自動比對食材資料庫</div><div class="step-desc">每道菜的食材需求 vs 你有的食材 -> 計算 match 分數</div></div>
-          </div>
-          <div class="step-row">
-            <div class="step-num s3">3</div>
-            <div><div class="step-title">立刻看到推薦結果</div><div class="step-desc">完全符合（家裡都有）、部分符合（差1-2樣）、價格估算</div></div>
-          </div>
+
+      <!-- 買買買模式 -->
+      <div class="mode-card">
+        <div class="mode-header">
+          <div class="mode-num" style="background:var(--green-dim);border:1px solid var(--green-border);color:var(--green);">2</div>
+          <div class="mode-title" style="color:var(--green);">買買買模式 — 這週想吃什麼，一次規劃</div>
         </div>
-        <hr class="divider">
-        <h3>其他情境延伸</h3>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div class="card orange" style="padding:14px 16px;">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:3px;">明天要帶便當</div>
-            <div style="font-size:0.75rem;color:var(--muted);">勾選想要的主菜 -> 系統推薦整週便當組合</div>
+        <div class="mode-desc" style="margin-bottom:12px;">先選這週想吃什麼，系統計算所有需要的食材，一次購物清單。</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;">
+          <div>
+            <div class="chat-label">使用者操作</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div class="chat-bubble user">勾選這週想吃的：滷肉飯、咖哩飯、煎餃</div>
+              <div class="chat-bubble user">我有這些庫存：紅蘿蔔、高麗菜</div>
+            </div>
           </div>
-          <div class="card green" style="padding:14px 16px;">
-            <div style="font-size:0.82rem;font-weight:700;margin-bottom:3px;">該去買菜了</div>
-            <div style="font-size:0.75rem;color:var(--muted);">勾選想吃的 -> 系統產出購物清單，順路指引</div>
+          <div>
+            <div class="chat-label">系統回應</div>
+            <div class="chat-bubble ai" style="white-space:pre-line;">購物清單：
+  里肌肉、滷蛋、滷豆腐
+  海帶、咖哩塊、馬鈴薯
+  蔥、蒜、煎餃皮
+  （已扣除庫存品項）</div>
           </div>
         </div>
       </div>
+
+      <!-- AI對話模式 -->
+      <div class="mode-card">
+        <div class="mode-header">
+          <div class="mode-num" style="background:var(--cyan-dim);border:1px solid var(--cyan-border);color:var(--cyan);">3</div>
+          <div class="mode-title" style="color:var(--cyan);">AI對話模式 — 不知道吃什麼，讓 AI 幫你想</div>
+        </div>
+        <div class="mode-desc" style="margin-bottom:10px;">不知道吃什麼，AI 根據你的冰箱庫存推薦，並引導你探索新選擇。</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="chat-bubble user">我不知道要吃什麼</div>
+          <div class="chat-bubble ai">那你冰箱有什麼？</div>
+          <div class="chat-bubble user">高麗菜、紅蘿蔔、蛋、火鍋料</div>
+          <div class="chat-bubble ai">不如今天吃火鍋搭配蛋花湯怎麼樣？</div>
+          <div class="chat-bubble user">但我想多買一點</div>
+          <div class="chat-bubble ai">好的！來挑挑有什麼喜歡吃的吧（系統根據冰箱已有食材，展開相關推薦）</div>
+          <div class="chat-bubble user">勾選：麻辣鍋、炸蛋、滷味拼盤</div>
+          <div class="chat-bubble ai" style="white-space:pre-line;">採買建議：
+  鴨血、豆腐、麻辣湯底
+  炸蛋食材、滷味配料
+  （火鍋料家裡已有）</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
+<!-- SLIDE 3: SUB-DATABASES -->
 <div class="slide" id="s3">
   <div style="padding-top:40px;">
     <div class="tag orange">資料庫架構</div>
@@ -206,95 +219,113 @@
     <div class="slide-sub">每個資料庫解決一個問題，分工明確、可以各自擴充</div>
     <div class="db-table">
       <div class="db-row orange"><div class="db-name">食材庫</div><div class="db-content">每種食材的名稱、營養素、GI值、發炎指標、保存方式、保存期限</div><div class="db-use">核心顆粒度</div></div>
-      <div class="db-row orange"><div class="db-name">食材狀態庫</div><div class="db-content">使用者冰箱裡每項食材的目前庫存：數量、購買日期、過期預估、存放位置</div><div class="db-use">冰箱掃描</div></div>
+      <div class="db-row orange"><div class="db-name">食材狀態庫</div><div class="db-content">使用者冰箱的目前庫存：數量、購買日期、過期預估、存放位置（冷藏/冷凍）</div><div class="db-use">冰箱掃描</div></div>
       <div class="db-row green"><div class="db-name">食譜庫</div><div class="db-content">每道菜的完整配方：所需食材列表、步驟、整備時間、烹飪時間、困難度</div><div class="db-use">推薦主體</div></div>
-      <div class="db-row green"><div class="db-name">時機標籤庫</div><div class="db-content">每道菜的時機標籤：減脂/增肌/宵夜/省錢/抗發炎/助眠/高蛋白，每個標籤對應評分權重</div><div class="db-use">推薦維度</div></div>
+      <div class="db-row green"><div class="db-name">Expand 關聯庫</div><div class="db-content">每道菜的「相關菜」清單：使用相同核心食材的其他料理、用戶歷史做過的延伸</div><div class="db-use">Expand 引擎</div></div>
       <div class="db-row cyan"><div class="db-name">食材價格庫</div><div class="db-content">每種食材的市場零售價格（每日更新）、批发價、特價週期、替代食材建議</div><div class="db-use">成本控制</div></div>
       <div class="db-row cyan"><div class="db-name">餐點成本計算</div><div class="db-content">每道菜的食材成本加總 + 人力水電估算 -> 顯示真實成本與自己煮省了多少</div><div class="db-use">省錢感知</div></div>
-      <div class="db-row cyan"><div class="db-name">餐廳外食庫</div><div class="db-content">各餐廳的菜單、價格、食材組成、地點、等候時間</div><div class="db-use">外食替代</div></div>
-      <div class="db-row green"><div class="db-name">使用者偏好學習</div><div class="db-content">使用者喜歡/不喜歡的食材、做過的菜、歷史評分、近期購買記錄</div><div class="db-use">個人化排序</div></div>
+      <div class="db-row cyan"><div class="db-name">餐廳外食庫</div><div class="db-content">各餐廳的菜單、價格、食材組成、地點、等候時間（懶得做時的外食替代）</div><div class="db-use">外食替代</div></div>
+      <div class="db-row green"><div class="db-name">使用者偏好學習</div><div class="db-content">使用者喜歡/不喜歡的食材、做過的菜、歷史評分、近期購買記錄（Local 儲存）</div><div class="db-use">個人化排序</div></div>
     </div>
   </div>
 </div>
 
+<!-- SLIDE 4: EXPAND ENGINE -->
 <div class="slide" id="s4">
   <div style="padding-top:40px;">
-    <div class="tag green">推薦引擎</div>
-    <div class="slide-title">match 分數背後的邏輯</div>
-    <div class="slide-sub">不是單純的「有/沒有」，而是多維度的符合度評估</div>
-    <div class="split" style="margin-bottom:24px;">
-      <div>
-        <h3>評估維度（同時計算）</h3>
-        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
-          <div class="card" style="border-color:rgba(251,146,60,0.2);"><div class="card-icon" style="color:var(--orange);">食材符合度</div><div class="card-desc">這道菜需要的食材，我冰箱裡有多少%符合？完全符合=100分</div></div>
-          <div class="card" style="border-color:rgba(74,222,128,0.2);"><div class="card-icon" style="color:var(--green);">時間符合度</div><div class="card-desc">這道菜的整備時間，符合使用者現在的時間窗口嗎？</div></div>
-          <div class="card" style="border-color:rgba(34,211,238,0.2);"><div class="card-icon" style="color:var(--cyan);">成本符合度</div><div class="card-desc">食材成本 + 額外購買成本，符合今天預算嗎？</div></div>
-          <div class="card" style="border-color:rgba(167,139,250,0.2);"><div class="card-icon" style="color:var(--purple);">時機標籤符合</div><div class="card-desc">這道菜的標籤與使用者當下需求的符合程度</div></div>
-          <div class="card" style="border-color:rgba(251,191,36,0.2);"><div class="card-icon" style="color:var(--yellow);">歷史偏好</div><div class="card-desc">這道菜的歷史評分，影響排序位置</div></div>
+    <div class="tag green">Expand 推薦引擎</div>
+    <div class="slide-title">核心邏輯：食材 Expandability</div>
+    <div class="slide-sub">不是「你有什麼食材能做什麼菜」，而是「你選了這道菜，系統幫你展開相關的所有可能」</div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 28px;margin-bottom:24px;">
+      <h3>Expand 運作範例</h3>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:14px;">
+        <div class="expand-item">
+          <div class="expand-core">用戶勾選<br>紅蘿蔔、高麗菜</div>
+          <div class="expand-arrow">展開 →</div>
+          <div class="expand-result">相關食譜：<br>紅蘿蔔炒蛋、滷肉飯<br>菇菇炒高麗菜、炸豬排</div>
+          <div class="expand-gap">✓ = 庫存已有</div>
+        </div>
+        <div class="expand-item">
+          <div class="expand-core">用戶選了<br>滷肉飯</div>
+          <div class="expand-arrow">Expand →</div>
+          <div class="expand-result">相關推薦：紅燒肉、咖哩飯<br>（用相同蛋白質来源）</div>
+          <div class="expand-gap">→ 再 Expand</div>
+        </div>
+        <div class="expand-item">
+          <div class="expand-core">用戶選了<br>炸豬排</div>
+          <div class="expand-arrow">Expand →</div>
+          <div class="expand-result">高麗菜絲 ✓、豬排 ✗<br>麵包粉 ✗</div>
+          <div class="expand-gap">✗ = 需購買</div>
         </div>
       </div>
-      <div>
-        <h3>輸出結果</h3>
-        <div class="card" style="margin-top:8px;border-color:rgba(74,222,128,0.2);"><div class="card-icon" style="color:var(--green);">完全符合（綠色）</div><div class="card-desc">家裡有的食材，100% 覆蓋這道菜的需求。可以立刻做，不需要額外採買。</div></div>
-        <div class="card" style="margin-top:10px;border-color:rgba(251,191,36,0.2);"><div class="card-icon" style="color:var(--yellow);">部分符合（黃色）</div><div class="card-desc">缺 1-2 樣食材。系統同時列出：需要買什麼、哪家有特價、預估多花多少錢。</div></div>
-        <div class="card" style="margin-top:10px;border-color:rgba(167,139,250,0.2);"><div class="card-icon" style="color:var(--purple);">外食替代（紫色）</div><div class="card-desc">如果懶得做或來不及，系統推薦附近可外送的餐廳。</div></div>
-      </div>
     </div>
+
     <h3>推薦流程圖</h3>
     <div class="flow">
-      <div class="flow-box orange">勾選冰箱食材</div>
+      <div class="flow-box orange">選食材 or 選菜</div>
       <span class="flow-arrow">-></span>
-      <div class="flow-box green">比對食譜需求</div>
+      <div class="flow-box green">Expand 相關食譜</div>
       <span class="flow-arrow">-></span>
-      <div class="flow-box cyan">計算四維分數</div>
+      <div class="flow-box cyan">庫存鉤稽</div>
       <span class="flow-arrow">-></span>
-      <div class="flow-box purple">加權排序</div>
+      <div class="flow-box purple">計算差異</div>
       <span class="flow-arrow">-></span>
-      <div class="flow-box green">Top3 推薦</div>
+      <div class="flow-box green">產出購物清單</div>
     </div>
   </div>
 </div>
 
+<!-- SLIDE 5: THREE DIMENSIONS -->
 <div class="slide" id="s5">
   <div style="padding-top:40px;">
-    <div class="tag cyan">情境維度</div>
-    <div class="slide-title">同一個食材，不同的推薦</div>
-    <div class="slide-sub">使用者的狀態不同，系統的回應也會不同——時機標籤是關鍵</div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 28px;margin-bottom:24px;">
-      <h3>時機標籤如何影響推薦（以「雞蛋」為例）</h3>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px;">
-        <div style="text-align:center;padding:14px;background:var(--orange-dim);border-radius:10px;border:1px solid var(--orange-border);">
-          <div style="font-size:18px;margin-bottom:6px;">🏃</div>
-          <div style="font-size:0.8rem;font-weight:700;color:var(--orange);margin-bottom:4px;">減脂期</div>
-          <div style="font-size:0.72rem;color:var(--muted);">蒸蛋、蛋花湯<br>（少油高蛋白）</div>
-        </div>
-        <div style="text-align:center;padding:14px;background:var(--green-dim);border-radius:10px;border:1px solid var(--green-border);">
-          <div style="font-size:18px;margin-bottom:6px;">💪</div>
-          <div style="font-size:0.8rem;font-weight:700;color:var(--green);margin-bottom:4px;">增肌期</div>
-          <div style="font-size:0.72rem;color:var(--muted);">蒜蓉蛋、酪梨蛋<br>（高熱量搭配）</div>
-        </div>
-        <div style="text-align:center;padding:14px;background:var(--cyan-dim);border-radius:10px;border:1px solid var(--cyan-border);">
-          <div style="font-size:18px;margin-bottom:6px;">😴</div>
-          <div style="font-size:0.8rem;font-weight:700;color:var(--cyan);margin-bottom:4px;">睡前</div>
-          <div style="font-size:0.72rem;color:var(--muted);">溫牛奶蒸蛋<br>（助眠色胺酸）</div>
-        </div>
-        <div style="text-align:center;padding:14px;background:var(--purple-dim);border-radius:10px;border:1px solid var(--purple-border);">
-          <div style="font-size:18px;margin-bottom:6px;">💸</div>
-          <div style="font-size:0.8rem;font-weight:700;color:var(--purple);margin-bottom:4px;">省錢優先</div>
-          <div style="font-size:0.72rem;color:var(--muted);">蔥花蛋、醬油蛋<br>（材料最少）</div>
-        </div>
+    <div class="tag cyan">推薦維度</div>
+    <div class="slide-title">三個維度同時評估，決定推薦排序</div>
+    <div class="slide-sub">系統同時計算這三個分數，加權後輸出最終排序</div>
+
+    <div class="dim-row" style="margin-bottom:24px;">
+      <div class="dim-card">
+        <div class="dim-icon">📦</div>
+        <div class="dim-title" style="color:var(--orange);">庫存覆蓋度</div>
+        <div class="dim-desc">這道菜有多少%食材家裡已經有？100% = 完全符合，不需要買</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-icon">🔗</div>
+        <div class="dim-title" style="color:var(--green);">Expandability</div>
+        <div class="dim-desc">選這道之後，相關延伸料理有多少%家裡也有？越高越容易持續擴展</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-icon">⏰</div>
+        <div class="dim-title" style="color:var(--cyan);">時間窗口</div>
+        <div class="dim-desc">整備時間 + 烹飪時間，符合使用者現在的時間嗎？</div>
       </div>
     </div>
-    <h3>時機標籤維度（持續擴充）</h3>
-    <div class="grid-4" style="margin-top:8px;">
-      <div class="card orange" style="padding:14px 16px;"><div class="card-name">健身目標</div><div class="card-desc">減脂 / 增肌 / 維持</div></div>
-      <div class="card green" style="padding:14px 16px;"><div class="card-name">時間窗口</div><div class="card-desc">10分鐘內 / 30分鐘 / 週末有空</div></div>
-      <div class="card cyan" style="padding:14px 16px;"><div class="card-name">健康目的</div><div class="card-desc">抗發炎 / 助眠 / 補血 / 護眼</div></div>
-      <div class="card yellow" style="padding:14px 16px;"><div class="card-name">情緒狀態</div><div class="card-desc">疲勞想吃輕食 / 壓力大想吃罪惡美食</div></div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 26px;">
+      <h3>維度加權（系統預設，可由使用者調整）</h3>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:120px;font-size:0.78rem;font-weight:700;color:var(--orange);">庫存覆蓋度</div>
+          <div style="flex:1;height:8px;background:var(--orange-dim);border-radius:4px;"><div style="width:70%;height:100%;background:var(--orange);border-radius:4px;"></div></div>
+          <div style="width:40px;font-size:0.72rem;color:var(--muted);text-align:right;">70%</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:120px;font-size:0.78rem;font-weight:700;color:var(--green);">Expandability</div>
+          <div style="flex:1;height:8px;background:var(--green-dim);border-radius:4px;"><div style="width:60%;height:100%;background:var(--green);border-radius:4px;"></div></div>
+          <div style="width:40px;font-size:0.72rem;color:var(--muted);text-align:right;">60%</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:120px;font-size:0.78rem;font-weight:700;color:var(--cyan);">時間窗口</div>
+          <div style="flex:1;height:8px;background:var(--cyan-dim);border-radius:4px;"><div style="width:50%;height:100%;background:var(--cyan);border-radius:4px;"></div></div>
+          <div style="width:40px;font-size:0.72rem;color:var(--muted);text-align:right;">50%</div>
+        </div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">使用者在「省錢模式」下可調高庫存覆蓋度權重，在「探索模式」下可調高 Expandability</div>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- SLIDE 6: ROADMAP -->
 <div class="slide" id="s6">
   <div style="padding-top:40px;">
     <div class="tag green">實作方向</div>
@@ -303,55 +334,56 @@
     <div class="phase-grid" style="margin-bottom:24px;">
       <div class="phase-card">
         <div class="phase-num" style="color:var(--orange);">①</div>
-        <div class="phase-title">食材庫 + 食譜庫</div>
-        <div class="phase-desc">20種常見食材 + 30道基本食譜，先把匹配邏輯跑通</div>
-        <div class="phase-deliver">JSON 資料庫 + 匹配網頁</div>
+        <div class="phase-title">節源模式 MVP</div>
+        <div class="phase-desc">食材庫(20種) + 食譜庫(30道) + 庫存勾選 + 基礎推薦</div>
+        <div class="phase-deliver">JSON資料庫 + 可操作網頁</div>
       </div>
       <div class="phase-card">
         <div class="phase-num" style="color:var(--green);">②</div>
-        <div class="phase-title">時機標籤 + 成本計算</div>
-        <div class="phase-desc">加上健身/健康維度標籤，串接食材價格 API</div>
-        <div class="phase-deliver">完整推薦引擎 + 價格顯示</div>
+        <div class="phase-title">Expand + 買買買</div>
+        <div class="phase-desc">Expand關聯庫 + 多菜規劃 + 購物清單生成 + 偏好Local端學習</div>
+        <div class="phase-deliver">完整推薦邏輯 + 成本顯示</div>
       </div>
       <div class="phase-card">
         <div class="phase-num" style="color:var(--cyan);">③</div>
-        <div class="phase-title">精誠 AI + APP 上架</div>
-        <div class="phase-desc">串接精誠 AI 模型，使用自然語言問答介面</div>
-        <div class="phase-deliver">可展示的 APP 原型</div>
+        <div class="phase-title">AI對話 + 精誠串接</div>
+        <div class="phase-desc">自然語言對話介面 + 精誠AI模型接入</div>
+        <div class="phase-deliver">可展示APP原型</div>
       </div>
     </div>
     <hr class="divider">
     <h3>外部資源（不用自己建）</h3>
     <div class="grid-3" style="margin-top:8px;">
-      <div class="card green"><div class="card-icon" style="color:var(--green);">🌐</div><div class="card-name">Open Food Facts</div><div class="card-desc">全球食材營養資料庫 API，涵蓋數十萬種食品</div></div>
-      <div class="card cyan"><div class="card-icon" style="color:var(--cyan);">🗺️</div><div class="card-name">Google Maps</div><div class="card-desc">餐廳地點、評價、外送範圍</div></div>
+      <div class="card green"><div class="card-icon" style="color:var(--green);">🌐</div><div class="card-name">Open Food Facts</div><div class="card-desc">全球食材營養資料庫API，涵蓋數十萬種食品</div></div>
+      <div class="card cyan"><div class="card-icon" style="color:var(--cyan);">🗺️</div><div class="card-name">Google Maps</div><div class="card-desc">餐廳地點、評價、外送覆蓋範圍</div></div>
       <div class="card orange"><div class="card-icon" style="color:var(--orange);">🤖</div><div class="card-name">精誠 AI 模型</div><div class="card-desc">吃結構化資料，輸出自然語言建議</div></div>
     </div>
   </div>
 </div>
 
+<!-- SLIDE 7: CLOSING -->
 <div class="slide" id="s7">
   <div style="padding-top:40px;">
-    <div class="slide-title">打開冰箱，<br><span class="a">就知道今晚吃什麼</span></div>
+    <div class="slide-title">打開冰箱，<br><span class="a">就有答案</span></div>
     <div class="slide-sub" style="margin-bottom:32px;">
-      食材資料庫 + 食譜庫 + 時機標籤 + 成本計算，<br>
-      這四個子系統，就是食物版 MVP 的全部。
+      三種模式 + Expand引擎 + 庫存鉤稽，<br>
+      把「今天吃什麼」的問題，變成「還缺什麼」的清單。
     </div>
     <div class="grid-3" style="margin-bottom:24px;">
-      <div class="card orange"><div class="card-icon" style="color:var(--orange);">📐</div><div class="card-name">Schema 先行的價值</div><div class="card-desc">先定義資料長什麼樣子，AI 才有乾淨的食材做菜</div></div>
+      <div class="card orange"><div class="card-icon" style="color:var(--orange);">📐</div><div class="card-name">Schema 先行的價值</div><div class="card-desc">先定義資料長什麼樣子，Expand關聯庫做起來才有根據</div></div>
       <div class="card green"><div class="card-icon" style="color:var(--green);">🚀</div><div class="card-name">MVP 先行</div><div class="card-desc">20種食材 + 30道食譜，就是第一個能展示的版本</div></div>
-      <div class="card cyan"><div class="card-icon" style="color:var(--cyan);">🔗</div><div class="card-name">串接外部</div><div class="card-desc">營養資料交給 Open Food Facts，你專心做推薦邏輯</div></div>
+      <div class="card cyan"><div class="card-icon" style="color:var(--cyan);">🔗</div><div class="card-name">Local + AI 混合</div><div class="card-desc">偏好資料存本地，AI處理對話，兼顧隱私與智慧</div></div>
     </div>
     <div class="cta-box">
-      <div class="cta-title">下一步：定義食材 Schema</div>
-      <div class="cta-desc">先把「食材庫」的欄位定義畫出來（名稱/營養素/保存期限），立刻可以開始建第一批資料</div>
+      <div class="cta-title">下一步：定義 Expand 關聯 Schema</div>
+      <div class="cta-desc">先把「哪些菜跟哪些菜使用相同核心食材」定義清楚，第一筆資料就能立刻開始建</div>
     </div>
   </div>
 </div>
 
 </div>
 
-<footer>食物資料庫系統 · 黑皮團隊 · 2026</footer>
+<footer>食物資料庫系統 v2 · 黑皮團隊 · 2026</footer>
 
 <script>
   const total = 7;
