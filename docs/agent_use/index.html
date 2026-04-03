@@ -159,7 +159,7 @@
     .agent-card:hover .card-arrow { gap: 9px; }
     .members { max-width: 900px; margin: 0 auto; padding: 0 5% 60px; }
     .section-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-    .members-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .members-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
     .member-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; transition: border-color 0.2s, background 0.2s; }
     .member-card:hover { border-color: rgba(167,139,250,0.25); background: var(--surface-hover); }
     .member-role { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
@@ -190,7 +190,7 @@
       × <span class="b">agent_</span><span class="a">idle</span>
     </h1>
     <p class="hero-sub">
-      兩個 Agent 系統，分工合作。agent_idea 負責創意實驗與視覺化呈現，agent_idle 負責日常任務自動化。成員：黑皮（協調者）、黑輪（顧問）、黑客（工程師）。
+      兩個 Agent 系統，分工合作。agent_idea 負責創意實驗與視覺化呈現，agent_idle 負責日常任務自動化。成員：黑皮（協調者）、黑輪（顧問）、黑客（工程師）、黑探（研究者）。
     </p>
   </section>
 
@@ -224,7 +224,7 @@
       </div>
       <div class="card-body">
         <div class="card-name">agent_idle</div>
-        <div class="card-desc">自動生產部門。透過 Markdown 留言板溝通，Oren / Coder / Researcher 三方協作，任務自動追蹤。</div>
+        <div class="card-desc">自動生產部門。透過 Markdown 留言板溝通，Oren / Coder / Researcher 黑探三方協作，任務自動追蹤。</div>
         <div class="card-count">自動化流程</div>
         <div class="card-tags">
           <span class="ctag">任務分工</span>
@@ -236,6 +236,18 @@
       </div>
     </a>
 
+  </div>
+
+  <div class="presentations" style="max-width: 900px; margin: 0 auto; padding: 0 5% 40px;">
+    <div class="section-label">簡報下載</div>
+    <a href="./agent_idea/health-diet-system/" style="display:flex; align-items:center; gap:16px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px 22px; text-decoration:none; color:inherit; transition:all 0.25s;" onmouseover="this.style.borderColor='rgba(167,139,250,0.3)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)'; this.style.transform='none'">
+      <span style="font-size:24px;">📊</span>
+      <div>
+        <div style="font-size:0.9rem; font-weight:700; color:var(--purple); margin-bottom:3px;">運動 × 飲食 雙資料庫整合系統</div>
+        <div style="font-size:0.75rem; color:var(--muted);">系統規劃簡報 · 7頁 · 可用鍵盤← →切換，Chrome可列印PDF</div>
+      </div>
+      <span style="margin-left:auto; font-size:12px; color:var(--purple);">開啟簡報 →</span>
+    </a>
   </div>
 
   <div class="members">
@@ -256,10 +268,15 @@
         <div class="member-name">黑客</div>
         <div class="member-desc">把想法變成實際可用的東西。網頁、系統、自動化腳本。</div>
       </div>
+      <div class="member-card">
+        <div class="member-role">研究者</div>
+        <div class="member-name">黑探</div>
+        <div class="member-desc">深度研究與知識建構。文獻爬梳、主題研究、資訊整合。</div>
+      </div>
     </div>
   </div>
 
-  <footer>黑皮團隊 · agent_use · 黑皮 × 黑輪 × 黑客</footer>
+  <footer>黑皮團隊 · agent_use · 黑皮 × 黑輪 × 黑客 × 黑探</footer>
 
 </body>
 </html>
