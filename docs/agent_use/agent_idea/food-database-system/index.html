@@ -16,6 +16,8 @@
     .nav-controls{display:flex;gap:12px;align-items:center}
     .nav-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:7px 18px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;transition:all 0.2s}
     .nav-btn:hover{background:var(--surface2);border-color:var(--orange-border)}
+    .nav-btn.dl{background:var(--orange);color:#000;font-weight:700;border-color:var(--orange)}
+    .nav-btn.dl:hover{background:#fdba74}
     .slide-counter{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:60px;text-align:center}
     .tag{display:inline-block;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:20px;width:fit-content}
     .tag.orange{color:var(--orange);background:var(--orange-dim);border:1px solid var(--orange-border)}
@@ -71,6 +73,9 @@
     .cta-box{background:var(--surface);border:1px solid var(--orange-border);border-radius:16px;padding:28px 32px;text-align:center;margin-top:24px}
     .cta-title{font-size:1.1rem;font-weight:700;margin-bottom:8px}
     .cta-desc{font-size:0.82rem;color:var(--muted)}
+    .dl-btn{display:inline-flex;align-items:center;gap:8px;background:var(--orange);color:#000;font-size:0.9rem;font-weight:700;padding:12px 28px;border-radius:10px;text-decoration:none;transition:all 0.2s;margin-top:16px}
+    .dl-btn:hover{background:#fdba74;transform:translateY(-2px)}
+    .dl-btn svg{fill:currentColor}
     .mode-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color 0.25s}
     .mode-card:hover{border-color:rgba(251,146,60,0.3)}
     .mode-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
@@ -105,7 +110,8 @@
     <button class="nav-btn" onclick="prevSlide()">←</button>
     <span class="slide-counter" id="counter">1 / 7</span>
     <button class="nav-btn" onclick="nextSlide()">→</button>
-    <button class="nav-btn" onclick="window.print()">下載 PDF</button>
+    <a href="食物資料庫系統_v2.pptx" download class="nav-btn dl">下載 PPTX</a>
+    <button class="nav-btn" onclick="window.print()">PDF</button>
   </div>
 </nav>
 
@@ -123,6 +129,10 @@
       <span class="splash-tag">AI對話模式</span>
       <span class="splash-tag">Expand 推薦引擎</span>
     </div>
+    <a href="食物資料庫系統_v2.pptx" download class="dl-btn" style="position:relative;margin-top:20px;">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-8 2v2h16v-2H4z"/></svg>
+      下載 PPTX
+    </a>
   </div>
 </div>
 
@@ -377,6 +387,10 @@
     <div class="cta-box">
       <div class="cta-title">下一步：定義 Expand 關聯 Schema</div>
       <div class="cta-desc">先把「哪些菜跟哪些菜使用相同核心食材」定義清楚，第一筆資料就能立刻開始建</div>
+      <a href="食物資料庫系統_v2.pptx" download class="dl-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-8 2v2h16v-2H4z"/></svg>
+        下載 PPTX 簡報
+      </a>
     </div>
   </div>
 </div>
