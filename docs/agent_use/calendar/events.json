@@ -9,6 +9,14 @@
       "notes": ""
     },
     {
+      "date": "2026-04-07",
+      "title": "唱歌 — 西門",
+      "type": "event",
+      "project": "",
+      "location": "西門",
+      "notes": "下午"
+    },
+    {
       "date": "2026-04-11",
       "title": "TDK 說明會",
       "type": "event",
@@ -32,11 +40,25 @@
       "notes": ""
     },
     {
+      "date": "2026-04-20",
+      "title": "精誠AI設計競賽 報名截止",
+      "type": "deadline",
+      "project": "精誠AI",
+      "notes": ""
+    },
+    {
       "date": "2026-04-25",
       "title": "FIRA 比賽",
       "type": "deadline",
       "project": "TB3",
       "notes": "4/25~26"
+    },
+    {
+      "date": "2026-04-25",
+      "title": "精誠AI設計競賽 工作坊",
+      "type": "event",
+      "project": "精誠AI",
+      "notes": ""
     },
     {
       "date": "2026-04-26",
