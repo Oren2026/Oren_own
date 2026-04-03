@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>食物資料庫系統 — 冰箱到餐桌</title>
+  <style>
+    :root{--bg:#08080d;--surface:#0e1019;--surface2:#141828;--border:rgba(255,255,255,0.07);--orange:#fb923c;--orange-dim:rgba(251,146,60,0.12);--orange-border:rgba(251,146,60,0.25);--green:#4ade80;--green-dim:rgba(74,222,128,0.12);--green-border:rgba(74,222,128,0.25);--cyan:#22d3ee;--cyan-dim:rgba(34,211,238,0.12);--cyan-border:rgba(34,211,238,0.25);--purple:#a78bfa;--purple-dim:rgba(167,139,250,0.12);--purple-border:rgba(167,139,250,0.25);--yellow:#fbbf24;--yellow-dim:rgba(251,191,36,0.12);--yellow-border:rgba(251,191,36,0.25);--text:#e2e8f0;--muted:#5a6478;--sw:1100px}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--bg);color:var(--text);font-family:"PingFang TC","Microsoft JhengHei",-apple-system,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden}
+    .deck{width:100%;max-width:var(--sw);padding:0 24px}
+    .slide{display:none;padding:60px 0 40px;min-height:100vh;justify-content:center;flex-direction:column}
+    .slide.active{display:flex}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 5%;background:rgba(8,8,13,0.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{font-size:12px;font-weight:700;color:var(--orange);letter-spacing:0.08em}
+    .nav-controls{display:flex;gap:12px;align-items:center}
+    .nav-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:7px 18px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;transition:all 0.2s}
+    .nav-btn:hover{background:var(--surface2);border-color:var(--orange-border)}
+    .slide-counter{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:60px;text-align:center}
+    .tag{display:inline-block;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:20px;width:fit-content}
+    .tag.orange{color:var(--orange);background:var(--orange-dim);border:1px solid var(--orange-border)}
+    .tag.green{color:var(--green);background:var(--green-dim);border:1px solid var(--green-border)}
+    .tag.cyan{color:var(--cyan);background:var(--cyan-dim);border:1px solid var(--cyan-border)}
+    .tag.purple{color:var(--purple);background:var(--purple-dim);border:1px solid var(--purple-border)}
+    .tag.yellow{color:var(--yellow);background:var(--yellow-dim);border:1px solid var(--yellow-border)}
+    .slide-title{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:800;letter-spacing:-0.04em;line-height:1.15;margin-bottom:16px}
+    .slide-sub{font-size:1rem;color:var(--muted);max-width:600px;line-height:1.75;margin-bottom:32px}
+    h3{font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+    .splash{min-height:100vh;display:flex;flex-direction:column;justify-content:center;text-align:center;position:relative}
+    .splash::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 60% at 50% 40%,rgba(251,146,60,0.09) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 75% 80%,rgba(74,222,128,0.06) 0%,transparent 60%)}
+    .splash-badge{display:inline-block;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--orange);background:var(--orange-dim);border:1px solid var(--orange-border);padding:5px 16px;border-radius:20px;margin-bottom:28px;width:fit-content}
+    .splash-title{font-size:clamp(2.5rem,8vw,4.5rem);font-weight:800;letter-spacing:-0.05em;line-height:1.05;margin-bottom:20px}
+    .splash-title .a{color:var(--orange)}
+    .splash-title .b{color:var(--green)}
+    .splash-sub{font-size:1.05rem;color:var(--muted);max-width:520px;margin:0 auto 40px;line-height:1.8}
+    .splash-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+    .splash-tag{font-size:11px;padding:4px 12px;border-radius:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--muted)}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    @media(max-width:700px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px}
+    .card-icon{font-size:22px;margin-bottom:10px}
+    .card-name{font-size:0.9rem;font-weight:700;margin-bottom:5px;color:var(--text)}
+    .card-desc{font-size:0.78rem;color:var(--muted);line-height:1.6}
+    .app-frame{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:16px;max-width:280px;margin:0 auto;box-shadow:0 24px 80px rgba(0,0,0,0.6)}
+    .app-screen{background:#0d0d12;border-radius:18px;overflow:hidden;min-height:480px;display:flex;flex-direction:column}
+    .app-header{background:#1a1a24;padding:14px 16px 12px;display:flex;align-items:center}
+    .app-notch{width:80px;height:22px;background:#000;border-radius:12px;margin:0 auto}
+    .app-body{flex:1;padding:14px}
+    .app-title{font-size:13px;font-weight:700;color:var(--orange);margin-bottom:10px}
+    .app-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
+    .ingredient-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+    .ing-tag{font-size:10px;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);color:var(--muted);background:rgba(255,255,255,0.04)}
+    .ing-tag.selected{border-color:var(--orange);color:var(--orange);background:var(--orange-dim)}
+    .dish-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+    .dish-info{flex:1}
+    .dish-name{font-size:11px;font-weight:700;margin-bottom:2px}
+    .dish-meta{font-size:9px;color:var(--muted)}
+    .dish-match{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px}
+    .match-full{background:var(--green-dim);color:var(--green)}
+    .match-partial{background:var(--yellow-dim);color:var(--yellow)}
+    .db-table{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+    .db-row{display:grid;grid-template-columns:160px 1fr 100px;gap:12px;padding:13px 20px;border-bottom:1px solid var(--border);align-items:start}
+    .db-row:last-child{border-bottom:none}
+    .db-name{font-size:0.83rem;font-weight:700}
+    .db-content{font-size:0.76rem;color:var(--muted);line-height:1.6}
+    .db-use{font-size:0.72rem;color:var(--muted);text-align:right}
+    .db-row.orange .db-name{color:var(--orange)}
+    .db-row.green .db-name{color:var(--green)}
+    .db-row.cyan .db-name{color:var(--cyan)}
+    .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:20px 0}
+    .flow-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 20px;font-size:0.82rem;font-weight:600}
+    .flow-box.orange{border-color:var(--orange-border);color:var(--orange)}
+    .flow-box.green{border-color:var(--green-border);color:var(--green)}
+    .flow-box.cyan{border-color:var(--cyan-border);color:var(--cyan)}
+    .flow-box.purple{border-color:var(--purple-border);color:var(--purple)}
+    .flow-arrow{color:var(--muted);font-size:16px}
+    .divider{border:none;border-top:1px solid var(--border);margin:24px 0}
+    .step-row{display:flex;gap:14px;align-items:start;margin-bottom:14px}
+    .step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+    .step-num.s1{background:var(--orange-dim);border:1px solid var(--orange-border);color:var(--orange)}
+    .step-num.s2{background:var(--green-dim);border:1px solid var(--green-border);color:var(--green)}
+    .step-num.s3{background:var(--cyan-dim);border:1px solid var(--cyan-border);color:var(--cyan)}
+    .step-title{font-size:0.88rem;font-weight:700;margin-bottom:3px}
+    .step-desc{font-size:0.75rem;color:var(--muted)}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+    @media(max-width:700px){.split{grid-template-columns:1fr}}
+    .phase-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+    @media(max-width:700px){.phase-grid{grid-template-columns:1fr}}
+    .phase-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 20px;text-align:center}
+    .phase-num{font-size:2rem;font-weight:800;letter-spacing:-0.04em;margin-bottom:6px}
+    .phase-title{font-size:0.85rem;font-weight:700;margin-bottom:6px}
+    .phase-desc{font-size:0.72rem;color:var(--muted);line-height:1.6}
+    .phase-deliver{font-size:0.72rem;color:var(--muted);margin-top:8px}
+    .cta-box{background:var(--surface);border:1px solid var(--orange-border);border-radius:16px;padding:28px 32px;text-align:center;margin-top:24px}
+    .cta-title{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+    .cta-desc{font-size:0.82rem;color:var(--muted)}
+    footer{text-align:center;padding:28px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);width:100%;max-width:var(--sw);margin:0 auto}
+    @media print{nav,.nav-controls{display:none!important}.deck{padding:0;max-width:100%}.slide{display:flex!important;page-break-after:always;min-height:100vh;padding:48px 40px!important;box-sizing:border-box}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">food x database</div>
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="prevSlide()">←</button>
+    <span class="slide-counter" id="counter">1 / 7</span>
+    <button class="nav-btn" onclick="nextSlide()">→</button>
+    <button class="nav-btn" onclick="window.print()">下載 PDF</button>
+  </div>
+</nav>
+
+<div class="deck">
+
+<div class="slide active" id="s1">
+  <div class="splash">
+    <div class="splash-badge">情境簡報</div>
+    <div class="splash-title"><span class="a">冰箱</span> x <span class="b">餐桌</span><br>食物資料庫系統</div>
+    <div class="splash-sub">打開冰箱，看到紅蘿蔔和高麗菜。<br>勾選 -> 系統立刻告訴你：可以炒什麼。</div>
+    <div class="splash-tags">
+      <span class="splash-tag">食材資料庫</span>
+      <span class="splash-tag">冰箱掃描</span>
+      <span class="splash-tag">食譜推薦</span>
+      <span class="splash-tag">成本計算</span>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s2">
+  <div style="padding-top:40px;">
+    <div class="tag orange">使用情境</div>
+    <div class="slide-title">從冰箱到餐桌，只要三步</div>
+    <div class="slide-sub">真實使用流程，每一步都有資料庫支撐</div>
+    <div class="split">
+      <div>
+        <div class="app-frame">
+          <div class="app-screen">
+            <div class="app-header"><div class="app-notch"></div></div>
+            <div class="app-body">
+              <div class="app-title">我的冰箱</div>
+              <div class="app-label">家裡有的食材</div>
+              <div class="ingredient-row">
+                <span class="ing-tag selected">紅蘿蔔</span>
+                <span class="ing-tag selected">高麗菜</span>
+                <span class="ing-tag">雞蛋</span>
+                <span class="ing-tag">蒜頭</span>
+                <span class="ing-tag">豬肉</span>
+                <span class="ing-tag">鴻喜菇</span>
+              </div>
+              <div class="app-label" style="margin-top:12px;">推薦餐點</div>
+              <div class="dish-card">
+                <div class="dish-info"><div class="dish-name">紅蘿蔔炒蛋</div><div class="dish-meta">需：紅蘿蔔、雞蛋 · 10分鐘</div></div>
+                <div class="dish-match match-partial">缺雞蛋</div>
+              </div>
+              <div class="dish-card">
+                <div class="dish-info"><div class="dish-name">蒜香高麗菜</div><div class="dish-meta">需：高麗菜、蒜頭 · 8分鐘</div></div>
+                <div class="dish-match match-full">完全符合</div>
+              </div>
+              <div class="dish-card">
+                <div class="dish-info"><div class="dish-name">菇菇炒高麗菜</div><div class="dish-meta">需：鴻喜菇、高麗菜 · 12分鐘</div></div>
+                <div class="dish-match match-full">完全符合</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3>操作流程</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+          <div class="step-row">
+            <div class="step-num s1">1</div>
+            <div><div class="step-title">打開 App，勾選冰箱裡的食材</div><div class="step-desc">家裡有什麼就勾什麼，冰箱掃描也是這個動作</div></div>
+          </div>
+          <div class="step-row">
+            <div class="step-num s2">2</div>
+            <div><div class="step-title">系統自動比對食材資料庫</div><div class="step-desc">每道菜的食材需求 vs 你有的食材 -> 計算 match 分數</div></div>
+          </div>
+          <div class="step-row">
+            <div class="step-num s3">3</div>
+            <div><div class="step-title">立刻看到推薦結果</div><div class="step-desc">完全符合（家裡都有）、部分符合（差1-2樣）、價格估算</div></div>
+          </div>
+        </div>
+        <hr class="divider">
+        <h3>其他情境延伸</h3>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="card orange" style="padding:14px 16px;">
+            <div style="font-size:0.82rem;font-weight:700;margin-bottom:3px;">明天要帶便當</div>
+            <div style="font-size:0.75rem;color:var(--muted);">勾選想要的主菜 -> 系統推薦整週便當組合</div>
+          </div>
+          <div class="card green" style="padding:14px 16px;">
+            <div style="font-size:0.82rem;font-weight:700;margin-bottom:3px;">該去買菜了</div>
+            <div style="font-size:0.75rem;color:var(--muted);">勾選想吃的 -> 系統產出購物清單，順路指引</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s3">
+  <div style="padding-top:40px;">
+    <div class="tag orange">資料庫架構</div>
+    <div class="slide-title">8 個子資料庫，撐起整個系統</div>
+    <div class="slide-sub">每個資料庫解決一個問題，分工明確、可以各自擴充</div>
+    <div class="db-table">
+      <div class="db-row orange"><div class="db-name">食材庫</div><div class="db-content">每種食材的名稱、營養素、GI值、發炎指標、保存方式、保存期限</div><div class="db-use">核心顆粒度</div></div>
+      <div class="db-row orange"><div class="db-name">食材狀態庫</div><div class="db-content">使用者冰箱裡每項食材的目前庫存：數量、購買日期、過期預估、存放位置</div><div class="db-use">冰箱掃描</div></div>
+      <div class="db-row green"><div class="db-name">食譜庫</div><div class="db-content">每道菜的完整配方：所需食材列表、步驟、整備時間、烹飪時間、困難度</div><div class="db-use">推薦主體</div></div>
+      <div class="db-row green"><div class="db-name">時機標籤庫</div><div class="db-content">每道菜的時機標籤：減脂/增肌/宵夜/省錢/抗發炎/助眠/高蛋白，每個標籤對應評分權重</div><div class="db-use">推薦維度</div></div>
+      <div class="db-row cyan"><div class="db-name">食材價格庫</div><div class="db-content">每種食材的市場零售價格（每日更新）、批发價、特價週期、替代食材建議</div><div class="db-use">成本控制</div></div>
+      <div class="db-row cyan"><div class="db-name">餐點成本計算</div><div class="db-content">每道菜的食材成本加總 + 人力水電估算 -> 顯示真實成本與自己煮省了多少</div><div class="db-use">省錢感知</div></div>
+      <div class="db-row cyan"><div class="db-name">餐廳外食庫</div><div class="db-content">各餐廳的菜單、價格、食材組成、地點、等候時間</div><div class="db-use">外食替代</div></div>
+      <div class="db-row green"><div class="db-name">使用者偏好學習</div><div class="db-content">使用者喜歡/不喜歡的食材、做過的菜、歷史評分、近期購買記錄</div><div class="db-use">個人化排序</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s4">
+  <div style="padding-top:40px;">
+    <div class="tag green">推薦引擎</div>
+    <div class="slide-title">match 分數背後的邏輯</div>
+    <div class="slide-sub">不是單純的「有/沒有」，而是多維度的符合度評估</div>
+    <div class="split" style="margin-bottom:24px;">
+      <div>
+        <h3>評估維度（同時計算）</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+          <div class="card" style="border-color:rgba(251,146,60,0.2);"><div class="card-icon" style="color:var(--orange);">食材符合度</div><div class="card-desc">這道菜需要的食材，我冰箱裡有多少%符合？完全符合=100分</div></div>
+          <div class="card" style="border-color:rgba(74,222,128,0.2);"><div class="card-icon" style="color:var(--green);">時間符合度</div><div class="card-desc">這道菜的整備時間，符合使用者現在的時間窗口嗎？</div></div>
+          <div class="card" style="border-color:rgba(34,211,238,0.2);"><div class="card-icon" style="color:var(--cyan);">成本符合度</div><div class="card-desc">食材成本 + 額外購買成本，符合今天預算嗎？</div></div>
+          <div class="card" style="border-color:rgba(167,139,250,0.2);"><div class="card-icon" style="color:var(--purple);">時機標籤符合</div><div class="card-desc">這道菜的標籤與使用者當下需求的符合程度</div></div>
+          <div class="card" style="border-color:rgba(251,191,36,0.2);"><div class="card-icon" style="color:var(--yellow);">歷史偏好</div><div class="card-desc">這道菜的歷史評分，影響排序位置</div></div>
+        </div>
+      </div>
+      <div>
+        <h3>輸出結果</h3>
+        <div class="card" style="margin-top:8px;border-color:rgba(74,222,128,0.2);"><div class="card-icon" style="color:var(--green);">完全符合（綠色）</div><div class="card-desc">家裡有的食材，100% 覆蓋這道菜的需求。可以立刻做，不需要額外採買。</div></div>
+        <div class="card" style="margin-top:10px;border-color:rgba(251,191,36,0.2);"><div class="card-icon" style="color:var(--yellow);">部分符合（黃色）</div><div class="card-desc">缺 1-2 樣食材。系統同時列出：需要買什麼、哪家有特價、預估多花多少錢。</div></div>
+        <div class="card" style="margin-top:10px;border-color:rgba(167,139,250,0.2);"><div class="card-icon" style="color:var(--purple);">外食替代（紫色）</div><div class="card-desc">如果懶得做或來不及，系統推薦附近可外送的餐廳。</div></div>
+      </div>
+    </div>
+    <h3>推薦流程圖</h3>
+    <div class="flow">
+      <div class="flow-box orange">勾選冰箱食材</div>
+      <span class="flow-arrow">-></span>
+      <div class="flow-box green">比對食譜需求</div>
+      <span class="flow-arrow">-></span>
+      <div class="flow-box cyan">計算四維分數</div>
+      <span class="flow-arrow">-></span>
+      <div class="flow-box purple">加權排序</div>
+      <span class="flow-arrow">-></span>
+      <div class="flow-box green">Top3 推薦</div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s5">
+  <div style="padding-top:40px;">
+    <div class="tag cyan">情境維度</div>
+    <div class="slide-title">同一個食材，不同的推薦</div>
+    <div class="slide-sub">使用者的狀態不同，系統的回應也會不同——時機標籤是關鍵</div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 28px;margin-bottom:24px;">
+      <h3>時機標籤如何影響推薦（以「雞蛋」為例）</h3>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px;">
+        <div style="text-align:center;padding:14px;background:var(--orange-dim);border-radius:10px;border:1px solid var(--orange-border);">
+          <div style="font-size:18px;margin-bottom:6px;">🏃</div>
+          <div style="font-size:0.8rem;font-weight:700;color:var(--orange);margin-bottom:4px;">減脂期</div>
+          <div style="font-size:0.72rem;color:var(--muted);">蒸蛋、蛋花湯<br>（少油高蛋白）</div>
+        </div>
+        <div style="text-align:center;padding:14px;background:var(--green-dim);border-radius:10px;border:1px solid var(--green-border);">
+          <div style="font-size:18px;margin-bottom:6px;">💪</div>
+          <div style="font-size:0.8rem;font-weight:700;color:var(--green);margin-bottom:4px;">增肌期</div>
+          <div style="font-size:0.72rem;color:var(--muted);">蒜蓉蛋、酪梨蛋<br>（高熱量搭配）</div>
+        </div>
+        <div style="text-align:center;padding:14px;background:var(--cyan-dim);border-radius:10px;border:1px solid var(--cyan-border);">
+          <div style="font-size:18px;margin-bottom:6px;">😴</div>
+          <div style="font-size:0.8rem;font-weight:700;color:var(--cyan);margin-bottom:4px;">睡前</div>
+          <div style="font-size:0.72rem;color:var(--muted);">溫牛奶蒸蛋<br>（助眠色胺酸）</div>
+        </div>
+        <div style="text-align:center;padding:14px;background:var(--purple-dim);border-radius:10px;border:1px solid var(--purple-border);">
+          <div style="font-size:18px;margin-bottom:6px;">💸</div>
+          <div style="font-size:0.8rem;font-weight:700;color:var(--purple);margin-bottom:4px;">省錢優先</div>
+          <div style="font-size:0.72rem;color:var(--muted);">蔥花蛋、醬油蛋<br>（材料最少）</div>
+        </div>
+      </div>
+    </div>
+    <h3>時機標籤維度（持續擴充）</h3>
+    <div class="grid-4" style="margin-top:8px;">
+      <div class="card orange" style="padding:14px 16px;"><div class="card-name">健身目標</div><div class="card-desc">減脂 / 增肌 / 維持</div></div>
+      <div class="card green" style="padding:14px 16px;"><div class="card-name">時間窗口</div><div class="card-desc">10分鐘內 / 30分鐘 / 週末有空</div></div>
+      <div class="card cyan" style="padding:14px 16px;"><div class="card-name">健康目的</div><div class="card-desc">抗發炎 / 助眠 / 補血 / 護眼</div></div>
+      <div class="card yellow" style="padding:14px 16px;"><div class="card-name">情緒狀態</div><div class="card-desc">疲勞想吃輕食 / 壓力大想吃罪惡美食</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s6">
+  <div style="padding-top:40px;">
+    <div class="tag green">實作方向</div>
+    <div class="slide-title">三階段，循序漸進</div>
+    <div class="slide-sub">不求一次到位，先做出能展示的 MVP</div>
+    <div class="phase-grid" style="margin-bottom:24px;">
+      <div class="phase-card">
+        <div class="phase-num" style="color:var(--orange);">①</div>
+        <div class="phase-title">食材庫 + 食譜庫</div>
+        <div class="phase-desc">20種常見食材 + 30道基本食譜，先把匹配邏輯跑通</div>
+        <div class="phase-deliver">JSON 資料庫 + 匹配網頁</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num" style="color:var(--green);">②</div>
+        <div class="phase-title">時機標籤 + 成本計算</div>
+        <div class="phase-desc">加上健身/健康維度標籤，串接食材價格 API</div>
+        <div class="phase-deliver">完整推薦引擎 + 價格顯示</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num" style="color:var(--cyan);">③</div>
+        <div class="phase-title">精誠 AI + APP 上架</div>
+        <div class="phase-desc">串接精誠 AI 模型，使用自然語言問答介面</div>
+        <div class="phase-deliver">可展示的 APP 原型</div>
+      </div>
+    </div>
+    <hr class="divider">
+    <h3>外部資源（不用自己建）</h3>
+    <div class="grid-3" style="margin-top:8px;">
+      <div class="card green"><div class="card-icon" style="color:var(--green);">🌐</div><div class="card-name">Open Food Facts</div><div class="card-desc">全球食材營養資料庫 API，涵蓋數十萬種食品</div></div>
+      <div class="card cyan"><div class="card-icon" style="color:var(--cyan);">🗺️</div><div class="card-name">Google Maps</div><div class="card-desc">餐廳地點、評價、外送範圍</div></div>
+      <div class="card orange"><div class="card-icon" style="color:var(--orange);">🤖</div><div class="card-name">精誠 AI 模型</div><div class="card-desc">吃結構化資料，輸出自然語言建議</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s7">
+  <div style="padding-top:40px;">
+    <div class="slide-title">打開冰箱，<br><span class="a">就知道今晚吃什麼</span></div>
+    <div class="slide-sub" style="margin-bottom:32px;">
+      食材資料庫 + 食譜庫 + 時機標籤 + 成本計算，<br>
+      這四個子系統，就是食物版 MVP 的全部。
+    </div>
+    <div class="grid-3" style="margin-bottom:24px;">
+      <div class="card orange"><div class="card-icon" style="color:var(--orange);">📐</div><div class="card-name">Schema 先行的價值</div><div class="card-desc">先定義資料長什麼樣子，AI 才有乾淨的食材做菜</div></div>
+      <div class="card green"><div class="card-icon" style="color:var(--green);">🚀</div><div class="card-name">MVP 先行</div><div class="card-desc">20種食材 + 30道食譜，就是第一個能展示的版本</div></div>
+      <div class="card cyan"><div class="card-icon" style="color:var(--cyan);">🔗</div><div class="card-name">串接外部</div><div class="card-desc">營養資料交給 Open Food Facts，你專心做推薦邏輯</div></div>
+    </div>
+    <div class="cta-box">
+      <div class="cta-title">下一步：定義食材 Schema</div>
+      <div class="cta-desc">先把「食材庫」的欄位定義畫出來（名稱/營養素/保存期限），立刻可以開始建第一批資料</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<footer>食物資料庫系統 · 黑皮團隊 · 2026</footer>
+
+<script>
+  const total = 7;
+  let current = 1;
+  function show(n) {
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    document.getElementById('s' + n).classList.add('active');
+    document.getElementById('counter').textContent = n + ' / ' + total;
+    current = n;
+  }
+  function nextSlide() { show(current < total ? current + 1 : 1); }
+  function prevSlide() { show(current > 1 ? current - 1 : total); }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+    if (e.key === 'ArrowLeft') prevSlide();
+  });
+</script>
+
+</body>
+</html>
