@@ -27,14 +27,14 @@
     .slide-sub{font-size:1rem;color:var(--muted);max-width:600px;line-height:1.75;margin-bottom:32px}
     h3{font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
     h4{font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px}
-    .splash{min-height:100vh;display:flex;flex-direction:column;justify-content:center;text-align:center;position:relative}
+    .splash{height:100vh;display:flex;flex-direction:column;justify-content:center;text-align:center;position:relative;padding:40px 24px;box-sizing:border-box}
     .splash::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 60% at 50% 40%,rgba(251,146,60,0.09) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 75% 80%,rgba(74,222,128,0.06) 0%,transparent 60%)}
-    .splash-badge{display:inline-block;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--orange);background:var(--orange-dim);border:1px solid var(--orange-border);padding:5px 16px;border-radius:20px;margin-bottom:28px;width:fit-content}
-    .splash-title{font-size:clamp(2.5rem,8vw,4.5rem);font-weight:800;letter-spacing:-0.05em;line-height:1.05;margin-bottom:20px}
+    .splash-badge{display:inline-block;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--orange);background:var(--orange-dim);border:1px solid var(--orange-border);padding:5px 16px;border-radius:20px;margin-bottom:28px;width:fit-content;position:relative}
+    .splash-title{font-size:clamp(2.5rem,8vw,4.5rem);font-weight:800;letter-spacing:-0.05em;line-height:1.05;margin-bottom:20px;position:relative}
     .splash-title .a{color:var(--orange)}
     .splash-title .b{color:var(--green)}
-    .splash-sub{font-size:1.05rem;color:var(--muted);max-width:520px;margin:0 auto 40px;line-height:1.8}
-    .splash-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+    .splash-sub{font-size:1.05rem;color:var(--muted);max-width:520px;margin:0 auto 40px;line-height:1.8;position:relative}
+    .splash-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;position:relative}
     .splash-tag{font-size:11px;padding:4px 12px;border-radius:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--muted)}
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
     .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
@@ -45,11 +45,11 @@
     .card-name{font-size:0.9rem;font-weight:700;margin-bottom:5px;color:var(--text)}
     .card-desc{font-size:0.78rem;color:var(--muted);line-height:1.6}
     .db-table{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
-    .db-row{display:grid;grid-template-columns:160px 1fr 100px;gap:12px;padding:13px 20px;border-bottom:1px solid var(--border);align-items:start}
+    .db-row{display:grid;grid-template-columns:150px 1fr 90px;gap:10px;padding:10px 18px;border-bottom:1px solid var(--border);align-items:start}
     .db-row:last-child{border-bottom:none}
-    .db-name{font-size:0.83rem;font-weight:700}
-    .db-content{font-size:0.76rem;color:var(--muted);line-height:1.6}
-    .db-use{font-size:0.72rem;color:var(--muted);text-align:right}
+    .db-name{font-size:0.78rem;font-weight:700}
+    .db-content{font-size:0.72rem;color:var(--muted);line-height:1.5}
+    .db-use{font-size:0.68rem;color:var(--muted);text-align:right}
     .db-row.orange .db-name{color:var(--orange)}
     .db-row.green .db-name{color:var(--green)}
     .db-row.cyan .db-name{color:var(--cyan)}
@@ -94,7 +94,7 @@
     .dim-title{font-size:0.82rem;font-weight:700;margin-bottom:4px}
     .dim-desc{font-size:0.72rem;color:var(--muted);line-height:1.5}
     footer{text-align:center;padding:28px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);width:100%;max-width:var(--sw);margin:0 auto}
-    @media print{nav,.nav-controls{display:none!important}.deck{padding:0;max-width:100%}.slide{display:flex!important;page-break-after:always;min-height:100vh;padding:48px 40px!important;box-sizing:border-box}}
+    @media print{nav,.nav-controls{display:none!important}.deck{padding:0;max-width:100%}.slide{display:block!important;page-break-after:auto;min-height:auto;padding:24px 32px!important;box-sizing:border-box}.slide.active{display:block!important}}
   </style>
 </head>
 <body>
