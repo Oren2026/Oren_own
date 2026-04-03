@@ -64,6 +64,7 @@
     }
     .nav-logo { font-size: 12px; font-weight: 700; color: var(--purple); letter-spacing: 0.08em; }
     .nav-controls { display: flex; gap: 12px; align-items: center; }
+    @media print { .nav-controls { display: none !important; } }
     .nav-btn {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -366,6 +367,22 @@
       width: 100%;
       max-width: var(--slide-w);
       margin: 0 auto;
+    }
+
+    /* ===== PRINT / PDF ===== */
+    @media print {
+      nav { display: none !important; }
+      .deck { padding: 0; max-width: 100%; }
+      .slide {
+        display: flex !important;
+        page-break-after: always;
+        page-break-inside: avoid;
+        min-height: 100vh;
+        padding: 48px 40px !important;
+        box-sizing: border-box;
+      }
+      .slide:last-child { page-break-after: auto; }
+      .splash::before { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
     }
   </style>
 </head>
