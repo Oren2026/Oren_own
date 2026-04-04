@@ -36,13 +36,14 @@
     th { font-weight: 600; font-size: 0.82rem; color: #4a4a4a; white-space: nowrap; }
     td { font-size: 0.88rem; vertical-align: middle; }
     /* Column widths and alignment */
-    th:first-child, td:first-child { width: 28%; word-break: break-word; }
-    th:nth-child(2), td:nth-child(2) { text-align: center; width: 26%; word-break: break-word; }
-    th:nth-child(3), td:nth-child(3) { width: 30%; word-break: break-word; font-size: 0.8rem; }
-    th:last-child, td:last-child { text-align: center; width: 16%; }
-    /* Text wrapping for item names */
+    /* 5-column purchase list tables (default) */
+    th:first-child, td:first-child { width: 32%; word-break: break-word; }
+    th:nth-child(2), td:nth-child(2) { text-align: center; width: 10%; white-space: nowrap; }
+    th:nth-child(3), td:nth-child(3) { text-align: center; width: 18%; white-space: nowrap; }
+    th:nth-child(4), td:nth-child(4) { width: 28%; word-break: break-word; font-size: 0.82rem; }
+    th:last-child, td:last-child { text-align: center; width: 12%; }
     td:first-child { white-space: normal; word-break: break-word; }
-    td:nth-child(4) { white-space: normal; word-break: break-word; }
+    td:nth-child(5) { white-space: normal; word-break: break-word; }
     .total-row { background: #ecfdf5; font-weight: 700; }
     .total-row td { color: #059669; font-size: 1.05rem; }
     .updated-box { background: #dbeafe; border: 1px solid #2563eb; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
@@ -230,7 +231,7 @@
     <!-- 替代方案 -->
     <div class="section">
       <h2>🔄 替代方案</h2>
-      <table>
+      <table class="alt-table">
         <thead><tr><th>項目</th><th>替代方案</th><th>備註</th><th>狀態</th></tr></thead>
         <tbody>
           <tr data-status="not-purchased"><td>RealSense D435i</td><td>Logitech C920 + 超音波測距</td><td>無深度資訊</td><td class="status-cell"><button class="status-btn" onclick="toggleStatus(this)">○</button></td></tr>
