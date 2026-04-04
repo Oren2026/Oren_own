@@ -30,15 +30,20 @@
     .section { margin-bottom: 2rem; }
     .section h2 { font-size: 1.2rem; color: var(--primary); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
     table { width: 100%; table-layout: fixed; border-collapse: collapse; background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); font-size: 0.9rem; }
-    thead tr { background: var(--bg, #f4f6f2); }
-    th, td { padding: 0.6rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    th { font-weight: 600; font-size: 0.85rem; color: #4a4a4a; }
-    th:first-child, td:first-child { width: 28%; }
+    thead tr { background: #f4f6f2; }
+    th, td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border); }
+    th { font-weight: 600; font-size: 0.82rem; color: #4a4a4a; white-space: nowrap; }
+    td { font-size: 0.88rem; }
+    /* Column widths and alignment */
+    th:first-child, td:first-child { width: 32%; }
     th:nth-child(2), td:nth-child(2) { text-align: center; width: 8%; }
-    th:nth-child(3), td:nth-child(3) { text-align: right; width: 13%; }
-    th:nth-child(4), td:nth-child(4) { text-align: right; width: 11%; }
-    th:nth-child(5), td:nth-child(5) { width: 28%; }
-    th:last-child, td:last-child { text-align: center; width: 12%; }
+    th:nth-child(3), td:nth-child(3) { text-align: center; width: 14%; }
+    th:nth-child(4), td:nth-child(4) { text-align: center; width: 12%; }
+    th:nth-child(5), td:nth-child(5) { width: 24%; }
+    th:last-child, td:last-child { text-align: center; width: 10%; }
+    /* Text wrapping for item names */
+    td:first-child { white-space: normal; word-break: break-word; }
+    td:nth-child(5) { white-space: normal; word-break: break-word; font-size: 0.82rem; }
     .total-row { background: #ecfdf5; font-weight: 700; }
     .total-row td { color: #059669; font-size: 1.05rem; }
     .updated-box { background: #dbeafe; border: 1px solid #2563eb; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
