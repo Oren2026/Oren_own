@@ -61,7 +61,19 @@
     .tag.doc { background: #f1f5f9; color: #64748b; }
     .files-changed { background: var(--bg); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; }
     .files-changed strong { color: var(--text-light); }
-  </style>
+
+    /* Content animation */
+    .info-card, .stage-card, .score-table, .arch-box, .table-wrap {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .info-card.in-view, .stage-card.in-view, .score-table.in-view,
+    .arch-box.in-view, .table-wrap.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+      </style>
 </head>
 <body>
   <header class="header">
@@ -180,7 +192,7 @@
         }
       });
     }, { threshold: 0.08 });
-    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content').forEach(function(el) {
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .score-table, .arch-box, .table-wrap, table').forEach(function(el) {
       io.observe(el);
     });
   </script>

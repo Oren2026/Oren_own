@@ -68,7 +68,19 @@
     .link-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
     .link-card a { color: var(--primary); text-decoration: none; font-weight: 500; }
     .link-card a:hover { text-decoration: underline; }
-  </style>
+
+    /* Content animation */
+    .info-card, .stage-card, .score-table, .arch-box, .table-wrap {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .info-card.in-view, .stage-card.in-view, .score-table.in-view,
+    .arch-box.in-view, .table-wrap.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+      </style>
 </head>
 <body>
   <header class="header">
@@ -245,7 +257,7 @@
         }
       });
     }, { threshold: 0.08 });
-    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content').forEach(function(el) {
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .score-table, .arch-box, .table-wrap, table').forEach(function(el) {
       io.observe(el);
     });
   </script>
