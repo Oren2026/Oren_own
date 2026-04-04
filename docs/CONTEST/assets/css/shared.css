@@ -811,3 +811,125 @@ body {
 .update-date { font-size: 0.82rem; color: var(--muted, #6b7280); font-family: monospace; }
 .update-body { padding: 1rem 1.25rem; }
 .files-changed { margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-light); }
+
+/* ── Generic Content Card System ── */
+/* Usage: Add class to any naked element inside .section to give it a card frame */
+.content-card {
+  background: white;
+  border: 1px solid var(--border, rgba(0,0,0,0.08));
+  border-radius: 12px;
+  box-shadow: var(--card-shadow, 0 2px 8px rgba(0,0,0,0.06));
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
+}
+.content-card.in-view { opacity: 1; transform: translateY(0); }
+.content-card:hover { box-shadow: var(--card-shadow-hover, 0 8px 24px rgba(0,0,0,0.12)); }
+
+/* Table inside card */
+.table-card {
+  background: white;
+  border: 1px solid var(--border, rgba(0,0,0,0.08));
+  border-radius: 12px;
+  box-shadow: var(--card-shadow, 0 2px 8px rgba(0,0,0,0.06));
+  overflow: hidden;
+  margin-bottom: 1rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
+}
+.table-card.in-view { opacity: 1; transform: translateY(0); }
+.table-card table { margin-bottom: 0; border-radius: 0; box-shadow: none; }
+.table-card thead th {
+  background: var(--bg, #f4f6f2);
+  border-bottom: 2px solid var(--border-strong, rgba(0,0,0,0.12));
+}
+
+/* List inside card */
+.list-card {
+  background: white;
+  border: 1px solid var(--border, rgba(0,0,0,0.08));
+  border-radius: 12px;
+  box-shadow: var(--card-shadow, 0 2px 8px rgba(0,0,0,0.06));
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
+}
+.list-card.in-view { opacity: 1; transform: translateY(0); }
+.list-card ul {
+  padding-left: 1.25rem;
+  margin: 0;
+}
+.list-card li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+.list-card li:last-child { margin-bottom: 0; }
+
+/* Architecture text box */
+.arch-card {
+  background: white;
+  border: 1px solid var(--border, rgba(0,0,0,0.08));
+  border-radius: 12px;
+  box-shadow: var(--card-shadow, 0 2px 8px rgba(0,0,0,0.06));
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
+}
+.arch-card.in-view { opacity: 1; transform: translateY(0); }
+.arch-card pre, .arch-card .arch-box {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  white-space: pre;
+  margin: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Confirm items card */
+.confirm-card {
+  background: white;
+  border: 1px solid var(--border, rgba(0,0,0,0.08));
+  border-radius: 12px;
+  box-shadow: var(--card-shadow, 0 2px 8px rgba(0,0,0,0.06));
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease, box-shadow 0.3s ease;
+}
+.confirm-card.in-view { opacity: 1; transform: translateY(0); }
+.confirm-card ul {
+  padding-left: 1.25rem;
+  margin: 0;
+  list-style: none;
+}
+.confirm-card li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.confirm-card li::before {
+  content: "•";
+  color: var(--muted, #94a3b8);
+  flex-shrink: 0;
+}
+.confirm-card li strong { color: var(--text); }
+
+/* ── Tag: done/pending/warning inline ── */
+.tag-done { color: var(--success, #059669); }
+.tag-pending { color: var(--warning, #d97706); }
+.tag-urgent { color: var(--urgent, #dc2626); }

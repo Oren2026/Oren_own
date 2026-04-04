@@ -207,15 +207,18 @@
 
     <!-- 賽制 -->
     <h2 class="section-title">🏆 賽制</h2>
+    <div class="list-card">
     <ul style="line-height: 1.8; padding-left: 1.25rem;">
       <li><strong>初賽</strong>：積分制，每隊出賽 3 場，取積分較高的 2 場之積分和為總成績</li>
       <li><strong>複賽</strong>：單敗淘汰制（8強）</li>
       <li><strong>決賽</strong>：單敗淘汰制（4強）</li>
       <li><strong>獎項</strong>：取前4名為競賽獎優勝，第5-8名為佳作</li>
     </ul>
+    </div>
 
     <!-- 場地規格 -->
     <h2 class="section-title">📐 場地規格</h2>
+    <div class="table-card">
     <table class="info-table">
       <tr><th>整體比賽場地（含圍牆）</th><td>約 840 × 840 cm</td></tr>
       <tr><th>場內有效比賽區</th><td>約 800 × 800 cm</td></tr>
@@ -224,6 +227,7 @@
       <tr><th>重置區</th><td>50 × 50 cm</td></tr>
       <tr><th>導引線寬</th><td>約 5 cm</td></tr>
     </table>
+    </div>
 
     <!-- 相關連結 -->
     <h2 class="section-title">🔗 相關連結</h2>
@@ -260,7 +264,7 @@
         }
       });
     }, { threshold: 0.08 });
-    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .score-table, .arch-box, .award-card, .table-wrap, table').forEach(function(el) {
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .score-table, .arch-box, .table-wrap, .log-entry, .update-entry, .content-card, .table-card, .list-card, .arch-card, .confirm-card, table').forEach(function(el) {
       io.observe(el);
     });
   </script>
