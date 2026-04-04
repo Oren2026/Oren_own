@@ -58,19 +58,22 @@
     .tag.museum { background: #fef3c7; color: #92400e; }
     .tag.farm { background: #fde68a; color: #78350f; }
     .tag.temple { background: #fee2e2; color: #991b1b; }
-    .score-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 1.5rem; }
+    .score-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 0; }
     .score-table th { background: var(--primary); color: white; padding: 0.75rem 1rem; text-align: left; }
     .score-table th:last-child { text-align: right; }
     .score-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
     .score-table td:last-child { text-align: right; font-weight: bold; }
     .score-table tr:last-child td { border-bottom: none; }
     .score-table .highlight { background: #fef3c7; }
+    /* Award section card */
+    .award-card { background: white; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+    .award-card h3 { font-size: 0.95rem; color: var(--primary); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); font-weight: 600; }
     .link-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
     .link-card a { color: var(--primary); text-decoration: none; font-weight: 500; }
     .link-card a:hover { text-decoration: underline; }
 
     /* Content animation */
-    .info-card, .stage-card, .score-table, .arch-box, .table-wrap {
+    .info-card, .stage-card, .score-table, .arch-box, .award-card, .table-wrap {
       opacity: 0;
       transform: translateY(24px);
       transition: opacity 0.6s ease, transform 0.6s ease;
@@ -170,7 +173,7 @@
     <!-- 評分項目 -->
     <h2 class="section-title">📊 評分項目</h2>
 
-    <h3 style="font-size:1rem; margin-bottom:0.75rem;">創意獎（現場評審）</h3>
+    <div class="award-card"><h3 style="font-size:1rem; margin-bottom:0.75rem;">創意獎（現場評審）</h3>
     <table class="score-table">
       <thead><tr><th>內容</th><th>分數</th></tr></thead>
       <tbody>
@@ -179,9 +182,9 @@
         <tr class="highlight"><td>機器人之機構設計創意</td><td>40 ⭐最大項</td></tr>
         <tr><td>機器人之運動美感與造型創意</td><td>15</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
-    <h3 style="font-size:1rem; margin-bottom:0.75rem;">科技人文獎（不分組取1名）</h3>
+    <div class="award-card"><h3 style="font-size:1rem; margin-bottom:0.75rem;">科技人文獎（不分組取1名）</h3>
     <table class="score-table">
       <thead><tr><th>內容</th><th>分數</th></tr></thead>
       <tbody>
@@ -189,9 +192,9 @@
         <tr><td>工程設計與美學以及人文結合概念</td><td>40</td></tr>
         <tr><td>團隊成員背景（跨領域程度）</td><td>20</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
-    <h3 style="font-size:1rem; margin-bottom:0.75rem;">最佳工作團隊紀律獎</h3>
+    <div class="award-card"><h3 style="font-size:1rem; margin-bottom:0.75rem;">最佳工作團隊紀律獎</h3>
     <table class="score-table">
       <thead><tr><th>內容</th><th>分數</th></tr></thead>
       <tbody>
@@ -200,7 +203,7 @@
         <tr><td>製作報告書內容完整性</td><td>20</td></tr>
         <tr><td>機器人設計及創意介紹內容完整性</td><td>20</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
     <!-- 賽制 -->
     <h2 class="section-title">🏆 賽制</h2>
@@ -257,7 +260,7 @@
         }
       });
     }, { threshold: 0.08 });
-    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .score-table, .arch-box, .table-wrap, table').forEach(function(el) {
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .score-table, .arch-box, .award-card, .table-wrap, table').forEach(function(el) {
       io.observe(el);
     });
   </script>
