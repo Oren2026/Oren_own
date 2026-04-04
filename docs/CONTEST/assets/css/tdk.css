@@ -1,0 +1,132 @@
+/* ============================================================
+   tdk.css — TDK Contest Section Styles
+   Extends shared.css. Sets TDK-specific :root variables.
+
+   Each sub-page should include BOTH:
+   <link rel="stylesheet" href="../../assets/css/shared.css">
+   <link rel="stylesheet" href="../../assets/css/tdk.css">
+   ============================================================ */
+
+:root {
+  /* ── TDK Color Palette ── */
+  --primary: #d97706;         /* warm amber */
+  --primary-rgb: 217, 119, 6;
+  --accent: #f59e0b;           /* orange highlight */
+  --accent-rgb: 245, 158, 11;
+  --accent-light: #fef3c7;
+  --accent-text: #92400e;
+
+  /* ── Semantic colors ── */
+  --success: #059669;          /* green for completed */
+  --warning: #d97706;          /* amber for in-progress */
+  --urgent: #dc2626;           /* red for urgent */
+
+  /* ── Base colors ── */
+  --bg: #f4f6f2;
+  --surface: #ffffff;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --muted: #94a3b8;
+  --muted-2: #6b7280;
+
+  /* ── Borders & Shadows ── */
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.15);
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --card-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  --card-shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --badge-border: rgba(245, 158, 11, 0.35);
+}
+
+/* ── TDK Header glow ── */
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% -10%, rgba(245,158,11,0.15) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 80% 90%, rgba(245,158,11,0.08) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* ── Section Header background ── */
+.section-header {
+  background: linear-gradient(135deg, rgba(245,158,11,0.10) 0%, rgba(245,158,11,0.03) 100%);
+  border-left-color: rgba(245, 158, 11, 0.40);
+}
+
+/* ── Stage Card accent line ── */
+.stage-card {
+  border-left: 3px solid rgba(245, 158, 11, 0.35);
+}
+
+/* ── Table shared styles for TDK sub-pages ── */
+table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0;
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  font-size: 0.9rem;
+}
+table thead tr { background: var(--bg); }
+table th {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--muted-2);
+  white-space: nowrap;
+  border-bottom: 2px solid var(--border-strong);
+}
+table td {
+  font-size: 0.88rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+}
+table th, table td {
+  padding: 0.5rem 0.6rem;
+  border-right: 1px solid var(--border);
+}
+table th:last-child,
+table td:last-child { border-right: none; }
+
+/* Status column */
+.status-cell { text-align: center; width: 60px; }
+.status-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  background: white;
+  transition: all 0.2s;
+}
+.status-btn:hover { transform: scale(1.1); }
+
+/* Status row states */
+tr[data-status="not-purchased"] td:first-child {
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+tr[data-status="purchased"] td:first-child {
+  color: var(--text);
+  text-decoration: none;
+}
+tr[data-status="purchased"] .status-btn {
+  border-color: var(--success);
+  background: #d1fae5;
+  color: var(--success);
+}
+tr[data-status="not-purchased"] .status-btn {
+  border-color: var(--border-strong);
+  background: var(--bg);
+  color: var(--muted);
+}
