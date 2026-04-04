@@ -73,12 +73,12 @@
     .link-card a:hover { text-decoration: underline; }
 
     /* Content animation */
-    .info-card, .stage-card, .arch-box, .award-card, .table-wrap, .content-card, .table-card, .list-card, .arch-card, .confirm-card {
+    .info-card, .stage-card, .stage-header, .stage-body, .arch-box, .award-card, .table-wrap, .content-card, .table-card, .list-card, .arch-card, .confirm-card {
       opacity: 0;
       transform: translateY(24px);
       transition: opacity 0.6s ease, transform 0.6s ease;
     }
-    .info-card.in-view, .stage-card.in-view,
+    .info-card.in-view, .stage-card.in-view, .stage-header.in-view, .stage-body.in-view,
     .arch-box.in-view, .award-card.in-view, .table-wrap.in-view, .content-card.in-view, .table-card.in-view, .list-card.in-view, .arch-card.in-view, .confirm-card.in-view {
       opacity: 1;
       transform: translateY(0);
@@ -264,7 +264,7 @@
         }
       });
     }, { threshold: 0.08 });
-    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .arch-box, .table-wrap, .log-entry, .update-entry, .content-card, .table-card, .list-card, .arch-card, .confirm-card, table').forEach(function(el) {
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .stage-header, .stage-body, .arch-box, .table-wrap, .log-entry, .update-entry, .content-card, .table-card, .list-card, .arch-card, .confirm-card, table').forEach(function(el) {
       io.observe(el);
     });
   </script>
