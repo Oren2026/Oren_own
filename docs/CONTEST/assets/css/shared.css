@@ -933,3 +933,18 @@ body {
 .tag-done { color: var(--success, #059669); }
 .tag-pending { color: var(--warning, #d97706); }
 .tag-urgent { color: var(--urgent, #dc2626); }
+
+/* ── Content Card Fade-In System ── */
+/* All content cards share the same entrance animation */
+.info-card, .stage-card, .arch-box, .award-card, .table-wrap,
+.content-card, .table-card, .list-card, .arch-card, .confirm-card {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.info-card.in-view, .stage-card.in-view, .arch-box.in-view, .award-card.in-view,
+.table-wrap.in-view, .content-card.in-view, .table-card.in-view,
+.list-card.in-view, .arch-card.in-view, .confirm-card.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
