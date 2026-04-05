@@ -7,8 +7,18 @@
   <link rel="stylesheet" href="../../assets/css/shared.css">
   <style>
     :root {
-      --accent: #fbbf24;
-      --accent-rgb: 251, 191, 36;
+      --accent: #f59e0b;
+      --accent-rgb: 245, 158, 11;
+      --primary: #d97706;
+      --primary-rgb: 217, 119, 6;
+      --bg: #f4f6f2;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --muted: #4a4a4a;
+      --muted-2: #888;
+      --border: rgba(0,0,0,0.08);
+      --shadow: 0 1px 3px rgba(0,0,0,0.06);
+      --card-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     body { background: var(--bg); }
 
@@ -68,11 +78,6 @@
     .status-done { color: var(--success); font-weight: 600; }
     .status-pending { color: var(--accent); font-weight: 600; }
     .status-future { color: var(--text-light); }
-/* Table shared */
-    table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 1rem; }
-    table th { background: #f4f6f2; font-weight: 600; font-size: 0.82rem; color: #4a4a4a; padding: 0.5rem 0.75rem; border-bottom: 2px solid rgba(0,0,0,0.1); }
-    table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 0.88rem; }
-    table tr:last-child td { border-bottom: none; }
   </style>
 </head>
 <body>
@@ -130,7 +135,7 @@
         }
       });
     }, { threshold: 0.08 });
-    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .arch-box, .table-wrap, .content-card, .table-card, .list-card, .arch-card, .confirm-card, table').forEach(function(el) {
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .arch-box, .award-card, .table-wrap, .content-card, .table-card, .list-card, .arch-card, .confirm-card, table').forEach(function(el) {
       io.observe(el);
     });
   </script>

@@ -12,11 +12,17 @@
       --muted:        #4a4a4a;
       --muted-2:      #888;
       --accent:       #6ee7f7;
+      --accent-rgb:   110, 231, 247;
       --accent-dim:   rgba(110,231,247,0.08);
       --accent-text:  #0899b2;
       --accent-mid:   rgba(110,231,247,0.15);
       --card-bg:      #ffffff;
       --border:       rgba(110,231,247,0.12);
+      --primary:      #0899b2;
+      --primary-rgb:  8, 153, 178;
+      --surface:      #ffffff;
+      --shadow:       0 1px 3px rgba(0,0,0,0.06);
+      --card-shadow:  0 2px 8px rgba(0,0,0,0.06);
     }
     body { background: var(--bg); }
 
@@ -182,7 +188,7 @@
       });
     }, { threshold: 0.08 });
 
-    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link').forEach(function(el) {
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .arch-box, .award-card, .table-wrap, .content-card, .table-card, .list-card, .arch-card, .confirm-card, table').forEach(function(el) {
       io.observe(el);
     });
 

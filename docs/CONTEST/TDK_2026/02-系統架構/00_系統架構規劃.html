@@ -17,6 +17,8 @@
       --muted: #4a4a4a;
       --muted-2: #888;
       --border: rgba(0,0,0,0.08);
+      --shadow: 0 1px 3px rgba(0,0,0,0.06);
+      --card-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     body { background: var(--bg); }
 
@@ -53,19 +55,7 @@
     .stage-body ul { padding-left: 1.25rem; }
     .stage-body li { margin-bottom: 0.4rem; line-height: 1.6; }
     .mech-tag { display: inline-block; font-size: 0.75rem; padding: 0.1rem 0.4rem; border-radius: 4px; background: #ede9fe; color: #6d28d9; }
-
-    /* Content animation */
-    .info-card, .stage-card, .arch-box, .table-wrap {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .info-card.in-view, .stage-card.in-view.in-view,
-    .arch-box.in-view, .table-wrap.in-view {
-      opacity: 1;
-      transform: translateY(0);
-    }
-      </style>
+  </style>
 </head>
 <body>
   <header class="header">
@@ -155,7 +145,7 @@
 
     <div class="section">
       <h2>🏗️ 整體架構（遙控組）</h2>
-      <div class="arch-card"><pre class="arch-box">┌──────────────────────────────────────────────┐
+      <div class="arch-box">┌──────────────────────────────────────────────┐
 │              🎮 遙控器（操作者）                  │
 │         （接收影像 + 操作機器人移動）             │
 ├──────────────┬──────────────┬─────────────────────┤
@@ -171,13 +161,12 @@
 ├──────────────┬──────────────┬──────────────────┤
 │   姿態感測   │   訊號處理   │   機構動作控制     │
 │   IMU        │  遙控訊號解碼 │  舵機驅動輸出     │
-└──────────────┴──────────────┴──────────────────┘</pre></div>
+└──────────────┴──────────────┴──────────────────┘</div>
       <p style="font-size: 0.9rem; color: var(--text-light);">說明：操作者遙控移動，機構爪子由操作者或預程式控制。RPI 5 負責訊號路由、姿態監控、機構協調。</p>
     </div>
 
     <div class="section">
       <h2>🔧 技術需求狀態</h2>
-      <div class="table-card">
       <table>
         <thead><tr><th>類別</th><th>項目</th><th>說明</th><th>狀態</th></tr></thead>
         <tbody>
@@ -189,11 +178,10 @@
           <tr><td>電源系統</td><td>鉛酸 12V 10Ah + 7Ah</td><td>馬達 + 控制系統供電</td><td><span class="status progress">🚧 老師建議</span></td></tr>
         </tbody>
       </table>
-      </div>
+    </div>
 
     <div class="section">
       <h2>🛠️ 機構需求對照</h2>
-      <div class="table-card">
       <table>
         <thead><tr><th>機構</th><th>對應關卡</th><th>類型</th><th>優先度</th></tr></thead>
         <tbody>
@@ -204,11 +192,10 @@
           <tr><td>🏮 水果夾持機構</td><td>關卡 4（水果擺放）</td><td>多尺寸適應</td><td><span class="status todo">🟡 中</span></td></tr>
         </tbody>
       </table>
-      </div>
+    </div>
 
     <div class="section">
       <h2>📝 待確認事項</h2>
-      <div class="confirm-card">
       <ul>
         <li>✅ 官方規則 PDF（已下載確認）</li>
         <li>✅ 參賽組別（遙控組已確認）</li>
@@ -216,7 +203,7 @@
         <li>⚠️ 機器人尺寸與重量限制</li>
         <li>⚠️ 比賽日期與時程（預計 2026-05）</li>
       </ul>
-      </div>
+    </div>
 
     <div style="text-align: center; padding: 2rem 0; color: var(--text-light); font-size: 0.85rem;">
       <p>最後更新：2026-03-27 | TDK 2026 第30屆</p>
@@ -236,7 +223,7 @@
         }
       });
     }, { threshold: 0.08 });
-    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .arch-box, .table-wrap, .log-entry, .update-entry, .content-card, .table-card, .list-card, .arch-card, .confirm-card, table').forEach(function(el) {
+    document.querySelectorAll('.header h1, .header .subtitle, .header .back-link, .updated-box, .section, .doc-content, .info-card, .stage-card, .arch-box, .award-card, .table-wrap, .content-card, .table-card, .list-card, .arch-card, .confirm-card, table').forEach(function(el) {
       io.observe(el);
     });
   </script>
