@@ -26,11 +26,18 @@
     },
     {
       "date": "2026-04-11",
-      "title": "TDK 說明會",
+      "title": "TDK說明會",
       "type": "event",
       "project": "TDK",
       "location": "高雄",
       "notes": ""
+    },
+    {
+      "date": "2026-04-08",
+      "title": "TDK 報名截止",
+      "type": "deadline",
+      "project": "TDK",
+      "notes": "線上填表+郵寄報名表（郵戳為憑）"
     },
     {
       "date": "2026-04-12",
@@ -48,14 +55,6 @@
       "notes": ""
     },
     {
-      "date": "2026-06-13",
-      "title": "機票 — 廈門 + 成都",
-      "type": "event",
-      "project": "",
-      "location": "",
-      "notes": "6/13去廈門/成都"
-    },
-    {
       "date": "2026-04-25",
       "title": "FIRA 比賽",
       "type": "deadline",
@@ -70,42 +69,64 @@
       "notes": "4/25~26"
     },
     {
+      "date": "2026-04-27",
+      "title": "TDK 工作週報開始",
+      "type": "event",
+      "project": "TDK",
+      "notes": "每週繳交一次，直至7/12"
+    },
+    {
+      "date": "2026-06-13",
+      "title": "機票 — 廈門 + 成都",
+      "type": "event",
+      "project": "",
+      "location": "",
+      "notes": "6/13去廈門/成都"
+    },
+    {
       "date": "2026-07-12",
       "title": "TDK 第一階段繳交截止",
       "type": "deadline",
       "project": "TDK",
-      "notes": "書面審查，通過後才可參加第二階段"
+      "notes": "製作報告書+工作週報+CAD+短片，23:59前，未繳取消資格"
+    },
+    {
+      "date": "2026-08-14",
+      "title": "TDK 隊伍資料更正截止",
+      "type": "deadline",
+      "project": "TDK",
+      "notes": "隊名或隊員名單更改"
     },
     {
       "date": "2026-09-20",
-      "title": "TDK 第二階段作品繳交截止",
+      "title": "TDK 第二階段繳交截止",
       "type": "deadline",
       "project": "TDK",
-      "notes": "需已通過第一階段"
+      "notes": "工作週報+自評表+六視圖，23:59前"
     },
     {
       "date": "2026-10-15",
-      "title": "TDK 初賽",
+      "title": "TDK 自動組初賽",
       "type": "deadline",
       "project": "TDK",
-      "location": "雲林科技大學",
+      "location": "雲林科技大學體育館",
       "notes": ""
     },
     {
       "date": "2026-10-16",
-      "title": "TDK 決賽",
+      "title": "TDK 遙控組初賽",
       "type": "deadline",
       "project": "TDK",
-      "location": "雲林科技大學",
+      "location": "雲林科技大學體育館",
       "notes": ""
     },
     {
       "date": "2026-10-17",
-      "title": "TDK 頒獎",
-      "type": "event",
+      "title": "TDK 複賽+決賽",
+      "type": "deadline",
       "project": "TDK",
-      "location": "雲林科技大學",
-      "notes": ""
+      "location": "雲林科技大學體育館",
+      "notes": "單敗淘汰制，前4名為競賽獎"
     }
   ]
 }
