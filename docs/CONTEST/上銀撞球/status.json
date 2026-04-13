@@ -1,0 +1,72 @@
+{
+  "name": "上銀撞球 2026",
+  "subtitle": "第十八屆上銀智慧機器手實作競賽 — 撞球組",
+  "category": "hiwin",
+  "status": "review",
+  "deadline": "2026-05-22",
+  "nextMilestone": "繳交複審影片（截止 2026/05/22）",
+  "progress": {
+    "初審": "passed",
+    "安全講習": "pending",
+    "機構設計": "in-progress",
+    "影片製作": "pending"
+  },
+  "procurement": {
+    "已完成": [],
+    "待購買": [
+      {
+        "name": "HIWIN 智慧機器手臂",
+        "qty": 1,
+        "note": "主辦單位提供"
+      },
+      {
+        "name": "3D列印機構零件",
+        "qty": "若干",
+        "note": "優先3D列印"
+      }
+    ]
+  },
+  "timeline": [
+    {
+      "phase": "初審結果公告",
+      "date": "2026-03-27",
+      "status": "done"
+    },
+    {
+      "phase": "安全講習與測驗",
+      "date": "2026-03~04",
+      "status": "pending"
+    },
+    {
+      "phase": "複審影片繳交截止",
+      "date": "2026-05-22",
+      "status": "pending",
+      "daysLeft": 39
+    },
+    {
+      "phase": "決賽",
+      "date": "2026-08-19~20",
+      "status": "pending",
+      "daysLeft": 128
+    }
+  ],
+  "awards": {
+    "冠軍": "新台幣 10 萬元",
+    "亞軍": "新台幣 8 萬元",
+    "季軍": "新台幣 6 萬元 × 2隊",
+    "評審特別獎": "新台幣 2 萬元"
+  },
+  "subsidy": "外島優障：撞球組補助 NT$15,000（全台最高）",
+  "updates": [
+    {
+      "date": "2026-03-27",
+      "text": "初審通過！入選隊伍須參加安全講習並通過測驗",
+      "category": "進度"
+    },
+    {
+      "date": "2026-03-27",
+      "text": "上線競賽說明文件，補助 NT$15,000 外島優勢",
+      "category": "公告"
+    }
+  ]
+}

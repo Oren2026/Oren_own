@@ -1,0 +1,129 @@
+{
+  "name": "FIRA 2026",
+  "subtitle": "TurtleBot 3 Burger × ROS × OpenCV",
+  "category": "fira",
+  "status": "in-progress",
+  "nextMilestone": "PID 循線整合 + 任務串接",
+  "progress": {
+    "圓環/交叉路口": "done",
+    "循線置中": "done",
+    "交通號誌": "todo",
+    "障礙/減速區": "todo",
+    "平交道柵欄": "todo",
+    "隧道/暗區": "todo",
+    "停車": "todo",
+    "S 型彎道": "todo",
+    "任務串接": "todo"
+  },
+  "missions": [
+    {
+      "id": "lane_center",
+      "name": "循線置中",
+      "status": "done",
+      "files": [
+        "detect_lane.py"
+      ],
+      "testStatus": "passed"
+    },
+    {
+      "id": "intersection",
+      "name": "圓環/交叉路口",
+      "status": "done",
+      "files": [
+        "detect_intersection.py"
+      ],
+      "testStatus": "passed"
+    },
+    {
+      "id": "traffic_light",
+      "name": "交通號誌",
+      "status": "todo",
+      "files": [
+        "detect_traffic_light.py"
+      ]
+    },
+    {
+      "id": "construction",
+      "name": "障礙/減速區",
+      "status": "todo",
+      "files": [
+        "detect_construction.py"
+      ]
+    },
+    {
+      "id": "level_crossing",
+      "name": "平交道柵欄",
+      "status": "todo",
+      "files": [
+        "detect_level.py"
+      ]
+    },
+    {
+      "id": "tunnel",
+      "name": "隧道/暗區",
+      "status": "todo",
+      "files": [
+        "detect_tunnel.py"
+      ]
+    },
+    {
+      "id": "parking",
+      "name": "停車",
+      "status": "todo",
+      "files": [
+        "detect_parking.py"
+      ]
+    },
+    {
+      "id": "s_curve",
+      "name": "S 型彎道",
+      "status": "todo",
+      "files": [
+        "detect_lane.py"
+      ]
+    },
+    {
+      "id": "integration",
+      "name": "任務串接",
+      "status": "todo",
+      "files": [
+        "core_node_controller.py"
+      ]
+    }
+  ],
+  "procurement": {
+    "已完成": [
+      {
+        "name": "TurtleBot 3 Burger",
+        "qty": 1
+      },
+      {
+        "name": "Raspberry Pi 3",
+        "qty": 1
+      },
+      {
+        "name": "Intel RealSense (或多型號)",
+        "qty": 1
+      },
+      {
+        "name": "LiDAR",
+        "qty": 1
+      }
+    ],
+    "待購買": []
+  },
+  "updates": [
+    {
+      "date": "2026-03-26",
+      "text": "JSON集中資料架構 + index極簡化實驗；廢除01~05編號，改為research/architecture/tech/updates/",
+      "category": "系統更新"
+    },
+    {
+      "date": "2026-03-26",
+      "text": "圓環+循線置中已完成基礎測試（testStatus: passed）",
+      "category": "進度"
+    }
+  ],
+  "doneCount": 2,
+  "totalMissions": 9
+}
