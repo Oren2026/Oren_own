@@ -679,6 +679,16 @@
       </div>
     </section>
 
+    <!-- 最新動態（從 status.json 動態讀取） -->
+    <div id="status-banner" style="display:none;background:linear-gradient(135deg,#fffbeb,#fff);border:2px solid #f59e0b;border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;">
+      <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+        <span style="background:#f59e0b;color:white;font-size:0.75rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:20px;">最新</span>
+        <span id="banner-date" style="font-size:0.85rem;color:#92400e;font-weight:600;"></span>
+        <span id="banner-category" style="font-size:0.75rem;padding:0.1rem 0.4rem;border-radius:4px;"></span>
+      </div>
+      <p id="banner-text" style="font-size:0.95rem;line-height:1.6;margin:0;color:#1a1a1a;"></p>
+    </div>
+
   </main>
 
   <footer class="footer">
@@ -711,6 +721,28 @@
     document.querySelectorAll('.info-card, .section').forEach(function(el) {
       io.observe(el);
     });
+
+    // ── 從 status.json 讀取最新動態 ───────────────────────
+    (async function() {
+      try {
+        const res = await fetch('上銀撞球/status.json');
+        const data = await res.json();
+        if (data.updates && data.updates.length) {
+          const latest = data.updates[0];
+          const banner = document.getElementById('status-banner');
+          const cat = latest.category || '更新';
+          document.getElementById('banner-date').textContent = latest.date;
+          const catEl = document.getElementById('banner-category');
+          catEl.textContent = cat;
+          catEl.style.background = cat === '進度' ? '#dbeafe' : '#fef3c7';
+          catEl.style.color = cat === '進度' ? '#2563eb' : '#92400e';
+          document.getElementById('banner-text').textContent = latest.text;
+          banner.style.display = 'block';
+        }
+      } catch(e) {
+        // status.json 讀取失敗，略過
+      }
+    })();
 
     // ── Countdown ──
     function updateCountdowns() {

@@ -2,11 +2,12 @@
  * TB3 2026 — 全域 JS
  * 所有頁面共用，職責：
  *   1. 常數定義（MISSION_ICONS, MISSION_IDS）
- *   2. 讀取 data/*.json
- *   3. 計算 Mission 完成度
- *   4. 渲染 Mission Grid / Timeline / Updates
- *   5. Modal 互動
- *   6. 頁面通用工具（lastUpdated, refreshBtn）
+ *   2. 讀取 data/*.json（細節內容）
+ *   3. 讀取 status.json（進度總覽）
+ *   4. 計算 Mission 完成度
+ *   5. 渲染 Mission Grid / Timeline / Updates
+ *   6. Modal 互動
+ *   7. 頁面通用工具（lastUpdated, refreshBtn）
  */
 
 const MISSION_ICONS = {
@@ -37,6 +38,18 @@ async function fetchAllMissions(prefix = '../') {
   return missions;
 }
 
+/** 讀取 status.json（進度總覽） */
+async function fetchStatus(prefix = '../') {
+  try {
+    const res = await fetch(`${prefix}status.json`);
+    const data = await res.json();
+    window._status = data;
+    return data;
+  } catch(e) {
+    return null;
+  }
+}
+
 // ── 計算 ──────────────────────────────────────────────
 
 function computeMissionStatus(m) {
@@ -46,15 +59,52 @@ function computeMissionStatus(m) {
 
 // ── 渲染 ──────────────────────────────────────────────
 
-/** 渲染 Mission Grid（index / research / architecture / tech 共用） */
-function renderMissionGrid(missions, containerId) {
+/** 渲染進度總覽（讀取 status.json） */
+async function renderStatusSummary(prefix = '../') {
+  const status = await fetchStatus(prefix);
+  if (!status) return;
+
+  // 更新 progress bar
+  const fill = document.getElementById('progress-fill');
+  const text = document.getElementById('progress-text');
+  const doneCount = status.doneCount || 0;
+  const totalCount = status.totalMissions || 9;
+  const pct = Math.round(doneCount / totalCount * 100);
+
+  if (fill) fill.style.width = pct + '%';
+  if (text) text.textContent = `${doneCount}/${totalCount} 完成`;
+
+  // 更新 footer 日期
+  const footer = document.getElementById('footer-updated');
+  if (footer && status.updates && status.updates.length) {
+    footer.textContent = status.updates[0].date;
+  }
+}
+
+/** 渲染 Mission Grid（index / research / architecture / tech 共用）
+ *  優先使用 status.json 的 doneCount，若無則 fallback 到 data/*.json */
+async function renderMissionGrid(containerId, prefix = '../') {
   const c = document.getElementById(containerId);
   if (!c) return;
+
+  const status = window._status || await fetchStatus(prefix);
+  const missions = window._tb3 ? Object.values(window._tb3) : await fetchAllMissions(prefix);
+
+  if (missions.length === 0) {
+    c.innerHTML = '<p style="color:var(--muted-2);padding:1rem;">暫無任務資料</p>';
+    return;
+  }
+
   c.innerHTML = missions
     .filter(m => m.category !== 'base')
     .sort((a, b) => MISSION_IDS.indexOf(a.id) - MISSION_IDS.indexOf(b.id))
     .map(m => {
-      const s = computeMissionStatus(m);
+      // 優先用 status.json 的 status
+      let s = computeMissionStatus(m);
+      if (status && status.missions) {
+        const s2 = status.missions.find(sm => sm.id === m.id);
+        if (s2) s = s2.status || s;
+      }
       const icon = MISSION_ICONS[m.id] || '❓';
       const label = s === 'done' ? '✅ 已完成' : '🚧 施工中';
       return `<div class="mission-card ${s === 'done' ? 'completed' : 'active'}"
@@ -66,29 +116,54 @@ function renderMissionGrid(missions, containerId) {
     }).join('');
 }
 
-/** 渲染 Updates 列表 */
+/** 渲染 Updates 列表（讀取 status.json） */
 async function renderUpdates(prefix = '../') {
   const el = document.getElementById('update-list');
   if (!el) return;
-  try {
-    const res = await fetch(`${prefix}updates/updates.json`);
-    const data = await res.json();
-    if (!data || !data.length) { el.innerHTML = '<p style="color:var(--text-light);padding:1rem;">暫無更新記錄</p>'; return; }
-    el.innerHTML = data
-      .sort((a, b) => b.id.localeCompare(a.id))
+
+  const status = window._status || await fetchStatus(prefix);
+
+  if (status && status.updates && status.updates.length) {
+    const tagClass = (cat) => {
+      if (cat === '採購' || cat === '硬體更新') return 'hw';
+      if (cat === '規則更新') return 'rule';
+      return 'sys';
+    };
+    el.innerHTML = status.updates
+      .slice()
+      .reverse()
       .map(e => `
         <div class="update-entry">
           <div class="update-header">
-            <h2>${e.title}</h2>
+            <h2>${e.text}</h2>
             <span class="update-date">${e.date}</span>
           </div>
           <div class="update-body">
-            <p class="tag ${e.category === '硬體更新' ? 'hw' : 'sys'}">${e.category}</p>
-            <p>${e.summary}</p>
+            <p class="tag ${tagClass(e.category)}">${e.category || '更新'}</p>
           </div>
         </div>`).join('');
-  } catch(err) {
-    el.innerHTML = '<p style="color:var(--danger);padding:1rem;">載入失敗</p>';
+  } else {
+    // fallback 到舊的 updates.json
+    try {
+      const res = await fetch(`${prefix}updates/updates.json`);
+      const data = await res.json();
+      if (!data || !data.length) { el.innerHTML = '<p style="color:var(--text-light);padding:1rem;">暫無更新記錄</p>'; return; }
+      el.innerHTML = data
+        .sort((a, b) => b.id.localeCompare(a.id))
+        .map(e => `
+          <div class="update-entry">
+            <div class="update-header">
+              <h2>${e.title}</h2>
+              <span class="update-date">${e.date}</span>
+            </div>
+            <div class="update-body">
+              <p class="tag ${e.category === '硬體更新' ? 'hw' : 'sys'}">${e.category}</p>
+              <p>${e.summary}</p>
+            </div>
+          </div>`).join('');
+    } catch(err) {
+      el.innerHTML = '<p style="color:var(--danger);padding:1rem;">載入失敗</p>';
+    }
   }
 }
 
