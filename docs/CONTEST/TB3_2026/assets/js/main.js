@@ -82,13 +82,29 @@ async function renderStatusSummary(prefix = '../') {
 }
 
 /** 渲染 Mission Grid（index / research / architecture / tech 共用）
- *  優先使用 status.json 的 doneCount，若無則 fallback 到 data/*.json */
-async function renderMissionGrid(containerId, prefix = '../') {
+ *  優先使用 status.json 的 doneCount，若無則 fallback 到 data/*.json
+ *  @param {string|Array} missionsOrContainer - 要么是 missions 数组（舊用法），要么是 containerId
+ *  @param {string} containerOrPrefix - 要么是 containerId（舊用法），要么是 prefix */
+async function renderMissionGrid(missionsOrContainer, containerOrPrefix) {
+  // 舊呼叫方式：renderMissionGrid(missions, 'mission-grid')
+  // 新呼叫方式：renderMissionGrid('mission-grid', './')
+  let containerId, prefix, missions;
+
+  if (typeof missionsOrContainer === 'string') {
+    containerId = missionsOrContainer;
+    prefix = containerOrPrefix || '../';
+    missions = null;
+  } else {
+    containerId = containerOrPrefix;
+    prefix = '../';
+    missions = missionsOrContainer;
+  }
+
   const c = document.getElementById(containerId);
   if (!c) return;
 
   const status = window._status || await fetchStatus(prefix);
-  const missions = window._tb3 ? Object.values(window._tb3) : await fetchAllMissions(prefix);
+  if (!missions) missions = window._tb3 ? Object.values(window._tb3) : await fetchAllMissions(prefix);
 
   if (missions.length === 0) {
     c.innerHTML = '<p style="color:var(--muted-2);padding:1rem;">暫無任務資料</p>';
