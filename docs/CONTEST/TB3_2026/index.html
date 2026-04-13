@@ -213,38 +213,16 @@
       io.observe(el);
     });
 
-    // ── Stagger mission-grid cards ──
-    var missionIo = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          var cards = entry.target.querySelectorAll('.mission-card');
-          cards.forEach(function(card, i) {
-            setTimeout(function() {
-              card.classList.add('in-view');
-            }, i * 100);
-          });
-          missionIo.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.05 });
-
-    var missionGrid = document.getElementById('mission-grid');
-    if (missionGrid) missionIo.observe(missionGrid);
-
     // ── Page init ──
     initLastUpdated();
     initRefreshButton();
     fetchAllMissions('./').then(function(missions) {
       renderMissionGrid(missions, 'mission-grid');
 
-      // missionIo may have fired before cards were added; ensure all cards are visible
-      var mc = document.getElementById('mission-grid');
-      if (mc) {
-        var cards = mc.querySelectorAll('.mission-card');
-        cards.forEach(function(card, i) {
-          setTimeout(function() { card.classList.add('in-view'); }, i * 100);
-        });
-      }
+      // 每次加入新卡片就立刻 observe 它，避免 IntersectionObserver race condition
+      document.querySelectorAll('.mission-card').forEach(function(card, i) {
+        setTimeout(function() { card.classList.add('in-view'); }, i * 80);
+      });
 
       var done = missions.filter(function(m) { return m.category !== 'base' && computeMissionStatus(m) === 'done'; }).length;
       var total = missions.filter(function(m) { return m.category !== 'base'; }).length;
