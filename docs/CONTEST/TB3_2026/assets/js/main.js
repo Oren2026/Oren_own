@@ -83,20 +83,22 @@ async function renderStatusSummary(prefix = '../') {
 
 /** 渲染 Mission Grid（index / research / architecture / tech 共用）
  *  優先使用 status.json 的 doneCount，若無則 fallback 到 data/*.json
- *  @param {string|Array} missionsOrContainer - 要么是 missions 数组（舊用法），要么是 containerId
- *  @param {string} containerOrPrefix - 要么是 containerId（舊用法），要么是 prefix */
+ *  @param {string|Array} missionsOrContainer - 舊：missions陣列，新：containerId
+ *  @param {string} containerOrPrefix - 舊：containerId字串，新：prefix路徑 */
 async function renderMissionGrid(missionsOrContainer, containerOrPrefix) {
-  // 舊呼叫方式：renderMissionGrid(missions, 'mission-grid')
-  // 新呼叫方式：renderMissionGrid('mission-grid', './')
+  // 舊呼叫（index.html）：renderMissionGrid(missions, 'mission-grid')
+  // 新呼叫（tech.html等）：renderMissionGrid('mission-grid', './')
   let containerId, prefix, missions;
 
   if (typeof missionsOrContainer === 'string') {
+    // 新式：containerId, prefix
     containerId = missionsOrContainer;
-    prefix = containerOrPrefix || '../';
+    prefix = containerOrPrefix || './';
     missions = null;
   } else {
+    // 舊式：missions[], containerId
     containerId = containerOrPrefix;
-    prefix = '../';
+    prefix = './';   // index.html 固定從 ./ 讀
     missions = missionsOrContainer;
   }
 
