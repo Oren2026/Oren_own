@@ -221,7 +221,8 @@ body {
     background 0.25s;
 }
 
-.mission-card.in-view {
+.mission-card.in-view,
+.mission-card.mission-visible {
   opacity: 1;
   transform: translateY(0);
 }

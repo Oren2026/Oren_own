@@ -219,9 +219,9 @@
     fetchAllMissions('./').then(function(missions) {
       renderMissionGrid(missions, 'mission-grid');
 
-      // 每次加入新卡片就立刻 observe 它，避免 IntersectionObserver race condition
+      // 確保卡片可見：不靠 IntersectionObserver，直接在 fetch 完成後顯示
       document.querySelectorAll('.mission-card').forEach(function(card, i) {
-        setTimeout(function() { card.classList.add('in-view'); }, i * 80);
+        setTimeout(function() { card.classList.add('mission-visible'); }, i * 50);
       });
 
       var done = missions.filter(function(m) { return m.category !== 'base' && computeMissionStatus(m) === 'done'; }).length;
