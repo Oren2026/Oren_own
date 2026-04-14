@@ -226,22 +226,7 @@
 
   <script src="assets/js/main.js"></script>
   <script>
-    /* ── 圖示 ── */
-    var MISSION_ICONS = {
-      traffic_light:  '🚦', construction:   '🚧',
-      parking:        '🅿️', level_crossing: '🚞',
-      intersection: '🔄', tunnel:         '🚇',
-      s_curve:      '〰️', lane_center:   '◉',
-      lane:         '🚗', integration:   '🔗'
-    };
-
-    var MISSION_IDS = [
-      'traffic_light','intersection','s_curve','construction',
-      'parking','level_crossing','tunnel','lane_center','lane',
-      'integration'
-    ];
-
-    /* ── IntersectionObserver（只用於 header/section 淡入）── */
+    /* ── IntersectionObserver（只用於 header/section 淡入，不含 mission-card）── */
     var io = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
@@ -255,7 +240,7 @@
     document.querySelectorAll('.header-eyebrow, .header h1, .header .subtitle, .header .badge').forEach(function(el) { io.observe(el); });
     document.querySelectorAll('.info-card, .section, .folder-item').forEach(function(el) { io.observe(el); });
 
-    /* ── init ── */
+    /* ── 修正 lastUpdated（修復 day:2digit 錯誤）── */
     function initLastUpdated() {
       var el = document.getElementById('last-updated');
       if (el) {
@@ -276,46 +261,73 @@
       });
     }
 
-    /* ── 讀取所有 mission data（豐富內容）── */
-    function fetchAllMissions(prefix) {
-      prefix = prefix || './';
-      return Promise.all(
-        MISSION_IDS.map(function(id) {
-          return fetch(prefix + 'data/' + id + '.json')
-            .then(function(r) { return r.json(); })
-            .catch(function() { return null; });
-        })
-      ).then(function(results) {
-        return results.filter(function(r) { return r !== null; });
-      });
-    }
+    /* ── 覆寫 openModal：用 data/*.json 的豐富內容 ── */
+    window.openModal = function(id) {
+      /* 等待 fetch 完成，window._tb3 是 main.js 設定的 */
+      var tryOpen = function() {
+        var m = window._tb3 ? window._tb3[id] : null;
+        if (!m) return;
+        var s = computeMissionStatus(m);
+        var icon = MISSION_ICONS[id] || '❓';
+        var name = m.name && m.name.zh ? m.name.zh : id;
+        var desc = m.description || '';
 
-    /* ── 讀取 status.json（權威狀態）── */
-    function fetchStatus(prefix) {
-      prefix = prefix || './';
-      return fetch(prefix + 'status.json')
-        .then(function(r) { return r.json(); })
-        .catch(function() { return null; });
-    }
+        var subHtml = '';
+        if (m.subConcepts && m.subConcepts.length) {
+          subHtml = '<div class="modal-section"><h3>實作細節</h3><ul>' +
+            m.subConcepts.map(function(sub) {
+              return '<li>' + (sub.status === 'done' ? '✅' : '⬜') + ' <strong>' +
+                     (sub.name && sub.name.zh ? sub.name.zh : sub.id) + '</strong>：' + (sub.description || '—') + '</li>';
+            }).join('') + '</ul></div>';
+        }
 
-    /* ── 計算狀態：優先用 status.json，否則用 data/*.json ── */
-    function computeMissionStatus(m) {
-      if (!m.subConcepts || !m.subConcepts.length) return m.status || 'todo';
-      return m.subConcepts.every(function(s) { return s.status === 'done'; }) ? 'done' : 'todo';
-    }
+        var videoHtml = '';
+        if (m.video) {
+          videoHtml = '<div class="modal-section"><h3>🎬 測試影片</h3>' +
+            '<video src="' + m.video + '" controls style="width:100%;max-height:60vh;border-radius:8px;margin-top:0.5rem;object-fit:contain;"></video>' +
+            '</div>';
+        }
 
-    /* ── 渲染 Mission Grid ── */
-    function renderMissionGrid(missions) {
+        var imagesHtml = '';
+        if (m.images && m.images.length) {
+          imagesHtml = '<div class="modal-section"><h3>📸 參考圖片</h3>' +
+            '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">' +
+            m.images.map(function(img) {
+              return '<a href="' + img + '" target="_blank" style="display:contents;"><img src="' + img + '" style="width:110px;height:auto;border-radius:6px;object-fit:cover;"></a>';
+            }).join('') + '</div></div>';
+        }
+
+        var filesHtml = '';
+        if (m.files && m.files.length) {
+          filesHtml = '<div class="modal-section"><h3>📦 實作檔案</h3><ul>' +
+            m.files.map(function(f) { return '<li><code>' + f + '</code></li>'; }).join('') + '</ul></div>';
+        }
+
+        document.getElementById('modal-title').textContent = icon + ' ' + name;
+        document.getElementById('modal-body').innerHTML =
+          '<p><span class="modal-status ' + s + '">' + (s === 'done' ? '✅ 已完成' : '🚧 施工中') + '</span></p>' +
+          (desc ? '<p style="margin-top:0.75rem;">' + desc + '</p>' : '') +
+          videoHtml + imagesHtml + subHtml + filesHtml;
+        document.getElementById('mission-modal').classList.add('open');
+      };
+
+      /* 如果 _tb3 還沒載入，等一下再試 */
+      if (!window._tb3) {
+        setTimeout(tryOpen, 300);
+      } else {
+        tryOpen();
+      }
+    };
+
+    /* ── 覆寫 renderMissionGrid：直接用 main.js 的 fetchAllMissions，但確保卡片可見 ── */
+    var _origRenderMissionGrid = renderMissionGrid;
+    window.renderMissionGrid = function(missions) {
+      if (!missions || !missions.length) return;
       var container = document.getElementById('mission-grid');
       if (!container) return;
 
-      missions = missions.filter(function(m) { return m.category !== 'base' || m.category === 'mission'; });
-      if (missions.length === 0) {
-        container.innerHTML = '<p style="color:var(--muted-2);padding:1rem;">暫無任務資料</p>';
-        return;
-      }
-
       container.innerHTML = missions
+        .filter(function(m) { return m.category !== 'base'; })
         .sort(function(a, b) { return MISSION_IDS.indexOf(a.id) - MISSION_IDS.indexOf(b.id); })
         .map(function(m) {
           var s = computeMissionStatus(m);
@@ -329,103 +341,31 @@
                  '<div class="mission-status">' + label + '</div>' +
                  '</div>';
         }).join('');
-    }
-
-    /* ── Modal ── */
-    window.openModal = function(id) {
-      var m = window._missions ? window._missions.find(function(x) { return x.id === id; }) : null;
-      if (!m) return;
-      var s = computeMissionStatus(m);
-      var icon = MISSION_ICONS[id] || '❓';
-      var name = m.name && m.name.zh ? m.name.zh : id;
-      var desc = m.description || '';
-
-      var subHtml = '';
-      if (m.subConcepts && m.subConcepts.length) {
-        subHtml = '<div class="modal-section"><h3>實作細節</h3><ul>' +
-          m.subConcepts.map(function(sub) {
-            return '<li>' + (sub.status === 'done' ? '✅' : '⬜') + ' <strong>' +
-                   (sub.name && sub.name.zh ? sub.name.zh : sub.id) + '</strong>：' + (sub.description || '—') + '</li>';
-          }).join('') + '</ul></div>';
-      }
-
-      var videoHtml = '';
-      if (m.video) {
-        videoHtml = '<div class="modal-section"><h3>🎬 測試影片</h3>' +
-          '<video src="' + m.video + '" controls style="width:100%;max-height:60vh;border-radius:8px;margin-top:0.5rem;object-fit:contain;"></video>' +
-          '</div>';
-      }
-
-      var imagesHtml = '';
-      if (m.images && m.images.length) {
-        imagesHtml = '<div class="modal-section"><h3>📸 參考圖片</h3>' +
-          '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">' +
-          m.images.map(function(img) {
-            return '<a href="' + img + '" target="_blank" style="display:contents;"><img src="' + img + '" style="width:110px;height:auto;border-radius:6px;object-fit:cover;"></a>';
-          }).join('') + '</div></div>';
-      }
-
-      var filesHtml = '';
-      if (m.files && m.files.length) {
-        filesHtml = '<div class="modal-section"><h3>📦 實作檔案</h3><ul>' +
-          m.files.map(function(f) { return '<li><code>' + f + '</code></li>'; }).join('') + '</ul></div>';
-      }
-
-      document.getElementById('modal-title').textContent = icon + ' ' + name;
-      document.getElementById('modal-body').innerHTML =
-        '<p><span class="modal-status ' + s + '">' + (s === 'done' ? '✅ 已完成' : '🚧 施工中') + '</span></p>' +
-        (desc ? '<p style="margin-top:0.75rem;">' + desc + '</p>' : '') +
-        videoHtml + imagesHtml + subHtml + filesHtml;
-      document.getElementById('mission-modal').classList.add('open');
     };
 
-    function closeModal() {
-      document.getElementById('mission-modal').classList.remove('open');
-    }
-
-    document.addEventListener('click', function(e) {
-      var modal = document.getElementById('mission-modal');
-      if (modal && e.target === modal) closeModal();
-    });
+    /* ── 覆寫 renderUpdates ── */
+    window.renderUpdates = function() {};
 
     /* ── 啟動 ── */
     initLastUpdated();
     initRefreshButton();
+    fetchAllMissions('./').then(function(missions) {
+      window._tb3 = {};
+      missions.forEach(function(m) { window._tb3[m.id] = m; });
+      renderMissionGrid(missions);
 
-    Promise.all([fetchAllMissions('./'), fetchStatus('./')])
-      .then(function(results) {
-        var missions = results[0];
-        var statusData = results[1];
-        window._missions = missions;
-
-        /* 用 status.json 的狀態覆蓋 */
-        if (statusData && statusData.missions) {
-          missions.forEach(function(m) {
-            var s2 = statusData.missions.find(function(sm) { return sm.id === m.id; });
-            if (s2) m._status = s2.status;
-          });
-        }
-
-        renderMissionGrid(missions);
-
-        /* 進度條 */
-        if (statusData) {
-          var doneCount = statusData.doneCount || 0;
-          var totalCount = statusData.totalMissions || missions.length;
-          var pct = totalCount > 0 ? Math.round(doneCount / totalCount * 100) : 0;
-          var fill = document.getElementById('progress-fill');
-          var text = document.getElementById('progress-text');
-          if (fill) fill.style.width = pct + '%';
-          if (text) {
-            text.textContent = doneCount === totalCount && totalCount > 0
-              ? '✅ 全部完成（' + doneCount + '/' + totalCount + '）'
-              : '🚧 施工中（' + doneCount + '/' + totalCount + ' 關卡完成）';
-          }
-        }
-      })
-      .catch(function(err) {
-        console.error('Mission load error:', err);
-      });
+      var done = missions.filter(function(m) { return m.category !== 'base' && computeMissionStatus(m) === 'done'; }).length;
+      var total = missions.filter(function(m) { return m.category !== 'base'; }).length;
+      var fill = document.getElementById('progress-fill');
+      var text = document.getElementById('progress-text');
+      if (fill && text) {
+        var pct = total > 0 ? Math.round(done / total * 100) : 0;
+        fill.style.width = pct + '%';
+        text.textContent = (done === total && total > 0)
+          ? '✅ 全部完成（' + done + '/' + total + '）'
+          : '🚧 施工中（' + done + '/' + total + ' 關卡完成）';
+      }
+    });
   </script>
 </body>
 </html>
