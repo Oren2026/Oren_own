@@ -25,9 +25,7 @@
     }
 
     /* ── Header ── */
-    .header {
-      background: var(--bg);
-    }
+    .header { background: var(--bg); }
     .header::before {
       content: "";
       position: absolute;
@@ -40,72 +38,42 @@
     .folder-item a[download] { color: var(--accent-text); font-weight: 600; }
     .folder-item a[download]:hover { color: var(--accent); }
 
-    /* ── 任務關卡（新設計：直接可見，無 animation 依賴）── */
-    .mission-section { margin-top: 1.5rem; }
-    .mission-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 1rem;
-    }
-    .mission-item {
-      display: flex;
-      align-items: center;
+    /* ── Mission Card（保持原有視覺，但廢除 IntersectionObserver 依賴）── */
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
       gap: 14px;
+    }
+    .mission-card {
       background: var(--surface);
+      border-radius: 12px;
+      padding: 1rem 0.75rem;
+      text-align: center;
       border: 1.5px solid var(--border);
-      border-radius: 14px;
-      padding: 14px 16px;
       cursor: pointer;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      text-decoration: none;
-      color: inherit;
+      opacity: 1;          /* 直接可見，不靠 JS animation */
+      transform: none;     /* 直接可見 */
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s, transform 0.2s;
     }
-    .mission-item:hover {
-      border-color: rgba(110,231,247,0.5);
+    .mission-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(110,231,247,0.50);
       box-shadow: var(--card-shadow-hover);
-      text-decoration: none;
+      background: rgba(110,231,247,0.06);
     }
-    .mission-item.done {
-      border-color: rgba(16,185,129,0.3);
+    .mission-card.active {
+      border-color: rgba(110,231,247,0.40);
+      background: rgba(110,231,247,0.06);
+    }
+    .mission-card.completed {
+      border-color: rgba(16,185,129,0.30);
       background: rgba(16,185,129,0.04);
     }
-    .mission-icon {
-      font-size: 1.6rem;
-      width: 42px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .mission-info { flex: 1; min-width: 0; }
-    .mission-name {
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--text);
-    }
-    .mission-tag {
-      font-size: 0.75rem;
-      margin-top: 3px;
-    }
-    .mission-item.done .mission-tag { color: var(--success); }
-    .mission-item:not(.done) .mission-tag { color: var(--muted); }
-    .mission-arrow {
-      color: var(--muted-2);
-      font-size: 0.85rem;
-      flex-shrink: 0;
-    }
-    /* mobile: 2 columns */
-    @media (min-width: 580px) {
-      .mission-list {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-    /* desktop: 3 columns */
-    @media (min-width: 900px) {
-      .mission-list {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
+    .mission-icon { font-size: 2rem; margin-bottom: 6px; }
+    .mission-name { font-weight: 700; font-size: 0.9rem; color: var(--text); }
+    .mission-status { font-size: 0.78rem; margin-top: 4px; }
+    .mission-card.completed .mission-status { color: var(--success); }
+    .mission-card:not(.completed) .mission-status { color: var(--muted); }
   </style>
 </head>
 <body>
@@ -138,16 +106,14 @@
       </div>
     </div>
 
-    <!-- 任務關卡：直接 render，無 JS 依賴動畫 -->
+    <!-- 任務關卡：保持原有視覺 + 可靠顯示 -->
     <div class="section" data-delay="0">
       <div class="section-header">
         <span class="icon">🎯</span>
         <h2>任務關卡</h2>
       </div>
       <div class="section-content">
-        <div class="mission-list" id="mission-list">
-          <!-- JS 動態填入 -->
-        </div>
+        <div class="mission-grid" id="mission-grid"></div>
       </div>
     </div>
 
@@ -260,36 +226,36 @@
 
   <script src="assets/js/main.js"></script>
   <script>
-    /* ── 任務關卡圖示對照 ── */
-    var MISSION_ICONS_SIMPLE = {
+    /* ── 圖示 ── */
+    var MISSION_ICONS = {
       traffic_light:  '🚦', construction:   '🚧',
       parking:        '🅿️', level_crossing: '🚞',
-      intersection:   '🔄', tunnel:         '🚇',
-      s_curve:        '〰️', lane_center:   '◉',
-      lane:           '🚗', integration:    '🔗'
+      intersection: '🔄', tunnel:         '🚇',
+      s_curve:      '〰️', lane_center:   '◉',
+      lane:         '🚗', integration:   '🔗'
     };
 
-    /* ── IntersectionObserver（只用於 header/section 淡入，不影響任務卡片）── */
+    var MISSION_IDS = [
+      'traffic_light','intersection','s_curve','construction',
+      'parking','level_crossing','tunnel','lane_center','lane',
+      'integration'
+    ];
+
+    /* ── IntersectionObserver（只用於 header/section 淡入）── */
     var io = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           var delay = parseInt(entry.target.dataset.delay || 0);
-          setTimeout(function() {
-            entry.target.classList.add('in-view');
-          }, delay * 100);
+          setTimeout(function() { entry.target.classList.add('in-view'); }, delay * 100);
           io.unobserve(entry.target);
         }
       });
     }, { threshold: 0.08 });
 
-    document.querySelectorAll('.header-eyebrow, .header h1, .header .subtitle, .header .badge').forEach(function(el) {
-      io.observe(el);
-    });
-    document.querySelectorAll('.info-card, .section, .folder-item').forEach(function(el) {
-      io.observe(el);
-    });
+    document.querySelectorAll('.header-eyebrow, .header h1, .header .subtitle, .header .badge').forEach(function(el) { io.observe(el); });
+    document.querySelectorAll('.info-card, .section, .folder-item').forEach(function(el) { io.observe(el); });
 
-    /* ── init last updated ── */
+    /* ── init ── */
     function initLastUpdated() {
       var el = document.getElementById('last-updated');
       if (el) {
@@ -310,73 +276,107 @@
       });
     }
 
-    /* ── 渲染任務關卡：直接讀 status.json，立刻可見 ── */
-    function renderMissionList() {
-      var container = document.getElementById('mission-list');
-      if (!container) return;
-
-      fetch('./status.json')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          var missions = data.missions || [];
-          var doneCount = 0;
-
-          container.innerHTML = missions.map(function(m) {
-            var icon = MISSION_ICONS_SIMPLE[m.id] || '❓';
-            var isDone = m.status === 'done';
-            if (isDone) doneCount++;
-            return '<div class="mission-item ' + (isDone ? 'done' : '') + '" ' +
-                   'data-id="' + m.id + '" ' +
-                   'onclick="openMissionModal(\'' + m.id + '\')">' +
-                   '<span class="mission-icon">' + icon + '</span>' +
-                   '<div class="mission-info">' +
-                   '<div class="mission-name">' + m.name + '</div>' +
-                   '<div class="mission-tag">' + (isDone ? '✅ 已完成' : '🚧 施工中') + '</div>' +
-                   '</div>' +
-                   '<span class="mission-arrow">›</span>' +
-                   '</div>';
-          }).join('');
-
-          /* 進度條 */
-          var total = missions.length;
-          var pct = total > 0 ? Math.round(doneCount / total * 100) : 0;
-          var fill = document.getElementById('progress-fill');
-          var text = document.getElementById('progress-text');
-          if (fill) fill.style.width = pct + '%';
-          if (text) {
-            text.textContent = doneCount === total && total > 0
-              ? '✅ 全部完成（' + doneCount + '/' + total + '）'
-              : '🚧 施工中（' + doneCount + '/' + total + ' 關卡完成）';
-          }
+    /* ── 讀取所有 mission data（豐富內容）── */
+    function fetchAllMissions(prefix) {
+      prefix = prefix || './';
+      return Promise.all(
+        MISSION_IDS.map(function(id) {
+          return fetch(prefix + 'data/' + id + '.json')
+            .then(function(r) { return r.json(); })
+            .catch(function() { return null; });
         })
-        .catch(function() {
-          container.innerHTML = '<p style="color:var(--muted-2);padding:1rem;">載入失敗，請刷新重試</p>';
-        });
+      ).then(function(results) {
+        return results.filter(function(r) { return r !== null; });
+      });
     }
 
-    /* ── Modal：點擊任務卡時讀取詳細資料 ── */
-    window.openMissionModal = function(id) {
-      /* 先用 status.json 的基本資料 */
-      fetch('./status.json')
+    /* ── 讀取 status.json（權威狀態）── */
+    function fetchStatus(prefix) {
+      prefix = prefix || './';
+      return fetch(prefix + 'status.json')
         .then(function(r) { return r.json(); })
-        .then(function(data) {
-          var m = (data.missions || []).find(function(x) { return x.id === id; });
-          if (!m) return;
+        .catch(function() { return null; });
+    }
 
-          var icon = MISSION_ICONS_SIMPLE[id] || '❓';
-          var isDone = m.status === 'done';
+    /* ── 計算狀態：優先用 status.json，否則用 data/*.json ── */
+    function computeMissionStatus(m) {
+      if (!m.subConcepts || !m.subConcepts.length) return m.status || 'todo';
+      return m.subConcepts.every(function(s) { return s.status === 'done'; }) ? 'done' : 'todo';
+    }
 
-          document.getElementById('modal-title').textContent = icon + ' ' + m.name;
-          document.getElementById('modal-body').innerHTML =
-            '<p><span class="modal-status ' + (isDone ? 'done' : 'todo') + '">' +
-            (isDone ? '✅ 已完成' : '🚧 施工中') + '</span></p>' +
-            (m.files && m.files.length
-              ? '<div class="modal-section"><h3>📦 實作檔案</h3><ul>' +
-                m.files.map(function(f) { return '<li><code>' + f + '</code></li>'; }).join('') +
-                '</ul></div>'
-              : '');
-          document.getElementById('mission-modal').classList.add('open');
-        }).catch(function() {});
+    /* ── 渲染 Mission Grid ── */
+    function renderMissionGrid(missions) {
+      var container = document.getElementById('mission-grid');
+      if (!container) return;
+
+      missions = missions.filter(function(m) { return m.category !== 'base' || m.category === 'mission'; });
+      if (missions.length === 0) {
+        container.innerHTML = '<p style="color:var(--muted-2);padding:1rem;">暫無任務資料</p>';
+        return;
+      }
+
+      container.innerHTML = missions
+        .sort(function(a, b) { return MISSION_IDS.indexOf(a.id) - MISSION_IDS.indexOf(b.id); })
+        .map(function(m) {
+          var s = computeMissionStatus(m);
+          var icon = MISSION_ICONS[m.id] || '❓';
+          var name = m.name && m.name.zh ? m.name.zh : m.id;
+          var label = s === 'done' ? '✅ 已完成' : '🚧 施工中';
+          return '<div class="mission-card ' + (s === 'done' ? 'completed' : 'active') + '" ' +
+                 'data-id="' + m.id + '" onclick="openModal(\'' + m.id + '\')">' +
+                 '<div class="mission-icon">' + icon + '</div>' +
+                 '<div class="mission-name">' + name + '</div>' +
+                 '<div class="mission-status">' + label + '</div>' +
+                 '</div>';
+        }).join('');
+    }
+
+    /* ── Modal ── */
+    window.openModal = function(id) {
+      var m = window._missions ? window._missions.find(function(x) { return x.id === id; }) : null;
+      if (!m) return;
+      var s = computeMissionStatus(m);
+      var icon = MISSION_ICONS[id] || '❓';
+      var name = m.name && m.name.zh ? m.name.zh : id;
+      var desc = m.description || '';
+
+      var subHtml = '';
+      if (m.subConcepts && m.subConcepts.length) {
+        subHtml = '<div class="modal-section"><h3>實作細節</h3><ul>' +
+          m.subConcepts.map(function(sub) {
+            return '<li>' + (sub.status === 'done' ? '✅' : '⬜') + ' <strong>' +
+                   (sub.name && sub.name.zh ? sub.name.zh : sub.id) + '</strong>：' + (sub.description || '—') + '</li>';
+          }).join('') + '</ul></div>';
+      }
+
+      var videoHtml = '';
+      if (m.video) {
+        videoHtml = '<div class="modal-section"><h3>🎬 測試影片</h3>' +
+          '<video src="' + m.video + '" controls style="width:100%;max-height:60vh;border-radius:8px;margin-top:0.5rem;object-fit:contain;"></video>' +
+          '</div>';
+      }
+
+      var imagesHtml = '';
+      if (m.images && m.images.length) {
+        imagesHtml = '<div class="modal-section"><h3>📸 參考圖片</h3>' +
+          '<div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">' +
+          m.images.map(function(img) {
+            return '<a href="' + img + '" target="_blank" style="display:contents;"><img src="' + img + '" style="width:110px;height:auto;border-radius:6px;object-fit:cover;"></a>';
+          }).join('') + '</div></div>';
+      }
+
+      var filesHtml = '';
+      if (m.files && m.files.length) {
+        filesHtml = '<div class="modal-section"><h3>📦 實作檔案</h3><ul>' +
+          m.files.map(function(f) { return '<li><code>' + f + '</code></li>'; }).join('') + '</ul></div>';
+      }
+
+      document.getElementById('modal-title').textContent = icon + ' ' + name;
+      document.getElementById('modal-body').innerHTML =
+        '<p><span class="modal-status ' + s + '">' + (s === 'done' ? '✅ 已完成' : '🚧 施工中') + '</span></p>' +
+        (desc ? '<p style="margin-top:0.75rem;">' + desc + '</p>' : '') +
+        videoHtml + imagesHtml + subHtml + filesHtml;
+      document.getElementById('mission-modal').classList.add('open');
     };
 
     function closeModal() {
@@ -391,7 +391,41 @@
     /* ── 啟動 ── */
     initLastUpdated();
     initRefreshButton();
-    renderMissionList();
+
+    Promise.all([fetchAllMissions('./'), fetchStatus('./')])
+      .then(function(results) {
+        var missions = results[0];
+        var statusData = results[1];
+        window._missions = missions;
+
+        /* 用 status.json 的狀態覆蓋 */
+        if (statusData && statusData.missions) {
+          missions.forEach(function(m) {
+            var s2 = statusData.missions.find(function(sm) { return sm.id === m.id; });
+            if (s2) m._status = s2.status;
+          });
+        }
+
+        renderMissionGrid(missions);
+
+        /* 進度條 */
+        if (statusData) {
+          var doneCount = statusData.doneCount || 0;
+          var totalCount = statusData.totalMissions || missions.length;
+          var pct = totalCount > 0 ? Math.round(doneCount / totalCount * 100) : 0;
+          var fill = document.getElementById('progress-fill');
+          var text = document.getElementById('progress-text');
+          if (fill) fill.style.width = pct + '%';
+          if (text) {
+            text.textContent = doneCount === totalCount && totalCount > 0
+              ? '✅ 全部完成（' + doneCount + '/' + totalCount + '）'
+              : '🚧 施工中（' + doneCount + '/' + totalCount + ' 關卡完成）';
+          }
+        }
+      })
+      .catch(function(err) {
+        console.error('Mission load error:', err);
+      });
   </script>
 </body>
 </html>
