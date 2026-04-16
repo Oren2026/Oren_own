@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幣種大單追蹤器</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #e6edf3;
+    --sub: #8b949e; --buy: #3fb950; --sell: #f85149; --accent: #58a6ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px; max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 16px; color: var(--accent); }
+  .controls { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .controls input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; width: 180px; font-size: 0.95rem; }
+  .controls button { background: var(--accent); border: none; color: #fff; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.95rem; }
+  .controls button:hover { opacity: 0.85; }
+  .controls .preset { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+  .controls .preset:hover { border-color: var(--accent); }
+  .coin-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .coin-header h2 { font-size: 1.2rem; }
+  .price { font-size: 1.5rem; font-weight: bold; color: var(--buy); }
+  .price.down { color: var(--sell); }
+  .change { font-size: 0.9rem; padding: 2px 8px; border-radius: 4px; }
+  .change.up { background: rgba(63,185,80,0.15); color: var(--buy); }
+  .change.down { background: rgba(248,81,73,0.15); color: var(--sell); }
+  .section-title { font-size: 0.9rem; color: var(--sub); margin: 20px 0 10px; border-left: 3px solid var(--accent); padding-left: 8px; }
+  .trade-list { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .trade-item { display: grid; grid-template-columns: 60px 80px 100px 1fr; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 0.88rem; align-items: center; }
+  .trade-item:last-child { border-bottom: none; }
+  .trade-item .time { color: var(--sub); }
+  .trade-item .dir { font-weight: bold; }
+  .trade-item .dir.buy { color: var(--buy); }
+  .trade-item .dir.sell { color: var(--sell); }
+  .trade-item .value { text-align: right; font-weight: bold; }
+  .trade-item .qty { text-align: right; color: var(--sub); }
+  .summary { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .summary-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .summary-card h4 { font-size: 0.75rem; color: var(--sub); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .summary-card .amount { font-size: 1.1rem; font-weight: bold; }
+  .summary-card.buy .amount { color: var(--buy); }
+  .summary-card.sell .amount { color: var(--sell); }
+  .tag { display: inline-block; font-size: 0.7rem; padding: 1px 6px; border-radius: 3px; background: rgba(88,166,255,0.15); color: var(--accent); margin-left: 6px; vertical-align: middle; }
+  .loading { color: var(--sub); font-size: 0.9rem; padding: 20px; text-align: center; }
+  .error { color: var(--sell); font-size: 0.9rem; padding: 20px; text-align: center; }
+  .threshold-control { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 0.85rem; color: var(--sub); }
+  .threshold-control input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 4px; width: 80px; font-size: 0.85rem; }
+  footer { margin-top: 30px; font-size: 0.75rem; color: var(--sub); text-align: center; border-top: 1px solid var(--border); padding-top: 12px; }
+  @media (max-width: 600px) {
+    .trade-item { grid-template-columns: 50px 70px 1fr; }
+    .trade-item .qty { display: none; }
+    .summary { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<h1>📊 幣種大單追蹤器</h1>
+<div class="controls">
+  <input type="text" id="symbolInput" value="BIOUSDT" placeholder="例如: BTCUSDT">
+  <button onclick="loadCoin()">查詢</button>
+  <button class="preset" onclick="setPreset('BTCUSDT')">BTC</button>
+  <button class="preset" onclick="setPreset('ETHUSDT')">ETH</button>
+  <button class="preset" onclick="setPreset('SOLUSDT')">SOL</button>
+  <button class="preset" onclick="setPreset('BIOUSDT')">BIO</button>
+</div>
+<div class="threshold-control">大單門檻: $<input type="number" id="thresholdInput" value="500" onchange="loadCoin()"> USDT</div>
+<div id="coinHeader" class="coin-header"></div>
+<div id="summary" class="summary"></div>
+<div class="section-title">大單成交 <span id="tradeCount" style="font-size:0.75rem;color:var(--sub);font-weight:normal;"></span></div>
+<div class="trade-list" id="tradeList"><div class="loading">載入中...</div></div>
+<footer>數據來源: Binance Public API | 每30秒自動更新</footer>
+<script>
+let currentSymbol = 'BIOUSDT', currentThreshold = 500;
+async function loadCoin() {
+  const sym = document.getElementById('symbolInput').value.toUpperCase().trim();
+  const thresh = parseFloat(document.getElementById('thresholdInput').value) || 500;
+  if (!sym) return;
+  currentSymbol = sym; currentThreshold = thresh;
+  document.getElementById('tradeList').innerHTML = '<div class="loading">載入中...</div>';
+  try {
+    const [tradesRes, tickerRes] = await Promise.all([
+      fetch(\`https://api.binance.com/api/v3/trades?symbol=\${sym}&limit=100\`),
+      fetch(\`https://api.binance.com/api/v3/ticker/24hr?symbol=\${sym}\`)
+    ]);
+    if (!tradesRes.ok || !tickerRes.ok) throw new Error('API錯誤');
+    render(await tickerRes.json(), await tradesRes.json(), thresh);
+  } catch(e) { document.getElementById('tradeList').innerHTML = \`<div class="error">載入失敗: \${e.message}。<br>請確認幣種代碼正確（例如 BTCUSDT）</div>\`; }
+}
+function render(ticker, trades, threshold) {
+  const price = parseFloat(ticker.lastPrice), change = parseFloat(ticker.priceChangePercent);
+  const high = parseFloat(ticker.highPrice), low = parseFloat(ticker.lowPrice), vol = parseFloat(ticker.quoteVolume);
+  document.getElementById('coinHeader').innerHTML = \`<h2>\${currentSymbol.replace('USDT','')}/USDT <span class="tag">Binance Spot</span></h2><span class="price \${change>=0?'':'down'}">$$\{price.toFixed(6)\}</span><span class="change \${change>=0?'up':'down'}">\${change>=0?'+':''}\${change.toFixed(2)}%</span>\`;
+  const large = trades.map(t => ({time: new Date(t.time), qty: parseFloat(t.qty), value: parseFloat(t.quoteQty), isBuyerMaker: t.isBuyerMaker})).filter(t => t.value >= threshold).sort((a,b) => b.time - a.time);
+  document.getElementById('tradeCount').textContent = \`(共 \${large.length} 筆)\`;
+  const buyVol = large.filter(t => !t.isBuyerMaker).reduce((s,t) => s+t.value, 0);
+  const sellVol = large.filter(t => t.isBuyerMaker).reduce((s,t) => s+t.value, 0);
+  const total = buyVol + sellVol, buyPct = total>0?(buyVol/total*100).toFixed(1):'0.0', sellPct = total>0?(sellVol/total*100).toFixed(1):'0.0';
+  document.getElementById('summary').innerHTML = \`<div class="summary-card"><h4>24h 高/低</h4><div class="amount">$$\{low.toFixed(6)\} ~ $$\{high.toFixed(6)\}</div></div><div class="summary-card"><h4>24h 成交量</h4><div class="amount">$$\{(vol/1000000).toFixed(1)\}M</div></div><div class="summary-card buy"><h4>大單買入 <span class="tag">\${buyPct}%</span></h4><div class="amount">$$\{buyVol.toLocaleString('en')}</div></div><div class="summary-card sell"><h4>大單賣出 <span class="tag">\${sellPct}%</span></h4><div class="amount">$$\{sellVol.toLocaleString('en')}</div></div>\`;
+  if (!large.length) { document.getElementById('tradeList').innerHTML = '<div class="error">目前沒有超過門檻的大單</div>'; return; }
+  let html = '<div class="trade-item" style="background:#1c2128;color:var(--sub);font-size:0.8rem;"><span>時間</span><span>方向</span><span style="text-align:right">金額</span><span style="text-align:right">數量</span></div>';
+  for (const t of large) html += \`<div class="trade-item"><span class="time">\${t.time.toLocaleTimeString('zh-TW',{hour12:false})}</span><span class="dir \${t.isBuyerMaker?'sell':'buy'}">\${t.isBuyerMaker?'🔴賣出':'🟢買入'}</span><span class="value">$$\{t.value.toLocaleString('en',{maximumFractionDigits:1})}</span><span class="qty">\${t.qty.toLocaleString('en',{maximumFractionDigits:0})}</span></div>\`;
+  document.getElementById('tradeList').innerHTML = html;
+}
+function setPreset(sym) { document.getElementById('symbolInput').value = sym; loadCoin(); }
+setInterval(loadCoin, 30000); loadCoin();
+</script>
+</body>
+</html>
