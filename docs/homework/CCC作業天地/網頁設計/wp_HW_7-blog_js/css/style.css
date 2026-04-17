@@ -1,13 +1,12 @@
 /* ─── 基本 ─── */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
+  /* ─── Color ─── */
   --bg: #f0f2f5; --card: #ffffff; --text: #1a1a2e;
   --muted: #6c757d; --border: #dee2e6;
   --accent: #6c5ce7; --accent2: #a29bfe;
   --code-bg: #1e1e2e; --code-text: #cdd6f4;
   --str: #a6e3a1; --num: #fab387; --key: #89b4fa;
-  --fn: #89b4fa; --cmt: #6272a4; --kw: #cba6f7;
-  --err: #f38ba8; --warn: #f9e2af;
   --success: #a6e3a1; --draft: #f9e2af; --published: #a6e3a1;
   --greet-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --post-header-bg: #f8f9fa;
@@ -15,9 +14,12 @@
 .dark {
   --bg: #0d1117; --card: #161b22; --text: #e6edf3;
   --muted: #8b949e; --border: #30363d;
-  --accent: #a29bfe; --accent2: #6c5ce7;
+  --accent: #6ee7b7; --accent2: #34d399;   /* 護眼翠綠 */
+  --code-bg: #0d1117; --code-text: #79c0ff;
+  --str: #a7d129; --num: #f0883e; --key: #79c0ff;
   --post-header-bg: #21262d;
   --success: #3fb950; --draft: #d29922; --published: #3fb950;
+  --greet-bg: linear-gradient(135deg, #065f46 0%, #047857 100%);  /* 深綠護眼 */
 }
 body {
   font-family: -apple-system, 'PingFang TC', 'Microsoft JhengHei', sans-serif;
@@ -29,14 +31,10 @@ body {
 /* ─── Header ─── */
 header {
   background: var(--card); border-bottom: 1px solid var(--border);
-  padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
+  padding: 0.8rem 2rem; display: flex; align-items: center;
   position: sticky; top: 0; z-index: 100;
 }
-h1 { font-size: 1.2rem; font-weight: 700; }
-.theme-toggle {
-  background: var(--accent); color: #fff; border: none;
-  padding: 0.4rem 0.9rem; border-radius: 8px; cursor: pointer; font-size: 0.88rem;
-}
+h1 { font-size: 1.1rem; font-weight: 700; }
 .theme-toggle:hover { opacity: 0.85; }
 
 /* ─── Main ─── */
@@ -57,13 +55,25 @@ main { max-width: 1300px; margin: 0 auto; padding: 1.5rem 1rem; }
 }
 .left-panel {
   position: sticky;
-  top: 0;
-  height: 100vh;
+  top: 3.5rem;        /* 避開 sticky header */
+  height: calc(100vh - 3.5rem);
   overflow-y: auto;
   padding-right: 1rem;
 }
 .left-panel .editor-card { position: static; }
 .right-panel { padding-left: 1rem; }
+
+/* 左側面板內的主題切換（浮在 editor-card 右上角） */
+.editor-topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.6rem;
+}
+.theme-toggle {
+  background: var(--accent); color: #fff; border: none;
+  padding: 0.35rem 0.8rem; border-radius: 8px; cursor: pointer; font-size: 0.82rem;
+}
+.theme-toggle:hover { opacity: 0.85; }
 
 /* ─── Right Panel Blog Frame ─── */
 .blog-frame {

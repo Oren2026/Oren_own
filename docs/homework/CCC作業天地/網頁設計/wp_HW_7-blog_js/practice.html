@@ -10,7 +10,6 @@
 
 <header>
   <h1>📝 wp_HW_7-blog_js</h1>
-  <button class="theme-toggle" id="themeToggle">🌙 深色</button>
 </header>
 
 <main>
@@ -149,6 +148,9 @@ function renderEditor(d) {
 
   document.getElementById('leftPanel').innerHTML =
     '<div class="card editor-card">' +
+      '<div class="editor-topbar">' +
+        '<button class="theme-toggle" id="themeToggle">' + (savedTheme === 'dark' ? '☀️ 淺色' : '🌙 深色') + '</button>' +
+      '</div>' +
       '<div class="q-meta">🛠️ 日誌編輯器</div>' +
       '<div class="q-title">即時操控，觀察 JS 語法連動</div>' +
 
@@ -507,17 +509,16 @@ function resetDefaults() {
 }
 
 /* 主題切換 */
-var savedTheme = localStorage.getItem('hw7_theme') || 'light';
-applyTheme(savedTheme);
-document.getElementById('themeToggle').addEventListener('click', function() {
-  var next = document.body.classList.contains('dark') ? 'light' : 'dark';
-  applyTheme(next);
-  localStorage.setItem('hw7_theme', next);
+var savedTheme = localStorage.getItem('theme') || 'light';
+document.body.classList.toggle('dark', savedTheme === 'dark');
+document.addEventListener('click', function(e) {
+  if (e.target.id === 'themeToggle') {
+    var next = document.body.classList.contains('dark') ? 'light' : 'dark';
+    document.body.classList.toggle('dark', next === 'dark');
+    localStorage.setItem('theme', next);
+    document.getElementById('themeToggle').textContent = next === 'dark' ? '☀️ 淺色' : '🌙 深色';
+  }
 });
-function applyTheme(theme) {
-  document.body.classList.toggle('dark', theme === 'dark');
-  document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️ 淺色' : '🌙 深色';
-}
 
 /* 啟動 */
 initFirstRender();
