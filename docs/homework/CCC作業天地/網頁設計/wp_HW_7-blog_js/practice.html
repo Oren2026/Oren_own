@@ -159,34 +159,34 @@ function renderEditor(d) {
         '<select id="f-id" onchange="syncAll()">' + postsOptions + '</select></div>' +
 
       '<div class="var-field"><label for="f-title">標題</label>' +
-        '<input type="text" id="f-title" value="' + escAttr(d.title) + '" oninput="syncAll()"></div>' +
+        '<input type="text" id="f-title" value="' + escAttr(d.title) + '" oninput="syncPreview()"></div>' +
 
       '<div class="var-field"><label for="f-content">內容</label>' +
-        '<textarea id="f-content" rows="5" oninput="syncAll()">' + escText(d.content) + '</textarea></div>' +
+        '<textarea id="f-content" rows="5" oninput="syncPreview()">' + escText(d.content) + '</textarea></div>' +
 
       '<div class="var-field"><label for="f-author">作者</label>' +
-        '<input type="text" id="f-author" value="' + escAttr(d.author) + '" oninput="syncAll()"></div>' +
+        '<input type="text" id="f-author" value="' + escAttr(d.author) + '" oninput="syncPreview()"></div>' +
 
       '<div class="var-field"><label for="f-tags">標籤（逗號分隔）</label>' +
-        '<input type="text" id="f-tags" value="' + escAttr(tagsStr) + '" oninput="syncAll()"></div>' +
+        '<input type="text" id="f-tags" value="' + escAttr(tagsStr) + '" oninput="syncPreview()"></div>' +
 
       '<div class="var-row-2">' +
         '<div class="var-field"><label for="f-likes">👍 讚數</label>' +
-          '<input type="number" id="f-likes" value="' + d.likes + '" min="0" oninput="syncAll()"></div>' +
+          '<input type="number" id="f-likes" value="' + d.likes + '" min="0" oninput="syncPreview()"></div>' +
         '<div class="var-field"><label for="f-views">👁 瀏覽</label>' +
-          '<input type="number" id="f-views" value="' + d.views + '" min="0" oninput="syncAll()"></div>' +
+          '<input type="number" id="f-views" value="' + d.views + '" min="0" oninput="syncPreview()"></div>' +
       '</div>' +
 
       '<div class="var-field"><label for="f-user">訪客名稱（Q8 用）</label>' +
-        '<input type="text" id="f-user" value="' + escAttr(d.user) + '" placeholder="輸入名稱或留空" oninput="syncAll()"></div>' +
+        '<input type="text" id="f-user" value="' + escAttr(d.user) + '" placeholder="輸入名稱或留空" oninput="syncPreview()"></div>' +
 
       '<div class="var-field">' +
-        '<label><input type="checkbox" id="f-draft"' + (d.draft ? ' checked' : '') + ' onchange="syncAll()"> 草稿（未發布）</label>' +
+        '<label><input type="checkbox" id="f-draft"' + (d.draft ? ' checked' : '') + ' onchange="syncPreview()"> 草稿（未發布）</label>' +
         statusBadge +
       '</div>' +
 
       '<div class="var-field">' +
-        '<label><input type="checkbox" id="f-tern"' + (d.useTern ? ' checked' : '') + ' onchange="syncAll()"> 使用三元/截斷</label>' +
+        '<label><input type="checkbox" id="f-tern"' + (d.useTern ? ' checked' : '') + ' onchange="syncPreview()"> 使用三元/截斷</label>' +
       '</div>' +
 
       '<button class="reset-btn" onclick="resetDefaults()">↺ 重置</button>' +
@@ -442,6 +442,12 @@ function renderBlog(d) {
 function syncAll() {
   var d = getFormData();
   renderEditor(d);
+  renderBlog(d);
+}
+
+/* 只更新右側預覽，不動左側編輯器（保留輸入框焦點） */
+function syncPreview() {
+  var d = getFormData();
   renderBlog(d);
 }
 
