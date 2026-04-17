@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>wp_HW_7-日誌javascrip認識 — CCC 作業天地</title>
+  <title>wp_HW_7-blog_js — CCC 作業天地</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <header>
-  <h1>📝 wp_HW_7-日誌javascrip認識</h1>
+  <h1>📝 wp_HW_7-blog_js</h1>
   <button class="theme-toggle" id="themeToggle">🌙 深色</button>
 </header>
 
@@ -29,31 +29,25 @@
 </main>
 
 <script>
-/* ─── 題目資料（內嵌，避免外部 JS 載入問題） ─── */
-const BLOG_DATA = {
-  posts: [
-    { id: 1, title: "掌握 JavaScript 函式", content: "JavaScript 函式是現代開發的核心元件...", author: "Alice", tags: ["js", "函式"] },
-    { id: 2, title: "Node.js 入門指南", content: "Node.js 讓你可以用 JS 寫後端...", author: "Bob", tags: ["node", "後端"] },
-    { id: 3, title: "Express 路由設計", content: "RESTful API 的基礎在於良好的路由設計...", author: "Carol", tags: ["express", "api"] }
-  ]
-};
+/* ─── Init state ─── */
+var currentIdx = 0;
+var vals = {};
 
-const QUESTIONS = [
+/* ─── Load questions immediately ─── */
+var Q = [
   {
     id: 1,
     title: "1｜物件屬性存取 (Dot & Bracket Notation)",
     desc: "在 Express 路由中，我們從資料庫拿到的資料就是一個物件。post.title 與 post['title'] 都可以取得同一個屬性。",
     type: "blog-linked",
     vars: [
-      { key: "id",      default: 1,     label: "文章 ID",      type: "number" },
-      { key: "title",   default: "Hello World", label: "標題",  type: "text" },
-      { key: "content", default: "這是文章內容，支援 Markdown 格式。", label: "內容", type: "text" }
+      { k: "id",      v: 1,       label: "文章 ID",  t: "number" },
+      { k: "title",   v: "Hello World", label: "標題", t: "text" },
+      { k: "content", v: "這是文章內容，支援 Markdown 格式。", label: "內容", t: "text" }
     ],
-    run(vars) {
-      const post = { id: vars.id, title: vars.title, content: vars.content };
-      const dotResult = post.title;
-      const bracketResult = post["title"];
-      return { post, dotResult, bracketResult };
+    run: function(vals) {
+      var post = { id: Number(vals.id), title: String(vals.title), content: String(vals.content) };
+      return { post: post, dotResult: post.title, bracketResult: post["title"] };
     }
   },
   {
@@ -62,14 +56,15 @@ const QUESTIONS = [
     desc: "Express 的 app.post('/posts') 裡常見 `const { title, content } = req.body;`。解構讓你用一行取多個屬性。",
     type: "blog-linked",
     vars: [
-      { key: "req_title",   default: "JS教學",   label: "req.body.title",   type: "text" },
-      { key: "req_content", default: "內容在此",  label: "req.body.content", type: "text" },
-      { key: "req_author",  default: "Gemini",   label: "req.body.author",  type: "text" }
+      { k: "req_title",   v: "JS教學",  label: "req.body.title",   t: "text" },
+      { k: "req_content", v: "內容在此", label: "req.body.content", t: "text" },
+      { k: "req_author",  v: "Gemini",  label: "req.body.author",  t: "text" }
     ],
-    run(vars) {
-      const req = { body: { title: vars.req_title, content: vars.req_content, author: vars.req_author } };
-      const { title, content } = req.body;
-      return { reqBody: req.body, destructured: { title, content } };
+    run: function(vals) {
+      var req = { body: { title: String(vals.req_title), content: String(vals.req_content), author: String(vals.req_author) } };
+      var title = req.body.title;
+      var content = req.body.content;
+      return { reqBody: req.body, destructured: { title: title, content: content } };
     }
   },
   {
@@ -78,15 +73,21 @@ const QUESTIONS = [
     desc: "部落格首頁的 posts.forEach 迴圈就是這樣把每一筆資料拼成 HTML 字串，送回瀏覽器渲染列表。",
     type: "blog-linked",
     vars: [
-      { key: "t1", default: "JavaScript 函式", label: "文章1標題", type: "text" },
-      { key: "t2", default: "Node.js 入門",     label: "文章2標題", type: "text" },
-      { key: "t3", default: "Express 路由設計", label: "文章3標題", type: "text" }
+      { k: "t1", v: "JavaScript 函式", label: "文章1標題", t: "text" },
+      { k: "t2", v: "Node.js 入門",    label: "文章2標題", t: "text" },
+      { k: "t3", v: "Express 路由設計", label: "文章3標題", t: "text" }
     ],
-    run(vars) {
-      const posts = [{id:1,title:vars.t1},{id:2,title:vars.t2},{id:3,title:vars.t3}];
-      let html = "";
-      posts.forEach(p => { html += `<div class="post-item">${p.title}</div>`; });
-      return { posts, html };
+    run: function(vals) {
+      var posts = [
+        { id: 1, title: String(vals.t1) },
+        { id: 2, title: String(vals.t2) },
+        { id: 3, title: String(vals.t3) }
+      ];
+      var html = "";
+      for (var i = 0; i < posts.length; i++) {
+        html += '<div class="post-item">' + escHtml(posts[i].title) + '</div>';
+      }
+      return { posts: posts, html: html };
     }
   },
   {
@@ -95,13 +96,21 @@ const QUESTIONS = [
     desc: "`app.get('/posts/:id')` 的 :id 就是 URL 參數。req.params 是一個字典，用來動態抓取 URL 中的值。",
     type: "blog-linked",
     vars: [
-      { key: "id", default: 2, label: "URL 參數 id", type: "number" }
+      { k: "id", v: 2, label: "URL 參數 id", t: "number" }
     ],
-    run(vars) {
-      const params = {};
-      params["id"] = vars.id;
-      const matchingPost = BLOG_DATA.posts.find(p => p.id === Number(params.id)) || null;
-      return { params, matchingPost };
+    run: function(vals) {
+      var params = {};
+      params["id"] = Number(vals.id);
+      var matchingPost = null;
+      var allPosts = [
+        { id: 1, title: "掌握 JavaScript 函式", content: "JavaScript 函式是現代開發的核心元件...", author: "Alice", tags: ["js", "函式"] },
+        { id: 2, title: "Node.js 入門指南", content: "Node.js 讓你可以用 JS 寫後端...", author: "Bob", tags: ["node", "後端"] },
+        { id: 3, title: "Express 路由設計", content: "RESTful API 的基礎在於良好的路由設計...", author: "Carol", tags: ["express", "api"] }
+      ];
+      for (var i = 0; i < allPosts.length; i++) {
+        if (allPosts[i].id === params.id) { matchingPost = allPosts[i]; break; }
+      }
+      return { params: params, matchingPost: matchingPost };
     }
   },
   {
@@ -110,16 +119,16 @@ const QUESTIONS = [
     desc: "Node.js 慣例：callback 第一個參數是錯誤（沒錯就傳 null），第二個參數才是資料。這讓錯誤處理可以統一在函式起點處理。",
     type: "callback",
     vars: [
-      { key: "id", default: 101, label: "fetchData 的 id 參數", type: "number" }
+      { k: "id", v: 101, label: "fetchData 的 id 參數", t: "number" }
     ],
-    run(vars) {
-      let result = null;
+    run: function(vals) {
+      var result = null;
       (function(id, cb) {
         cb(null, { id: id, status: "success" });
-      })(vars.id, (err, data) => {
+      })(Number(vals.id), function(err, data) {
         result = err ? "錯誤：" + err : "成功取得資料：" + JSON.stringify(data);
       });
-      return { pattern: "callback(err, data)", result };
+      return { pattern: "callback(err, data)", result: result };
     }
   },
   {
@@ -128,16 +137,16 @@ const QUESTIONS = [
     desc: "`express.json()` 把前端送來的 JSON body 轉成 JS 物件。JSON.parse 就是把 JSON 字串「解讀」成可用物件的步驟。",
     type: "blog-linked",
     vars: [
-      { key: "tag1", default: "js",   label: "tags[0]", type: "text" },
-      { key: "tag2", default: "node", label: "tags[1]", type: "text" },
-      { key: "tag3", default: "api",  label: "tags[2]", type: "text" }
+      { k: "tag1", v: "js",   label: "tags[0]", t: "text" },
+      { k: "tag2", v: "node", label: "tags[1]", t: "text" },
+      { k: "tag3", v: "api",  label: "tags[2]", t: "text" }
     ],
-    run(vars) {
-      const tags = [vars.tag1, vars.tag2, vars.tag3];
-      const obj = { title: "Post Title", tags };
-      const jsonStr = JSON.stringify(obj);
-      const parsed = JSON.parse(jsonStr);
-      return { jsonStr, parsed, tag2: parsed.tags[1] };
+    run: function(vals) {
+      var tags = [String(vals.tag1), String(vals.tag2), String(vals.tag3)];
+      var obj = { title: "Post Title", tags: tags };
+      var jsonStr = JSON.stringify(obj);
+      var parsed = JSON.parse(jsonStr);
+      return { jsonStr: jsonStr, parsed: parsed, tag2: parsed.tags[1] };
     }
   },
   {
@@ -146,16 +155,16 @@ const QUESTIONS = [
     desc: "真實的 `db.get(sql, params, callback)` 會去資料庫查並把結果傳入 callback。fakeGet 模擬這個流程讓你練習。",
     type: "callback",
     vars: [
-      { key: "sql_id", default: 1, label: "SQL WHERE id = ?", type: "number" }
+      { k: "sql_id", v: 1, label: "SQL WHERE id = ?", t: "number" }
     ],
-    run(vars) {
-      let result = null;
+    run: function(vals) {
+      var result = null;
       (function(sql, params, cb) {
-        cb(null, { id: vars.sql_id, title: "掌握 JavaScript 函式", content: "函式是 JS 的核心..." });
-      })("SELECT * FROM posts WHERE id = ?", [vars.sql_id], (err, row) => {
+        cb(null, { id: Number(vals.sql_id), title: "掌握 JavaScript 函式", content: "函式是 JS 的核心..." });
+      })("SELECT * FROM posts WHERE id = ?", [Number(vals.sql_id)], function(err, row) {
         result = err ? "失敗：" + err : "抓到標題：" + row.title;
       });
-      return { pattern: "fakeGet(sql, params, (err, row) => {...})", result };
+      return { pattern: "fakeGet(sql, params, (err, row) => {...})", result: result };
     }
   },
   {
@@ -164,14 +173,15 @@ const QUESTIONS = [
     desc: "Express 的 `res.send(\\`<h1>Welcome, ${user}\\</h1>\\`)` 常搭配三元運算處理未登入的使用者。",
     type: "blog-linked",
     vars: [
-      { key: "user",       default: "Guest", label: "user 變數值",    type: "text" },
-      { key: "useTernary", default: true,   label: "使用三元運算？", type: "boolean" }
+      { k: "user",       v: "Guest", label: "user 變數值",    t: "text" },
+      { k: "useTernary", v: true,   label: "使用三元運算？", t: "checkbox" }
     ],
-    run(vars) {
-      const user = vars.user || null;
-      const displayName = vars.useTernary ? (user ? user : "Stranger") : (user || "Stranger");
-      const html = "<h1>Welcome, " + displayName + "</h1>";
-      return { user, displayName, html };
+    run: function(vals) {
+      var user = String(vals.user) || null;
+      var useTernary = vals.useTernary === true || vals.useTernary === "true";
+      var displayName = useTernary ? (user ? user : "Stranger") : (user || "Stranger");
+      var html = "<h1>Welcome, " + displayName + "</h1>";
+      return { user: user, displayName: displayName, html: html };
     }
   },
   {
@@ -180,14 +190,18 @@ const QUESTIONS = [
     desc: "文章列表如果內容太長，常見的做法是用 substr 或 slice 截斷並加上 \"...\"。這是「版面控制」的常見模式。",
     type: "blog-linked",
     vars: [
-      { key: "limit", default: 10, label: "截斷字元數", type: "number", min: 5, max: 30 },
-      { key: "c1", default: "Very long content here",         label: "內容1", type: "text" },
-      { key: "c2", default: "Another Very long content here", label: "內容2", type: "text" }
+      { k: "limit", v: 10, label: "截斷字元數", t: "number", min: 5, max: 30 },
+      { k: "c1",    v: "Very long content here",          label: "內容1", t: "text" },
+      { k: "c2",    v: "Another Very long content here", label: "內容2", t: "text" }
     ],
-    run(vars) {
-      const contents = [vars.c1, vars.c2];
-      const truncated = contents.map(c => c.length > vars.limit ? c.slice(0, vars.limit) + "..." : c);
-      return { limit: vars.limit, truncated };
+    run: function(vals) {
+      var limit = Number(vals.limit) || 10;
+      var c1 = String(vals.c1);
+      var c2 = String(vals.c2);
+      var truncated = [];
+      truncated.push(c1.length > limit ? c1.slice(0, limit) + "..." : c1);
+      truncated.push(c2.length > limit ? c2.slice(0, limit) + "..." : c2);
+      return { limit: limit, truncated: truncated, orig: [c1, c2] };
     }
   },
   {
@@ -196,76 +210,54 @@ const QUESTIONS = [
     desc: "Express 中幾乎所有 db.xxx 的用法都是 err-first callback。",
     type: "callback",
     vars: [
-      { key: "role", default: "admin", label: "role 參數", type: "text" }
+      { k: "role", v: "admin", label: "role 參數", t: "text" }
     ],
-    run(vars) {
-      let result = null;
+    run: function(vals) {
+      var result = null;
       (function(r, cb) {
         if (r !== "admin") cb("Access Denied"); else cb(null, "Welcome");
-      })(vars.role, (err, msg) => {
+      })(String(vals.role), function(err, msg) {
         result = err ? "✗ 錯誤：" + err : "✓ " + msg;
       });
-      return { role: vars.role, result };
+      return { role: String(vals.role), result: result };
     }
   }
 ];
 
-/* ─── Theme ─── */
-const themeToggle = document.getElementById('themeToggle');
-const savedTheme = localStorage.getItem('hw7_theme') || 'light';
-applyTheme(savedTheme);
-themeToggle.addEventListener('click', () => {
-  const next = document.body.classList.contains('dark') ? 'light' : 'dark';
-  applyTheme(next);
-  localStorage.setItem('hw7_theme', next);
-});
-function applyTheme(theme) {
-  document.body.classList.toggle('dark', theme === 'dark');
-  themeToggle.textContent = theme === 'dark' ? '☀️ 淺色' : '🌙 深色';
-}
-
-/* ─── State ─── */
-let current = 0;
-let values = {};
-
+/* ─── Helpers ─── */
 function getDefaults(q) {
-  const v = {};
-  q.variables.forEach(p => {
-    v[p.key] = p.type === 'number' ? Number(p.default) : p.type === 'boolean' ? Boolean(p.default) : String(p.default);
-  });
+  var v = {};
+  for (var i = 0; i < q.vars.length; i++) {
+    var p = q.vars[i];
+    if (p.t === 'number') v[p.k] = Number(p.v);
+    else if (p.t === 'checkbox') v[p.k] = Boolean(p.v);
+    else v[p.k] = String(p.v);
+  }
   return v;
 }
 
-function esc(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function hl(code) {
-  return code
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\/\/.*/g, m => `<span class="cmt">${m}</span>`)
-    .replace(/\b(const|let|var|function|return|if|else|for|of|in|true|false|null)\b/g, m => `<span class="kw">${m}</span>`)
-    .replace(/\b(\w+)(?=\s*\()/g, m => `<span class="fn">${m}</span>`)
-    .replace(/\b(\d+\.?\d*)\b/g, m => `<span class="num">${m}</span>`)
-    .replace(/"([^"]*)"/g, m => `<span class="str">${m}</span>`);
+function escHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-function jp(obj) {
-  const s = JSON.stringify(obj, null, 2);
+function jsonPretty(obj) {
+  var s = JSON.stringify(obj, null, 2);
   return s
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"([^"]+)":/g, m => `<span class="key">"${m.slice(1,m.length-2)}"</span>:`)
-    .replace(/: "([^"]*)"/g, m => `: <span class="str">"${m.slice(3,m.length-1)}"</span>`)
-    .replace(/: ([\d.]+)/g, m => `: <span class="num">${m.slice(2)}</span>`)
-    .replace(/: (true|false|null)/g, m => `: <span class="num">${m.slice(2)}</span>`);
+    .replace(/"([^"]+)":/g, function(m) { return '<span class="key">"' + m.slice(1,m.length-2) + '"</span>:' ; })
+    .replace(/: "([^"]*)"/g, function(m) { return ': <span class="str">"' + m.slice(3,m.length-1) + '"</span>'; })
+    .replace(/: ([\d.]+)/g, function(m) { return ': <span class="num">' + m.slice(2) + '</span>'; })
+    .replace(/: (true|false|null)/g, function(m) { return ': <span class="num">' + m.slice(2) + '</span>'; });
 }
 
-/* ─── Run ─── */
 function runQ() {
-  const q = QUESTIONS[current];
-  let result;
-  try { result = q.run(values); }
+  var q = Q[currentIdx];
+  var result;
+  try { result = q.run(vals); }
   catch(e) { result = { error: e.message }; }
   if (result.error) {
-    document.getElementById('blogPreview').innerHTML = `<div class="Error-hint">⚠️ ${esc(result.error)}</div>`;
+    document.getElementById('blogPreview').innerHTML = '<div class="Error-hint">⚠️ ' + escHtml(result.error) + '</div>';
     return;
   }
   if (q.type === 'callback') {
@@ -277,185 +269,122 @@ function runQ() {
   }
 }
 
-/* ─── Blog Renderers ─── */
 function renderBlog(q, r) {
-  const el = document.getElementById('blogPreview');
+  var el = document.getElementById('blogPreview');
+  var html = '';
   switch (q.id) {
     case 1:
-      el.innerHTML = `
-        <div class="post-single">
-          <div class="post-title">${esc(r.post.title)}</div>
-          <div class="post-content">${esc(r.post.content)}</div>
-          <div class="post-meta">ID: ${r.post.id}</div>
-        </div>
-        <div class="json-view" style="margin-top:1rem;">
-          <div class="label" style="color:#6c7086;margin-bottom:0.5rem;">屬性取值結果</div>
-          <pre>post.title        → <span class="str">"${esc(r.dotResult)}"</span>\npost["title"]     → <span class="str">"${esc(r.bracketResult)}"</span></pre>
-        </div>`;
+      html = '<div class="post-single"><div class="post-title">' + escHtml(r.post.title) + '</div><div class="post-content">' + escHtml(r.post.content) + '</div><div class="post-meta">ID: ' + r.post.id + '</div></div><div class="json-view" style="margin-top:1rem;"><div class="label" style="color:#6c7086;margin-bottom:0.5rem;">屬性取值結果</div><pre>post.title        → <span class="str">"' + escHtml(r.dotResult) + '"</span>\npost["title"]     → <span class="str">"' + escHtml(r.bracketResult) + '"</span></pre></div>';
       break;
     case 2:
-      el.innerHTML = `
-        <div style="margin-bottom:1rem;color:var(--muted);font-size:0.82rem;">從 req.body 解構出 title 和 content：</div>
-        <div class="json-view" style="margin-bottom:1rem;"><pre>${jp(r.reqBody)}</pre></div>
-        <div class="json-view"><pre style="color:#89b4fa;">const { title, content } = req.body;</pre>
-<pre>title   → <span class="str">"${esc(r.destructured.title)}"</span>\ncontent → <span class="str">"${esc(r.destructured.content)}"</span></pre></div>`;
+      html = '<div style="margin-bottom:1rem;color:var(--muted);font-size:0.82rem;">從 req.body 解構出 title 和 content：</div><div class="json-view" style="margin-bottom:1rem;"><pre>' + jsonPretty(r.reqBody) + '</pre></div><div class="json-view"><pre style="color:#89b4fa;">const { title, content } = req.body;</pre><pre>title   → <span class="str">"' + escHtml(r.destructured.title) + '"</span>\ncontent → <span class="str">"' + escHtml(r.destructured.content) + '"</span></pre></div>';
       break;
     case 3:
-      el.innerHTML = `
-        <div style="margin-bottom:1rem;color:var(--muted);font-size:0.82rem;">← forEach 拼接出來的 HTML 字串</div>
-        <div class="post-list">${r.html}</div>
-        <div class="json-view" style="margin-top:1rem;">
-          <div class="label" style="color:#6c7086;margin-bottom:0.5rem;">拼接的 HTML</div>
-          <pre style="color:#cdd6f4;">${esc(r.html)}</pre>
-        </div>`;
+      html = '<div style="margin-bottom:1rem;color:var(--muted);font-size:0.82rem;">← forEach 拼接出來的 HTML 字串</div><div class="post-list">' + r.html + '</div><div class="json-view" style="margin-top:1rem;"><div class="label" style="color:#6c7086;margin-bottom:0.5rem;">拼接的 HTML</div><pre style="color:#cdd6f4;">' + escHtml(r.html) + '</pre></div>';
       break;
     case 4:
-      el.innerHTML = `
-        <div class="json-view" style="margin-bottom:1rem;">
-          <div class="label" style="color:#6c7086;margin-bottom:0.5rem;">req.params</div>
-          <pre>${jp(r.params)}</pre>
-        </div>
-        ${r.matchingPost
-          ? `<div class="post-single">
-              <div class="post-title">${esc(r.matchingPost.title)}</div>
-              <div class="post-content">${esc(r.matchingPost.content)}</div>
-              <div class="post-meta">作者：${esc(r.matchingPost.author)} · 標籤：${r.matchingPost.tags.join(', ')}</div>
-            </div>`
-          : `<div class="Error-hint">⚠️ 找不到 ID 為 ${r.params.id} 的文章</div>`
-        }`;
+      var postHtml = '';
+      if (r.matchingPost) {
+        postHtml = '<div class="post-single"><div class="post-title">' + escHtml(r.matchingPost.title) + '</div><div class="post-content">' + escHtml(r.matchingPost.content) + '</div><div class="post-meta">作者：' + escHtml(r.matchingPost.author) + ' · 標籤：' + r.matchingPost.tags.join(', ') + '</div></div>';
+      } else {
+        postHtml = '<div class="Error-hint">⚠️ 找不到 ID 為 ' + r.params.id + ' 的文章</div>';
+      }
+      html = '<div class="json-view" style="margin-bottom:1rem;"><div class="label" style="color:#6c7086;margin-bottom:0.5rem;">req.params</div><pre>' + jsonPretty(r.params) + '</pre></div>' + postHtml;
       break;
     case 6:
-      el.innerHTML = `
-        <div class="json-view" style="margin-bottom:1rem;">
-          <div class="label" style="color:#6c7086;margin-bottom:0.5rem;">JSON.stringify(obj)</div>
-          <pre>${esc(r.jsonStr)}</pre>
-        </div>
-        <div class="json-view" style="margin-bottom:1rem;">
-          <div class="label" style="color:#6c7086;margin-bottom:0.5rem;">JSON.parse() → JS Object</div>
-          <pre>${jp(r.parsed)}</pre>
-        </div>
-        <div class="json-view">
-          <div class="label" style="color:#6c7086;margin-bottom:0.5rem;">取出 tags[1]</div>
-          <pre>tags[1] → <span class="str">"${esc(r.tag2)}"</span></pre>
-        </div>`;
+      html = '<div class="json-view" style="margin-bottom:1rem;"><div class="label" style="color:#6c7086;margin-bottom:0.5rem;">JSON.stringify(obj)</div><pre>' + escHtml(r.jsonStr) + '</pre></div><div class="json-view" style="margin-bottom:1rem;"><div class="label" style="color:#6c7086;margin-bottom:0.5rem;">JSON.parse() → JS Object</div><pre>' + jsonPretty(r.parsed) + '</pre></div><div class="json-view"><div class="label" style="color:#6c7086;margin-bottom:0.5rem;">取出 tags[1]</div><pre>tags[1] → <span class="str">"' + escHtml(r.tag2) + '"</span></pre></div>';
       break;
     case 8:
-      el.innerHTML = `
-        <div class="Welcome-banner">${esc(r.html)}</div>
-        <div class="json-view">
-          <pre>user = "${esc(r.user)}"\ndisplayName = "${esc(r.displayName)}"\nHTML = ${esc(r.html)}</pre>
-        </div>`;
+      html = '<div class="Welcome-banner">' + escHtml(r.html) + '</div><div class="json-view"><pre>user = "' + escHtml(r.user) + '"\ndisplayName = "' + escHtml(r.displayName) + '"\nHTML = ' + escHtml(r.html) + '</pre></div>';
       break;
     case 9:
-      el.innerHTML = `
-        <div style="margin-bottom:1rem;color:var(--muted);font-size:0.82rem;">限制前 ${r.limit} 個字元：</div>
-        <div class="truncated-list">
-          ${r.truncated.map((t, i) => {
-            const orig = [values.c1, values.c2][i];
-            return `<div class="truncated-item">
-              <span class="orig">${esc(orig)}</span><br>↓<br>
-              <span class="trunc">${esc(t)}</span>
-            </div>`;
-          }).join('')}
-        </div>`;
+      var truncHtml = '';
+      for (var i = 0; i < r.truncated.length; i++) {
+        truncHtml += '<div class="truncated-item"><span class="orig">' + escHtml(r.orig[i]) + '</span><br>↓<br><span class="trunc">' + escHtml(r.truncated[i]) + '</span></div>';
+      }
+      html = '<div style="margin-bottom:1rem;color:var(--muted);font-size:0.82rem;">限制前 ' + r.limit + ' 個字元：</div><div class="truncated-list">' + truncHtml + '</div>';
       break;
     default:
-      el.innerHTML = `<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem;">此題為概念練習，請參閱左側說明與執行結果。</div>`;
+      html = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem;">此題為概念練習，請參閱左側說明與執行結果。</div>';
   }
+  el.innerHTML = html;
 }
 
 function renderCallback(q, r) {
-  const section = document.getElementById('callbackSection');
+  var section = document.getElementById('callbackSection');
   section.style.display = 'block';
-  section.innerHTML = `
-    <div class="card" style="margin-top:0;">
-      <div class="q-meta">🔄 Callback 概念區</div>
-      <div class="q-desc">${esc(q.desc)}</div>
-      <div class="callback-result" style="margin-top:1rem;">
-        <div class="label">Pattern</div>
-        <div class="output">${esc(r.pattern)}</div>
-      </div>
-      <div class="callback-result" style="margin-top:0.75rem;">
-        <div class="label">執行結果</div>
-        <div class="output ${r.result && r.result.startsWith('✗') ? 'error' : ''}">${esc(r.result)}</div>
-      </div>
-    </div>`;
+  section.innerHTML = '<div class="card" style="margin-top:0;"><div class="q-meta">🔄 Callback 概念區</div><div class="q-desc">' + escHtml(q.desc) + '</div><div class="callback-result" style="margin-top:1rem;"><div class="label">Pattern</div><div class="output">' + escHtml(r.pattern) + '</div></div><div class="callback-result" style="margin-top:0.75rem;"><div class="label">執行結果</div><div class="output ' + (r.result && r.result.indexOf('✗') === 0 ? 'error' : '') + '">' + escHtml(r.result) + '</div></div></div>';
 }
 
-/* ─── Left Panel ─── */
 function renderLeft() {
-  const q = QUESTIONS[current];
-  const panel = document.getElementById('leftPanel');
-
-  const varInputs = q.variables.map(v => {
-    if (v.type === 'boolean') {
-      return `<div class="var-field">
-        <label>
-          <input type="checkbox" id="inp-${v.key}" ${values[v.key] ? 'checked' : ''}
-            onchange="values['${v.key}']=this.checked; runQ();">
-          ${esc(v.label)}
-        </label>
-      </div>`;
+  var q = Q[currentIdx];
+  var panel = document.getElementById('leftPanel');
+  var varHtml = '';
+  for (var i = 0; i < q.vars.length; i++) {
+    var p = q.vars[i];
+    if (p.t === 'checkbox') {
+      varHtml += '<div class="var-field"><label><input type="checkbox" id="inp-' + p.k + '" ' + (vals[p.k] ? 'checked' : '') + ' onchange="vals[\'' + p.k + '\']=this.checked;runQ();"> ' + escHtml(p.label) + '</label></div>';
+    } else {
+      varHtml += '<div class="var-field"><label for="inp-' + p.k + '">' + escHtml(p.label) + '</label><input type="' + (p.t === 'number' ? 'number' : 'text') + '" id="inp-' + p.k + '" value="' + escHtml(vals[p.k]) + '" ' + (p.min !== undefined ? 'min="' + p.min + '" max="' + p.max + '"' : '') + ' oninput="vals[\'' + p.k + '\']=' + (p.t === 'number' ? 'parseFloat(this.value)||0' : 'this.value') + ';runQ();"></div>';
     }
-    return `<div class="var-field">
-      <label for="inp-${v.key}">${esc(v.label)}</label>
-      <input type="${v.type}" id="inp-${v.key}" value="${esc(values[v.key])}"
-        ${v.min !== undefined ? `min="${v.min}" max="${v.max}"` : ''}
-        oninput="values['${v.key}']=${v.type === 'number' ? 'parseFloat(this.value)||0' : 'this.value'}; runQ();">
-    </div>`;
-  }).join('');
-
-  const badge = q.type === 'blog-linked' ? '🌐 連動部落格' : '🔄 Callback';
-
-  panel.innerHTML = `
-    <div class="card">
-      <div class="q-meta">${badge}</div>
-      <div class="q-title">${esc(q.title)}</div>
-      <div class="q-desc">${esc(q.desc)}</div>
-      <div class="code-block"><pre>${getCodeSnippet(q).map(l => l ? hl(l) : '').join('\n')}</pre></div>
-      <div class="var-row">${varInputs}</div>
-      <button class="reset-btn" onclick="restoreDefaults()">↺ 恢復預設</button>
-    </div>`;
+  }
+  var badge = q.type === 'blog-linked' ? '🌐 連動部落格' : '🔄 Callback';
+  panel.innerHTML = '<div class="card"><div class="q-meta">' + badge + '</div><div class="q-title">' + escHtml(q.title) + '</div><div class="q-desc">' + escHtml(q.desc) + '</div><div class="code-block"><pre>' + escHtml(getCodeSnippet(q)) + '</pre></div><div class="var-row">' + varHtml + '</div><button class="reset-btn" onclick="restoreDefaults()">↺ 恢復預設</button></div>';
 }
 
 function restoreDefaults() {
-  values = getDefaults(QUESTIONS[current]);
+  vals = getDefaults(Q[currentIdx]);
   renderLeft();
   runQ();
 }
 
 function getCodeSnippet(q) {
-  const m = {
-    1:  ['const post = { id:1, title, content };', 'post.title      → "title"', 'post["title"]   → "title"'],
-    2:  ['const { title, content } = req.body;', '// title   = req.body.title', '// content = req.body.content'],
-    3:  ['posts.forEach(post => {', '  html += `<div>${post.title}</div>`;', '});'],
-    4:  ['const params = {};', 'params["id"] = id;  // 動態新增鍵'],
-    5:  ['function fetchData(id, callback) {', '  const fakeData = { id, status:"success" };', '  callback(null, fakeData);', '}'],
-    6:  ['const jsonStr = JSON.stringify(obj);', 'const obj = JSON.parse(jsonStr);'],
-    7:  ['function fakeGet(sql, params, cb) {', '  cb(null, { id:1, title:"標題" });', '}'],
-    8:  ['const displayName = user ?? "Stranger";'],
-    9:  ['const truncated = str.slice(0, limit) + "...";'],
-    10: ['function checkAdmin(role, cb) {', '  if (role !== "admin") cb("Access Denied");', '  else cb(null, "Welcome");', '}'],
+  var m = {
+    1:  'const post = { id:1, title, content };\npost.title      → "title"\npost["title"]   → "title"',
+    2:  'const { title, content } = req.body;\n// title   = req.body.title\n// content = req.body.content',
+    3:  'posts.forEach(post => {\n  html += `<div>${post.title}</div>`;\n});',
+    4:  'const params = {};\nparams["id"] = id;  // 動態新增鍵',
+    5:  'function fetchData(id, callback) {\n  const fakeData = { id, status:"success" };\n  callback(null, fakeData);\n}',
+    6:  'const jsonStr = JSON.stringify(obj);\nconst obj = JSON.parse(jsonStr);',
+    7:  'function fakeGet(sql, params, cb) {\n  cb(null, { id:1, title:"標題" });\n}',
+    8:  'const displayName = user ?? "Stranger";',
+    9:  'const truncated = str.slice(0, limit) + "...";',
+    10: 'function checkAdmin(role, cb) {\n  if (role !== "admin") cb("Access Denied");\n  else cb(null, "Welcome");\n}'
   };
-  return m[q.id] || ['// 程式碼'];
+  return m[q.id] || '// 程式碼';
 }
 
-/* ─── Navigator ─── */
 function renderNav() {
-  document.getElementById('qNav').innerHTML = QUESTIONS.map((q, i) =>
-    `<div class="q-dot ${i === current ? 'active' : ''}" onclick="jumpTo(${i})">${q.id}</div>`
-  ).join('');
+  var nav = document.getElementById('qNav');
+  var html = '';
+  for (var i = 0; i < Q.length; i++) {
+    html += '<div class="q-dot' + (i === currentIdx ? ' active' : '') + '" onclick="jumpTo(' + i + ')">' + Q[i].id + '</div>';
+  }
+  nav.innerHTML = html;
 }
 
 function jumpTo(idx) {
-  current = idx;
-  values = getDefaults(QUESTIONS[idx]);
+  currentIdx = idx;
+  vals = getDefaults(Q[idx]);
   renderNav();
   renderLeft();
   runQ();
 }
 
-/* ─── Init ─── */
+/* ─── Theme ─── */
+var savedTheme = localStorage.getItem('hw7_theme') || 'light';
+applyTheme(savedTheme);
+document.getElementById('themeToggle').addEventListener('click', function() {
+  var next = document.body.classList.contains('dark') ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('hw7_theme', next);
+});
+function applyTheme(theme) {
+  document.body.classList.toggle('dark', theme === 'dark');
+  document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️ 淺色' : '🌙 深色';
+}
+
+/* ─── Boot ─── */
 jumpTo(0);
 </script>
 </body>
