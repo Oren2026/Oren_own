@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wp_HW_6-javascrip練習 — CCC 作業天地</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f0f2f5;
+      color: #1c1e21;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 1rem 2rem;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+    }
+
+    main {
+      flex: 1;
+      max-width: 680px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .progress-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #dfe6e9;
+      border: 2px solid #b2bec3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #636e72;
+    }
+
+    .progress-dot.current {
+      background: #0984e3;
+      border-color: #0984e3;
+      color: white;
+      transform: scale(1.15);
+      box-shadow: 0 0 0 4px rgba(9, 132, 227, 0.25);
+    }
+
+    .progress-dot.answered {
+      background: #00b894;
+      border-color: #00b894;
+      color: white;
+    }
+
+    .progress-dot.correct {
+      background: #00b894;
+      border-color: #00b894;
+      color: white;
+    }
+
+    .progress-dot.wrong {
+      background: #e17055;
+      border-color: #e17055;
+      color: white;
+    }
+
+    .progress-dot:hover {
+      opacity: 0.8;
+    }
+
+    /* Question Card */
+    .question-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      animation: slideIn 0.35s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .question-meta {
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 0.75rem;
+    }
+
+    .question-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Options */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border: 2px solid #dfe6e9;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+
+    .option:hover {
+      border-color: #74b9ff;
+      background: #f0f7ff;
+    }
+
+    .option.selected {
+      border-color: #0984e3;
+      background: #e9f4ff;
+      animation: pop 0.3s ease;
+    }
+
+    .option.correct {
+      border-color: #00b894;
+      background: #dff9f0;
+    }
+
+    .option.wrong {
+      border-color: #e17055;
+      background: #ffeae5;
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.04); }
+      100% { transform: scale(1); }
+    }
+
+    .option-letter {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #f0f2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      transition: all 0.25s ease;
+      color: #555;
+    }
+
+    .option.selected .option-letter {
+      background: #0984e3;
+      color: white;
+    }
+
+    .option.correct .option-letter {
+      background: #00b894;
+      color: white;
+    }
+
+    .option.wrong .option-letter {
+      background: #e17055;
+      color: white;
+    }
+
+    .option-text {
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    /* Navigation */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-prev {
+      background: #dfe6e9;
+      color: #2d3436;
+    }
+
+    .btn-prev:hover:not(:disabled) {
+      background: #b2bec3;
+    }
+
+    .btn-next {
+      background: #0984e3;
+      color: white;
+    }
+
+    .btn-next:hover:not(:disabled) {
+      background: #0870c7;
+    }
+
+    /* Result Screen */
+    .result-card {
+      background: white;
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      animation: slideIn 0.35s ease;
+    }
+
+    .result-score {
+      font-size: 5rem;
+      font-weight: 800;
+      color: #2c3e50;
+      line-height: 1;
+    }
+
+    .result-label {
+      font-size: 1.3rem;
+      color: #555;
+      margin-top: 0.5rem;
+    }
+
+    .result-message {
+      font-size: 1.1rem;
+      color: #777;
+      margin-top: 1rem;
+    }
+
+    .btn-restart {
+      background: #00b894;
+      color: white;
+      padding: 12px 32px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 2rem;
+      transition: background 0.2s;
+    }
+
+    .btn-restart:hover {
+      background: #00a383;
+    }
+
+    /* Feedback overlay */
+    .feedback-bar {
+      height: 4px;
+      border-radius: 2px;
+      margin-bottom: 1.5rem;
+      transition: all 0.4s ease;
+    }
+
+    .feedback-bar.correct { background: #00b894; }
+    .feedback-bar.wrong   { background: #e17055; }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .question-text { font-size: 1.05rem; }
+      .progress-dot  { width: 30px; height: 30px; font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🌐 wp_HW_6-javascrip練習</h1>
+</header>
+
+<main id="app"></main>
+
+<script>
+/* ─── 題庫 (20題) ─── */
+const ALL_QUESTIONS = [
+  {
+    q: 'JavaScript 中，宣告變數 `let x = 10;`，以下哪個方式可以改變 x 的值？',
+    opts: ['x = 20;', 'const x = 20;', 'let x = 20;', 'var x = 20;'],
+    ans: 0
+  },
+  {
+    q: '哪個方法可以把整數轉成字串？',
+    opts: ['String(123)', 'toNumber("123")', 'parseInt(123)', 'array(123)'],
+    ans: 0
+  },
+  {
+    q: '`array.push(item)` 的用途是？',
+    opts: ['刪除最後一個元素', '在陣列末尾加入新元素', '在陣列開頭加入新元素', '排序陣列'],
+    ans: 1
+  },
+  {
+    q: '`document.getElementById("id")` 回傳的型別是？',
+    opts: ['字串', '數字', 'DOM 元素', '陣列'],
+    ans: 2
+  },
+  {
+    q: '以下哪個不是 JavaScript 的資料型態？',
+    opts: ['string', 'number', 'boolean', 'character'],
+    ans: 3
+  },
+  {
+    q: '`===` 與 `==` 的差別在於？',
+    opts: ['沒有差別', '`===` 會比較型別', '`==` 會比較型別', '`===` 只用在數字'],
+    ans: 1
+  },
+  {
+    q: '如何在函式內取用全域變數 `count`？',
+    opts: ['this.count', 'global.count', 'window.count', '直接使用 count'],
+    ans: 3
+  },
+  {
+    q: '`array.length` 代表什麼？',
+    opts: ['最後一個索引', '第一個索引', '陣列的元素數量', '陣列的容量'],
+    ans: 2
+  },
+  {
+    q: '哪個方法可以移除陣列最後一個元素？',
+    opts: ['array.shift()', 'array.pop()', 'array.push()', 'array.slice()'],
+    ans: 1
+  },
+  {
+    q: '`console.log(typeof [])` 會輸出什麼？',
+    opts: ['"array"', '"object"', '"list"', '"undefined"'],
+    ans: 1
+  },
+  {
+    q: '以下哪個敘述是正確的？',
+    opts: ['let 可以重複宣告', 'const 的值可以修改', 'var 有函式作用域', 'const 不可以賦值'],
+    ans: 2
+  },
+  {
+    q: '`Math.floor(4.7)` 的結果是？',
+    opts: ['4', '5', '4.7', '3'],
+    ans: 0
+  },
+  {
+    q: '哪個事件代表元素被點擊？',
+    opts: ['onchange', 'onclick', 'onsubmit', 'onload'],
+    ans: 1
+  },
+  {
+    q: '`"Hello".toUpperCase()` 的回傳值是？',
+    opts: ['"hello"', '"HELLO"', '"Hello"', 'Error'],
+    ans: 1
+  },
+  {
+    q: '`array.filter(fn)` 的用途是？',
+    opts: ['對每個元素執行運算', '依照條件挑出元素組成新陣列', '搜尋元素位置', '刪除指定元素'],
+    ans: 1
+  },
+  {
+    q: '`let obj = {name: "Tom"}; obj.name` 的結果是？',
+    opts: ['undefined', '"Tom"', 'name', 'Error'],
+    ans: 1
+  },
+  {
+    q: '哪個不是有效的迴圈寫法？',
+    opts: ['for (let i=0; i<5; i++)', 'while (true)', 'loop (i from 0 to 5)', 'forEach'],
+    ans: 2
+  },
+  {
+    q: '`JSON.parse()` 的用途是？',
+    opts: ['把物件轉成 JSON 字串', '把 JSON 字串轉成物件', '刪除 JSON 檔案', '驗證 JSON 語法'],
+    ans: 1
+  },
+  {
+    q: '在 setTimeout，延遲時間的單位是？',
+    opts: ['秒', '毫秒', '微秒', '分鐘'],
+    ans: 1
+  },
+  {
+    q: '`NaN` 代表什麼意思？',
+    opts: ['Null', 'Not a Number（不是數字）', '沒有賦值', '陣列為空'],
+    ans: 1
+  }
+];
+
+/* ─── 工具函式 ─── */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ─── 狀態 ─── */
+let questions = [];       // 本次抽出的10題（已亂序含選項）
+let current   = 0;        // 目前第幾題（0-indexed）
+let answers    = [];       // answers[i] = 使用者選的 option index
+let confirmed  = [];      // confirmed[i] = 是否已確認過（看過對錯）
+let startTime  = Date.now();
+
+/* ─── 初始 ─── */
+function init() {
+  const pool = shuffle(ALL_QUESTIONS).slice(0, 10);
+  questions = pool.map(q => ({
+    ...q,
+    opts: shuffle(q.opts.map((o, i) => ({ text: o, isAns: i === q.ans })))
+  }));
+  current   = 0;
+  answers   = new Array(10).fill(null);
+  confirmed = new Array(10).fill(false);
+  startTime = Date.now();
+  render();
+}
+
+/* ─── 跳題 ─── */
+function goTo(idx) {
+  current = idx;
+  render();
+}
+
+/* ─── 選項 ─── */
+function selectOption(optIdx) {
+  if (confirmed[current]) return; // 已確認不能再改
+  answers[current] = optIdx;
+  confirmed[current] = true;
+  render();
+}
+
+/* ─── 前後題 ─── */
+function prev() { if (current > 0) { current--; render(); } }
+function next() { if (current < 9) { current++; render(); } }
+
+/* ─── 計算分數 ─── */
+function getScore() {
+  return answers.reduce((sum, a, i) => {
+    if (a === null) return sum;
+    return sum + (questions[i].opts[a].isAns ? 1 : 0);
+  }, 0);
+}
+
+function allAnswered() {
+  return answers.every(a => a !== null);
+}
+
+/* ─── 渲染 ─── */
+function render() {
+  const app = document.getElementById('app');
+
+  /* ── 結果畫面 ── */
+  if (confirmed.every(c => c)) {
+    const score = getScore();
+    const pct   = Math.round(score / 10 * 100);
+    let msg = '';
+    if (pct === 100)      msg = '太神了！滿分！🏆';
+    else if (pct >= 80)   msg = '非常厲害！继续加油 💪';
+    else if (pct >= 60)   msg = '還不錯喔，再多練習 📚';
+    else                  msg = '多看幾遍題庫，下次一定進步 🚀';
+
+    app.innerHTML = `
+      <div class="result-card">
+        <div class="result-score">${score}/10</div>
+        <div class="result-label">你答對了 ${score} 題</div>
+        <div class="result-message">${msg}</div>
+        <button class="btn-restart" onclick="init()">重新測驗 🔄</button>
+      </div>`;
+    return;
+  }
+
+  /* ── 答題畫面 ── */
+  const q   = questions[current];
+  const letters = ['A', 'B', 'C', 'D'];
+
+  /* Progress dots */
+  const dots = questions.map((_, i) => {
+    let cls = 'progress-dot';
+    if (i === current)      cls += ' current';
+    else if (confirmed[i])  cls += answers[i] !== null && questions[i].opts[answers[i]].isAns ? ' correct' : ' wrong';
+    else if (answers[i] !== null) cls += ' answered';
+    return `<div class="${cls}" onclick="goTo(${i})">${i + 1}</div>`;
+  }).join('');
+
+  /* 答題狀態的 feedback bar */
+  const isCorrect = confirmed[current] && questions[current].opts[answers[current]].isAns;
+  const fbCls = confirmed[current] ? (isCorrect ? 'correct' : 'wrong') : '';
+  const fbBar = confirmed[current]
+    ? `<div class="feedback-bar ${fbCls}"></div>`
+    : '';
+
+  /* 最後一題的 next 文字 */
+  const nextLabel = current === 9 ? '看結果 🎉' : '下一題 →';
+
+  app.innerHTML = `
+    <div class="progress-bar">${dots}</div>
+    <div class="question-card">
+      ${fbBar}
+      <div class="question-meta">第 ${current + 1} 題 / 共 10 題</div>
+      <div class="question-text">${q.q}</div>
+      <div class="options">
+        ${q.opts.map((opt, i) => {
+          let cls = 'option';
+          if (confirmed[current]) {
+            if (opt.isAns)                     cls += ' correct';
+            else if (answers[current] === i)   cls += ' wrong';
+          } else if (answers[current] === i) {
+            cls += ' selected';
+          }
+          return `<div class="${cls}" onclick="selectOption(${i})">
+            <div class="option-letter">${letters[i]}</div>
+            <div class="option-text">${opt.text}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-prev" onclick="prev()" ${current === 0 ? 'disabled' : ''}>← 上一題</button>
+        <button class="btn btn-next" onclick="next()" ${!confirmed[current] ? 'disabled' : ''}>${nextLabel}</button>
+      </div>
+    </div>`;
+}
+
+/* ─── 啟動 ─── */
+init();
+</script>
+</body>
+</html>
