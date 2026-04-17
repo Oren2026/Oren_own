@@ -66,18 +66,19 @@ main { max-width: 1300px; margin: 0 auto; padding: 1.5rem 1rem; }
 /* 左側面板內的主題切換（浮在 editor-card 右上角） */
 .editor-topbar {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.6rem;
 }
 .editor-topbar .back-link {
   color: var(--accent); text-decoration: none; font-size: 0.82rem;
-  margin-right: auto;        /* 靠左 */
 }
 .editor-topbar .back-link:hover { text-decoration: underline; }
 .theme-toggle {
   background: var(--accent); color: #fff; border: none;
   padding: 0.35rem 0.8rem; border-radius: 8px; cursor: pointer; font-size: 0.82rem;
+  margin-left: auto;        /* 靠右 */
 }
 .theme-toggle:hover { opacity: 0.85; }
 
