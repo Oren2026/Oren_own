@@ -44,7 +44,12 @@ function getFormData() {
   var content = document.getElementById('f-content').value;
   var author  = document.getElementById('f-author').value;
   var tagsRaw = document.getElementById('f-tags').value;
-  var tags    = tagsRaw ? tagsRaw.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+  var rawTags = tagsRaw ? tagsRaw.split(',') : [];
+  var tags = [];
+  for (var ti = 0; ti < rawTags.length; ti++) {
+    var t = rawTags[ti].trim();
+    if (t) tags.push(t);
+  }
   var likes   = parseFloat(document.getElementById('f-likes').value) || 0;
   var views   = parseFloat(document.getElementById('f-views').value) || 0;
   var draft   = document.getElementById('f-draft').checked;
@@ -322,15 +327,16 @@ function renderBlog(d) {
       '<div class="concept-block concept-note">' +
         '<div class="concept-header"><span class="concept-num">Q5</span><span class="concept-title">錯誤優先回呼 — Error-First Callback</span><span class="concept-badge">純概念說明</span></div>' +
         '<div class="concept-desc">Node.js 慣例：callback 第一個參數是錯誤（沒錯傳 null），第二個參數才是資料。這讓錯誤處理可以統一在函式起點處理：</div>' +
-        '<div class="concept-code">function fetchData(id, callback) {"\n" +
-        "  // 模擬網路請求或資料庫查詢\n" +
-        "  callback(null, { id: id, status: "success" });\n" +
-        "}\n\n" +
-        "fetchData(" + d.id + ", (err, data) => {\n" +
-        "  if (err) return console.error("錯誤：" + err);\n" +
-        "  console.log(data);  // { id: " + d.id + ", status: "success" }\n" +
-        "});</div>' +
-        '<div class="concept-note-box">📌 此概念無直接視覺呈現，是 Node.js/Express 所有資料庫方法的底層慣例。\nExpress 的 db.get()、fs.readFile()、request() 等都遵循此模式。</div>' +
+        '<div class="concept-code">' +
+        'function fetchData(id, callback) {\n' +
+        '  callback(null, { id: id, status: "success" });\n' +
+        '}\n\n' +
+        'fetchData(' + d.id + ', function(err, data) {\n' +
+        '  if (err) return console.error("錯誤：" + err);\n' +
+        '  console.log(data);\n' +
+        '});' +
+        '</div>' +
+        '<div class="concept-note-box">📌 此概念無直接視覺呈現，是 Node.js/Express 所有資料庫方法的底層慣例。Express 的 db.get()、fs.readFile()、request() 等都遵循此模式。</div>' +
       '</div>';
 
       /* Q6 JSON */
