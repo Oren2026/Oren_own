@@ -1,0 +1,35 @@
+{
+  "id": "lane",
+  "name": { "zh": "PID 循線（基底）", "en": "Lane Following (Base)" },
+  "category": "base",
+  "description": "車道置中為所有任務的基底，全程運行。黃線左側、白線右側，PID 控制維持中央行駛。",
+  "status": "todo",
+  "subConcepts": [
+    {
+      "id": "color_threshold",
+      "name": { "zh": "黃白線 HSV 閾值", "en": "Yellow/White Line HSV" },
+      "status": "todo",
+      "description": "黃線（行進左側）與白線（行進右側）的 HSV 顏色範圍標定"
+    },
+    {
+      "id": "perspective_transform",
+      "name": { "zh": "透視轉換", "en": "Perspective Transform" },
+      "status": "todo",
+      "description": "將視角轉為 top-down，擠出消失點"
+    },
+    {
+      "id": "sliding_window",
+      "name": { "zh": "滑動視窗", "en": "Sliding Window" },
+      "status": "todo",
+      "description": "找出左側黃線、右側白線，計算中心線"
+    },
+    {
+      "id": "pid_control",
+      "name": { "zh": "PID 控制", "en": "PID Steering" },
+      "status": "todo",
+      "description": "偏離中心線輸出 steering angle，速度控制（直道加速、彎道減速）"
+    }
+  ],
+  "files": ["detect_lane.py"],
+  "testStatus": "untested"
+}

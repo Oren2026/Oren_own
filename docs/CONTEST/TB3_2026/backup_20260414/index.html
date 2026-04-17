@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TB3 2026 | FIRA AutoRace</title>
+  <link rel="stylesheet" href="../assets/css/shared.css">
+  <style>
+    :root {
+      --bg:           #f4f6f2;
+      --surface:      #ffffff;
+      --border:       rgba(110,231,247,0.18);
+      --accent:       #6ee7f7;
+      --accent-dim:   rgba(110,231,247,0.10);
+      --accent-text:  #0899b2;
+      --accent-mid:   rgba(110,231,247,0.15);
+      --text:         #1a1a1a;
+      --muted:        #4a4a4a;
+      --muted-2:      #888;
+      --card-shadow:        0 4px 16px rgba(110,231,247,0.08);
+      --card-shadow-hover:  0 12px 40px rgba(110,231,247,0.18);
+      --success: #10b981;
+      --danger: #ef4444;
+      --accent-rgb: 110, 231, 247;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--bg);
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% -10%, rgba(110,231,247,0.22) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 80% 90%, rgba(110,231,247,0.12) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .folder-item a[download] { color: var(--accent-text); font-weight: 600; }
+    .folder-item a[download]:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="header-eyebrow" data-delay="0">🤖 FIRA AutoRace</div>
+      <h1 data-delay="1">TB3 2026</h1>
+      <p class="subtitle" data-delay="2">TurtleBot 3 Burger × ROS × OpenCV</p>
+      <span class="badge" data-delay="3">🎯 任務狀態機系統</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="info-grid">
+      <div class="info-card" data-delay="0">
+        <h3>硬體平台</h3>
+        <div class="value">TurtleBot 3 Burger</div>
+      </div>
+      <div class="info-card" data-delay="1">
+        <h3>控制系統</h3>
+        <div class="value">ROS</div>
+      </div>
+      <div class="info-card" data-delay="2">
+        <h3>視覺處理</h3>
+        <div class="value">OpenCV + HSV</div>
+      </div>
+      <div class="info-card" data-delay="3">
+        <h3>最後更新</h3>
+        <div class="value success" id="last-updated">載入中...</div>
+      </div>
+    </div>
+
+    <div class="section" data-delay="0">
+      <div class="section-header">
+        <span class="icon">🎯</span>
+        <h2>任務關卡</h2>
+      </div>
+      <div class="section-content">
+        <div class="mission-grid" id="mission-grid"></div>
+      </div>
+    </div>
+
+    <div class="section" data-delay="1">
+      <div class="section-header">
+        <span class="icon">📋</span>
+        <h2>開發進度</h2>
+      </div>
+      <div class="section-content">
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+          </div>
+          <div class="progress-text">
+            <span></span>
+            <span id="progress-text">🚧 載入中...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" data-delay="2">
+      <div class="section-header">
+        <span class="icon">📁</span>
+        <h2>專案資料</h2>
+      </div>
+      <div class="section-content">
+        <ul class="folder-list">
+          <li class="folder-item" data-delay="0">
+            <span class="folder-icon">📚</span>
+            <div class="folder-info">
+              <a href="research/比賽規則摘要.html" class="folder-name">比賽摘要</a>
+            </div>
+          </li>
+          <li class="folder-item" data-delay="1">
+            <span class="folder-icon">⚙️</span>
+            <div class="folder-info">
+              <a href="architecture/系統架構規劃.html" class="folder-name">系統架構</a>
+            </div>
+          </li>
+          <li class="folder-item" data-delay="2">
+            <span class="folder-icon">🆕</span>
+            <div class="folder-info">
+              <a href="updates/更新記錄.html" class="folder-name">更新內容</a>
+            </div>
+          </li>
+          <li class="folder-item" data-delay="3">
+            <span class="folder-icon">📝</span>
+            <div class="folder-info">
+              <a href="tech/開發日誌.html" class="folder-name">開發日誌</a>
+            </div>
+          </li>
+          <li class="folder-item" data-delay="4">
+            <span class="folder-icon">📦</span>
+            <div class="folder-info">
+              <a href="autorace_idminer-training-devel.zip" class="folder-name" download>訓練程式碼下載</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section" data-delay="3">
+      <div class="section-header">
+        <span class="icon">🔗</span>
+        <h2>相關連結</h2>
+      </div>
+      <div class="section-content">
+        <ul class="folder-list">
+          <li class="folder-item" data-delay="0">
+            <span class="folder-icon">🌐</span>
+            <div class="folder-info">
+              <a href="https://idminer.com.tw/product/autorace-ros-training/" target="_blank" class="folder-name">比賽資訊 ↗</a>
+            </div>
+          </li>
+          <li class="folder-item" data-delay="1">
+            <span class="folder-icon">🤖</span>
+            <div class="folder-info">
+              <a href="https://idminer.com.tw/" target="_blank" class="folder-name">硬件資訊 ↗</a>
+            </div>
+          </li>
+          <li class="folder-item" data-delay="2">
+            <span class="folder-icon">📂</span>
+            <div class="folder-info">
+              <a href="https://github.com/Oren2026/Oren_own/tree/main/docs/TB3_2026" target="_blank" class="folder-name">GitHub ↗</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal" id="mission-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">—</h2>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>TB3 2026 FIRA AutoRace | <span id="footer-updated">載入中...</span></p>
+    <p>由 <a href="https://github.com/Oren2026">Oren</a> 維護</p>
+  </footer>
+
+  <button class="refresh-btn" id="refresh-btn" title="重新整理">↻</button>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    // ── IntersectionObserver: fade-in + staggered delay ──
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var delay = parseInt(entry.target.dataset.delay || 0);
+          setTimeout(function() {
+            entry.target.classList.add('in-view');
+          }, delay * 100);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    // Observe header elements
+    document.querySelectorAll('.header-eyebrow, .header h1, .header .subtitle, .header .badge').forEach(function(el) {
+      io.observe(el);
+    });
+
+    // Observe all fade-in targets
+    document.querySelectorAll('.info-card, .section, .folder-item, .mission-card').forEach(function(el) {
+      io.observe(el);
+    });
+
+    // ── Page init ──
+    initLastUpdated();
+    initRefreshButton();
+    fetchAllMissions('./').then(function(missions) {
+      renderMissionGrid(missions, 'mission-grid');
+
+      // 確保卡片可見：不靠 IntersectionObserver，直接在 fetch 完成後顯示
+      document.querySelectorAll('.mission-card').forEach(function(card, i) {
+        setTimeout(function() { card.classList.add('mission-visible'); }, i * 50);
+      });
+
+      var done = missions.filter(function(m) { return m.category !== 'base' && computeMissionStatus(m) === 'done'; }).length;
+      var total = missions.filter(function(m) { return m.category !== 'base'; }).length;
+      var fill = document.getElementById('progress-fill');
+      var text = document.getElementById('progress-text');
+      if (fill && text) {
+        var pct = total > 0 ? Math.round(done / total * 100) : 0;
+        fill.style.width = pct + '%';
+        text.textContent = (done === total && total > 0) ? '✅ 全部完成（' + done + '/' + total + '）' : '🚧 施工中（' + done + '/' + total + ' 關卡完成）';
+      }
+    });
+  </script>
+</body>
+</html>

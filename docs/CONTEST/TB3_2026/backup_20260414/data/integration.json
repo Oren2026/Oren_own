@@ -1,0 +1,29 @@
+{
+  "id": "integration",
+  "name": { "zh": "任務串接", "en": "Full Integration" },
+  "category": "mission",
+  "description": "所有偵測節點整合為單一程式，依賽道順序依序執行各關卡，完成完整比賽流程。",
+  "status": "todo",
+  "subConcepts": [
+    {
+      "id": "node_integration",
+      "name": { "zh": "節點整合", "en": "Node Integration" },
+      "status": "todo",
+      "description": "將所有 detect_* 節點整合進單一控制流程"
+    },
+    {
+      "id": "mission_dispatch",
+      "name": { "zh": "任務派送", "en": "Mission Dispatch" },
+      "status": "todo",
+      "description": "根據當前賽道區段自動切換偵測模式"
+    },
+    {
+      "id": "full_run",
+      "name": { "zh": "完整測試", "en": "Full Run" },
+      "status": "todo",
+      "description": "從起點到終點全程不中斷完成比賽"
+    }
+  ],
+  "files": ["core_node_controller.py"],
+  "testStatus": "untested"
+}
