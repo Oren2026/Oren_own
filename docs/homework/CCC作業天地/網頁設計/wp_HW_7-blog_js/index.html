@@ -3,53 +3,170 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>wp_HW_7-日誌javascrip認識 — CCC 作業天地</title>
+  <title>wp_HW_7 — CCC 作業天地</title>
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    body { background: var(--bg); }
-    .page-header {
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-      color: white;
-      padding: 2.5rem 2rem;
-      text-align: center;
-    }
-    .page-header h1 { font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 800; }
-    .page-header p  { opacity: 0.8; margin-top: 0.4rem; font-size: 1rem; }
-    .back-link {
-      display: inline-block;
-      margin-top: 1rem;
-      color: rgba(255,255,255,0.75);
-      text-decoration: none;
-      font-size: 0.85rem;
-    }
-    .back-link:hover { color: white; }
-  </style>
 </head>
 <body>
 
-<div class="page-header">
-  <h1>📝 wp_HW_7-日誌javascrip認識</h1>
-  <p>Express 部落格中的 JavaScript 核心概念 — CCC 課堂練習</p>
-  <a href="https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/" class="back-link">← 返回作業列表</a>
+<div class="index-page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">📝 Express + JavaScript</div>
+      <h1 class="hero-title">wp_HW_7<br>日誌系統 JS 實作</h1>
+      <p class="hero-desc">以 Express 部落格為載體，實作 10 個 JavaScript 核心語法。從物件屬性存取、錯誤處理到非同步模式，透過互動式左右雙面板，讓概念與操作同步可見。</p>
+      <a href="practice.html" class="hero-cta">
+        開始練習 →
+      </a>
+      <a href="https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/" class="hero-back">← 返回作業列表</a>
+    </div>
+    <div class="hero-visual">
+      <!-- 假日誌預覽卡 -->
+      <div class="preview-card">
+        <div class="preview-header">📝 Express Blog</div>
+        <div class="preview-body">
+          <div class="preview-title">掌握 JavaScript 函式</div>
+          <div class="preview-meta">👤 Alice · 👍 42 · 👁 1,280</div>
+          <div class="preview-tags">
+            <span class="preview-tag">js</span>
+            <span class="preview-tag">函式</span>
+          </div>
+          <div class="preview-line"></div>
+          <div class="preview-code-label">Q1｜Dot &amp; Bracket Notation</div>
+          <div class="preview-code">post.title → "掌握 JavaScript 函式"</div>
+          <div class="preview-line"></div>
+          <div class="preview-code-label">Q2｜Destructuring</div>
+          <div class="preview-code">const { title } = req.body;</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 概念總覽 -->
+  <div class="concepts-overview">
+    <div class="overview-inner">
+      <h2 class="section-title">涉及的 JavaScript 概念</h2>
+      <div class="concept-grid">
+
+        <div class="concept-item">
+          <div class="concept-num">Q1</div>
+          <div class="concept-info">
+            <div class="concept-name">物件屬性存取</div>
+            <div class="concept-sub">Dot &amp; Bracket Notation</div>
+          </div>
+        </div>
+
+        <div class="concept-item">
+          <div class="concept-num">Q2</div>
+          <div class="concept-info">
+            <div class="concept-name">物件解構賦值</div>
+            <div class="concept-sub">Destructuring Assignment</div>
+          </div>
+        </div>
+
+        <div class="concept-item">
+          <div class="concept-num">Q3</div>
+          <div class="concept-info">
+            <div class="concept-name">陣列遍歷</div>
+            <div class="concept-sub">forEach &amp; HTML 拼接</div>
+          </div>
+        </div>
+
+        <div class="concept-item">
+          <div class="concept-num">Q4</div>
+          <div class="concept-info">
+            <div class="concept-name">URL 參數</div>
+            <div class="concept-sub">req.params 字典</div>
+          </div>
+        </div>
+
+        <div class="concept-item">
+          <div class="concept-num">Q5</div>
+          <div class="concept-info">
+            <div class="concept-name">錯誤優先回呼</div>
+            <div class="concept-sub">Error-First Callback</div>
+          </div>
+        </div>
+
+        <div class="concept-item">
+          <div class="concept-num">Q6</div>
+          <div class="concept-info">
+            <div class="concept-name">JSON 解析</div>
+            <div class="concept-sub">JSON.parse / stringify</div>
+          </div>
+        </div>
+
+        <div class="concept-item">
+          <div class="concept-num">Q7</div>
+          <div class="concept-info">
+            <div class="concept-name">資料庫查詢</div>
+            <div class="concept-sub">fakeGet 模擬</div>
+          </div>
+        </div>
+
+        <div class="concept-item">
+          <div class="concept-num">Q8</div>
+          <div class="concept-info">
+            <div class="concept-name">三元運算</div>
+            <div class="concept-sub">Conditional Operator</div>
+          </div>
+        </div>
+
+        <div class="concept-item">
+          <div class="concept-num">Q9</div>
+          <div class="concept-info">
+            <div class="concept-name">內容截斷</div>
+            <div class="concept-sub">String.slice / substr</div>
+          </div>
+        </div>
+
+        <div class="concept-item">
+          <div class="concept-num">Q10</div>
+          <div class="concept-info">
+            <div class="concept-name">錯誤回呼實作</div>
+            <div class="concept-sub">checkAdmin Pattern</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 操作說明 -->
+  <div class="howto-section">
+    <div class="howto-inner">
+      <h2 class="section-title">如何操作</h2>
+      <div class="howto-steps">
+        <div class="howto-step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">選擇文章 ID</div>
+            <div class="step-desc">從左側下拉式選單切換不同文章，系統會自動用 req.params 查出對應資料。</div>
+          </div>
+        </div>
+        <div class="howto-step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">編輯欄位</div>
+            <div class="step-desc">修改標題、內容、作者、讚數、瀏覽數、發布狀態，右側部落格預覽即時更新。</div>
+          </div>
+        </div>
+        <div class="howto-step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">滾動查看概念</div>
+            <div class="step-desc">每個 Q 區塊包含「程式碼展示」與「實際輸出結果」，對照學習效果最佳。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<main>
-  <div class="home-cards">
-    <a href="practice.html" class="home-card">
-      <div class="home-card-icon">🧩</div>
-      <h2>開始練習</h2>
-      <p>左右雙面板互動實作，左邊調整變數，右邊即時看部落格日誌的變化。</p>
-      <div class="tag-row">
-        <span class="tag">互動實作</span>
-        <span class="tag">左右雙面板</span>
-        <span class="tag">即時預覽</span>
-      </div>
-    </a>
-  </div>
-</main>
-
-<footer>
-  由 <a href="https://github.com/Oren2026">Oren</a> 維護 · wp_HW_7-日誌javascrip認識
+<footer class="site-footer">
+  由 <a href="https://github.com/Oren2026">Oren</a> 維護 · wp_HW_7
 </footer>
 
 </body>
