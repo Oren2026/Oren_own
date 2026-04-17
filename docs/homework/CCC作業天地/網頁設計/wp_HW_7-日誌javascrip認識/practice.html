@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wp_HW_7-日誌javascrip認識 — CCC 作業天地</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <h1>📝 wp_HW_7-日誌javascrip認識</h1>
+  <button class="theme-toggle" id="themeToggle">🌙 深色</button>
+</header>
+
+<main>
+  <a href="index.html" class="back-link">← 返回首頁</a>
+
+  <!-- Question Navigator -->
+  <div class="q-nav" id="qNav"></div>
+
+  <!-- Split Layout -->
+  <div class="split-layout" id="splitLayout">
+    <!-- Left Panel (injected by JS) -->
+    <div class="left-panel" id="leftPanel"></div>
+
+    <!-- Right Panel: Blog Preview -->
+    <div class="right-panel">
+      <div class="blog-frame">
+        <div class="blog-header">📝 Express Blog 預覽</div>
+        <div class="blog-body" id="blogPreview">
+          <div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem;">
+            左側調整變數，右側即時預覽部落格變化
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Callback Section (for standalone callback questions) -->
+    <div class="callback-section" id="callbackSection" style="display:none;"></div>
+  </div>
+</main>
+
+<script src="data/questions.js"></script>
+<script>
+/* ─── Theme ─── */
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('hw7_theme') || 'light';
+applyTheme(savedTheme);
+
+themeToggle.addEventListener('click', () => {
+  const next = document.body.classList.contains('dark') ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('hw7_theme', next);
+});
+
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.body.classList.add('dark');
+    themeToggle.textContent = '☀️ 淺色';
+  } else {
+    document.body.classList.remove('dark');
+    themeToggle.textContent = '🌙 深色';
+  }
+}
+
+/* ─── State ─── */
+let current = 0;
+let currentValues = {};
+
+function getDefaultValues(q) {
+  const obj = {};
+  q.variables.forEach(v => {
+    if (v.type === 'boolean') obj[v.key] = Boolean(v.default);
+    else if (v.type === 'number') obj[v.key] = Number(v.default);
+    else obj[v.key] = String(v.default);
+  });
+  return obj;
+}
+
+/* ─── Syntax Highlight (simple regex) ─── */
+function hl(code) {
+  return code
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\/\/.*/g,   m => `<span class="cmt">${m}</span>`)
+    .replace(/\b(const|let|var|function|return|if|else|for|of|in)\b/g, m => `<span class="kw">${m}</span>`)
+    .replace(/\b(\w+)(?=\s*\()/g, m => `<span class="fn">${m}</span>`)
+    .replace(/\b(\d+\.?\d*)\b/g, m => `<span class="num">${m}</span>`)
+    .replace(/`([^`]*)`/g,  m => `<span class="str">${m}</span>`)
+    .replace(/"([^"]*)"/g, m => `<span class="str">${m}</span>`);
+}
+
+/* ─── JSON Pretty Print with color ─── */
+function jsonPretty(obj) {
+  const s = JSON.stringify(obj, null, 2);
+  return s
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"([^"]+)":/g,  m => `<span class="key">"${m.slice(1,m.length-2)}"</span>:`)
+    .replace(/: "([^"]*)"/g, m => `: <span class="str">"${m.slice(3,m.length-1)}"</span>`)
+    .replace(/: (\d+\.?\d*)/g, m => `: <span class="num">${m.slice(2)}</span>`)
+    .replace(/: (true|false|null)/g, m => `: <span class="num">${m.slice(2)}</span>`);
+}
+
+/* ─── Blog Preview Renderers ─── */
+function renderBlog(q, vals) {
+  const blog = document.getElementById('blogPreview');
+  blog.innerHTML = '';
+
+  switch (q.id) {
+    case 1: {
+      // Dot & Bracket notation
+      const { post, dotResult, bracketResult } = vals;
+      blog.innerHTML = `
+        <div class="post-single">
+          <div class="post-title">${escHtml(post.title)}</div>
+          <div class="post-content">${escHtml(post.content)}</div>
+          <div class="post-meta">ID: ${post.id}</div>
+        </div>
+        <div class="json-view" style="margin-top:1rem;">
+          <div class="label" style="font-size:0.72rem;color:#6c7086;margin-bottom:0.5rem;">屬性取值結果</div>
+          <pre>post.title        → <span class="str">"${escHtml(dotResult)}"</span>
+post["title"]     → <span class="str">"${escHtml(bracketResult)}"</span></pre>
+        </div>`;
+      break;
+    }
+    case 2: {
+      // Destructuring
+      const { reqBody, destructured } = vals;
+      blog.innerHTML = `
+        <div style="margin-bottom:1rem;color:var(--muted);font-size:0.82rem;">以下為從 req.body 解構出 title 和 content：</div>
+        <div class="json-view"><pre>${jsonPretty(reqBody)}</pre></div>
+        <div class="json-view" style="margin-top:0.75rem;"><pre style="color:#89b4fa;">const { title, content } = req.body;</pre>
+<pre>title   → <span class="str">"${escHtml(destructured.title)}"</span>
+content → <span class="str">"${escHtml(destructured.content)}"</span></pre></div>`;
+      break;
+    }
+    case 3: {
+      // forEach & template literals
+      const { posts, html } = vals;
+      blog.innerHTML = `
+        <div style="margin-bottom:1rem;color:var(--muted);font-size:0.82rem;">→ forEach 產生的 HTML 列表：</div>
+        <div class="post-list">${html}</div>
+        <div class="json-view" style="margin-top:1rem;">
+          <div class="label" style="color:#6c7086;margin-bottom:0.5rem;">拼接的 HTML 字串</div>
+          <pre style="color:#cdd6f4;">${escHtml(html)}</pre>
+        </div>`;
+      break;
+    }
+    case 4: {
+      // URL params
+      const { params, matchingPost } = vals;
+      blog.innerHTML = `
+        <div class="json-view" style="margin-bottom:1rem;">
+          <div class="label" style="color:#6c7086;margin-bottom:0.5rem;">req.params →</div>
+          <pre>${jsonPretty(params)}</pre>
+        </div>
+        ${matchingPost
+          ? `<div class="post-single">
+              <div class="post-title">${escHtml(matchingPost.title)}</div>
+              <div class="post-content">${escHtml(matchingPost.content)}</div>
+              <div class="post-meta">作者：${escHtml(matchingPost.author)} · 標籤：${matchingPost.tags.join(', ')}</div>
+            </div>`
+          : `<div class="Error-hint">⚠️ 找不到 ID 為 ${params.id} 的文章</div>`
+        }`;
+      break;
+    }
+    case 6: {
+      // JSON parse
+      const { jsonStr, parsed, tag2 } = vals;
+      blog.innerHTML = `
+        <div class="json-view" style="margin-bottom:1rem;">
+          <div class="label" style="color:#6c7086;margin-bottom:0.5rem;">JSON.stringify(obj)</div>
+          <pre>${escHtml(jsonStr)}</pre>
+        </div>
+        <div class="json-view" style="margin-bottom:1rem;">
+          <div class="label" style="color:#6c7086;margin-bottom:0.5rem;">JSON.parse(jsonStr) → JS Object</div>
+          <pre>${jsonPretty(parsed)}</pre>
+        </div>
+        <div class="json-view">
+          <div class="label" style="color:#6c7086;margin-bottom:0.5rem;">取出 tags[1]</div>
+          <pre>tags[1] → <span class="str">"${escHtml(tag2)}"</span></pre>
+        </div>`;
+      break;
+    }
+    case 8: {
+      // Template literals with ternary
+      const { user, displayName, html } = vals;
+      blog.innerHTML = `
+        <div class="Welcome-banner">${escHtml(html)}</div>
+        <div class="json-view">
+          <pre>user        = "${escHtml(user)}"
+displayName = "${escHtml(displayName)}"
+HTML        = ${escHtml(html)}</pre>
+        </div>`;
+      break;
+    }
+    case 9: {
+      // Substring truncation
+      const { limit, truncated } = vals;
+      blog.innerHTML = `
+        <div style="margin-bottom:1rem;color:var(--muted);font-size:0.82rem;">限制前 ${limit} 個字元：</div>
+        <div class="truncated-list">
+          ${truncated.map((t, i) => `
+            <div class="truncated-item">
+              <span class="orig">${escHtml(vals[Object.keys(vals)[i]])}</span>
+              <br>↓
+              <br><span class="trunc">${escHtml(t)}</span>
+            </div>`).join('')}
+        </div>`;
+      break;
+    }
+    default:
+      blog.innerHTML = `<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem;">此題為概念練習，請參閱左側說明與執行結果。</div>`;
+  }
+}
+
+function escHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ─── Callback Section Renderers ─── */
+function renderCallback(q, vals) {
+  const section = document.getElementById('callbackSection');
+  const { pattern, result } = vals;
+
+  section.style.display = 'block';
+  section.innerHTML = `
+    <div class="card">
+      <div class="q-title">Callback 概念區</div>
+      <div class="q-desc">上方程式碼的執行結果（由 JS 引擎同步執行呈現）：</div>
+      <div class="callback-result">
+        <div class="label">Pattern</div>
+        <div class="output">${escHtml(pattern)}</div>
+      </div>
+      <div class="callback-result" style="margin-top:0.75rem;">
+        <div class="label">執行結果</div>
+        <div class="output ${result && result.startsWith('✗') ? 'error' : ''}">${escHtml(result)}</div>
+      </div>
+    </div>`;
+}
+
+/* ─── Run question ─── */
+function runQ() {
+  const q = QUESTIONS[current];
+  let vals;
+  try {
+    vals = q.run(currentValues);
+  } catch(e) {
+    vals = { error: e.message };
+  }
+
+  if (q.type === 'blog-linked') {
+    renderBlog(q, vals);
+  } else {
+    renderCallback(q, vals);
+  }
+}
+
+/* ─── Restore defaults ─── */
+function restoreDefaults() {
+  const q = QUESTIONS[current];
+  currentValues = getDefaultValues(q);
+  renderLeft();
+  runQ();
+}
+
+/* ─── Render Left Panel ─── */
+function renderLeft() {
+  const q = QUESTIONS[current];
+  const panel = document.getElementById('leftPanel');
+
+  // Variable inputs HTML
+  const varInputs = q.variables.map(v => {
+    if (v.type === 'boolean') {
+      return `
+        <div class="var-field">
+          <label>
+            <input type="checkbox" id="var-${v.key}"
+              ${currentValues[v.key] ? 'checked' : ''}
+              onchange="currentValues['${v.key}'] = this.checked; renderLeft();">
+            ${v.label}
+          </label>
+        </div>`;
+    }
+    return `
+      <div class="var-field">
+        <label for="var-${v.key}">${v.label}</label>
+        <input type="${v.type}" id="var-${v.key}"
+          value="${escAttr(currentValues[v.key])}"
+          ${v.min !== undefined ? `min="${v.min}"` : ''}
+          ${v.max !== undefined ? `max="${v.max}"` : ''}
+          oninput="currentValues['${v.key}'] = this.value; runQ();">
+      </div>`;
+  }).join('');
+
+  // Code display (simple: show the question's concept code)
+  const codeLines = getCodeSnippet(q);
+  const codeHtml = `<div class="code-block"><pre>${codeLines.map(l => hl(l)).join('\n')}</pre></div>`;
+
+  // Type badge
+  const typeLabel = q.type === 'blog-linked' ? '🌐 連動部落格' : '🔄 Callback 概念';
+
+  panel.innerHTML = `
+    <div class="card">
+      <div class="q-meta">${typeLabel}</div>
+      <div class="q-title">${q.title}</div>
+      <div class="q-desc">${q.desc}</div>
+      ${codeHtml}
+      <div class="var-row">${varInputs}</div>
+      <div class="btn-row">
+        <button class="run-btn" onclick="runQ()">▶ 執行</button>
+        <button class="reset-btn" onclick="restoreDefaults()">↺ 恢復預設</button>
+      </div>
+    </div>`;
+}
+
+function escAttr(str) {
+  return String(str).replace(/"/g, '&quot;');
+}
+
+/* ─── Build code snippets per question ─── */
+function getCodeSnippet(q) {
+  switch (q.id) {
+    case 1: return [
+      'const post = { id: 1, title: "Hello", content: "..." };',
+      '// Dot notation',
+      'post.title  → "Hello"',
+      '',
+      '// Bracket notation',
+      'post["title"] → "Hello"'
+    ];
+    case 2: return [
+      'const req = { body: { title, content, author } };',
+      '// 解構賦值',
+      'const { title, content } = req.body;',
+      '// title   → req.body.title',
+      '// content → req.body.content'
+    ];
+    case 3: return [
+      'let html = "";',
+      'posts.forEach(post => {',
+      '  html += `<div>${post.title}</div>`;',
+      '});',
+      '// 結果是一串 HTML 字串'
+    ];
+    case 4: return [
+      'const params = {};',
+      'params["id"] = 99;  // 動態新增鍵',
+      '',
+      '// 等同於 Express 的 req.params',
+      '// params.id → 99'
+    ];
+    case 5: return [
+      'function fetchData(id, callback) {',
+      '  const fakeData = { id, status: "success" };',
+      '  callback(null, fakeData);',
+      '}',
+      '',
+      'fetchData(id, (err, data) => { ... });'
+    ];
+    case 6: return [
+      'const jsonStr = \'{"title":"Post 1","tags":["js"]}\';',
+      'const obj = JSON.parse(jsonStr);',
+      '',
+      '// obj.tags[1] → "node"'
+    ];
+    case 7: return [
+      'function fakeGet(sql, params, callback) {',
+      '  const fakeRow = { id:1, title:"標題" };',
+      '  callback(null, fakeRow);',
+      '}',
+      '',
+      'fakeGet(sql, params, (err, row) => {',
+      '  console.log(row.title);',
+      '});'
+    ];
+    case 8: return [
+      'const displayName = user ? user : "Stranger";',
+      '',
+      '// 等同於三元寫法：',
+      'const displayName = user ?? "Stranger";',
+      '// 或： user || "Stranger"'
+    ];
+    case 9: return [
+      'const truncated = content.slice(0, limit) + "...";',
+      '',
+      '// 例如 limit=10:',
+      '"Very long content...".slice(0,10)+"..."',
+      '// → "Very long ..."'
+    ];
+    case 10: return [
+      'function checkAdmin(role, callback) {',
+      '  if (role !== "admin")',
+      '    callback("Access Denied");',
+      '  else',
+      '    callback(null, "Welcome");',
+      '}',
+      '',
+      'checkAdmin("user", (err, msg) => { ... });'
+    ];
+    default: return ['// 程式碼範例'];
+  }
+}
+
+/* ─── Render Question Navigator ─── */
+function renderNav() {
+  const nav = document.getElementById('qNav');
+  nav.innerHTML = QUESTIONS.map((q, i) => `
+    <div class="q-dot ${i === current ? 'active' : ''}" onclick="jumpTo(${i})">
+      ${q.id}
+    </div>`).join('');
+}
+
+/* ─── Jump to question ─── */
+function jumpTo(idx) {
+  current = idx;
+  currentValues = getDefaultValues(QUESTIONS[idx]);
+  renderNav();
+  renderLeft();
+  runQ();
+}
+
+/* ─── Init ─── */
+currentValues = getDefaultValues(QUESTIONS[0]);
+renderNav();
+renderLeft();
+runQ();
+</script>
+</body>
+</html>
