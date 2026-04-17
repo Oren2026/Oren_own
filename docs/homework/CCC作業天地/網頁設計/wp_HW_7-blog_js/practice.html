@@ -35,6 +35,9 @@ var BLOG_DB = [
   { id:3, title:"Express 路由設計",      content:"RESTful API 的成敗在於路由設計的好壞。良好的路由讓前端與後端協作更順暒，錯誤處理更優雅。本篇探討 params、query、router level、middleware 等各種路由技巧。",                                       author:"Carol", tags:["express","api"], likes:25, views:743, draft:true }
 ];
 
+/* 目前 tags（不在表單了，改用 JS 變數追蹤） */
+var currentTags = ["js","函式"];
+
 /* ═══════════════════════════════════════════
    表單讀取
 ═══════════════════════════════════════════ */
@@ -43,13 +46,7 @@ function getFormData() {
   var title   = document.getElementById('f-title').value;
   var content = document.getElementById('f-content').value;
   var author  = document.getElementById('f-author').value;
-  var tagsRaw = document.getElementById('f-tags').value;
-  var rawTags = tagsRaw ? tagsRaw.split(',') : [];
-  var tags = [];
-  for (var ti = 0; ti < rawTags.length; ti++) {
-    var t = rawTags[ti].trim();
-    if (t) tags.push(t);
-  }
+  var tags    = currentTags;
   var likes   = parseFloat(document.getElementById('f-likes').value) || 0;
   var views   = parseFloat(document.getElementById('f-views').value) || 0;
   var draft   = document.getElementById('f-draft').checked;
@@ -156,37 +153,30 @@ function renderEditor(d) {
       '<div class="q-title">即時操控，觀察 JS 語法連動</div>' +
 
       '<div class="var-field"><label for="f-id">選擇文章</label>' +
-        '<select id="f-id" onchange="syncAll()">' + postsOptions + '</select></div>' +
+        '<select id="f-id" onchange="onIdChange()">' + postsOptions + '</select></div>' +
 
       '<div class="var-field"><label for="f-title">標題</label>' +
         '<input type="text" id="f-title" value="' + escAttr(d.title) + '" oninput="syncPreview()"></div>' +
 
       '<div class="var-field"><label for="f-content">內容</label>' +
-        '<textarea id="f-content" rows="5" oninput="syncPreview()">' + escText(d.content) + '</textarea></div>' +
-
-      '<div class="var-field"><label for="f-author">作者</label>' +
-        '<input type="text" id="f-author" value="' + escAttr(d.author) + '" oninput="syncPreview()"></div>' +
-
-      '<div class="var-field"><label for="f-tags">標籤（逗號分隔）</label>' +
-        '<input type="text" id="f-tags" value="' + escAttr(tagsStr) + '" oninput="syncPreview()"></div>' +
-
-      '<div class="var-row-2">' +
-        '<div class="var-field"><label for="f-likes">👍 讚數</label>' +
-          '<input type="number" id="f-likes" value="' + d.likes + '" min="0" oninput="syncPreview()"></div>' +
-        '<div class="var-field"><label for="f-views">👁 瀏覽</label>' +
-          '<input type="number" id="f-views" value="' + d.views + '" min="0" oninput="syncPreview()"></div>' +
-      '</div>' +
+        '<textarea id="f-content" rows="4" oninput="syncPreview()">' + escText(d.content) + '</textarea></div>' +
 
       '<div class="var-field"><label for="f-user">訪客名稱（Q8 用）</label>' +
         '<input type="text" id="f-user" value="' + escAttr(d.user) + '" placeholder="輸入名稱或留空" oninput="syncPreview()"></div>' +
 
-      '<div class="var-field">' +
-        '<label><input type="checkbox" id="f-draft"' + (d.draft ? ' checked' : '') + ' onchange="syncPreview()"> 草稿（未發布）</label>' +
-        statusBadge +
+      '<div class="var-row-3">' +
+        '<div class="var-field var-field-tight"><label for="f-likes">👍</label>' +
+          '<input type="number" id="f-likes" value="' + d.likes + '" min="0" oninput="syncPreview()"></div>' +
+        '<div class="var-field var-field-tight"><label for="f-views">👁</label>' +
+          '<input type="number" id="f-views" value="' + d.views + '" min="0" oninput="syncPreview()"></div>' +
+        '<div class="var-field var-field-tight"><label for="f-author">👤</label>' +
+          '<input type="text" id="f-author" value="' + escAttr(d.author) + '" oninput="syncPreview()"></div>' +
       '</div>' +
 
-      '<div class="var-field">' +
-        '<label><input type="checkbox" id="f-tern"' + (d.useTern ? ' checked' : '') + ' onchange="syncPreview()"> 使用三元/截斷</label>' +
+      '<div class="var-field var-field-row-inline">' +
+        '<label><input type="checkbox" id="f-draft"' + (d.draft ? ' checked' : '') + ' onchange="syncPreview()"> 📝草稿</label>' +
+        '<label><input type="checkbox" id="f-tern"' + (d.useTern ? ' checked' : '') + ' onchange="syncPreview()"> 使用三元</label>' +
+        statusBadge +
       '</div>' +
 
       '<button class="reset-btn" onclick="resetDefaults()">↺ 重置</button>' +
@@ -374,33 +364,39 @@ function renderBlog(d) {
       '</div>';
 
       /* Q8 */
+      var q8_ternary = d.useTern ? (d.user ? d.user : "Stranger") : "（未勾選三元）";
+      var q8_or = (!d.useTern) ? (d.user || "Stranger") : "（未勾選）";
+      var q8_active = d.useTern ? q8_ternary : q8_or;
+      var q8_inactive = d.useTern ? q8_or : q8_ternary;
       conceptsHtml +=
       '<div class="concept-block">' +
-        '<div class="concept-header"><span class="concept-num">Q8</span><span class="concept-title">樣板字串邏輯運算 — 三元運算</span></div>' +
-        '<div class="concept-desc">Express 的 res.send(`&lt;h1&gt;Welcome, ${user}&lt;/h1&gt;`) 常搭配三元運算處理未登入的使用者：</div>' +
-        '<div class="concept-code">const user = "' + escJs(d.user) + '" || null;\n\n' +
-        '// 三元：\n' +
-        'const displayName = user ? user : "Stranger";\n\n' +
-        '// 或可選鏈：\n' +
-        '// const displayName = user ?? "Stranger";\n\n' +
-        'res.send(`&lt;h1&gt;Welcome, ${displayName}&lt;/h1&gt;`);</div>' +
-        '<div class="concept-output">user = <span class="out-str">"' + escHtml(d.user) + '"</span>\n' +
-        'displayName = <span class="out-str">"' + escHtml(q8r.display) + '"</span></div>' +
-        '<div class="greeting-sample">' + q8r.html + '</div>' +
+        '<div class="concept-header"><span class="concept-num">Q8</span><span class="concept-title">樣板字串邏輯運算 — 三元 vs OR 運算</span></div>' +
+        '<div class="concept-desc">Express 的 res.send(`&lt;h1&gt;Welcome, ${user}&lt;/h1&gt;`) 常搭配三元運算處理未登入的使用者。勾選「使用三元」切換兩種寫法的輸出結果：</div>' +
+        '<div class="concept-code">' +
+        'const user = "' + escJs(d.user) + '";\n\n' +
+        '// 三元（useTern=true）：\n' +
+        'const tern = user ? user : "Stranger";\n\n' +
+        '// OR 邏輯（useTern=false）：\n' +
+        'const orResult = user || "Stranger";</div>' +
+        '<div class="concept-output">' +
+        '三元結果（tern）  ： <span class="out-str">"' + escHtml(q8_ternary) + '"</span>\n' +
+        'OR結果（orResult）： <span class="out-str">"' + escHtml(q8_or) + '"</span>\n' +
+        '目前顯示          ： <span class="out-str">' + escHtml(q8_active) + '</span></div>' +
+        '<div class="greeting-sample greeting-active">' + escHtml(q8_active) + '</div>' +
       '</div>';
 
       /* Q9 */
       conceptsHtml +=
       '<div class="concept-block">' +
         '<div class="concept-header"><span class="concept-num">Q9</span><span class="concept-title">內容截斷 — Substring / slice</span></div>' +
-        '<div class="concept-desc">文章列表如果內容太長，常見做法是用 slice 截斷並加上 "..."。常用於部落格首頁的預覽卡片：</div>' +
-        '<div class="concept-code">const limit = ' + d.useTern + ';\n' +
-        '// 文章列表預覽（只取前 30 字）：\n' +
-        'const preview = content.slice(0, 30) + "...";\n' +
-        '// 或用 substr：\n' +
-        '// const preview = content.substr(0, 30) + "...";</div>' +
-        '<div class="concept-output">原文：<span class="out-str">"' + escHtml(post.content.slice(0,50)) + '..."</span>\n' +
-        '預覽：<span class="out-str">"' + escHtml(q9_slice(post.content, 30)) + '"</span></div>' +
+        '<div class="concept-desc">文章列表預覽如果太長，用 slice 截斷並加 "..."。當「使用三元」勾選時，用三元決定是否截斷；未勾選時直接截斷：</div>' +
+        '<div class="concept-code">const content = "' + escJs(post.content.slice(0,20)) + '...";\n' +
+        'const limit = ' + (d.useTern ? 'content.length > 20 ? 20 : content.length' : '20') + ';\n' +
+        'const preview = content.slice(0, limit) + "...";</div>' +
+        '<div class="concept-output">' +
+        '原文：<span class="out-str">"' + escHtml(post.content.slice(0,50)) + '..."</span>\n' +
+        '三元控制limit：<span class="out-num">' + (d.useTern ? 'content.length>20 ? 20 : length' : '固定 20') + '</span>\n' +
+        '預覽結果：<span class="out-str">"' + escHtml(q9_slice(post.content, 30)) + '"</span></div>' +
       '</div>';
 
       /* Q10 checkAdmin（純說明） */
@@ -445,6 +441,21 @@ function syncAll() {
   renderBlog(d);
 }
 
+/* 切換文章 ID：直接用 BLOG_DB 的值更新 DOM，再更新右側（不重新渲染左側表單） */
+function onIdChange() {
+  var newId = parseFloat(document.getElementById('f-id').value);
+  var newPost = q1_getPost(newId);
+  if (!newPost) return;
+  document.getElementById('f-title').value = newPost.title;
+  document.getElementById('f-content').value = newPost.content;
+  document.getElementById('f-author').value = newPost.author;
+  currentTags = newPost.tags;
+  document.getElementById('f-likes').value = newPost.likes;
+  document.getElementById('f-views').value = newPost.views;
+  document.getElementById('f-draft').checked = newPost.draft;
+  syncPreview();
+}
+
 /* 只更新右側預覽，不動左側編輯器（保留輸入框焦點） */
 function syncPreview() {
   var d = getFormData();
@@ -454,6 +465,7 @@ function syncPreview() {
 /* 初次渲染：直接用 BLOG_DB[0] 的值，不依賴 DOM 讀取 */
 function initFirstRender() {
   var p = BLOG_DB[0];
+  currentTags = p.tags;
   var d = { id:p.id, title:p.title, content:p.content, author:p.author, tags:p.tags, likes:p.likes, views:p.views, draft:p.draft, user:"Guest", useTern:true };
   renderEditor(d);
   renderBlog(d);
@@ -485,7 +497,7 @@ function resetDefaults() {
   document.getElementById('f-title').value = p.title;
   document.getElementById('f-content').value = p.content;
   document.getElementById('f-author').value = p.author;
-  document.getElementById('f-tags').value = p.tags.join(', ');
+  currentTags = p.tags;
   document.getElementById('f-likes').value = p.likes;
   document.getElementById('f-views').value = p.views;
   document.getElementById('f-draft').checked = p.draft;
