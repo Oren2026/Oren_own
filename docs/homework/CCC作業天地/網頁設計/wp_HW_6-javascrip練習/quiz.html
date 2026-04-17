@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript 選擇題 — wp_HW_6</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <h1>📝 JavaScript 選擇題</h1>
+  <button class="theme-toggle" id="themeToggle">🌙 深色</button>
+</header>
+
+<main id="app"></main>
+
+<script src="data/quiz_questions.js"></script>
+<script>
+/* ─── Theme ─── */
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('js_hw_theme') || 'light';
+applyTheme(savedTheme);
+
+themeToggle.addEventListener('click', () => {
+  const next = document.body.classList.contains('dark') ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('js_hw_theme', next);
+});
+
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.body.classList.add('dark');
+    themeToggle.textContent = '☀️ 淺色';
+  } else {
+    document.body.classList.remove('dark');
+    themeToggle.textContent = '🌙 深色';
+  }
+}
+
+/* ─── Quiz Data (inline from quiz_questions.js) ─── */
+/* quiz_questions.js exports window.QUIZ_QUESTIONS */
+const ALL_QUESTIONS = window.QUIZ_QUESTIONS || [];
+
+/* ─── Utilities ─── */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ─── State ─── */
+let questions  = [];
+let current    = 0;
+let answers    = [];
+let submitted  = false;
+
+/* ─── Init ─── */
+function init() {
+  const pool = shuffle(ALL_QUESTIONS).slice(0, 10);
+  questions  = pool.map(q => ({
+    ...q,
+    opts: shuffle(q.opts.map((o, i) => ({ text: o, isAns: i === q.ans })))
+  }));
+  current    = 0;
+  answers    = new Array(10).fill(null);
+  submitted  = false;
+  render();
+}
+
+/* ─── Navigation ─── */
+function goTo(idx) { current = idx; render(); }
+function prev()    { if (current > 0) { current--; render(); } }
+function next()    { if (current < 9) { current++; render(); } }
+
+function selectOption(optIdx) {
+  if (submitted) return;
+  answers[current] = optIdx;
+  render();
+}
+
+function submit() {
+  submitted = true;
+  render();
+}
+
+function getScore() {
+  return answers.reduce((sum, a, i) => {
+    if (a === null) return sum;
+    return sum + (questions[i].opts[a].isAns ? 1 : 0);
+  }, 0);
+}
+
+/* ─── Render ─── */
+function render() {
+  const app     = document.getElementById('app');
+  const letters = ['A', 'B', 'C', 'D'];
+
+  /* Result screen */
+  if (submitted) {
+    const score = getScore();
+    const pct   = Math.round(score / 10 * 100);
+    let msg = '';
+    if (pct === 100)      msg = '太神了！滿分！🏆';
+    else if (pct >= 80)   msg = '非常厲害！继续加油 💪';
+    else if (pct >= 60)  msg = '還不錯喔，再多練習 📚';
+    else                  msg = '多看幾遍題庫，下次一定進步 🚀';
+
+    app.innerHTML = `
+      <div class="result-card">
+        <div class="result-score">${score}/10</div>
+        <div class="result-label">你答對了 ${score} 題</div>
+        <div class="result-msg">${msg}</div>
+        <button class="btn-restart" onclick="init()">重新測驗 🔄</button>
+      </div>`;
+    return;
+  }
+
+  /* Question screen */
+  const q = questions[current];
+
+  /* Progress dots */
+  const dots = questions.map((_, i) => {
+    let cls = 'progress-dot';
+    if (i === current)              cls += ' current';
+    else if (answers[i] !== null)  cls += ' answered';
+    return `<div class="${cls}" onclick="goTo(${i})">${i + 1}</div>`;
+  }).join('');
+
+  const allAnswered = answers.every(a => a !== null);
+
+  /* Options — only animate when jumping between questions */
+  const optsHtml = q.opts.map((opt, i) => {
+    let cls = 'option';
+    if (answers[current] === i) cls += ' selected';
+    return `<div class="${cls}" onclick="selectOption(${i})">
+      <div class="option-letter">${letters[i]}</div>
+      <div class="option-text">${opt.text}</div>
+    </div>`;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="progress-bar">${dots}</div>
+    <div class="card">
+      <div class="question-meta">第 ${current + 1} 題 / 共 10 題</div>
+      <div class="question-text">${q.q}</div>
+      <div class="options">${optsHtml}</div>
+      <div class="nav-buttons">
+        <button class="btn btn-prev" onclick="prev()" ${current === 0 ? 'disabled' : ''}>← 上一題</button>
+        ${current < 9
+          ? `<button class="btn btn-next" onclick="next()" ${answers[current] === null ? 'disabled' : ''}>下一題 →</button>`
+          : `<button class="btn-submit" onclick="submit()" ${allAnswered ? '' : 'disabled'}>送出答案 🎉</button>`
+        }
+      </div>
+    </div>
+
+    <footer>
+      由 <a href="https://github.com/Oren2026">Oren</a> 維護 · wp_HW_6-javascrip練習
+    </footer>`;
+}
+
+init();
+</script>
+</body>
+</html>
