@@ -15,363 +15,467 @@
 
 <main>
   <a href="index.html" class="back-link">← 返回首頁</a>
-  <div class="q-nav" id="qNav"></div>
+
   <div class="split-layout">
-    <div class="left-panel" id="leftPanel"></div>
+    <!-- 左側：部落格編輯器 -->
+    <div class="left-panel" id="leftPanel">
+      <div class="card">
+        <div class="q-meta">🛠️ 部落格編輯器</div>
+        <div class="q-title">即時操控日誌，觀察 JS 語法連動</div>
+        <div class="q-desc">改任何一個欄位，右側預覽即時更新。卷動右側查看不同概念的程式碼示範。</div>
+
+        <div class="var-field">
+          <label for="f-id">文章 ID</label>
+          <input type="number" id="f-id" value="1" min="1" max="99" oninput="syncAll()">
+        </div>
+        <div class="var-field">
+          <label for="f-title">標題</label>
+          <input type="text" id="f-title" value="掌握 JavaScript 函式" oninput="syncAll()">
+        </div>
+        <div class="var-field">
+          <label for="f-content">內容</label>
+          <textarea id="f-content" rows="3" oninput="syncAll()">JavaScript 函式是現代開發的核心元件，靈活運用能大幅提升程式碼品質。</textarea>
+        </div>
+        <div class="var-field">
+          <label for="f-author">作者</label>
+          <input type="text" id="f-author" value="Alice" oninput="syncAll()">
+        </div>
+        <div class="var-field">
+          <label for="f-tags">標籤（逗號分隔）</label>
+          <input type="text" id="f-tags" value="js, 函式, ES6" oninput="syncAll()">
+        </div>
+        <div class="var-field">
+          <label for="f-user">目前訪客名稱（Q8 用）</label>
+          <input type="text" id="f-user" value="Guest" oninput="syncAll()">
+        </div>
+        <div class="var-field">
+          <label for="f-limit">預覽截斷字元數（Q9 用）</label>
+          <input type="number" id="f-limit" value="20" min="5" max="50" oninput="syncAll()">
+        </div>
+        <div class="var-field">
+          <label>
+            <input type="checkbox" id="f-ternary" checked onchange="syncAll()">
+            使用三元運算（Q8）/ 截斷（Q9）
+          </label>
+        </div>
+
+        <button class="reset-btn" onclick="resetDefaults()">↺ 恢復預設</button>
+      </div>
+    </div>
+
+    <!-- 右側：日誌預覽 + JS 概念串聯 -->
     <div class="right-panel">
       <div class="blog-frame">
-        <div class="blog-header">📝 Express Blog 預覽</div>
+        <div class="blog-header">📝 Express Blog 即時預覽</div>
         <div class="blog-body" id="blogPreview"></div>
       </div>
     </div>
-    <div id="callbackSection" style="display:none; grid-column:1/-1;"></div>
   </div>
+
+  <!-- 概念說明（卷軸向下） -->
+  <div class="concept-grid" id="conceptGrid"></div>
 </main>
 
 <script>
-/* ─── Init state ─── */
-var currentIdx = 0;
-var vals = {};
-
-/* ─── Load questions immediately ─── */
-var Q = [
-  {
-    id: 1,
-    title: "1｜物件屬性存取 (Dot & Bracket Notation)",
-    desc: "在 Express 路由中，我們從資料庫拿到的資料就是一個物件。post.title 與 post['title'] 都可以取得同一個屬性。",
-    type: "blog-linked",
-    vars: [
-      { k: "id",      v: 1,       label: "文章 ID",  t: "number" },
-      { k: "title",   v: "Hello World", label: "標題", t: "text" },
-      { k: "content", v: "這是文章內容，支援 Markdown 格式。", label: "內容", t: "text" }
-    ],
-    run: function(vals) {
-      var post = { id: Number(vals.id), title: String(vals.title), content: String(vals.content) };
-      return { post: post, dotResult: post.title, bracketResult: post["title"] };
-    }
-  },
-  {
-    id: 2,
-    title: "2｜物件解構賦值 (Destructuring)",
-    desc: "Express 的 app.post('/posts') 裡常見 `const { title, content } = req.body;`。解構讓你用一行取多個屬性。",
-    type: "blog-linked",
-    vars: [
-      { k: "req_title",   v: "JS教學",  label: "req.body.title",   t: "text" },
-      { k: "req_content", v: "內容在此", label: "req.body.content", t: "text" },
-      { k: "req_author",  v: "Gemini",  label: "req.body.author",  t: "text" }
-    ],
-    run: function(vals) {
-      var req = { body: { title: String(vals.req_title), content: String(vals.req_content), author: String(vals.req_author) } };
-      var title = req.body.title;
-      var content = req.body.content;
-      return { reqBody: req.body, destructured: { title: title, content: content } };
-    }
-  },
-  {
-    id: 3,
-    title: "3｜陣列遍歷與 HTML 拼接 (forEach & Template Literals)",
-    desc: "部落格首頁的 posts.forEach 迴圈就是這樣把每一筆資料拼成 HTML 字串，送回瀏覽器渲染列表。",
-    type: "blog-linked",
-    vars: [
-      { k: "t1", v: "JavaScript 函式", label: "文章1標題", t: "text" },
-      { k: "t2", v: "Node.js 入門",    label: "文章2標題", t: "text" },
-      { k: "t3", v: "Express 路由設計", label: "文章3標題", t: "text" }
-    ],
-    run: function(vals) {
-      var posts = [
-        { id: 1, title: String(vals.t1) },
-        { id: 2, title: String(vals.t2) },
-        { id: 3, title: String(vals.t3) }
-      ];
-      var html = "";
-      for (var i = 0; i < posts.length; i++) {
-        html += '<div class="post-item">' + escHtml(posts[i].title) + '</div>';
-      }
-      return { posts: posts, html: html };
-    }
-  },
-  {
-    id: 4,
-    title: "4｜URL 參數與字典 (req.params)",
-    desc: "`app.get('/posts/:id')` 的 :id 就是 URL 參數。req.params 是一個字典，用來動態抓取 URL 中的值。",
-    type: "blog-linked",
-    vars: [
-      { k: "id", v: 2, label: "URL 參數 id", t: "number" }
-    ],
-    run: function(vals) {
-      var params = {};
-      params["id"] = Number(vals.id);
-      var matchingPost = null;
-      var allPosts = [
-        { id: 1, title: "掌握 JavaScript 函式", content: "JavaScript 函式是現代開發的核心元件...", author: "Alice", tags: ["js", "函式"] },
-        { id: 2, title: "Node.js 入門指南", content: "Node.js 讓你可以用 JS 寫後端...", author: "Bob", tags: ["node", "後端"] },
-        { id: 3, title: "Express 路由設計", content: "RESTful API 的基礎在於良好的路由設計...", author: "Carol", tags: ["express", "api"] }
-      ];
-      for (var i = 0; i < allPosts.length; i++) {
-        if (allPosts[i].id === params.id) { matchingPost = allPosts[i]; break; }
-      }
-      return { params: params, matchingPost: matchingPost };
-    }
-  },
-  {
-    id: 5,
-    title: "5｜錯誤優先回呼 (Error-First Callback)",
-    desc: "Node.js 慣例：callback 第一個參數是錯誤（沒錯就傳 null），第二個參數才是資料。這讓錯誤處理可以統一在函式起點處理。",
-    type: "callback",
-    vars: [
-      { k: "id", v: 101, label: "fetchData 的 id 參數", t: "number" }
-    ],
-    run: function(vals) {
-      var result = null;
-      (function(id, cb) {
-        cb(null, { id: id, status: "success" });
-      })(Number(vals.id), function(err, data) {
-        result = err ? "錯誤：" + err : "成功取得資料：" + JSON.stringify(data);
-      });
-      return { pattern: "callback(err, data)", result: result };
-    }
-  },
-  {
-    id: 6,
-    title: "6｜JSON 解析 (JSON.parse)",
-    desc: "`express.json()` 把前端送來的 JSON body 轉成 JS 物件。JSON.parse 就是把 JSON 字串「解讀」成可用物件的步驟。",
-    type: "blog-linked",
-    vars: [
-      { k: "tag1", v: "js",   label: "tags[0]", t: "text" },
-      { k: "tag2", v: "node", label: "tags[1]", t: "text" },
-      { k: "tag3", v: "api",  label: "tags[2]", t: "text" }
-    ],
-    run: function(vals) {
-      var tags = [String(vals.tag1), String(vals.tag2), String(vals.tag3)];
-      var obj = { title: "Post Title", tags: tags };
-      var jsonStr = JSON.stringify(obj);
-      var parsed = JSON.parse(jsonStr);
-      return { jsonStr: jsonStr, parsed: parsed, tag2: parsed.tags[1] };
-    }
-  },
-  {
-    id: 7,
-    title: "7｜模擬 db.get 查詢 (fakeGet)",
-    desc: "真實的 `db.get(sql, params, callback)` 會去資料庫查並把結果傳入 callback。fakeGet 模擬這個流程讓你練習。",
-    type: "callback",
-    vars: [
-      { k: "sql_id", v: 1, label: "SQL WHERE id = ?", t: "number" }
-    ],
-    run: function(vals) {
-      var result = null;
-      (function(sql, params, cb) {
-        cb(null, { id: Number(vals.sql_id), title: "掌握 JavaScript 函式", content: "函式是 JS 的核心..." });
-      })("SELECT * FROM posts WHERE id = ?", [Number(vals.sql_id)], function(err, row) {
-        result = err ? "失敗：" + err : "抓到標題：" + row.title;
-      });
-      return { pattern: "fakeGet(sql, params, (err, row) => {...})", result: result };
-    }
-  },
-  {
-    id: 8,
-    title: "8｜樣板字串邏輯運算 (三元運算)",
-    desc: "Express 的 `res.send(\\`<h1>Welcome, ${user}\\</h1>\\`)` 常搭配三元運算處理未登入的使用者。",
-    type: "blog-linked",
-    vars: [
-      { k: "user",       v: "Guest", label: "user 變數值",    t: "text" },
-      { k: "useTernary", v: true,   label: "使用三元運算？", t: "checkbox" }
-    ],
-    run: function(vals) {
-      var user = String(vals.user) || null;
-      var useTernary = vals.useTernary === true || vals.useTernary === "true";
-      var displayName = useTernary ? (user ? user : "Stranger") : (user || "Stranger");
-      var html = "<h1>Welcome, " + displayName + "</h1>";
-      return { user: user, displayName: displayName, html: html };
-    }
-  },
-  {
-    id: 9,
-    title: "9｜內容截斷 (Substring)",
-    desc: "文章列表如果內容太長，常見的做法是用 substr 或 slice 截斷並加上 \"...\"。這是「版面控制」的常見模式。",
-    type: "blog-linked",
-    vars: [
-      { k: "limit", v: 10, label: "截斷字元數", t: "number", min: 5, max: 30 },
-      { k: "c1",    v: "Very long content here",          label: "內容1", t: "text" },
-      { k: "c2",    v: "Another Very long content here", label: "內容2", t: "text" }
-    ],
-    run: function(vals) {
-      var limit = Number(vals.limit) || 10;
-      var c1 = String(vals.c1);
-      var c2 = String(vals.c2);
-      var truncated = [];
-      truncated.push(c1.length > limit ? c1.slice(0, limit) + "..." : c1);
-      truncated.push(c2.length > limit ? c2.slice(0, limit) + "..." : c2);
-      return { limit: limit, truncated: truncated, orig: [c1, c2] };
-    }
-  },
-  {
-    id: 10,
-    title: "10｜錯誤優先 callback 實作 (checkAdmin)",
-    desc: "Express 中幾乎所有 db.xxx 的用法都是 err-first callback。",
-    type: "callback",
-    vars: [
-      { k: "role", v: "admin", label: "role 參數", t: "text" }
-    ],
-    run: function(vals) {
-      var result = null;
-      (function(r, cb) {
-        if (r !== "admin") cb("Access Denied"); else cb(null, "Welcome");
-      })(String(vals.role), function(err, msg) {
-        result = err ? "✗ 錯誤：" + err : "✓ " + msg;
-      });
-      return { role: String(vals.role), result: result };
-    }
-  }
+/* ─── 部落格資料 ─── */
+var BLOG_DB = [
+  { id: 1, title: "掌握 JavaScript 函式", content: "JavaScript 函式是現代開發的核心元件，靈活運用能大幅提升程式碼品質。", author: "Alice", tags: ["js","函式","ES6"] },
+  { id: 2, title: "Node.js 入門指南",      content: "Node.js 讓你可以用 JS 寫後端，了解非同步與事件驅動是關鍵。",    author: "Bob",   tags: ["node","後端"] },
+  { id: 3, title: "Express 路由設計",      content: "RESTful API 的基礎在於良好的路由設計，掌握 params 與 query。",  author: "Carol", tags: ["express","api"] }
 ];
 
-/* ─── Helpers ─── */
-function getDefaults(q) {
-  var v = {};
-  for (var i = 0; i < q.vars.length; i++) {
-    var p = q.vars[i];
-    if (p.t === 'number') v[p.k] = Number(p.v);
-    else if (p.t === 'checkbox') v[p.k] = Boolean(p.v);
-    else v[p.k] = String(p.v);
-  }
-  return v;
+/* ─── 讀取目前表單資料 ─── */
+function getFormData() {
+  return {
+    id:      parseFloat(document.getElementById('f-id').value) || 1,
+    title:   document.getElementById('f-title').value,
+    content: document.getElementById('f-content').value,
+    author:  document.getElementById('f-author').value,
+    tags:    document.getElementById('f-tags').value.split(',').map(function(s){ return s.trim(); }).filter(Boolean),
+    user:    document.getElementById('f-user').value,
+    limit:   parseFloat(document.getElementById('f-limit').value) || 20,
+    ternary: document.getElementById('f-ternary').checked
+  };
 }
 
+/* ─── Q1：物件屬性存取 ─── */
+function q1_dotBracket(post) {
+  var dot    = post.title;
+  var bracket = post["title"];
+  return { dot: dot, bracket: bracket };
+}
+
+/* ─── Q2：解構賦值 ─── */
+function q2_destructuring(post) {
+  var title   = post.title;
+  var content = post.content;
+  var author  = post.author;
+  return { title: title, content: content, author: author };
+}
+
+/* ─── Q3：forEach 列表 ─── */
+function q3_foreach(posts) {
+  var html = '';
+  for (var i = 0; i < posts.length; i++) {
+    html += '<div class="post-item">' + escHtml(posts[i].title) + '</div>';
+  }
+  return html;
+}
+
+/* ─── Q4：req.params 查詢 ─── */
+function q4_params(id) {
+  var params = {};
+  params["id"] = id;
+  var match = null;
+  for (var i = 0; i < BLOG_DB.length; i++) {
+    if (BLOG_DB[i].id === params.id) { match = BLOG_DB[i]; break; }
+  }
+  return { params: params, post: match };
+}
+
+/* ─── Q5：错误優先回呼（概念展示） ─── */
+function q5_callback(id, cb) {
+  cb(null, { id: id, status: "success", message: "資料庫查詢完成" });
+}
+
+/* ─── Q6：JSON 序列化 ─── */
+function q6_json(post) {
+  var obj   = { id: post.id, title: post.title, content: post.content, author: post.author, tags: post.tags };
+  var str   = JSON.stringify(obj);
+  var parsed = JSON.parse(str);
+  return { str: str, parsed: parsed };
+}
+
+/* ─── Q7：fakeGet 查詢 ─── */
+function q7_fakeget(sql, params, cb) {
+  var found = null;
+  for (var i = 0; i < BLOG_DB.length; i++) {
+    if (BLOG_DB[i].id === params[0]) { found = BLOG_DB[i]; break; }
+  }
+  cb(null, found);
+}
+
+/* ─── Q8：三元運算 ─── */
+function q8_ternary(userName) {
+  var user = userName || null;
+  var display = user ? user : "Stranger";
+  var html = "<h1>Welcome, " + display + "</h1>";
+  return { user: user, display: display, html: html };
+}
+
+/* ─── Q9：內容截斷 ─── */
+function q9_truncate(content, limit) {
+  return content.length > limit ? content.slice(0, limit) + "..." : content;
+}
+
+/* ─── Q10：错误優先 callback（概念展示） ─── */
+function q10_checkadmin(role, cb) {
+  if (role !== "admin") cb("Access Denied"); else cb(null, "Welcome, Admin!");
+}
+
+/* ─── 主要同步函式 ─── */
+function syncAll() {
+  var d = getFormData();
+
+  /* Q4：用 ID 查詢整筆 post */
+  var q4r = q4_params(d.id);
+  var post = q4r.post || { id: d.id, title: d.title, content: d.content, author: d.author, tags: d.tags };
+
+  /* Q1 */
+  var q1r = q1_dotBracket(post);
+
+  /* Q2 */
+  var q2r = q2_destructuring(post);
+
+  /* Q3：所有文章列表 */
+  var posts = BLOG_DB.slice();
+
+  /* Q6 */
+  var q6r = q6_json(post);
+
+  /* Q8 */
+  var q8r = q8_ternary(d.user);
+
+  /* Q9 */
+  var truncatedContent = q9_truncate(d.content, d.limit);
+  var truncatedTitle   = q9_truncate(d.title, d.limit);
+
+  /* Q5：錯誤優先 callback 結果 */
+  var q5result = null;
+  q5_callback(d.id, function(err, data) {
+    q5result = err ? "錯誤：" + err : "成功：" + JSON.stringify(data);
+    renderPreview(d, post, q1r, q2r, q3_foreach(posts), q4r, q6r, q8r, truncatedContent, truncatedTitle, q5result);
+  });
+}
+
+/* ─── 渲染右側預覽 ─── */
+function renderPreview(d, post, q1r, q2r, listHtml, q4r, q6r, q8r, truncContent, truncTitle, q5result) {
+  var el = document.getElementById('blogPreview');
+  var tagHtml = '';
+  for (var i = 0; i < d.tags.length; i++) {
+    tagHtml += '<span class="post-tag">' + escHtml(d.tags[i]) + '</span>';
+  }
+
+  var preview = '';
+  if (d.ternary) {
+    /* 使用截斷預覽 */
+    preview = '<div class="post-single">'
+      + '<div class="post-title">' + escHtml(truncTitle) + '</div>'
+      + '<div class="post-content">' + escHtml(truncContent) + '</div>'
+      + '<div class="post-meta">作者：' + escHtml(d.author) + ' · ' + tagHtml + '</div>'
+      + '</div>';
+  } else {
+    /* 完整預覽 */
+    preview = '<div class="post-single">'
+      + '<div class="post-title">' + escHtml(post.title) + '</div>'
+      + '<div class="post-content">' + escHtml(post.content) + '</div>'
+      + '<div class="post-meta">作者：' + escHtml(post.author) + ' · ' + tagHtml + '</div>'
+      + '</div>';
+  }
+
+  /* Q8 greeting */
+  var greeting = '<div class="Welcome-banner">' + q8r.html + '</div>';
+
+  el.innerHTML = greeting + preview + '<div class="post-list">' + listHtml + '</div>';
+}
+
+/* ─── 底部概念區 ─── */
+function renderConcepts() {
+  var d = getFormData();
+
+  var q4r = q4_params(d.id);
+  var post = q4r.post || { id: d.id, title: d.title, content: d.content, author: d.author, tags: d.tags };
+
+  var q1r = q1_dotBracket(post);
+  var q2r = q2_destructuring(post);
+  var q6r = q6_json(post);
+  var q8r = q8_ternary(d.user);
+  var truncContent = q9_truncate(d.content, d.limit);
+
+  var q5result = null;
+  q5_callback(d.id, function(err, data) {
+    q5result = err ? "錯誤：" + err : "成功：" + JSON.stringify(data);
+    buildConceptHtml(d, post, q1r, q2r, q6r, q8r, truncContent, q5result);
+  });
+}
+
+function buildConceptHtml(d, post, q1r, q2r, q6r, q8r, truncContent, q5result) {
+  var html = '';
+
+  /* Q1 區塊 */
+  html += '<div class="card concept-card">'
+    + '<div class="q-meta">1｜物件屬性存取 (Dot &amp; Bracket Notation)</div>'
+    + '<div class="q-desc">post.title 與 post["title"] 取同一個值。以下是實際操作：</div>'
+    + '<div class="code-block"><pre>'
+    + 'const post = { id: ' + post.id + ', title: "' + escJs(post.title) + '" };\n'
+    + 'post.title        → "' + escHtml(q1r.dot) + '"\n'
+    + 'post["title"]     → "' + escHtml(q1r.bracket) + '"'
+    + '</pre></div>'
+    + '<div class="output-block"><span class="label">輸出</span><pre>'
+    + 'post.title        → <span class="str">"' + escHtml(q1r.dot) + '"</span>\n'
+    + 'post["title"]     → <span class="str">"' + escHtml(q1r.bracket) + '"</span>'
+    + '</pre></div>'
+    + '</div>';
+
+  /* Q2 區塊 */
+  html += '<div class="card concept-card">'
+    + '<div class="q-meta">2｜物件解構賦值 (Destructuring)</div>'
+    + '<div class="q-desc">解構讓你用一行從物件取出多個屬性：</div>'
+    + '<div class="code-block"><pre>'
+    + 'const { title, content, author } = post;\n'
+    + '// 相當於：\n'
+    + 'const title   = post.title;\n'
+    + 'const content = post.content;\n'
+    + 'const author  = post.author;'
+    + '</pre></div>'
+    + '<div class="output-block"><span class="label">輸出</span><pre>'
+    + 'title   → <span class="str">"' + escHtml(q2r.title) + '"</span>\n'
+    + 'content → <span class="str">"' + escHtml(q2r.content.slice(0,30)) + '..."</span>\n'
+    + 'author  → <span class="str">"' + escHtml(q2r.author) + '"</span>'
+    + '</pre></div>'
+    + '</div>';
+
+  /* Q3 區塊 */
+  html += '<div class="card concept-card">'
+    + '<div class="q-meta">3｜陣列遍歷與 HTML 拼接 (forEach)</div>'
+    + '<div class="q-desc">forEach 把文章陣列拼成 HTML 字串，送回瀏覽器渲染列表：</div>'
+    + '<div class="code-block"><pre>'
+    + 'posts.forEach(post => {\n'
+    + '  html += `<div class="post-item">${post.title}</div>`;\n'
+    + '});'
+    + '</pre></div>'
+    + '<div class="output-block"><span class="label">輸出</span>'
+    + '<div class="post-list">' + q3_foreach(BLOG_DB.slice()) + '</div>'
+    + '</div></div>';
+
+  /* Q4 區塊 */
+  var q4r = q4_params(d.id);
+  html += '<div class="card concept-card">'
+    + '<div class="q-meta">4｜URL 參數與字典 (req.params)</div>'
+    + '<div class="q-desc">app.get("/posts/:id") 的 :id 是 URL 參數，req.params 是個字典：</div>'
+    + '<div class="code-block"><pre>'
+    + '// 使用者拜訪 /posts/' + d.id + '\n'
+    + 'const params = {};\n'
+    + 'params["id"] = ' + d.id + ';\n'
+    + '// params → { id: ' + d.id + ' }'
+    + '</pre></div>'
+    + '<div class="output-block"><span class="label">params</span><pre>'
+    + '{ id: ' + q4r.params.id + ' }'
+    + '</pre></div>'
+    + '<div class="output-block"><span class="label">查詢結果</span><pre>'
+    + (q4r.post
+      ? '<span class="str">"' + escHtml(q4r.post.title) + '"</span> by ' + escHtml(q4r.post.author)
+      : '<span class="Error-hint">找不到 ID 為 ' + d.id + ' 的文章</span>')
+    + '</pre></div>'
+    + '</div>';
+
+  /* Q5 區塊 */
+  html += '<div class="card concept-card">'
+    + '<div class="q-meta">5｜錯誤優先回呼 (Error-First Callback)</div>'
+    + '<div class="q-desc">Node.js 慣例：第一個參數是錯誤，沒錯傳 null，第二個才是資料：</div>'
+    + '<div class="code-block"><pre>'
+    + 'function fetchData(id, callback) {\n'
+    + '  const data = { id: id, status: "success" };\n'
+    + '  callback(null, data);  // null = 無錯誤\n'
+    + '}\n\n'
+    + 'fetchData(' + d.id + ', (err, data) => {\n'
+    + '  if (err) return console.error(err);\n'
+    + '  console.log(data);  // { id: ' + d.id + ', status: "success" }\n'
+    + '});'
+    + '</pre></div>'
+    + '<div class="output-block"><span class="label">實際執行</span><pre>'
+    + escHtml(q5result)
+    + '</pre></div>'
+    + '</div>';
+
+  /* Q6 區塊 */
+  html += '<div class="card concept-card">'
+    + '<div class="q-meta">6｜JSON 解析 (JSON.parse)</div>'
+    + '<div class="q-desc">JSON.stringify 把 JS 物件變字串，JSON.parse 把字串變回物件：</div>'
+    + '<div class="code-block"><pre>'
+    + 'const obj = { id: 1, title: "...", tags: [...] };\n'
+    + 'const jsonStr = JSON.stringify(obj);\n'
+    + 'const parsed  = JSON.parse(jsonStr);'
+    + '</pre></div>'
+    + '<div class="output-block"><span class="label">JSON.stringify</span><pre>'
+    + escHtml(q6r.str.slice(0, 80)) + (q6r.str.length > 80 ? '...' : '')
+    + '</pre></div>'
+    + '<div class="output-block"><span class="label">JSON.parse</span><pre>'
+    + escHtml(JSON.stringify(q6r.parsed, null, 2).slice(0, 80)) + '...'
+    + '</pre></div>'
+    + '</div>';
+
+  /* Q7 區塊 */
+  var q7result = null;
+  q7_fakeget("SELECT * FROM posts WHERE id = ?", [d.id], function(err, row) {
+    q7result = err ? "失敗：" + err : "抓到：「" + (row ? row.title : "無") + "」";
+    finalize();
+  });
+
+  function finalize() {
+    html += '<div class="card concept-card">'
+      + '<div class="q-meta">7｜模擬 db.get 查詢 (fakeGet)</div>'
+      + '<div class="q-desc">真實資料庫的查詢流程：SQL + 參數 + callback：</div>'
+      + '<div class="code-block"><pre>'
+      + 'function fakeGet(sql, params, cb) {\n'
+      + '  // 模擬 db.get(sql, params, callback)\n'
+      + '  cb(null, { id: params[0], title: "..." });\n'
+      + '}\n\n'
+      + 'fakeGet(\n'
+      + '  "SELECT * FROM posts WHERE id = ?",\n'
+      + '  [' + d.id + '],\n'
+      + '  (err, row) => { ... }\n'
+      + ');'
+      + '</pre></div>'
+      + '<div class="output-block"><span class="label">執行結果</span><pre>'
+      + escHtml(q7result)
+      + '</pre></div>'
+      + '</div>';
+
+    /* Q8 區塊 */
+    html += '<div class="card concept-card">'
+      + '<div class="q-meta">8｜樣板字串邏輯運算 (三元運算)</div>'
+      + '<div class="q-desc">用三元運算處理未登入訪客，自動替換成 "Stranger"：</div>'
+      + '<div class="code-block"><pre>'
+      + 'const user = "' + escJs(d.user) + '" || null;\n'
+      + '//           ↑ 上一行的 user 值\n\n'
+      + 'const displayName = user ? user : "Stranger";\n'
+      + '// 或用三元：\n'
+      + '// const displayName = user ?? "Stranger";\n\n'
+      + 'res.send(`&lt;h1&gt;Welcome, ${displayName}&lt;/h1&gt;`);'
+      + '</pre></div>'
+      + '<div class="output-block"><span class="label">user = "' + escHtml(d.user) + '"</span><pre>'
+      + 'displayName = <span class="str">"' + escHtml(q8r.display) + '"</span>\n'
+      + 'HTML = <span class="str">' + escHtml(q8r.html) + '</span>'
+      + '</pre></div>'
+      + '<div class="Welcome-banner">' + q8r.html + '</div>'
+      + '</div>';
+
+    /* Q9 區塊 */
+    html += '<div class="card concept-card">'
+      + '<div class="q-meta">9｜內容截斷 (Substring)</div>'
+      + '<div class="q-desc">slice(0, n) 限制顯示字元數，常用於文章列表預覽：</div>'
+      + '<div class="code-block"><pre>'
+      + 'const limit = ' + d.limit + ';\n'
+      + 'const truncated = content.slice(0, limit) + "...";\n\n'
+      + '// 原文：  ' + escJs(d.content) + '\n'
+      + '// 截斷後：' + escJs(truncContent)
+      + '</pre></div>'
+      + '<div class="output-block"><span class="label">原文</span><pre>' + escHtml(d.content) + '</pre></div>'
+      + '<div class="output-block"><span class="label">截斷（' + d.limit + '字）</span><pre>' + escHtml(truncContent) + '</pre></div>'
+      + '</div>';
+
+    /* Q10 區塊 */
+    html += '<div class="card concept-card">'
+      + '<div class="q-meta">10｜錯誤優先 callback 實作 (checkAdmin)</div>'
+      + '<div class="q-desc">Express 的 db.xxx 系列幾乎都遵循 err-first callback 模式：</div>'
+      + '<div class="code-block"><pre>'
+      + 'function checkAdmin(role, cb) {\n'
+      + '  if (role !== "admin") {\n'
+      + '    cb("Access Denied");\n'
+      + '  } else {\n'
+      + '    cb(null, "Welcome");\n'
+      + '  }\n'
+      + '}\n\n'
+      + 'checkAdmin("' + escJs(d.user) + '", (err, msg) => {\n'
+      + '  if (err) return "✗ " + err;\n'
+      + '  return "✓ " + msg;\n'
+      + '});'
+      + '</pre></div>'
+      + '<div class="output-block"><span class="label">執行結果</span><pre>';
+    var q10res = null;
+    q10_checkadmin(d.user, function(err, msg) {
+      q10res = err ? "✗ 錯誤：" + err : "✓ " + msg;
+      html += escHtml(q10res) + '</pre></div></div>';
+      document.getElementById('conceptGrid').innerHTML = html;
+    });
+  }
+}
+
+/* ─── 工具函式 ─── */
 function escHtml(s) {
   if (s === null || s === undefined) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-
-function jsonPretty(obj) {
-  var s = JSON.stringify(obj, null, 2);
-  return s
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"([^"]+)":/g, function(m) { return '<span class="key">"' + m.slice(1,m.length-2) + '"</span>:' ; })
-    .replace(/: "([^"]*)"/g, function(m) { return ': <span class="str">"' + m.slice(3,m.length-1) + '"</span>'; })
-    .replace(/: ([\d.]+)/g, function(m) { return ': <span class="num">' + m.slice(2) + '</span>'; })
-    .replace(/: (true|false|null)/g, function(m) { return ': <span class="num">' + m.slice(2) + '</span>'; });
+function escJs(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'\\n');
 }
 
-function runQ() {
-  var q = Q[currentIdx];
-  var result;
-  try { result = q.run(vals); }
-  catch(e) { result = { error: e.message }; }
-  if (result.error) {
-    document.getElementById('blogPreview').innerHTML = '<div class="Error-hint">⚠️ ' + escHtml(result.error) + '</div>';
-    return;
-  }
-  if (q.type === 'callback') {
-    document.getElementById('blogPreview').innerHTML = '';
-    renderCallback(q, result);
-  } else {
-    document.getElementById('callbackSection').style.display = 'none';
-    renderBlog(q, result);
-  }
+/* ─── 初始化 ─── */
+function resetDefaults() {
+  document.getElementById('f-id').value = 1;
+  document.getElementById('f-title').value = "掌握 JavaScript 函式";
+  document.getElementById('f-content').value = "JavaScript 函式是現代開發的核心元件，靈活運用能大幅提升程式碼品質。";
+  document.getElementById('f-author').value = "Alice";
+  document.getElementById('f-tags').value = "js, 函式, ES6";
+  document.getElementById('f-user').value = "Guest";
+  document.getElementById('f-limit').value = 20;
+  document.getElementById('f-ternary').checked = true;
+  syncAll();
 }
 
-function renderBlog(q, r) {
-  var el = document.getElementById('blogPreview');
-  var html = '';
-  switch (q.id) {
-    case 1:
-      html = '<div class="post-single"><div class="post-title">' + escHtml(r.post.title) + '</div><div class="post-content">' + escHtml(r.post.content) + '</div><div class="post-meta">ID: ' + r.post.id + '</div></div><div class="json-view" style="margin-top:1rem;"><div class="label" style="color:#6c7086;margin-bottom:0.5rem;">屬性取值結果</div><pre>post.title        → <span class="str">"' + escHtml(r.dotResult) + '"</span>\npost["title"]     → <span class="str">"' + escHtml(r.bracketResult) + '"</span></pre></div>';
-      break;
-    case 2:
-      html = '<div style="margin-bottom:1rem;color:var(--muted);font-size:0.82rem;">從 req.body 解構出 title 和 content：</div><div class="json-view" style="margin-bottom:1rem;"><pre>' + jsonPretty(r.reqBody) + '</pre></div><div class="json-view"><pre style="color:#89b4fa;">const { title, content } = req.body;</pre><pre>title   → <span class="str">"' + escHtml(r.destructured.title) + '"</span>\ncontent → <span class="str">"' + escHtml(r.destructured.content) + '"</span></pre></div>';
-      break;
-    case 3:
-      html = '<div style="margin-bottom:1rem;color:var(--muted);font-size:0.82rem;">← forEach 拼接出來的 HTML 字串</div><div class="post-list">' + r.html + '</div><div class="json-view" style="margin-top:1rem;"><div class="label" style="color:#6c7086;margin-bottom:0.5rem;">拼接的 HTML</div><pre style="color:#cdd6f4;">' + escHtml(r.html) + '</pre></div>';
-      break;
-    case 4:
-      var postHtml = '';
-      if (r.matchingPost) {
-        postHtml = '<div class="post-single"><div class="post-title">' + escHtml(r.matchingPost.title) + '</div><div class="post-content">' + escHtml(r.matchingPost.content) + '</div><div class="post-meta">作者：' + escHtml(r.matchingPost.author) + ' · 標籤：' + r.matchingPost.tags.join(', ') + '</div></div>';
-      } else {
-        postHtml = '<div class="Error-hint">⚠️ 找不到 ID 為 ' + r.params.id + ' 的文章</div>';
-      }
-      html = '<div class="json-view" style="margin-bottom:1rem;"><div class="label" style="color:#6c7086;margin-bottom:0.5rem;">req.params</div><pre>' + jsonPretty(r.params) + '</pre></div>' + postHtml;
-      break;
-    case 6:
-      html = '<div class="json-view" style="margin-bottom:1rem;"><div class="label" style="color:#6c7086;margin-bottom:0.5rem;">JSON.stringify(obj)</div><pre>' + escHtml(r.jsonStr) + '</pre></div><div class="json-view" style="margin-bottom:1rem;"><div class="label" style="color:#6c7086;margin-bottom:0.5rem;">JSON.parse() → JS Object</div><pre>' + jsonPretty(r.parsed) + '</pre></div><div class="json-view"><div class="label" style="color:#6c7086;margin-bottom:0.5rem;">取出 tags[1]</div><pre>tags[1] → <span class="str">"' + escHtml(r.tag2) + '"</span></pre></div>';
-      break;
-    case 8:
-      html = '<div class="Welcome-banner">' + escHtml(r.html) + '</div><div class="json-view"><pre>user = "' + escHtml(r.user) + '"\ndisplayName = "' + escHtml(r.displayName) + '"\nHTML = ' + escHtml(r.html) + '</pre></div>';
-      break;
-    case 9:
-      var truncHtml = '';
-      for (var i = 0; i < r.truncated.length; i++) {
-        truncHtml += '<div class="truncated-item"><span class="orig">' + escHtml(r.orig[i]) + '</span><br>↓<br><span class="trunc">' + escHtml(r.truncated[i]) + '</span></div>';
-      }
-      html = '<div style="margin-bottom:1rem;color:var(--muted);font-size:0.82rem;">限制前 ' + r.limit + ' 個字元：</div><div class="truncated-list">' + truncHtml + '</div>';
-      break;
-    default:
-      html = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem;">此題為概念練習，請參閱左側說明與執行結果。</div>';
-  }
-  el.innerHTML = html;
-}
-
-function renderCallback(q, r) {
-  var section = document.getElementById('callbackSection');
-  section.style.display = 'block';
-  section.innerHTML = '<div class="card" style="margin-top:0;"><div class="q-meta">🔄 Callback 概念區</div><div class="q-desc">' + escHtml(q.desc) + '</div><div class="callback-result" style="margin-top:1rem;"><div class="label">Pattern</div><div class="output">' + escHtml(r.pattern) + '</div></div><div class="callback-result" style="margin-top:0.75rem;"><div class="label">執行結果</div><div class="output ' + (r.result && r.result.indexOf('✗') === 0 ? 'error' : '') + '">' + escHtml(r.result) + '</div></div></div>';
-}
-
-function renderLeft() {
-  var q = Q[currentIdx];
-  var panel = document.getElementById('leftPanel');
-  var varHtml = '';
-  for (var i = 0; i < q.vars.length; i++) {
-    var p = q.vars[i];
-    if (p.t === 'checkbox') {
-      varHtml += '<div class="var-field"><label><input type="checkbox" id="inp-' + p.k + '" ' + (vals[p.k] ? 'checked' : '') + ' onchange="vals[\'' + p.k + '\']=this.checked;runQ();"> ' + escHtml(p.label) + '</label></div>';
-    } else {
-      varHtml += '<div class="var-field"><label for="inp-' + p.k + '">' + escHtml(p.label) + '</label><input type="' + (p.t === 'number' ? 'number' : 'text') + '" id="inp-' + p.k + '" value="' + escHtml(vals[p.k]) + '" ' + (p.min !== undefined ? 'min="' + p.min + '" max="' + p.max + '"' : '') + ' oninput="vals[\'' + p.k + '\']=' + (p.t === 'number' ? 'parseFloat(this.value)||0' : 'this.value') + ';runQ();"></div>';
-    }
-  }
-  var badge = q.type === 'blog-linked' ? '🌐 連動部落格' : '🔄 Callback';
-  panel.innerHTML = '<div class="card"><div class="q-meta">' + badge + '</div><div class="q-title">' + escHtml(q.title) + '</div><div class="q-desc">' + escHtml(q.desc) + '</div><div class="code-block"><pre>' + escHtml(getCodeSnippet(q)) + '</pre></div><div class="var-row">' + varHtml + '</div><button class="reset-btn" onclick="restoreDefaults()">↺ 恢復預設</button></div>';
-}
-
-function restoreDefaults() {
-  vals = getDefaults(Q[currentIdx]);
-  renderLeft();
-  runQ();
-}
-
-function getCodeSnippet(q) {
-  var m = {
-    1:  'const post = { id:1, title, content };\npost.title      → "title"\npost["title"]   → "title"',
-    2:  'const { title, content } = req.body;\n// title   = req.body.title\n// content = req.body.content',
-    3:  'posts.forEach(post => {\n  html += `<div>${post.title}</div>`;\n});',
-    4:  'const params = {};\nparams["id"] = id;  // 動態新增鍵',
-    5:  'function fetchData(id, callback) {\n  const fakeData = { id, status:"success" };\n  callback(null, fakeData);\n}',
-    6:  'const jsonStr = JSON.stringify(obj);\nconst obj = JSON.parse(jsonStr);',
-    7:  'function fakeGet(sql, params, cb) {\n  cb(null, { id:1, title:"標題" });\n}',
-    8:  'const displayName = user ?? "Stranger";',
-    9:  'const truncated = str.slice(0, limit) + "...";',
-    10: 'function checkAdmin(role, cb) {\n  if (role !== "admin") cb("Access Denied");\n  else cb(null, "Welcome");\n}'
-  };
-  return m[q.id] || '// 程式碼';
-}
-
-function renderNav() {
-  var nav = document.getElementById('qNav');
-  var html = '';
-  for (var i = 0; i < Q.length; i++) {
-    html += '<div class="q-dot' + (i === currentIdx ? ' active' : '') + '" onclick="jumpTo(' + i + ')">' + Q[i].id + '</div>';
-  }
-  nav.innerHTML = html;
-}
-
-function jumpTo(idx) {
-  currentIdx = idx;
-  vals = getDefaults(Q[idx]);
-  renderNav();
-  renderLeft();
-  runQ();
-}
-
-/* ─── Theme ─── */
+/* ─── 主題切換 ─── */
 var savedTheme = localStorage.getItem('hw7_theme') || 'light';
 applyTheme(savedTheme);
 document.getElementById('themeToggle').addEventListener('click', function() {
@@ -384,8 +488,9 @@ function applyTheme(theme) {
   document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️ 淺色' : '🌙 深色';
 }
 
-/* ─── Boot ─── */
-jumpTo(0);
+/* ─── 啟動 ─── */
+syncAll();
+renderConcepts();
 </script>
 </body>
 </html>
