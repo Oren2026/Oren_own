@@ -445,6 +445,14 @@ function syncAll() {
   renderBlog(d);
 }
 
+/* 初次渲染：直接用 BLOG_DB[0] 的值，不依賴 DOM 讀取 */
+function initFirstRender() {
+  var p = BLOG_DB[0];
+  var d = { id:p.id, title:p.title, content:p.content, author:p.author, tags:p.tags, likes:p.likes, views:p.views, draft:p.draft, user:"Guest", useTern:true };
+  renderEditor(d);
+  renderBlog(d);
+}
+
 /* ═══════════════════════════════════════════
    工具
 ═══════════════════════════════════════════ */
@@ -494,7 +502,7 @@ function applyTheme(theme) {
 }
 
 /* 啟動 */
-syncAll();
+initFirstRender();
 </script>
 </body>
 </html>
