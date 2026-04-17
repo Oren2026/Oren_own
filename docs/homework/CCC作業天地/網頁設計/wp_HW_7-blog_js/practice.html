@@ -17,136 +17,93 @@
   <a href="index.html" class="back-link">← 返回首頁</a>
 
   <div class="split-layout">
-    <!-- 左側：部落格編輯器 -->
-    <div class="left-panel" id="leftPanel">
-      <div class="card">
-        <div class="q-meta">🛠️ 部落格編輯器</div>
-        <div class="q-title">即時操控日誌，觀察 JS 語法連動</div>
-        <div class="q-desc">改任何一個欄位，右側預覽即時更新。卷動右側查看不同概念的程式碼示範。</div>
+    <!-- 左側編輯器 -->
+    <div class="left-panel" id="leftPanel"></div>
 
-        <div class="var-field">
-          <label for="f-id">文章 ID</label>
-          <input type="number" id="f-id" value="1" min="1" max="99" oninput="syncAll()">
-        </div>
-        <div class="var-field">
-          <label for="f-title">標題</label>
-          <input type="text" id="f-title" value="掌握 JavaScript 函式" oninput="syncAll()">
-        </div>
-        <div class="var-field">
-          <label for="f-content">內容</label>
-          <textarea id="f-content" rows="3" oninput="syncAll()">JavaScript 函式是現代開發的核心元件，靈活運用能大幅提升程式碼品質。</textarea>
-        </div>
-        <div class="var-field">
-          <label for="f-author">作者</label>
-          <input type="text" id="f-author" value="Alice" oninput="syncAll()">
-        </div>
-        <div class="var-field">
-          <label for="f-tags">標籤（逗號分隔）</label>
-          <input type="text" id="f-tags" value="js, 函式, ES6" oninput="syncAll()">
-        </div>
-        <div class="var-field">
-          <label for="f-user">目前訪客名稱（Q8 用）</label>
-          <input type="text" id="f-user" value="Guest" oninput="syncAll()">
-        </div>
-        <div class="var-field">
-          <label for="f-limit">預覽截斷字元數（Q9 用）</label>
-          <input type="number" id="f-limit" value="20" min="5" max="50" oninput="syncAll()">
-        </div>
-        <div class="var-field">
-          <label>
-            <input type="checkbox" id="f-ternary" checked onchange="syncAll()">
-            使用三元運算（Q8）/ 截斷（Q9）
-          </label>
-        </div>
-
-        <button class="reset-btn" onclick="resetDefaults()">↺ 恢復預設</button>
-      </div>
-    </div>
-
-    <!-- 右側：日誌預覽 + JS 概念串聯 -->
-    <div class="right-panel">
-      <div class="blog-frame">
-        <div class="blog-header">📝 Express Blog 即時預覽</div>
-        <div class="blog-body" id="blogPreview"></div>
-      </div>
-    </div>
+    <!-- 右側日誌呈現 -->
+    <div class="right-panel" id="rightPanel"></div>
   </div>
-
-  <!-- 概念說明（卷軸向下） -->
-  <div class="concept-grid" id="conceptGrid"></div>
 </main>
 
 <script>
-/* ─── 部落格資料 ─── */
+/* ═══════════════════════════════════════════
+   資料庫（模擬）
+═══════════════════════════════════════════ */
 var BLOG_DB = [
-  { id: 1, title: "掌握 JavaScript 函式", content: "JavaScript 函式是現代開發的核心元件，靈活運用能大幅提升程式碼品質。", author: "Alice", tags: ["js","函式","ES6"] },
-  { id: 2, title: "Node.js 入門指南",      content: "Node.js 讓你可以用 JS 寫後端，了解非同步與事件驅動是關鍵。",    author: "Bob",   tags: ["node","後端"] },
-  { id: 3, title: "Express 路由設計",      content: "RESTful API 的基礎在於良好的路由設計，掌握 params 與 query。",  author: "Carol", tags: ["express","api"] }
+  { id:1, title:"掌握 JavaScript 函式", content:"JavaScript 函式是現代開發的核心元件，無論是處理資料、操作 DOM 還是建立 API 溝通，都少不了它。學會靈活運用，能讓你的程式碼更簡潔、更易維護。本篇將從基礎語法到進階應用，一次搞懂函式的各種可能。", author:"Alice", tags:["js","函式"], likes:42, views:1280, draft:false },
+  { id:2, title:"Node.js 入門指南",      content:"Node.js 讓你可以用 JavaScript 寫後端程式。它的事件驅動非阻塞模型，特別適合處理大量連線的即時應用。從安裝到第一支 Server，本篇帶你快速踏入後端開發的世界。",                                         author:"Bob",   tags:["node","後端"], likes:38, views:956,  draft:false },
+  { id:3, title:"Express 路由設計",      content:"RESTful API 的成敗在於路由設計的好壞。良好的路由讓前端與後端協作更順暒，錯誤處理更優雅。本篇探討 params、query、router level、middleware 等各種路由技巧。",                                       author:"Carol", tags:["express","api"], likes:25, views:743, draft:true }
 ];
 
-/* ─── 讀取目前表單資料 ─── */
+/* ═══════════════════════════════════════════
+   表單讀取
+═══════════════════════════════════════════ */
 function getFormData() {
-  return {
-    id:      parseFloat(document.getElementById('f-id').value) || 1,
-    title:   document.getElementById('f-title').value,
-    content: document.getElementById('f-content').value,
-    author:  document.getElementById('f-author').value,
-    tags:    document.getElementById('f-tags').value.split(',').map(function(s){ return s.trim(); }).filter(Boolean),
-    user:    document.getElementById('f-user').value,
-    limit:   parseFloat(document.getElementById('f-limit').value) || 20,
-    ternary: document.getElementById('f-ternary').checked
-  };
+  var id      = parseFloat(document.getElementById('f-id').value) || 1;
+  var title   = document.getElementById('f-title').value;
+  var content = document.getElementById('f-content').value;
+  var author  = document.getElementById('f-author').value;
+  var tagsRaw = document.getElementById('f-tags').value;
+  var tags    = tagsRaw ? tagsRaw.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+  var likes   = parseFloat(document.getElementById('f-likes').value) || 0;
+  var views   = parseFloat(document.getElementById('f-views').value) || 0;
+  var draft   = document.getElementById('f-draft').checked;
+  var user    = document.getElementById('f-user').value;
+  var useTern = document.getElementById('f-tern').checked;
+  return { id:id, title:title, content:content, author:author, tags:tags, likes:likes, views:views, draft:draft, user:user, useTern:useTern };
 }
 
-/* ─── Q1：物件屬性存取 ─── */
-function q1_dotBracket(post) {
-  var dot    = post.title;
-  var bracket = post["title"];
-  return { dot: dot, bracket: bracket };
+/* ═══════════════════════════════════════════
+   JS 概念函式
+═══════════════════════════════════════════ */
+
+/* Q1：Dot & Bracket Notation */
+function q1_getPost(id) {
+  var post = null;
+  for (var i = 0; i < BLOG_DB.length; i++) {
+    if (BLOG_DB[i].id === id) { post = BLOG_DB[i]; break; }
+  }
+  return post;
 }
 
-/* ─── Q2：解構賦值 ─── */
-function q2_destructuring(post) {
+/* Q2：Destructuring */
+function q2_destructure(post) {
   var title   = post.title;
   var content = post.content;
   var author  = post.author;
-  return { title: title, content: content, author: author };
+  return { title:title, content:content, author:author };
 }
 
-/* ─── Q3：forEach 列表 ─── */
-function q3_foreach(posts) {
-  var html = '';
-  for (var i = 0; i < posts.length; i++) {
-    html += '<div class="post-item">' + escHtml(posts[i].title) + '</div>';
+/* Q3：forEach */
+function q3_foreachTitles() {
+  var out = [];
+  for (var i = 0; i < BLOG_DB.length; i++) {
+    out.push({ id: BLOG_DB[i].id, title: BLOG_DB[i].title, author: BLOG_DB[i].author });
   }
-  return html;
+  return out;
 }
 
-/* ─── Q4：req.params 查詢 ─── */
-function q4_params(id) {
+/* Q4：req.params */
+function q4_reqparams(id) {
   var params = {};
   params["id"] = id;
-  var match = null;
-  for (var i = 0; i < BLOG_DB.length; i++) {
-    if (BLOG_DB[i].id === params.id) { match = BLOG_DB[i]; break; }
-  }
-  return { params: params, post: match };
+  return params;
 }
 
-/* ─── Q5：错误優先回呼（概念展示） ─── */
-function q5_callback(id, cb) {
-  cb(null, { id: id, status: "success", message: "資料庫查詢完成" });
+/* Q5：Error-First Callback（純概念說明） */
+function q5_explain(id, cb) {
+  cb(null, { id:id, status:"success" });
 }
 
-/* ─── Q6：JSON 序列化 ─── */
+/* Q6：JSON */
 function q6_json(post) {
-  var obj   = { id: post.id, title: post.title, content: post.content, author: post.author, tags: post.tags };
+  var obj   = { id:post.id, title:post.title, content:post.content, author:post.author, tags:post.tags, likes:post.likes };
   var str   = JSON.stringify(obj);
   var parsed = JSON.parse(str);
-  return { str: str, parsed: parsed };
+  return { str:str, parsed:parsed };
 }
 
-/* ─── Q7：fakeGet 查詢 ─── */
+/* Q7：fakeGet */
 function q7_fakeget(sql, params, cb) {
   var found = null;
   for (var i = 0; i < BLOG_DB.length; i++) {
@@ -155,327 +112,364 @@ function q7_fakeget(sql, params, cb) {
   cb(null, found);
 }
 
-/* ─── Q8：三元運算 ─── */
-function q8_ternary(userName) {
-  var user = userName || null;
-  var display = user ? user : "Stranger";
-  var html = "<h1>Welcome, " + display + "</h1>";
-  return { user: user, display: display, html: html };
+/* Q8：三元 */
+function q8_greeting(user) {
+  var name = user || null;
+  var display = name ? name : "Stranger";
+  return { name:name, display:display };
 }
 
-/* ─── Q9：內容截斷 ─── */
-function q9_truncate(content, limit) {
-  return content.length > limit ? content.slice(0, limit) + "..." : content;
+/* Q9：slice */
+function q9_slice(str, n) {
+  return str.length > n ? str.slice(0, n) : str;
 }
 
-/* ─── Q10：错误優先 callback（概念展示） ─── */
+/* Q10：checkAdmin */
 function q10_checkadmin(role, cb) {
   if (role !== "admin") cb("Access Denied"); else cb(null, "Welcome, Admin!");
 }
 
-/* ─── 主要同步函式 ─── */
+/* ═══════════════════════════════════════════
+   左側編輯器 HTML
+═══════════════════════════════════════════ */
+function renderEditor(d) {
+  var tagsStr = d.tags.join(', ');
+  var statusBadge = d.draft
+    ? '<span class="status-badge draft">📝 草稿</span>'
+    : '<span class="status-badge published">✓ 已發布</span>';
+
+  var postsOptions = '';
+  for (var i = 0; i < BLOG_DB.length; i++) {
+    var p = BLOG_DB[i];
+    postsOptions += '<option value="' + p.id + '"' + (p.id === d.id ? ' selected' : '') + '>'
+      + '#' + p.id + ' ' + p.title + '</option>';
+  }
+
+  document.getElementById('leftPanel').innerHTML =
+    '<div class="card editor-card">' +
+      '<div class="q-meta">🛠️ 日誌編輯器</div>' +
+      '<div class="q-title">即時操控，觀察 JS 語法連動</div>' +
+
+      '<div class="var-field"><label for="f-id">選擇文章</label>' +
+        '<select id="f-id" onchange="syncAll()">' + postsOptions + '</select></div>' +
+
+      '<div class="var-field"><label for="f-title">標題</label>' +
+        '<input type="text" id="f-title" value="' + escAttr(d.title) + '" oninput="syncAll()"></div>' +
+
+      '<div class="var-field"><label for="f-content">內容</label>' +
+        '<textarea id="f-content" rows="5" oninput="syncAll()">' + escText(d.content) + '</textarea></div>' +
+
+      '<div class="var-field"><label for="f-author">作者</label>' +
+        '<input type="text" id="f-author" value="' + escAttr(d.author) + '" oninput="syncAll()"></div>' +
+
+      '<div class="var-field"><label for="f-tags">標籤（逗號分隔）</label>' +
+        '<input type="text" id="f-tags" value="' + escAttr(tagsStr) + '" oninput="syncAll()"></div>' +
+
+      '<div class="var-row-2">' +
+        '<div class="var-field"><label for="f-likes">👍 讚數</label>' +
+          '<input type="number" id="f-likes" value="' + d.likes + '" min="0" oninput="syncAll()"></div>' +
+        '<div class="var-field"><label for="f-views">👁 瀏覽</label>' +
+          '<input type="number" id="f-views" value="' + d.views + '" min="0" oninput="syncAll()"></div>' +
+      '</div>' +
+
+      '<div class="var-field"><label for="f-user">訪客名稱（Q8 用）</label>' +
+        '<input type="text" id="f-user" value="' + escAttr(d.user) + '" placeholder="輸入名稱或留空" oninput="syncAll()"></div>' +
+
+      '<div class="var-field">' +
+        '<label><input type="checkbox" id="f-draft"' + (d.draft ? ' checked' : '') + ' onchange="syncAll()"> 草稿（未發布）</label>' +
+        statusBadge +
+      '</div>' +
+
+      '<button class="reset-btn" onclick="resetDefaults()">↺ 重置</button>' +
+    '</div>';
+}
+
+/* ═══════════════════════════════════════════
+   右側日誌呈現 HTML
+═══════════════════════════════════════════ */
+function renderBlog(d) {
+  /* 查詢文章 */
+  var post = q1_getPost(d.id);
+  if (!post) {
+    post = { id:d.id, title:d.title, content:d.content, author:d.author, tags:d.tags, likes:d.likes, views:d.views, draft:d.draft };
+  } else {
+    /* 用編輯器的值覆寫（因為使用者可能在編輯） */
+    post.title   = d.title;
+    post.content = d.content;
+    post.author  = d.author;
+    post.tags    = d.tags;
+    post.likes   = d.likes;
+    post.views   = d.views;
+    post.draft   = d.draft;
+  }
+
+  /* Q4 params */
+  var q4r = q4_reqparams(d.id);
+
+  /* Q1 Dot & Bracket */
+  var dotResult    = post.title;
+  var bracketResult = post["title"];
+
+  /* Q2 Destructure */
+  var q2r = q2_destructure(post);
+
+  /* Q3 forEach */
+  var q3r = q3_foreachTitles();
+
+  /* Q8 Greeting */
+  var q8r = q8_greeting(d.user);
+  var greetingHtml = '<div class="greeting-banner">' + escHtml(q8r.html) + '</div>';
+
+  /* Q6 JSON */
+  var q6r = q6_json(post);
+
+  /* Tag HTML */
+  var tagHtml = '';
+  for (var ti = 0; ti < post.tags.length; ti++) {
+    tagHtml += '<span class="post-tag">' + escHtml(post.tags[ti]) + '</span>';
+  }
+
+  /* Status */
+  var statusHtml = post.draft
+    ? '<span class="draft-label">📝 草稿</span>'
+    : '<span class="published-label">✓ 已發布</span>';
+
+  /* 完整日誌 HTML */
+  var blogHtml =
+    '<div class="blog-post">' +
+      /* 標題區 */
+      '<div class="post-header">' +
+        '<h1 class="post-title">' + escHtml(post.title) + '</h1>' +
+        '<div class="post-meta-row">' +
+          '<span class="meta-author">👤 ' + escHtml(post.author) + '</span>' +
+          '<span class="meta-views">👁 ' + d.views.toLocaleString() + '</span>' +
+          '<span class="meta-likes">👍 ' + d.likes + '</span>' +
+          statusHtml +
+        '</div>' +
+        '<div class="post-tags-row">' + tagHtml + '</div>' +
+      '</div>' +
+
+      /* 內容 */
+      '<div class="post-body">' + escHtml(post.content) + '</div>' +
+
+      /* 底部互動區 */
+      '<div class="post-footer">' +
+        '<div class="interaction-bar">' +
+          '<span class="互动-btn">👍 ' + d.likes + '</span>' +
+          '<span class="互动-btn">💬 留言</span>' +
+          '<span class="互动-btn">🔗 分享</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  /* 所有文章列表（Q3 概念） */
+  var listHtml = '<div class="posts-list-section"><div class="section-label">📋 所有文章列表（Q3：forEach）</div>';
+  for (var li = 0; li < q3r.length; li++) {
+    var p = q3r[li];
+    listHtml += '<div class="list-item' + (p.id === post.id ? ' active' : '') + '">' +
+      '<span class="list-id">#' + p.id + '</span>' +
+      '<span class="list-title">' + escHtml(p.title) + '</span>' +
+      '<span class="list-author">' + escHtml(p.author) + '</span>' +
+    '</div>';
+  }
+  listHtml += '</div>';
+
+  /* ══ JS 概念說明區（自然嵌在頁面底部） ══ */
+  var conceptsHtml =
+    '<div class="concepts-wrapper">' +
+
+      /* Q1 */
+      '<div class="concept-block">' +
+        '<div class="concept-header"><span class="concept-num">Q1</span><span class="concept-title">物件屬性存取 — Dot &amp; Bracket Notation</span></div>' +
+        '<div class="concept-desc">在 Express 路由中，從資料庫拿到的資料就是一個物件。post.title 與 post["title"] 取同一個值，以下是實際操作：</div>' +
+        '<div class="concept-code">const post = { id:' + post.id + ', title:"' + escJs(post.title) + '" };\npost.title        → "' + escJs(dotResult) + '"\npost["title"]     → "' + escJs(bracketResult) + '"</div>' +
+        '<div class="concept-output">→ <span class="out-str">"' + escHtml(dotResult) + '"</span> &nbsp;(dot)\n→ <span class="out-str">"' + escHtml(bracketResult) + '"</span> &nbsp;(bracket)</div>' +
+      '</div>';
+
+      /* Q2 */
+      conceptsHtml +=
+      '<div class="concept-block">' +
+        '<div class="concept-header"><span class="concept-num">Q2</span><span class="concept-title">物件解構賦值 — Destructuring</span></div>' +
+        '<div class="concept-desc">Express 的 app.post("/posts") 裡常見 `const {" title, content } = req.body;`，解構讓你用一行取多個屬性：</div>' +
+        '<div class="concept-code">const {" title, content, author } = req.body;\n// 相當於：\nconst title   = req.body.title;\nconst content = req.body.content;\nconst author  = req.body.author;</div>' +
+        '<div class="concept-output">title   → <span class="out-str">"' + escHtml(q2r.title) + '"</span>\ncontent → <span class="out-str">"' + escHtml(q2r.content.slice(0,35)) + '..."</span>\nauthor  → <span class="out-str">"' + escHtml(q2r.author) + '"</span></div>' +
+      '</div>';
+
+      /* Q3 */
+      var q3Html = '';
+      for (var qi = 0; qi < q3r.length; qi++) {
+        q3Html += '  html += `<span>${post.title}</span>`;  // #' + q3r[qi].id + ' ' + escJs(q3r[qi].title) + '\n';
+      }
+      conceptsHtml +=
+      '<div class="concept-block">' +
+        '<div class="concept-header"><span class="concept-num">Q3</span><span class="concept-title">陣列遍歷與 HTML 拼接 — forEach</span></div>' +
+        '<div class="concept-desc">部落格首頁的 posts.forEach 迴圈就是把每一筆資料拼成 HTML 字串，送回瀏覽器渲染列表：</div>' +
+        '<div class="concept-code">const posts = [/* 從資料庫 */];\nlet html = "";\nposts.forEach(post => {\n' + q3Html + '});\nres.send(html);</div>' +
+        '<div class="concept-output">→ 共 ' + q3r.length + ' 篇文章已拼接成 HTML</div>' +
+      '</div>';
+
+      /* Q4 */
+      conceptsHtml +=
+      '<div class="concept-block">' +
+        '<div class="concept-header"><span class="concept-num">Q4</span><span class="concept-title">URL 參數與字典 — req.params</span></div>' +
+        '<div class="concept-desc">app.get("/posts/:id") 的 :id 是 URL 參數，req.params 是個字典，用來動態抓取 URL 中的值：</div>' +
+        '<div class="concept-code">// 使用者拜訪 /posts/' + d.id + '\napp.get("/posts/:id", (req, res) => {\n  const params = {};\n  params["id"] = req.params.id;\n  // params → { id: "' + d.id + '" }\n});</div>' +
+        '<div class="concept-output">req.params = <span class="out-str">"' + d.id + '"</span>\nparams["id"] = <span class="out-num">' + d.id + '</span></div>' +
+      '</div>';
+
+      /* Q5 Error-First Callback（純說明） */
+      conceptsHtml +=
+      '<div class="concept-block concept-note">' +
+        '<div class="concept-header"><span class="concept-num">Q5</span><span class="concept-title">錯誤優先回呼 — Error-First Callback</span><span class="concept-badge">純概念說明</span></div>' +
+        '<div class="concept-desc">Node.js 慣例：callback 第一個參數是錯誤（沒錯傳 null），第二個參數才是資料。這讓錯誤處理可以統一在函式起點處理：</div>' +
+        '<div class="concept-code">function fetchData(id, callback) {"\n" +
+        "  // 模擬網路請求或資料庫查詢\n" +
+        "  callback(null, { id: id, status: "success" });\n" +
+        "}\n\n" +
+        "fetchData(" + d.id + ", (err, data) => {\n" +
+        "  if (err) return console.error("錯誤：" + err);\n" +
+        "  console.log(data);  // { id: " + d.id + ", status: "success" }\n" +
+        "});</div>' +
+        '<div class="concept-note-box">📌 此概念無直接視覺呈現，是 Node.js/Express 所有資料庫方法的底層慣例。\nExpress 的 db.get()、fs.readFile()、request() 等都遵循此模式。</div>' +
+      '</div>';
+
+      /* Q6 JSON */
+      conceptsHtml +=
+      '<div class="concept-block">' +
+        '<div class="concept-header"><span class="concept-num">Q6</span><span class="concept-title">JSON 解析 — JSON.parse / JSON.stringify</span></div>' +
+        '<div class="concept-desc">express.json() 把前端送來的 JSON body 轉成 JS 物件。JSON.stringify 把 JS 物件變字串，JSON.parse 把字串變回物件：</div>' +
+        '<div class="concept-code">const obj   = { id:1, title:"...", tags:[...] };\n' +
+        'const jsonStr = JSON.stringify(obj);\n' +
+        'const parsed  = JSON.parse(jsonStr);\n' +
+        '// 常用於：req.body →儲存→ 回傳給前端</div>' +
+        '<div class="concept-output">JSON.stringify → <span class="out-str">"' + escHtml(q6r.str.slice(0,50)) + '..."</span>\n' +
+        'JSON.parse    → <span class="out-num">Object { id:' + q6r.parsed.id + ', title:"' + escHtml(q6r.parsed.title.slice(0,15)) + '"... }</span></div>' +
+      '</div>';
+
+      /* Q7 fakeGet（純說明） */
+      conceptsHtml +=
+      '<div class="concept-block concept-note">' +
+        '<div class="concept-header"><span class="concept-num">Q7</span><span class="concept-title">模擬 db.get 查詢 — fakeGet</span><span class="concept-badge">純概念說明</span></div>' +
+        '<div class="concept-desc">真實的 db.get(sql, params, callback) 會去資料庫查並把結果傳入 callback。fakeGet 模擬這個流程讓你練習 err-first 模式：</div>' +
+        '<div class="concept-code">function fakeGet(sql, params, cb) {\n' +
+        '  // 模擬：db.run(sql, params, callback)\n' +
+        '  cb(null, { id: params[0], title:"..." });\n' +
+        '}\n\n' +
+        'fakeGet(\n' +
+        '  "SELECT * FROM posts WHERE id = ?",\n' +
+        '  [' + d.id + '],\n' +
+        '  (err, row) => { ... }\n' +
+        ');</div>' +
+        '<div class="concept-note-box">📌 此概念無直接視覺呈現，但它是 Q5 err-first callback 在實際資料庫操作中的具體應用。</div>' +
+      '</div>';
+
+      /* Q8 */
+      conceptsHtml +=
+      '<div class="concept-block">' +
+        '<div class="concept-header"><span class="concept-num">Q8</span><span class="concept-title">樣板字串邏輯運算 — 三元運算</span></div>' +
+        '<div class="concept-desc">Express 的 res.send(`&lt;h1&gt;Welcome, ${user}&lt;/h1&gt;`) 常搭配三元運算處理未登入的使用者：</div>' +
+        '<div class="concept-code">const user = "' + escJs(d.user) + '" || null;\n\n' +
+        '// 三元：\n' +
+        'const displayName = user ? user : "Stranger";\n\n' +
+        '// 或可選鏈：\n' +
+        '// const displayName = user ?? "Stranger";\n\n' +
+        'res.send(`&lt;h1&gt;Welcome, ${displayName}&lt;/h1&gt;`);</div>' +
+        '<div class="concept-output">user = <span class="out-str">"' + escHtml(d.user) + '"</span>\n' +
+        'displayName = <span class="out-str">"' + escHtml(q8r.display) + '"</span></div>' +
+        '<div class="greeting-sample">' + q8r.html + '</div>' +
+      '</div>';
+
+      /* Q9 */
+      conceptsHtml +=
+      '<div class="concept-block">' +
+        '<div class="concept-header"><span class="concept-num">Q9</span><span class="concept-title">內容截斷 — Substring / slice</span></div>' +
+        '<div class="concept-desc">文章列表如果內容太長，常見做法是用 slice 截斷並加上 "..."。常用於部落格首頁的預覽卡片：</div>' +
+        '<div class="concept-code">const limit = ' + d.useTern + ';\n' +
+        '// 文章列表預覽（只取前 30 字）：\n' +
+        'const preview = content.slice(0, 30) + "...";\n' +
+        '// 或用 substr：\n' +
+        '// const preview = content.substr(0, 30) + "...";</div>' +
+        '<div class="concept-output">原文：<span class="out-str">"' + escHtml(post.content.slice(0,50)) + '..."</span>\n' +
+        '預覽：<span class="out-str">"' + escHtml(q9_slice(post.content, 30)) + '"</span></div>' +
+      '</div>';
+
+      /* Q10 checkAdmin（純說明） */
+      conceptsHtml +=
+      '<div class="concept-block concept-note">' +
+        '<div class="concept-header"><span class="concept-num">Q10</span><span class="concept-title">錯誤優先 callback 實作 — checkAdmin</span><span class="concept-badge">純概念說明</span></div>' +
+        '<div class="concept-desc">Express 中幾乎所有 db.xxx 的用法都是 err-first callback。checkAdmin 是實例：</div>' +
+        '<div class="concept-code">function checkAdmin(role, cb) {\n' +
+        '  if (role !== "admin") {\n' +
+        '    cb("Access Denied");\n' +
+        '  } else {\n' +
+        '    cb(null, "Welcome, Admin!");\n' +
+        '  }\n' +
+        '}\n\n' +
+        'checkAdmin("' + escJs(d.user) + '", (err, msg) => {\n' +
+        '  if (err) return "✗ " + err;\n' +
+        '  return "✓ " + msg;\n' +
+        '});</div>' +
+        '<div class="concept-note-box">📌 此概念無直接視覺呈現，但它與 Q5 是同一模式的不同應用情境。</div>' +
+      '</div>';
+
+  conceptsHtml += '</div>'; /* end concepts-wrapper */
+
+  document.getElementById('rightPanel').innerHTML =
+    '<div class="blog-frame">' +
+      '<div class="blog-header">📝 Express Blog 即時預覽</div>' +
+      '<div class="blog-body">' +
+        greetingHtml +
+        blogHtml +
+        listHtml +
+        conceptsHtml +
+      '</div>' +
+    '</div>';
+}
+
+/* ═══════════════════════════════════════════
+   同步主函式
+═══════════════════════════════════════════ */
 function syncAll() {
   var d = getFormData();
-
-  /* Q4：用 ID 查詢整筆 post */
-  var q4r = q4_params(d.id);
-  var post = q4r.post || { id: d.id, title: d.title, content: d.content, author: d.author, tags: d.tags };
-
-  /* Q1 */
-  var q1r = q1_dotBracket(post);
-
-  /* Q2 */
-  var q2r = q2_destructuring(post);
-
-  /* Q3：所有文章列表 */
-  var posts = BLOG_DB.slice();
-
-  /* Q6 */
-  var q6r = q6_json(post);
-
-  /* Q8 */
-  var q8r = q8_ternary(d.user);
-
-  /* Q9 */
-  var truncatedContent = q9_truncate(d.content, d.limit);
-  var truncatedTitle   = q9_truncate(d.title, d.limit);
-
-  /* Q5：錯誤優先 callback 結果 */
-  var q5result = null;
-  q5_callback(d.id, function(err, data) {
-    q5result = err ? "錯誤：" + err : "成功：" + JSON.stringify(data);
-    renderPreview(d, post, q1r, q2r, q3_foreach(posts), q4r, q6r, q8r, truncatedContent, truncatedTitle, q5result);
-  });
+  renderEditor(d);
+  renderBlog(d);
 }
 
-/* ─── 渲染右側預覽 ─── */
-function renderPreview(d, post, q1r, q2r, listHtml, q4r, q6r, q8r, truncContent, truncTitle, q5result) {
-  var el = document.getElementById('blogPreview');
-  var tagHtml = '';
-  for (var i = 0; i < d.tags.length; i++) {
-    tagHtml += '<span class="post-tag">' + escHtml(d.tags[i]) + '</span>';
-  }
-
-  var preview = '';
-  if (d.ternary) {
-    /* 使用截斷預覽 */
-    preview = '<div class="post-single">'
-      + '<div class="post-title">' + escHtml(truncTitle) + '</div>'
-      + '<div class="post-content">' + escHtml(truncContent) + '</div>'
-      + '<div class="post-meta">作者：' + escHtml(d.author) + ' · ' + tagHtml + '</div>'
-      + '</div>';
-  } else {
-    /* 完整預覽 */
-    preview = '<div class="post-single">'
-      + '<div class="post-title">' + escHtml(post.title) + '</div>'
-      + '<div class="post-content">' + escHtml(post.content) + '</div>'
-      + '<div class="post-meta">作者：' + escHtml(post.author) + ' · ' + tagHtml + '</div>'
-      + '</div>';
-  }
-
-  /* Q8 greeting */
-  var greeting = '<div class="Welcome-banner">' + q8r.html + '</div>';
-
-  el.innerHTML = greeting + preview + '<div class="post-list">' + listHtml + '</div>';
-}
-
-/* ─── 底部概念區 ─── */
-function renderConcepts() {
-  var d = getFormData();
-
-  var q4r = q4_params(d.id);
-  var post = q4r.post || { id: d.id, title: d.title, content: d.content, author: d.author, tags: d.tags };
-
-  var q1r = q1_dotBracket(post);
-  var q2r = q2_destructuring(post);
-  var q6r = q6_json(post);
-  var q8r = q8_ternary(d.user);
-  var truncContent = q9_truncate(d.content, d.limit);
-
-  var q5result = null;
-  q5_callback(d.id, function(err, data) {
-    q5result = err ? "錯誤：" + err : "成功：" + JSON.stringify(data);
-    buildConceptHtml(d, post, q1r, q2r, q6r, q8r, truncContent, q5result);
-  });
-}
-
-function buildConceptHtml(d, post, q1r, q2r, q6r, q8r, truncContent, q5result) {
-  var html = '';
-
-  /* Q1 區塊 */
-  html += '<div class="card concept-card">'
-    + '<div class="q-meta">1｜物件屬性存取 (Dot &amp; Bracket Notation)</div>'
-    + '<div class="q-desc">post.title 與 post["title"] 取同一個值。以下是實際操作：</div>'
-    + '<div class="code-block"><pre>'
-    + 'const post = { id: ' + post.id + ', title: "' + escJs(post.title) + '" };\n'
-    + 'post.title        → "' + escHtml(q1r.dot) + '"\n'
-    + 'post["title"]     → "' + escHtml(q1r.bracket) + '"'
-    + '</pre></div>'
-    + '<div class="output-block"><span class="label">輸出</span><pre>'
-    + 'post.title        → <span class="str">"' + escHtml(q1r.dot) + '"</span>\n'
-    + 'post["title"]     → <span class="str">"' + escHtml(q1r.bracket) + '"</span>'
-    + '</pre></div>'
-    + '</div>';
-
-  /* Q2 區塊 */
-  html += '<div class="card concept-card">'
-    + '<div class="q-meta">2｜物件解構賦值 (Destructuring)</div>'
-    + '<div class="q-desc">解構讓你用一行從物件取出多個屬性：</div>'
-    + '<div class="code-block"><pre>'
-    + 'const { title, content, author } = post;\n'
-    + '// 相當於：\n'
-    + 'const title   = post.title;\n'
-    + 'const content = post.content;\n'
-    + 'const author  = post.author;'
-    + '</pre></div>'
-    + '<div class="output-block"><span class="label">輸出</span><pre>'
-    + 'title   → <span class="str">"' + escHtml(q2r.title) + '"</span>\n'
-    + 'content → <span class="str">"' + escHtml(q2r.content.slice(0,30)) + '..."</span>\n'
-    + 'author  → <span class="str">"' + escHtml(q2r.author) + '"</span>'
-    + '</pre></div>'
-    + '</div>';
-
-  /* Q3 區塊 */
-  html += '<div class="card concept-card">'
-    + '<div class="q-meta">3｜陣列遍歷與 HTML 拼接 (forEach)</div>'
-    + '<div class="q-desc">forEach 把文章陣列拼成 HTML 字串，送回瀏覽器渲染列表：</div>'
-    + '<div class="code-block"><pre>'
-    + 'posts.forEach(post => {\n'
-    + '  html += `<div class="post-item">${post.title}</div>`;\n'
-    + '});'
-    + '</pre></div>'
-    + '<div class="output-block"><span class="label">輸出</span>'
-    + '<div class="post-list">' + q3_foreach(BLOG_DB.slice()) + '</div>'
-    + '</div></div>';
-
-  /* Q4 區塊 */
-  var q4r = q4_params(d.id);
-  html += '<div class="card concept-card">'
-    + '<div class="q-meta">4｜URL 參數與字典 (req.params)</div>'
-    + '<div class="q-desc">app.get("/posts/:id") 的 :id 是 URL 參數，req.params 是個字典：</div>'
-    + '<div class="code-block"><pre>'
-    + '// 使用者拜訪 /posts/' + d.id + '\n'
-    + 'const params = {};\n'
-    + 'params["id"] = ' + d.id + ';\n'
-    + '// params → { id: ' + d.id + ' }'
-    + '</pre></div>'
-    + '<div class="output-block"><span class="label">params</span><pre>'
-    + '{ id: ' + q4r.params.id + ' }'
-    + '</pre></div>'
-    + '<div class="output-block"><span class="label">查詢結果</span><pre>'
-    + (q4r.post
-      ? '<span class="str">"' + escHtml(q4r.post.title) + '"</span> by ' + escHtml(q4r.post.author)
-      : '<span class="Error-hint">找不到 ID 為 ' + d.id + ' 的文章</span>')
-    + '</pre></div>'
-    + '</div>';
-
-  /* Q5 區塊 */
-  html += '<div class="card concept-card">'
-    + '<div class="q-meta">5｜錯誤優先回呼 (Error-First Callback)</div>'
-    + '<div class="q-desc">Node.js 慣例：第一個參數是錯誤，沒錯傳 null，第二個才是資料：</div>'
-    + '<div class="code-block"><pre>'
-    + 'function fetchData(id, callback) {\n'
-    + '  const data = { id: id, status: "success" };\n'
-    + '  callback(null, data);  // null = 無錯誤\n'
-    + '}\n\n'
-    + 'fetchData(' + d.id + ', (err, data) => {\n'
-    + '  if (err) return console.error(err);\n'
-    + '  console.log(data);  // { id: ' + d.id + ', status: "success" }\n'
-    + '});'
-    + '</pre></div>'
-    + '<div class="output-block"><span class="label">實際執行</span><pre>'
-    + escHtml(q5result)
-    + '</pre></div>'
-    + '</div>';
-
-  /* Q6 區塊 */
-  html += '<div class="card concept-card">'
-    + '<div class="q-meta">6｜JSON 解析 (JSON.parse)</div>'
-    + '<div class="q-desc">JSON.stringify 把 JS 物件變字串，JSON.parse 把字串變回物件：</div>'
-    + '<div class="code-block"><pre>'
-    + 'const obj = { id: 1, title: "...", tags: [...] };\n'
-    + 'const jsonStr = JSON.stringify(obj);\n'
-    + 'const parsed  = JSON.parse(jsonStr);'
-    + '</pre></div>'
-    + '<div class="output-block"><span class="label">JSON.stringify</span><pre>'
-    + escHtml(q6r.str.slice(0, 80)) + (q6r.str.length > 80 ? '...' : '')
-    + '</pre></div>'
-    + '<div class="output-block"><span class="label">JSON.parse</span><pre>'
-    + escHtml(JSON.stringify(q6r.parsed, null, 2).slice(0, 80)) + '...'
-    + '</pre></div>'
-    + '</div>';
-
-  /* Q7 區塊 */
-  var q7result = null;
-  q7_fakeget("SELECT * FROM posts WHERE id = ?", [d.id], function(err, row) {
-    q7result = err ? "失敗：" + err : "抓到：「" + (row ? row.title : "無") + "」";
-    finalize();
-  });
-
-  function finalize() {
-    html += '<div class="card concept-card">'
-      + '<div class="q-meta">7｜模擬 db.get 查詢 (fakeGet)</div>'
-      + '<div class="q-desc">真實資料庫的查詢流程：SQL + 參數 + callback：</div>'
-      + '<div class="code-block"><pre>'
-      + 'function fakeGet(sql, params, cb) {\n'
-      + '  // 模擬 db.get(sql, params, callback)\n'
-      + '  cb(null, { id: params[0], title: "..." });\n'
-      + '}\n\n'
-      + 'fakeGet(\n'
-      + '  "SELECT * FROM posts WHERE id = ?",\n'
-      + '  [' + d.id + '],\n'
-      + '  (err, row) => { ... }\n'
-      + ');'
-      + '</pre></div>'
-      + '<div class="output-block"><span class="label">執行結果</span><pre>'
-      + escHtml(q7result)
-      + '</pre></div>'
-      + '</div>';
-
-    /* Q8 區塊 */
-    html += '<div class="card concept-card">'
-      + '<div class="q-meta">8｜樣板字串邏輯運算 (三元運算)</div>'
-      + '<div class="q-desc">用三元運算處理未登入訪客，自動替換成 "Stranger"：</div>'
-      + '<div class="code-block"><pre>'
-      + 'const user = "' + escJs(d.user) + '" || null;\n'
-      + '//           ↑ 上一行的 user 值\n\n'
-      + 'const displayName = user ? user : "Stranger";\n'
-      + '// 或用三元：\n'
-      + '// const displayName = user ?? "Stranger";\n\n'
-      + 'res.send(`&lt;h1&gt;Welcome, ${displayName}&lt;/h1&gt;`);'
-      + '</pre></div>'
-      + '<div class="output-block"><span class="label">user = "' + escHtml(d.user) + '"</span><pre>'
-      + 'displayName = <span class="str">"' + escHtml(q8r.display) + '"</span>\n'
-      + 'HTML = <span class="str">' + escHtml(q8r.html) + '</span>'
-      + '</pre></div>'
-      + '<div class="Welcome-banner">' + q8r.html + '</div>'
-      + '</div>';
-
-    /* Q9 區塊 */
-    html += '<div class="card concept-card">'
-      + '<div class="q-meta">9｜內容截斷 (Substring)</div>'
-      + '<div class="q-desc">slice(0, n) 限制顯示字元數，常用於文章列表預覽：</div>'
-      + '<div class="code-block"><pre>'
-      + 'const limit = ' + d.limit + ';\n'
-      + 'const truncated = content.slice(0, limit) + "...";\n\n'
-      + '// 原文：  ' + escJs(d.content) + '\n'
-      + '// 截斷後：' + escJs(truncContent)
-      + '</pre></div>'
-      + '<div class="output-block"><span class="label">原文</span><pre>' + escHtml(d.content) + '</pre></div>'
-      + '<div class="output-block"><span class="label">截斷（' + d.limit + '字）</span><pre>' + escHtml(truncContent) + '</pre></div>'
-      + '</div>';
-
-    /* Q10 區塊 */
-    html += '<div class="card concept-card">'
-      + '<div class="q-meta">10｜錯誤優先 callback 實作 (checkAdmin)</div>'
-      + '<div class="q-desc">Express 的 db.xxx 系列幾乎都遵循 err-first callback 模式：</div>'
-      + '<div class="code-block"><pre>'
-      + 'function checkAdmin(role, cb) {\n'
-      + '  if (role !== "admin") {\n'
-      + '    cb("Access Denied");\n'
-      + '  } else {\n'
-      + '    cb(null, "Welcome");\n'
-      + '  }\n'
-      + '}\n\n'
-      + 'checkAdmin("' + escJs(d.user) + '", (err, msg) => {\n'
-      + '  if (err) return "✗ " + err;\n'
-      + '  return "✓ " + msg;\n'
-      + '});'
-      + '</pre></div>'
-      + '<div class="output-block"><span class="label">執行結果</span><pre>';
-    var q10res = null;
-    q10_checkadmin(d.user, function(err, msg) {
-      q10res = err ? "✗ 錯誤：" + err : "✓ " + msg;
-      html += escHtml(q10res) + '</pre></div></div>';
-      document.getElementById('conceptGrid').innerHTML = html;
-    });
-  }
-}
-
-/* ─── 工具函式 ─── */
+/* ═══════════════════════════════════════════
+   工具
+═══════════════════════════════════════════ */
 function escHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escAttr(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+function escText(s) {
   if (s === null || s === undefined) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 function escJs(s) {
   if (s === null || s === undefined) return '';
-  return String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'\\n');
+  return String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'\\n').replace(/'/g,"\\'");
 }
 
-/* ─── 初始化 ─── */
 function resetDefaults() {
-  document.getElementById('f-id').value = 1;
-  document.getElementById('f-title').value = "掌握 JavaScript 函式";
-  document.getElementById('f-content').value = "JavaScript 函式是現代開發的核心元件，靈活運用能大幅提升程式碼品質。";
-  document.getElementById('f-author').value = "Alice";
-  document.getElementById('f-tags').value = "js, 函式, ES6";
-  document.getElementById('f-user').value = "Guest";
-  document.getElementById('f-limit').value = 20;
-  document.getElementById('f-ternary').checked = true;
+  var p = BLOG_DB[0];
+  document.getElementById('f-id').value = p.id;
+  document.getElementById('f-title').value = p.title;
+  document.getElementById('f-content').value = p.content;
+  document.getElementById('f-author').value = p.author;
+  document.getElementById('f-tags').value = p.tags.join(', ');
+  document.getElementById('f-likes').value = p.likes;
+  document.getElementById('f-views').value = p.views;
+  document.getElementById('f-draft').checked = p.draft;
+  document.getElementById('f-user').value = 'Guest';
   syncAll();
 }
 
-/* ─── 主題切換 ─── */
+/* 主題切換 */
 var savedTheme = localStorage.getItem('hw7_theme') || 'light';
 applyTheme(savedTheme);
 document.getElementById('themeToggle').addEventListener('click', function() {
@@ -488,9 +482,8 @@ function applyTheme(theme) {
   document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️ 淺色' : '🌙 深色';
 }
 
-/* ─── 啟動 ─── */
+/* 啟動 */
 syncAll();
-renderConcepts();
 </script>
 </body>
 </html>
