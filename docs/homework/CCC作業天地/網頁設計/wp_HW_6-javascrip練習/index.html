@@ -22,9 +22,7 @@
       padding: 1rem 2rem;
     }
 
-    header h1 {
-      font-size: 1.4rem;
-    }
+    header h1 { font-size: 1.4rem; }
 
     main {
       flex: 1;
@@ -67,26 +65,12 @@
     }
 
     .progress-dot.answered {
-      background: #00b894;
-      border-color: #00b894;
+      background: #74b9ff;
+      border-color: #74b9ff;
       color: white;
     }
 
-    .progress-dot.correct {
-      background: #00b894;
-      border-color: #00b894;
-      color: white;
-    }
-
-    .progress-dot.wrong {
-      background: #e17055;
-      border-color: #e17055;
-      color: white;
-    }
-
-    .progress-dot:hover {
-      opacity: 0.8;
-    }
+    .progress-dot:hover { opacity: 0.8; }
 
     /* Question Card */
     .question-card {
@@ -134,10 +118,7 @@
       user-select: none;
     }
 
-    .option:hover {
-      border-color: #74b9ff;
-      background: #f0f7ff;
-    }
+    .option:hover { border-color: #74b9ff; background: #f0f7ff; }
 
     .option.selected {
       border-color: #0984e3;
@@ -153,6 +134,11 @@
     .option.wrong {
       border-color: #e17055;
       background: #ffeae5;
+    }
+
+    .option.reveal-correct {
+      border-color: #00b894;
+      background: #dff9f0;
     }
 
     @keyframes pop {
@@ -176,25 +162,19 @@
       color: #555;
     }
 
-    .option.selected .option-letter {
+    .option.selected .option-letter,
+    .option.correct .option-letter,
+    .option.wrong .option-letter,
+    .option.reveal-correct .option-letter {
       background: #0984e3;
       color: white;
     }
 
-    .option.correct .option-letter {
-      background: #00b894;
-      color: white;
-    }
+    .option.correct .option-letter,
+    .option.reveal-correct .option-letter { background: #00b894; }
+    .option.wrong .option-letter           { background: #e17055; }
 
-    .option.wrong .option-letter {
-      background: #e17055;
-      color: white;
-    }
-
-    .option-text {
-      font-size: 1rem;
-      line-height: 1.4;
-    }
+    .option-text { font-size: 1rem; line-height: 1.4; }
 
     /* Navigation */
     .nav-buttons {
@@ -213,28 +193,27 @@
       transition: all 0.2s ease;
     }
 
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .btn-prev {
-      background: #dfe6e9;
-      color: #2d3436;
-    }
+    .btn-prev { background: #dfe6e9; color: #2d3436; }
+    .btn-prev:hover:not(:disabled) { background: #b2bec3; }
 
-    .btn-prev:hover:not(:disabled) {
-      background: #b2bec3;
-    }
+    .btn-next { background: #0984e3; color: white; }
+    .btn-next:hover:not(:disabled) { background: #0870c7; }
 
-    .btn-next {
-      background: #0984e3;
+    .btn-submit {
+      background: #00b894;
       color: white;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
     }
 
-    .btn-next:hover:not(:disabled) {
-      background: #0870c7;
-    }
+    .btn-submit:hover { background: #00a383; }
 
     /* Result Screen */
     .result-card {
@@ -253,17 +232,9 @@
       line-height: 1;
     }
 
-    .result-label {
-      font-size: 1.3rem;
-      color: #555;
-      margin-top: 0.5rem;
-    }
+    .result-label { font-size: 1.3rem; color: #555; margin-top: 0.5rem; }
 
-    .result-message {
-      font-size: 1.1rem;
-      color: #777;
-      margin-top: 1rem;
-    }
+    .result-message { font-size: 1.1rem; color: #777; margin-top: 1rem; }
 
     .btn-restart {
       background: #00b894;
@@ -278,20 +249,7 @@
       transition: background 0.2s;
     }
 
-    .btn-restart:hover {
-      background: #00a383;
-    }
-
-    /* Feedback overlay */
-    .feedback-bar {
-      height: 4px;
-      border-radius: 2px;
-      margin-bottom: 1.5rem;
-      transition: all 0.4s ease;
-    }
-
-    .feedback-bar.correct { background: #00b894; }
-    .feedback-bar.wrong   { background: #e17055; }
+    .btn-restart:hover { background: #00a383; }
 
     /* Responsive */
     @media (max-width: 500px) {
@@ -424,23 +382,21 @@ function shuffle(arr) {
 }
 
 /* ─── 狀態 ─── */
-let questions = [];       // 本次抽出的10題（已亂序含選項）
-let current   = 0;        // 目前第幾題（0-indexed）
-let answers    = [];       // answers[i] = 使用者選的 option index
-let confirmed  = [];      // confirmed[i] = 是否已確認過（看過對錯）
-let startTime  = Date.now();
+let questions  = [];    // 本次10題（含亂序選項）
+let current    = 0;     // 目前第幾題（0-indexed）
+let answers    = [];    // answers[i] = 選的 option index
+let submitted  = false; // 是否已送出
 
 /* ─── 初始 ─── */
 function init() {
   const pool = shuffle(ALL_QUESTIONS).slice(0, 10);
-  questions = pool.map(q => ({
+  questions  = pool.map(q => ({
     ...q,
     opts: shuffle(q.opts.map((o, i) => ({ text: o, isAns: i === q.ans })))
   }));
-  current   = 0;
-  answers   = new Array(10).fill(null);
-  confirmed = new Array(10).fill(false);
-  startTime = Date.now();
+  current    = 0;
+  answers    = new Array(10).fill(null);
+  submitted  = false;
   render();
 }
 
@@ -452,15 +408,20 @@ function goTo(idx) {
 
 /* ─── 選項 ─── */
 function selectOption(optIdx) {
-  if (confirmed[current]) return; // 已確認不能再改
+  if (submitted) return;
   answers[current] = optIdx;
-  confirmed[current] = true;
   render();
 }
 
 /* ─── 前後題 ─── */
 function prev() { if (current > 0) { current--; render(); } }
-function next() { if (current < 9) { current++; render(); } }
+function next()  { if (current < 9) { current++; render(); } }
+
+/* ─── 送出 ─── */
+function submit() {
+  submitted = true;
+  render();
+}
 
 /* ─── 計算分數 ─── */
 function getScore() {
@@ -470,16 +431,13 @@ function getScore() {
   }, 0);
 }
 
-function allAnswered() {
-  return answers.every(a => a !== null);
-}
-
 /* ─── 渲染 ─── */
 function render() {
-  const app = document.getElementById('app');
+  const app    = document.getElementById('app');
+  const letters = ['A', 'B', 'C', 'D'];
 
   /* ── 結果畫面 ── */
-  if (confirmed.every(c => c)) {
+  if (submitted) {
     const score = getScore();
     const pct   = Math.round(score / 10 * 100);
     let msg = '';
@@ -499,43 +457,28 @@ function render() {
   }
 
   /* ── 答題畫面 ── */
-  const q   = questions[current];
-  const letters = ['A', 'B', 'C', 'D'];
+  const q = questions[current];
 
   /* Progress dots */
   const dots = questions.map((_, i) => {
     let cls = 'progress-dot';
-    if (i === current)      cls += ' current';
-    else if (confirmed[i])  cls += answers[i] !== null && questions[i].opts[answers[i]].isAns ? ' correct' : ' wrong';
+    if (i === current)             cls += ' current';
     else if (answers[i] !== null) cls += ' answered';
     return `<div class="${cls}" onclick="goTo(${i})">${i + 1}</div>`;
   }).join('');
 
-  /* 答題狀態的 feedback bar */
-  const isCorrect = confirmed[current] && questions[current].opts[answers[current]].isAns;
-  const fbCls = confirmed[current] ? (isCorrect ? 'correct' : 'wrong') : '';
-  const fbBar = confirmed[current]
-    ? `<div class="feedback-bar ${fbCls}"></div>`
-    : '';
-
-  /* 最後一題的 next 文字 */
-  const nextLabel = current === 9 ? '看結果 🎉' : '下一題 →';
+  /* 是否所有題目都答了 */
+  const allAnswered = answers.every(a => a !== null);
 
   app.innerHTML = `
     <div class="progress-bar">${dots}</div>
     <div class="question-card">
-      ${fbBar}
       <div class="question-meta">第 ${current + 1} 題 / 共 10 題</div>
       <div class="question-text">${q.q}</div>
       <div class="options">
         ${q.opts.map((opt, i) => {
           let cls = 'option';
-          if (confirmed[current]) {
-            if (opt.isAns)                     cls += ' correct';
-            else if (answers[current] === i)   cls += ' wrong';
-          } else if (answers[current] === i) {
-            cls += ' selected';
-          }
+          if (answers[current] === i) cls += ' selected';
           return `<div class="${cls}" onclick="selectOption(${i})">
             <div class="option-letter">${letters[i]}</div>
             <div class="option-text">${opt.text}</div>
@@ -544,7 +487,10 @@ function render() {
       </div>
       <div class="nav-buttons">
         <button class="btn btn-prev" onclick="prev()" ${current === 0 ? 'disabled' : ''}>← 上一題</button>
-        <button class="btn btn-next" onclick="next()" ${!confirmed[current] ? 'disabled' : ''}>${nextLabel}</button>
+        ${current < 9
+          ? `<button class="btn btn-next" onclick="next()" ${answers[current] === null ? 'disabled' : ''}>下一題 →</button>`
+          : `<button class="btn-submit" onclick="submit()" ${allAnswered ? '' : 'disabled'}>送出答案 🎉</button>`
+        }
       </div>
     </div>`;
 }
