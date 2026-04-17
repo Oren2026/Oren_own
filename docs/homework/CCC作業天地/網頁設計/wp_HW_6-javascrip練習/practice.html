@@ -43,7 +43,7 @@ let current = 0;
 let outputs = new Array(PRACTICE_QUESTIONS.length).fill(null);
 let isRunning = false;
 
-/* ─── Highlight code ─── */
+/* ─── Syntax Highlight ─── */
 function highlight(code) {
   return code
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -52,8 +52,14 @@ function highlight(code) {
     .replace(/\b(\w+)(?=\s*\()/g, '<span class="function_">$1</span>')
     .replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>')
     .replace(/"([^"]*)"/g,     '<span class="string">"$1"</span>')
-    .replace(/'([^']*)'/g,     '<span class="string">\'$1\'</span>')
+    .replace(/'([^']*)'/g,     "<span class=\"string\">'$1'</span>")
     .replace(/__(\w+)__/g,     '<span class="var-pre">__$1__</span>');
+}
+
+/* ─── Safe parseFloat (NaN check) ─── */
+function safeNum(val, fallback) {
+  const n = parseFloat(val);
+  return isNaN(n) ? fallback : n;
 }
 
 /* ─── Run question ─── */
@@ -61,19 +67,17 @@ function runQuestion(idx) {
   if (isRunning) return;
   const q = PRACTICE_QUESTIONS[idx];
 
-  // Collect current variable values
   const vars = {};
   q.variables.forEach(v => {
     const el = document.getElementById(`var-${idx}-${v.key}`);
-    if (el) vars[v.key] = parseFloat(el.value);
+    if (el) vars[v.key] = safeNum(el.value, v.default);
   });
 
-  // Show loading state
   const outEl = document.getElementById(`output-${idx}`);
   outEl.innerHTML = '<span class="output-waiting">⏳ 執行中...</span>';
   isRunning = true;
 
-  const ms = q.id === 9 ? vars.MS || 2000 : 0;
+  const ms = (q.id === 9) ? safeNum(vars.MS, 2000) : 50;
 
   setTimeout(() => {
     try {
@@ -97,18 +101,14 @@ function restoreDefaults(idx) {
 }
 
 /* ─── Navigation ─── */
-function goTo(idx) {
-  current = idx;
-  render();
-}
-
-function prev() { if (current > 0) { current--; render(); } }
-function next() { if (current < PRACTICE_QUESTIONS.length - 1) { current++; render(); } }
+function goTo(idx) { current = idx; render(); }
+function prev()    { if (current > 0) { current--; render(); } }
+function next()    { if (current < PRACTICE_QUESTIONS.length - 1) { current++; render(); } }
 
 /* ─── Render ─── */
 function render() {
   const app = document.getElementById('app');
-  const q = PRACTICE_QUESTIONS[current];
+  const q   = PRACTICE_QUESTIONS[current];
 
   /* Progress dots */
   const dots = PRACTICE_QUESTIONS.map((_, i) => {
@@ -118,15 +118,15 @@ function render() {
     return `<div class="${cls}" onclick="goTo(${i})">${i + 1}</div>`;
   }).join('');
 
-  /* Variable inputs */
+  /* Variable inputs — use idx (0-based) for ID consistency */
   const varInputs = q.variables.map(v => `
     <div class="var-field">
-      <label for="var-${q.id}-${v.key}">${v.label}</label>
-      <input type="number" id="var-${q.id}-${v.key}" value="${v.default}"
+      <label for="var-${current}-${v.key}">${v.label}</label>
+      <input type="number" id="var-${current}-${v.key}" value="${v.default}"
         onkeydown="if(event.key==='Enter')runQuestion(${current})">
     </div>`).join('');
 
-  /* Output area */
+  /* Output */
   const outputHtml = outputs[current] !== null
     ? `<div class="output-label">輸出結果</div><div class="output-text">${outputs[current]}</div>`
     : `<span class="output-waiting">⬆ 點擊「▶ 執行」查看輸出結果</span>`;
@@ -146,17 +146,11 @@ function render() {
       <div class="var-row">${varInputs}</div>
 
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="run-btn" onclick="runQuestion(${current})">
-          ▶ 執行
-        </button>
-        <button class="run-btn" style="background:#636e72;" onclick="restoreDefaults(${current})">
-          ↺ 恢復預設
-        </button>
+        <button class="run-btn" onclick="runQuestion(${current})">▶ 執行</button>
+        <button class="run-btn" style="background:#636e72;" onclick="restoreDefaults(${current})">↺ 恢復預設</button>
       </div>
 
-      <div class="output-panel" id="output-${current}">
-        ${outputHtml}
-      </div>
+      <div class="output-panel" id="output-${current}">${outputHtml}</div>
 
       <div class="practice-nav">
         <button class="btn btn-prev" onclick="prev()" ${current === 0 ? 'disabled' : ''}>← 上一題</button>
