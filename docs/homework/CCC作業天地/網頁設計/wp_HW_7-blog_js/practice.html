@@ -185,6 +185,10 @@ function renderEditor(d) {
         statusBadge +
       '</div>' +
 
+      '<div class="var-field">' +
+        '<label><input type="checkbox" id="f-tern"' + (d.useTern ? ' checked' : '') + ' onchange="syncAll()"> 使用三元/截斷</label>' +
+      '</div>' +
+
       '<button class="reset-btn" onclick="resetDefaults()">↺ 重置</button>' +
     '</div>';
 }
@@ -471,6 +475,7 @@ function resetDefaults() {
   document.getElementById('f-likes').value = p.likes;
   document.getElementById('f-views').value = p.views;
   document.getElementById('f-draft').checked = p.draft;
+  document.getElementById('f-tern').checked = true;
   document.getElementById('f-user').value = 'Guest';
   syncAll();
 }
