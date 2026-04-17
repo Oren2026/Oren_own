@@ -1,4 +1,4 @@
-const BLOG_DATA = {
+window.BLOG_DATA = {
   posts: [
     { id: 1, title: "掌握 JavaScript 函式", content: "JavaScript 函式是現代開發的核心元件...", author: "Alice", tags: ["js", "函式"] },
     { id: 2, title: "Node.js 入門指南", content: "Node.js 讓你可以用 JS 寫後端...", author: "Bob", tags: ["node", "後端"] },
@@ -7,7 +7,7 @@ const BLOG_DATA = {
 };
 
 /* ─── 10 題資料 ─── */
-const QUESTIONS = [
+window.QUESTIONS = [
 
   /* ── Q1: 物件屬性存取 ── */
   {
