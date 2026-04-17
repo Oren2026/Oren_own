@@ -169,7 +169,41 @@ wp_HW_7-blog_js/
 3. **v1 失敗**：GitHub Pages 空白頁 — DOM 讀取順序錯誤（getFormData 在 renderEditor 之前）
 4. **v2**：加入 `initFirstRender()` 解決 startup crash
 5. **v2.1**：打字時左側編輯器一直被摧毀 — 拆出 `syncPreview()`
-6. **最終版**：index 重新設計（Hero + 概念總覽網格 + 操作說明），成為完整的學習入口頁
+6. **v2.2**：index 重新設計（Hero + 概念總覽網格 + 操作說明）
+7. **v3**：選文章時右側標題不變 — `onIdChange()` 直接讀 BLOG_DB 而非 DOM
+8. **v3.1**：精簡左側編輯器（移除 tags 輸入框，三欄並排 👍👁👤，草稿+三元同一行）
+9. **v3.2**：Q8 勾選三元現在有實際差異（並排顯示 ternary vs OR 結果）
+10. **v3.3**：主題切換移至左側面板 topbar，深色模式改用護眼翠綠色系
+11. **v3.4**：返回首頁連結移至左側面板 topbar，與主題切換並排，解決滑動被 header 遮住的問題
+
+---
+
+## 🧩 技術細節
+
+### 左側編輯器精簡後的 DOM 結構
+
+```
+editor-card
+  editor-topbar    [← 返回首頁]           [🌙 深色]
+  q-meta           🛠️ 日誌編輯器
+  q-title          即時操控，觀察 JS 語法連動
+  f-id             選擇文章（select）
+  f-title          標題（input text）
+  f-content         內容（textarea rows=4）
+  f-user            訪客名稱（input text）
+  var-row-3         👍讚數 | 👁瀏覽 | 👤作者（三欄並排）
+  var-field-row-inline  [📝草稿 checkbox] [使用三元 checkbox]
+  reset-btn         ↺ 重置
+```
+
+Tags 不再是輸入框，改用 JS 變數 `currentTags` 追蹤。
+
+### 主題切換架構
+
+- Toggle button 在左側面板 topbar（`renderEditor()` 時動態建立）
+- 事件監聽用 `document.addEventListener('click')` 代理，不依賴按鈕 DOM 是否已存在
+- 深色模式 accent 為護眼翠綠 `#6ee7b7`，淺色模式保留紫色 `#6c5ce7`
+
 
 ---
 
