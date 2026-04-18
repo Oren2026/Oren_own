@@ -4,6 +4,16 @@
 import subprocess
 import tkinter as tk
 from tkinter import ttk
+import sys
+
+# 嘗試設定中文字型
+try:
+    tkinter_font = tk.font.Font(family="Noto Sans CJK TC", size=10)
+except:
+    try:
+        tkinter_font = tk.font.Font(family="WenQuanYi Micro Hei", size=10)
+    except:
+        tkinter_font = None
 
 def run_terminal(command):
     """在新終端機執行指令"""
@@ -89,39 +99,49 @@ root.title("TB3 2026 AutoRace 控制面板")
 root.resizable(False, False)
 
 # Mission 按鈕框架
-mission_frame = ttk.LabelFrame(root, text="任務節點")
+mission_frame = ttk.LabelFrame(root, text="Mission Nodes")
 mission_frame.pack(side=tk.LEFT, padx=10, pady=10)
 
 # 每關：正常 + 校正 兩個按鈕
 missions = [
-    ("M1 交通號誌",         on_m1,      "M1 校正",      on_m1cal),
-    ("M2 S曲線",            on_m2,      "M2 校正",      on_m2cal),
-    ("M3 施工區",           on_m3,      "M3 校正",      on_m3cal),
-    ("M4 停車場",           on_m4,      "M4 校正",      on_m4cal),
-    ("M5 M曲線",            on_m5,      "M5 校正",      on_m5cal),
-    ("M6 平交道",           on_m6,      "M6 校正",      on_m6cal),
-    ("M7 隧道",             on_m7,      "M7 校正",      on_m7cal),
+    ("M1 TrafficLight",    on_m1,      "M1 Cal",       on_m1cal),
+    ("M2 S_Curve",         on_m2,      "M2 Cal",       on_m2cal),
+    ("M3 Construction",    on_m3,      "M3 Cal",       on_m3cal),
+    ("M4 Parking",         on_m4,      "M4 Cal",       on_m4cal),
+    ("M5 M_Curve",         on_m5,      "M5 Cal",       on_m5cal),
+    ("M6 LevelCrossing",   on_m6,      "M6 Cal",       on_m6cal),
+    ("M7 Tunnel",          on_m7,      "M7 Cal",       on_m7cal),
 ]
 
 for i, (label_a, cmd_a, label_b, cmd_b) in enumerate(missions):
-    ttk.Button(mission_frame, text=label_a, command=cmd_a, width=15).grid(row=i, column=0, padx=5, pady=3)
-    ttk.Button(mission_frame, text=label_b, command=cmd_b, width=10).grid(row=i, column=1, padx=5, pady=3)
+    btn_a = ttk.Button(mission_frame, text=label_a, command=cmd_a, width=15)
+    if tkinter_font:
+        btn_a.configure(font=tkinter_font)
+    btn_a.grid(row=i, column=0, padx=5, pady=3)
+
+    btn_b = ttk.Button(mission_frame, text=label_b, command=cmd_b, width=10)
+    if tkinter_font:
+        btn_b.configure(font=tkinter_font)
+    btn_b.grid(row=i, column=1, padx=5, pady=3)
 
 # 控制框架
-control_frame = ttk.LabelFrame(root, text="控制工具")
+control_frame = ttk.LabelFrame(root, text="Control Tools")
 control_frame.pack(side=tk.LEFT, padx=10, pady=10)
 
-ttk.Button(control_frame, text="狀態機 (rosn)",  command=on_core,           width=18).pack(pady=3)
-ttk.Button(control_frame, text="循線 (dl+cl)",    command=on_lane,            width=18).pack(pady=3)
-ttk.Button(control_frame, text="rqt_reconfigure",command=on_rqt_reconfigure,  width=18).pack(pady=3)
-ttk.Button(control_frame, text="rqt_image_view",  command=on_rqt_image,       width=18).pack(pady=3)
+ttk.Button(control_frame, text="State Machine (rosn)",  command=on_core,           width=18).pack(pady=3)
+ttk.Button(control_frame, text="Lane (dl+cl)",          command=on_lane,            width=18).pack(pady=3)
+ttk.Button(control_frame, text="rqt_reconfigure",        command=on_rqt_reconfigure, width=18).pack(pady=3)
+ttk.Button(control_frame, text="rqt_image_view",         command=on_rqt_image,       width=18).pack(pady=3)
 
 ttk.Separator(control_frame, orient='horizontal').pack(fill='x', pady=8)
 
-ttk.Button(control_frame, text="緊急停止",         command=on_stop, fg="red", width=18).pack(pady=3)
+stop_btn = ttk.Button(control_frame, text="STOP (Emergency)", command=on_stop, width=18)
+if tkinter_font:
+    stop_btn.configure(font=tkinter_font)
+stop_btn.pack(pady=3)
 
 # 說明
-info = tk.Label(root, text="按鈕在新終端機開啟\n校正模式用 rosrr 調整參數", font=("Arial", 9), fg="gray")
+info = tk.Label(root, text="Opens in new terminal\nCalibration: rosrr to adjust params", font=("Arial", 9), fg="gray")
 info.pack(side=tk.BOTTOM, pady=5)
 
 root.mainloop()
