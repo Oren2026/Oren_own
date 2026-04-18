@@ -43,11 +43,16 @@ alias rosgo8='rostopic pub /mission std_msgs/UInt8 "data: 8"'
 
 # -------- 工具 --------
 
+# rqt 工具捷徑
+alias rosrr='rosrun rqt_reconfigure rqt_reconfigure'    # 動態調整參數（滑動條）
+alias rosriv='rosrun rqt_image_view rqt_image_view'      # 看影像輸出
+alias rosmon='rosrun rqt_robot_monitor rqt_robot_monitor'  # 機器人狀態監控
+
 # 停止所有節點（情急之用）
 alias rosstop='pkill -f "roslaunch\|rosrun"'
 
 # 清除畫面 + 顯示執行中節點
-alias rosstat='clear && echo "=== Running Nodes ===" && rosnode list 2>/dev/null && echo "=== Active Topics ===" &&rostopic list 2>/dev/null | head -20'
+alias rosstat='clear && echo "=== Running Nodes ===" && rosnode list 2>/dev/null && echo "=== Active Topics ===" && rostopic list 2>/dev/null | head -20'
 
 # rpi 控制（TurtleBot SSH + 自動設定 ROS 環境）
 alias rpi='ssh ubuntu@192.168.0.104'
@@ -86,6 +91,9 @@ function ros-help {
     echo "   rosgo1 ~ rosgo8"
     echo ""
     echo " 工具："
+    echo "   rosrr         rqt_reconfigure（滑動調整參數）"
+    echo "   rosriv        rqt_image_view（看影像輸出）"
+    echo "   rosmon        rqt_robot_monitor（機器人狀態監控）"
     echo "   rosstop       停止所有節點"
     echo "   rosstat       查看執行中節點"
     echo "   rpi           SSH 連線 TurtleBot"
