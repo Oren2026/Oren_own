@@ -4,144 +4,190 @@
 import subprocess
 import tkinter as tk
 from tkinter import ttk
-import sys
 
-# 嘗試設定中文字型
-try:
-    tkinter_font = tk.font.Font(family="Noto Sans CJK TC", size=10)
-except:
-    try:
-        tkinter_font = tk.font.Font(family="WenQuanYi Micro Hei", size=10)
-    except:
-        tkinter_font = None
+# ===== Process Management =====
+running_pids = {}   # {name: pid}
 
-def run_terminal(command):
-    """在新終端機執行指令"""
-    # GNOME Terminal（Ubuntu 預設）
-    subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', f'{command}; exec bash'])
-
-def run_in_new_window(command):
-    """在新視窗執行（通用）"""
-    try:
-        # 嘗試 GNOME Terminal
-        subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', f'{command}; exec bash'])
-    except FileNotFoundError:
+def kill_process(name):
+    global running_pids
+    if name in running_pids and running_pids[name]:
         try:
-            # 嘗試 xterm
-            subprocess.Popen(['xterm', '-hold', '-e', command])
-        except FileNotFoundError:
-            # 都沒有，直接執行（在前台跑）
-            print(f"執行：{command}")
+            import os, signal
+            os.killpg(running_pids[name], signal.SIGTERM)
+        except:
+            pass
+        running_pids[name] = None
 
-# ===== 任務按鈕 =====
-def on_m1():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_traffic_light.launch')
+def kill_all():
+    for name in list(running_pids.keys()):
+        kill_process(name)
+    update_all_buttons()
 
-def on_m1cal():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_traffic_light.launch mode:=calibration')
-
-def on_m2():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_lane.launch && roslaunch detect detect_intersection.launch')
-
-def on_m2cal():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_lane.launch mode:=calibration')
-
-def on_m3():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_construction.launch')
-
-def on_m3cal():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_construction.launch mode:=calibration')
-
-def on_m4():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_parking.launch')
-
-def on_m4cal():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_parking.launch mode:=calibration')
-
-def on_m5():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_lane.launch && roslaunch control control_lane.launch')
-
-def on_m5cal():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_lane.launch mode:=calibration')
-
-def on_m6():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_level.launch')
-
-def on_m6cal():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_level.launch mode:=calibration')
-
-def on_m7():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_tunnel.launch')
-
-def on_m7cal():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_tunnel.launch mode:=calibration')
-
-# ===== 控制按鈕 =====
-def on_core():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && rosrun core core_node_controller.py')
-
-def on_rqt_reconfigure():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && rosrun rqt_reconfigure rqt_reconfigure')
-
-def on_rqt_image():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && rosrun rqt_image_view rqt_image_view')
+def run_bg(name, command):
+    """背景執行指令，不彈 terminal"""
+    kill_process(name)
+    proc = subprocess.Popen(
+        ['bash', '-c', f'source ~/catkin_ws/devel/setup.bash && {command}'],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True
+    )
+    running_pids[name] = proc.pid
+    update_all_buttons()
 
 def on_stop():
-    run_terminal('pkill -f "roslaunch"')
+    kill_all()
+    update_all_buttons()
 
-def on_lane():
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_lane.launch')
-    run_terminal('source ~/catkin_ws/devel/setup.bash && roslaunch control control_lane.launch')
+# ===== GUI State =====
+btn_refs = {}   # {name: button_widget}
+
+def update_all_buttons():
+    for name, btn in btn_refs.items():
+        if running_pids.get(name):
+            btn.configure(style='Active.TButton')
+        else:
+            btn.configure(style='TButton')
+
+# ===== Mission Definitions =====
+missions = [
+    ("M1 TrafficLight", "m1",     "roslaunch detect detect_traffic_light.launch"),
+    ("M1 Cal",          "m1cal",  "roslaunch detect detect_traffic_light.launch mode:=calibration"),
+    ("M2 S_Curve",      "m2",     "roslaunch detect detect_lane.launch && roslaunch detect detect_intersection.launch"),
+    ("M2 Cal",          "m2cal",  "roslaunch detect detect_lane.launch mode:=calibration"),
+    ("M3 Construction", "m3",     "roslaunch detect detect_construction.launch"),
+    ("M3 Cal",          "m3cal",  "roslaunch detect detect_construction.launch mode:=calibration"),
+    ("M4 Parking",      "m4",     "roslaunch detect detect_parking.launch"),
+    ("M4 Cal",          "m4cal",  "roslaunch detect detect_parking.launch mode:=calibration"),
+    ("M5 M_Curve",      "m5",     "roslaunch detect detect_lane.launch && roslaunch control control_lane.launch"),
+    ("M5 Cal",          "m5cal",  "roslaunch detect detect_lane.launch mode:=calibration"),
+    ("M6 LevelCrossing","m6",     "roslaunch detect detect_level.launch"),
+    ("M6 Cal",          "m6cal",  "roslaunch detect detect_level.launch mode:=calibration"),
+    ("M7 Tunnel",       "m7",     "roslaunch detect detect_tunnel.launch"),
+    ("M7 Cal",          "m7cal",  "roslaunch detect detect_tunnel.launch mode:=calibration"),
+]
+
+tools = [
+    ("State Machine",   "rosn",   "rosrun core core_node_controller.py"),
+    ("Lane (dl+cl)",    "lane",   "roslaunch detect detect_lane.launch && roslaunch control control_lane.launch"),
+    ("rqt_reconfigure", "rr",     "rosrun rqt_reconfigure rqt_reconfigure"),
+    ("rqt_image_view",  "riv",    "rosrun rqt_image_view rqt_image_view"),
+]
+
+# ===== Styles =====
+def setup_styles():
+    s = ttk.Style()
+    s.theme_use('clam')
+
+    # Active button (running) - gray with inset shadow feel
+    s.configure('Active.TButton',
+                background='#cccccc',
+                foreground='#555555',
+                borderwidth=2,
+                relief='sunken',
+                font=('Arial', 10, 'bold'))
+    s.map('Active.TButton',
+          background=[('active', '#bbbbbb')])
+
+    # Normal button
+    s.configure('TButton',
+                background='#e0e0e0',
+                foreground='#333333',
+                borderwidth=1,
+                relief='raised',
+                font=('Arial', 10))
+    s.map('TButton',
+          background=[('active', '#d0d0d0')])
+
+    # Stop button - red
+    s.configure('Stop.TButton',
+                background='#ff4444',
+                foreground='white',
+                borderwidth=2,
+                relief='raised',
+                font=('Arial', 11, 'bold'))
+    s.map('Stop.TButton',
+          background=[('active', '#cc2222')])
 
 # ===== GUI =====
 root = tk.Tk()
-root.title("TB3 2026 AutoRace 控制面板")
-root.resizable(False, False)
+root.title("TB3 2026 AutoRace Launcher")
+root.configure(bg='#2b2b2b')
+setup_styles()
 
-# Mission 按鈕框架
-mission_frame = ttk.LabelFrame(root, text="Mission Nodes")
-mission_frame.pack(side=tk.LEFT, padx=10, pady=10)
+# ---- Title ----
+title = tk.Label(root, text="TB3 2026 AutoRace",
+                 font=('Arial', 16, 'bold'),
+                 fg='white', bg='#2b2b2b')
+title.pack(pady=(12, 6))
 
-# 每關：正常 + 校正 兩個按鈕
-missions = [
-    ("M1 TrafficLight",    on_m1,      "M1 Cal",       on_m1cal),
-    ("M2 S_Curve",         on_m2,      "M2 Cal",       on_m2cal),
-    ("M3 Construction",    on_m3,      "M3 Cal",       on_m3cal),
-    ("M4 Parking",         on_m4,      "M4 Cal",       on_m4cal),
-    ("M5 M_Curve",         on_m5,      "M5 Cal",       on_m5cal),
-    ("M6 LevelCrossing",   on_m6,      "M6 Cal",       on_m6cal),
-    ("M7 Tunnel",          on_m7,      "M7 Cal",       on_m7cal),
-]
+subtitle = tk.Label(root, text="Mission Launcher",
+                    font=('Arial', 10),
+                    fg='#aaaaaa', bg='#2b2b2b')
+subtitle.pack(pady=(0, 12))
 
-for i, (label_a, cmd_a, label_b, cmd_b) in enumerate(missions):
-    btn_a = ttk.Button(mission_frame, text=label_a, command=cmd_a, width=15)
-    if tkinter_font:
-        btn_a.configure(font=tkinter_font)
-    btn_a.grid(row=i, column=0, padx=5, pady=3)
+# ---- Mission Grid ----
+mission_frame = tk.Frame(root, bg='#2b2b2b')
+mission_frame.pack(side=tk.LEFT, padx=15, pady=10)
 
-    btn_b = ttk.Button(mission_frame, text=label_b, command=cmd_b, width=10)
-    if tkinter_font:
-        btn_b.configure(font=tkinter_font)
-    btn_b.grid(row=i, column=1, padx=5, pady=3)
+row = 0
+for label, name, cmd in missions:
+    if row == 0:
+        tk.Label(mission_frame, text="Mission Nodes",
+                 font=('Arial', 11, 'bold'),
+                 fg='#dddddd', bg='#2b2b2b').grid(row=row, column=0, columnspan=4, pady=(0, 8))
+        row += 1
 
-# 控制框架
-control_frame = ttk.LabelFrame(root, text="Control Tools")
-control_frame.pack(side=tk.LEFT, padx=10, pady=10)
+    col = (row - 1) % 2
+    btn = ttk.Button(mission_frame, text=label,
+                      command=lambda n=name, c=cmd: run_bg(n, c),
+                      style='TButton', width=18)
+    btn.grid(row=row, column=col, padx=5, pady=4)
+    btn_refs[name] = btn
 
-ttk.Button(control_frame, text="State Machine (rosn)",  command=on_core,           width=18).pack(pady=3)
-ttk.Button(control_frame, text="Lane (dl+cl)",          command=on_lane,            width=18).pack(pady=3)
-ttk.Button(control_frame, text="rqt_reconfigure",        command=on_rqt_reconfigure, width=18).pack(pady=3)
-ttk.Button(control_frame, text="rqt_image_view",         command=on_rqt_image,       width=18).pack(pady=3)
+    # Alternate row
+    if col == 1:
+        row += 1
 
-ttk.Separator(control_frame, orient='horizontal').pack(fill='x', pady=8)
+# ---- Tool Buttons (right side) ----
+tool_frame = tk.Frame(root, bg='#2b2b2b')
+tool_frame.pack(side=tk.LEFT, padx=15, pady=10)
 
-stop_btn = ttk.Button(control_frame, text="STOP (Emergency)", command=on_stop, width=18)
-if tkinter_font:
-    stop_btn.configure(font=tkinter_font)
-stop_btn.pack(pady=3)
+tk.Label(tool_frame, text="Control Tools",
+         font=('Arial', 11, 'bold'),
+         fg='#dddddd', bg='#2b2b2b').pack(pady=(0, 8))
 
-# 說明
-info = tk.Label(root, text="Opens in new terminal\nCalibration: rosrr to adjust params", font=("Arial", 9), fg="gray")
-info.pack(side=tk.BOTTOM, pady=5)
+for label, name, cmd in tools:
+    btn = ttk.Button(tool_frame, text=label,
+                     command=lambda n=name, c=cmd: run_bg(n, c),
+                     style='TButton', width=20)
+    btn.pack(pady=4, fill='x')
+    btn_refs[name] = btn
+
+# ---- Stop Button ----
+tk.Frame(root, bg='#2b2b2b', height=20).pack()
+stop_frame = tk.Frame(root, bg='#2b2b2b')
+stop_frame.pack(pady=10)
+
+stop_btn = ttk.Button(stop_frame, text="■  STOP ALL",
+                      command=on_stop,
+                      style='Stop.TButton', width=22)
+stop_btn.pack()
+
+# ---- Status Bar ----
+status = tk.Label(root, text="Ready",
+                  font=('Arial', 9),
+                  fg='#888888', bg='#2b2b2b')
+status.pack(pady=(5, 8))
+
+def poll_status():
+    active = [n for n, p in running_pids.items() if p]
+    if active:
+        status.configure(text=f"Running: {', '.join(active)}", fg='#88ff88')
+    else:
+        status.configure(text="Idle", fg='#888888')
+    root.after(500, poll_status)
+
+poll_status()
 
 root.mainloop()
