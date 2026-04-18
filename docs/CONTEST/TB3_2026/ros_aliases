@@ -5,23 +5,23 @@
 
 # 任務測試（單一節點）
 alias ros1='roslaunch detect detect_traffic_light.launch'
-alias ros1c='roslaunch detect detect_traffic_light.launch mode:=calibration'
+alias ros1cal='roslaunch detect detect_traffic_light.launch mode:=calibration'
 alias ros2='roslaunch detect detect_lane.launch && roslaunch detect detect_intersection.launch'
-alias ros2c='roslaunch detect detect_lane.launch mode:=calibration'
+alias ros2cal='roslaunch detect detect_lane.launch mode:=calibration'
 alias ros3='roslaunch detect detect_construction.launch'
-alias ros3c='roslaunch detect detect_construction.launch mode:=calibration'
+alias ros3cal='roslaunch detect detect_construction.launch mode:=calibration'
 alias ros4='roslaunch detect detect_parking.launch'
-alias ros4c='roslaunch detect detect_parking.launch mode:=calibration'
+alias ros4cal='roslaunch detect detect_parking.launch mode:=calibration'
 alias ros5='roslaunch detect detect_lane.launch && roslaunch control control_lane.launch'
-alias ros5c='roslaunch detect detect_lane.launch mode:=calibration'
+alias ros5cal='roslaunch detect detect_lane.launch mode:=calibration'
 alias ros6='roslaunch detect detect_level.launch'
-alias ros6c='roslaunch detect detect_level.launch mode:=calibration'
+alias ros6cal='roslaunch detect detect_level.launch mode:=calibration'
 alias ros7='roslaunch detect detect_tunnel.launch'
-alias ros7c='roslaunch detect detect_tunnel.launch mode:=calibration'
+alias ros7cal='roslaunch detect detect_tunnel.launch mode:=calibration'
 
 # 循線控制
 alias rosdl='roslaunch detect detect_lane.launch'
-alias rosdlc='roslaunch detect detect_lane.launch mode:=calibration'
+alias rosdlcal='roslaunch detect detect_lane.launch mode:=calibration'
 alias roscl='roslaunch control control_lane.launch'
 alias rosck='roslaunch control control_moving.launch'
 
@@ -62,13 +62,19 @@ function ros-help {
     echo ""
     echo " 任務測試："
     echo "   ros1          交通號誌（正常模式）"
-    echo "   ros1c         交通號誌（校正模式）"
+    echo "   ros1cal       交通號誌（校正模式）"
     echo "   ros2          S曲線（岔路+循線）"
+    echo "   ros2cal       車道線校正"
     echo "   ros3          施工區"
+    echo "   ros3cal       施工區校正"
     echo "   ros4          停車場"
+    echo "   ros4cal       停車場校正"
     echo "   ros5          M曲線（循線）"
+    echo "   ros5cal       車道線校正"
     echo "   ros6          平交道"
+    echo "   ros6cal       平交道校正"
     echo "   ros7          隧道"
+    echo "   ros7cal       隧道校正"
     echo ""
     echo " 控制："
     echo "   rosn          啟動 core_node_controller（狀態機）"
