@@ -129,21 +129,6 @@ class MotionEditor:
         self._build()
 
     def _build(self):
-        # ===== 左側：新增按鈕 =====
-        left = tk.Frame(self.root, bg='#1e1e1e', width=170)
-        left.pack(side=tk.LEFT, fill='y', padx=10, pady=10)
-        left.pack_propagate(False)
-
-        tk.Label(left, text="新增指令",
-                font=('Arial', 12, 'bold'),
-                fg='white', bg='#1e1e1e').pack(pady=(10, 15))
-
-        for btype, label in self.TYPE_LABELS.items():
-            tk.Button(left, text=label,
-                     command=lambda t=btype: self.add_block(t),
-                     bg='#3a3a3a', fg='white', font=('Arial', 10),
-                     relief='raised', bd=2, width=16).pack(pady=4)
-
         # ===== 中間：序列區 =====
         center = tk.Frame(self.root, bg='#2b2b2b')
         center.pack(side=tk.LEFT, fill='both', expand=False, padx=10, pady=10)
@@ -296,6 +281,7 @@ class MotionEditor:
 
         # 1. 車子移動（用 /cmd_vel，與 launcher_gui 相同）
         def send_cmd():
+            cmd = None
             if block_type == 3:    # 旋轉
                 angular = 0.5 if value > 0 else -0.5
                 cmd = (f"rostopic pub /cmd_vel geometry_msgs/Twist "
@@ -306,12 +292,16 @@ class MotionEditor:
             elif block_type == 5:  # 後退
                 cmd = (f"rostopic pub /cmd_vel geometry_msgs/Twist "
                        f"{{linear: {{x: -0.1, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: 0}}}} --once")
-            else:
+            if not cmd:
                 return
-            subprocess.run(
-                ['bash', '-c', f'source ~/catkin_ws/devel/setup.bash && {cmd}'],
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            full = f'source ~/catkin_ws/devel/setup.bash && {cmd}'
+            print(f"[MOTION DEBUG] Sending: {full}")
+            result = subprocess.run(
+                ['bash', '-c', full],
+                capture_output=True, text=True
             )
+            if result.stderr:
+                print(f"[MOTION DEBUG] stderr: {result.stderr}")
 
         threading.Thread(target=send_cmd, daemon=True).start()
 
