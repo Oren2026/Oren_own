@@ -146,14 +146,14 @@ class MotionEditor:
 
         # ===== 中間：序列區 =====
         center = tk.Frame(self.root, bg='#2b2b2b')
-        center.pack(side=tk.LEFT, fill='both', expand=True, padx=10, pady=10)
+        center.pack(side=tk.LEFT, fill='both', expand=False, padx=10, pady=10)
 
         tk.Label(center, text="動作序列（▲▼ 調整順序）",
                 font=('Arial', 11, 'bold'),
                 fg='white', bg='#2b2b2b').pack(anchor='w', pady=(0, 8))
 
         seq_frame = tk.Frame(center, bg='#252525', relief='solid', bd=1)
-        seq_frame.pack(fill='both', expand=True)
+        seq_frame.pack(fill='both', expand=True, pady=(0, 0))
 
         self.canvas = tk.Canvas(seq_frame, bg='#252525', highlightthickness=0)
         scrollbar = ttk.Scrollbar(seq_frame, orient='vertical', command=self.canvas.yview)
