@@ -10,25 +10,28 @@ import os
 import signal
 
 # ===== Process Management =====
-running_pids = {}   # {name: pid}
-_root = None        # set after root is created
+running_pids = {}     # {name: pid}  - 會被 STOP ALL 殺掉的
+persistent_pids = {}  # {name: pid}  - STOP ALL 不會殺（rqt, image_view）
+_root = None
 
 def kill_process(name):
-    global running_pids
-    pid = running_pids.get(name)
-    if pid:
-        try:
-            os.killpg(pid, signal.SIGTERM)
-            time.sleep(0.3)
+    for d in (running_pids, persistent_pids):
+        pid = d.get(name)
+        if pid:
             try:
-                os.killpg(pid, signal.SIGKILL)
+                os.killpg(pid, signal.SIGTERM)
+                time.sleep(0.3)
+                try:
+                    os.killpg(pid, signal.SIGKILL)
+                except:
+                    pass
             except:
                 pass
-        except:
-            pass
-        running_pids[name] = None
+            d[name] = None
+            return
 
 def kill_all():
+    """只殺 running_pids，不動 persistent_pids"""
     for name in list(running_pids.keys()):
         kill_process(name)
     update_all_buttons()
@@ -65,7 +68,7 @@ btn_refs = {}   # {name: button_widget}
 
 def update_all_buttons():
     for name, btn in btn_refs.items():
-        if running_pids.get(name):
+        if running_pids.get(name) or persistent_pids.get(name):
             btn.configure(style='Active.TButton')
         else:
             btn.configure(style='TButton')
@@ -115,7 +118,6 @@ missions = [
 
 tools = [
     ("執行任務",           "rosn",   "rosrun core core_node_controller.py"),
-    ("循線 (dl+cl)",       "lane",   "roslaunch detect detect_lane.launch && roslaunch control control_lane.launch"),
     ("運動控制",           "cmov",   "roslaunch control control_moving.launch"),
     ("rqt 設定",           "rr",     "rosrun rqt_reconfigure rqt_reconfigure"),
     ("影像檢視",           "riv",    "rosrun rqt_image_view rqt_image_view"),
@@ -227,9 +229,28 @@ tk.Label(right_panel, text="控制工具",
          font=('Arial', 11, 'bold'),
          fg='#dddddd', bg='#2b2b2b').pack(pady=(0, 6))
 
+# 特殊按鈕：lane (dl+cl 分開跑)
+def run_lane():
+    run_bg("lane_dl", "roslaunch detect detect_lane.launch")
+    run_bg("lane_cl", "roslaunch control control_lane.launch")
+    update_all_buttons()
+
+def run_persistent(name, cmd):
+    """rqt / image_view 專用，不被 STOP ALL 殺掉"""
+    kill_process(name)
+    proc = subprocess.Popen(
+        ['bash', '-c', f'source ~/catkin_ws/devel/setup.bash && {cmd}'],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        start_new_session=True
+    )
+    persistent_pids[name] = proc.pid
+    update_all_buttons()
+
 for label, name, cmd in tools:
     if name == "rosn":
         runner = lambda n=name, c=cmd: run_terminal(n, c)
+    elif name in ("rr", "riv"):
+        runner = lambda n=name, c=cmd: run_persistent(n, c)
     else:
         runner = lambda n=name, c=cmd: run_bg(n, c)
     btn = ttk.Button(right_panel, text=label,
@@ -237,6 +258,13 @@ for label, name, cmd in tools:
                      style='TButton', width=20)
     btn.pack(pady=3, fill='x')
     btn_refs[name] = btn
+
+# 循線按鈕（dl + cl 分別背景執行）
+btn_lane = ttk.Button(right_panel, text="循線 (dl+cl)",
+                      command=run_lane,
+                      style='TButton', width=20)
+btn_lane.pack(pady=3, fill='x')
+btn_refs["lane"] = btn_lane
 
 # 方向控制
 tk.Label(right_panel, text="方向控制",
@@ -268,8 +296,11 @@ status.pack(pady=(5, 8))
 
 def poll_status():
     active = [n for n, p in running_pids.items() if p]
+    persist = [n for n, p in persistent_pids.items() if p]
     if active:
         status.configure(text=f"Running: {', '.join(active)}", fg='#88ff88')
+    elif persist:
+        status.configure(text=f"Tools: {', '.join(persist)}", fg='#88aaff')
     else:
         status.configure(text="Idle", fg='#888888')
     root.after(500, poll_status)
