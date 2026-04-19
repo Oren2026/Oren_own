@@ -131,7 +131,7 @@ class MotionEditor:
     def _build(self):
         # ===== 中間：序列區 =====
         center = tk.Frame(self.root, bg='#2b2b2b')
-        center.pack(side=tk.LEFT, fill='both', expand=False, padx=10, pady=10)
+        center.pack(side=tk.LEFT, fill='both', expand=True, padx=10, pady=10)
 
         tk.Label(center, text="動作序列（▲▼ 調整順序）",
                 font=('Arial', 11, 'bold'),
@@ -160,9 +160,8 @@ class MotionEditor:
         self.empty_label.pack(pady=40)
 
         # ===== 右側面板 =====
-        right = tk.Frame(self.root, bg='#1e1e1e', width=190)
+        right = tk.Frame(self.root, bg='#1e1e1e')
         right.pack(side=tk.LEFT, fill='y', padx=(0, 10), pady=10)
-        right.pack_propagate(False)
 
         # ---- 1. 執行控制（緊湊）----
         tk.Label(right, text="執行控制",
