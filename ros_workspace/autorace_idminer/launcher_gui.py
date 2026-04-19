@@ -136,7 +136,7 @@ def tb3_cmd(linear_x=0, angular_z=0, duration=0.3):
         )
     threading.Thread(target=send, daemon=True).start()
 
-def tb3_forward():   tb3_cmd(linear_x=0.15)
+def tb3_forward():   tb3_cmd(linear_x=0.1)
 def tb3_backward():  tb3_cmd(linear_x=-0.1)
 def tb3_left():      tb3_cmd(angular_z=0.5)
 def tb3_right():     tb3_cmd(angular_z=-0.5)
