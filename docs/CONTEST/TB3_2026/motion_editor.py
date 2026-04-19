@@ -164,50 +164,51 @@ class MotionEditor:
         right.pack(side=tk.LEFT, fill='y', padx=(0, 10), pady=10)
         right.pack_propagate(False)
 
-        # ---- 1. 執行控制 ----
+        # ---- 1. 執行控制（緊湊）----
         tk.Label(right, text="執行控制",
-                font=('Arial', 12, 'bold'),
-                fg='white', bg='#1e1e1e').pack(pady=(15, 10))
+                font=('Arial', 11, 'bold'),
+                fg='white', bg='#1e1e1e').pack(pady=(10, 4))
 
         self.status_label = tk.Label(right, text="待機",
-                                     fg='#aaaaaa', bg='#1e1e1e', font=('Arial', 11))
+                                     fg='#aaaaaa', bg='#1e1e1e', font=('Arial', 10))
         self.status_label.pack()
 
         self.exec_btn = tk.Button(right, text="▶ 執行序列",
                                   command=self.execute_sequence,
                                   bg='#1a3a1a', fg='#88ff88',
-                                  font=('Arial', 12, 'bold'),
-                                  relief='raised', width=16, height=2)
-        self.exec_btn.pack(pady=8)
+                                  font=('Arial', 10, 'bold'),
+                                  relief='raised', width=16)
+        self.exec_btn.pack(pady=3)
 
         self.stop_btn = tk.Button(right, text="■ 停止",
                                   command=self.stop_execute,
                                   bg='#3a1a1a', fg='#ff8888',
-                                  font=('Arial', 12, 'bold'),
+                                  font=('Arial', 10, 'bold'),
                                   state='disabled',
-                                  relief='raised', width=16, height=2)
-        self.stop_btn.pack(pady=8)
+                                  relief='raised', width=16)
+        self.stop_btn.pack(pady=3)
 
         # ---- 分隔線 ----
-        tk.Label(right, text="─" * 16, bg='#1e1e1e', fg='#444').pack(pady=(8, 5))
+        tk.Label(right, text="─" * 16, bg='#1e1e1e', fg='#333').pack(pady=4)
 
-        # ---- 2. 即時遙控 ----
+        # ---- 2. 即時遙控（方向鍵，給足夠空間）----
         tk.Label(right, text="即時遙控",
-                font=('Arial', 11, 'bold'),
-                fg='#dddddd', bg='#1e1e1e').pack(pady=(0, 5))
+                font=('Arial', 10, 'bold'),
+                fg='#dddddd', bg='#1e1e1e').pack()
 
         dpad_frame = tk.Frame(right, bg='#1e1e1e')
-        dpad_frame.pack(pady=4)
+        dpad_frame.pack(pady=5)
 
-        dpad_btn = {'relief': 'raised', 'bd': 2, 'width': 6, 'height': 2,
-                    'font': ('Arial', 11, 'bold')}
+        dpad_btn = {'relief': 'raised', 'bd': 2,
+                    'font': ('Arial', 11, 'bold'),
+                    'width': 5, 'height': 1}
 
+        # ▲ 前進
         tk.Button(dpad_frame, text="▲",
                  command=lambda: self._dpad_add(4, 10),
                  bg='#3a3a3a', fg='white', **dpad_btn).grid(row=0, column=1, padx=3, pady=2)
-        tk.Label(dpad_frame, text="前進", bg='#1e1e1e', fg='#888',
-                font=('Arial', 8)).grid(row=0, column=2, sticky='w', padx=(0, 3))
 
+        # ◀ 左旋   X 停止   ▶ 右旋
         tk.Button(dpad_frame, text="◀",
                  command=lambda: self._dpad_add(3, 90),
                  bg='#3a3a3a', fg='white', **dpad_btn).grid(row=1, column=0, padx=3, pady=2)
@@ -217,56 +218,39 @@ class MotionEditor:
         tk.Button(dpad_frame, text="▶",
                  command=lambda: self._dpad_add(3, -90),
                  bg='#3a3a3a', fg='white', **dpad_btn).grid(row=1, column=2, padx=3, pady=2)
-        tk.Label(dpad_frame, text="旋轉", bg='#1e1e1e', fg='#888',
-                font=('Arial', 8)).grid(row=1, column=3, sticky='w', padx=(2, 0))
 
+        # ▼ 後退
         tk.Button(dpad_frame, text="▼",
                  command=lambda: self._dpad_add(5, 10),
                  bg='#3a3a3a', fg='white', **dpad_btn).grid(row=2, column=1, padx=3, pady=2)
-        tk.Label(dpad_frame, text="後退", bg='#1e1e1e', fg='#888',
-                font=('Arial', 8)).grid(row=2, column=2, sticky='w', padx=(0, 3))
 
-        tk.Label(dpad_frame, text="10cm/次 · 90°/次", bg='#1e1e1e', fg='#666',
-                font=('Arial', 8)).grid(row=3, column=0, columnspan=4, pady=(3, 0))
+        tk.Label(dpad_frame, text="前進/後退 10cm · 左/右旋 90°",
+                bg='#1e1e1e', fg='#666',
+                font=('Arial', 8)).grid(row=3, column=0, columnspan=3, pady=(4, 0))
 
         # ---- 分隔線 ----
-        tk.Label(right, text="─" * 16, bg='#1e1e1e', fg='#444').pack(pady=(8, 5))
+        tk.Label(right, text="─" * 16, bg='#1e1e1e', fg='#333').pack(pady=4)
 
-        # ---- 3. 匯出 ----
-        tk.Label(right, text="匯出",
-                font=('Arial', 11, 'bold'),
-                fg='#dddddd', bg='#1e1e1e').pack(pady=(0, 5))
-
+        # ---- 3. 匯出（緊湊）----
         fn_frame = tk.Frame(right, bg='#1e1e1e')
-        fn_frame.pack(pady=3)
+        fn_frame.pack(pady=2)
         tk.Label(fn_frame, text="fn:", bg='#1e1e1e', fg='#aaa',
                 font=('Arial', 10)).pack(side=tk.LEFT)
         self.fn_var = tk.StringVar(value="parking_moving")
         tk.Entry(fn_frame, textvariable=self.fn_var,
                 bg='#2a2a2a', fg='white', font=('Arial', 10),
-                width=14).pack(side=tk.LEFT, padx=3)
+                width=13).pack(side=tk.LEFT, padx=3)
 
         btn_row = tk.Frame(right, bg='#1e1e1e')
         btn_row.pack(pady=4)
         tk.Button(btn_row, text="匯出 .py",
                  command=self.export_code,
                  bg='#1a1a3a', fg='#aaaaff',
-                 font=('Arial', 10), relief='raised', width=9).pack(side=tk.LEFT, padx=2)
-        tk.Button(btn_row, text="清除全部",
+                 font=('Arial', 9), relief='raised', width=9).pack(side=tk.LEFT, padx=2)
+        tk.Button(btn_row, text="清除",
                  command=self.clear_all,
                  bg='#2a2a2a', fg='#cccccc',
-                 font=('Arial', 10), relief='raised', width=9).pack(side=tk.LEFT, padx=2)
-
-        # ---- 分隔線 ----
-        tk.Label(right, text="─" * 16, bg='#1e1e1e', fg='#444').pack(pady=(8, 5))
-
-        # ---- 4. 說明（最下面）----
-        tk.Label(right, text="說明",
-                font=('Arial', 10, 'bold'),
-                fg='#aaaaaa', bg='#1e1e1e').pack()
-        tk.Label(right, text="方向鍵：按一下\n→ 車子移動\n→ 同時寫入序列\n\n執行：依序發送\n序列裡的所有指令",
-                justify='left', fg='#777', bg='#1e1e1e',
-                font=('Arial', 9)).pack(pady=5)
+                 font=('Arial', 9), relief='raised', width=6).pack(side=tk.LEFT, padx=2)
 
     # ============================
     # 即時遙控（方向鍵）
