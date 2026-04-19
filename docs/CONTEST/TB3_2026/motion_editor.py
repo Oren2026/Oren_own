@@ -281,18 +281,20 @@ class MotionEditor:
         self.stop_btn.config(state='normal', bg='#5a1a1a')
 
         def run():
+            type_names = SequenceBlock.TYPE_NAMES
             for i, (btype, val) in enumerate(self.sequence):
                 if not self.is_running:
                     break
-                name = SequenceBlock.TYPE_NAMES.get(btype, "?")
-                self.root.after(0, lambda n=name, v=val, idx=i:
-                    self.status_label.config(text=f"#{idx+1} {name} {val}..."))
+                name = type_names.get(btype, "?")
+                unit = "cm" if btype in (4, 5) else ("度" if btype == 3 else "秒")
+                disp_val = int(val)  # 使用者輸入的公分/度數直接顯示
+                # 更新狀態列（透過 root.after 回到主執行緒）
+                self.root.after(0, lambda n=name, v=disp_val, u=unit, idx=i:
+                    self.status_label.config(text=f"#{idx+1} {n} {v}{u}..."))
+                # 發送指令（與方向鍵同原理，發完不等）
                 send_moving(btype, val)
-                # 每個指令之間留 0.5 秒緩衝，讓車子有機會反應
-                for _ in range(50):
-                    if not self.is_running:
-                        break
-                    time.sleep(0.1)
+                # 每個指令之間留 0.5 秒緩衝
+                time.sleep(0.5)
 
             self.is_running = False
             self.root.after(0, self._done)
