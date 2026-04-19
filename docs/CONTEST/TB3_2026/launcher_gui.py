@@ -204,21 +204,23 @@ tk.Label(dpad_frame, text="方向控制",
          font=('Arial', 11, 'bold'),
          fg='#dddddd', bg='#2b2b2b').pack(pady=(0, 6))
 
-# Style for dpad buttons
+# 子 frame 專門放 grid，按钮不能用 pack 只能用 grid
+dpad_grid = tk.Frame(dpad_frame, bg='#2b2b2b')
+dpad_grid.pack()
+
 dpad_style_normal = {'bg': '#4a4a4a', 'fg': 'white', 'font': ('Arial', 14, 'bold'),
                      'relief': 'raised', 'bd': 2, 'width': 5, 'height': 2}
-dpad_style_active = {'bg': '#888888', 'relief': 'sunken'}
 
 def make_triangle_btn(parent, text, cmd, row, col, colspan=1):
     btn = tk.Button(parent, text=text, command=cmd, **dpad_style_normal)
     btn.grid(row=row, column=col, columnspan=colspan, padx=3, pady=3)
     return btn
 
-btn_up    = make_triangle_btn(dpad_frame, "^", tb3_forward,  0, 1)
-btn_left  = make_triangle_btn(dpad_frame, "<", tb3_left,     1, 0)
-btn_stop  = make_triangle_btn(dpad_frame, "X", tb3_stop,    1, 1)
-btn_right = make_triangle_btn(dpad_frame, ">", tb3_right,   1, 2)
-btn_down  = make_triangle_btn(dpad_frame, "v", tb3_backward, 2, 1)
+btn_up    = make_triangle_btn(dpad_grid, "^", tb3_forward,  0, 1)
+btn_left  = make_triangle_btn(dpad_grid, "<", tb3_left,     1, 0)
+btn_stop  = make_triangle_btn(dpad_grid, "X", tb3_stop,     1, 1)
+btn_right = make_triangle_btn(dpad_grid, ">", tb3_right,   1, 2)
+btn_down  = make_triangle_btn(dpad_grid, "v", tb3_backward, 2, 1)
 
 # ---- Stop Button ----
 tk.Frame(root, bg='#2b2b2b', height=20).pack()
