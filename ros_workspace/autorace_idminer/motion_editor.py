@@ -262,26 +262,38 @@ class MotionEditor:
         """
         import threading
 
-        # 1. 車子移動（用 /cmd_vel，與 launcher_gui 相同）
-        # 使用 -r 10 持續發送（10Hz），車子持續移動直到收到停止指令
+        # 1. 車子移動（Python threading + rosservice 計時，發送後自動停止）
         def send_cmd():
-            cmd = None
             if block_type == 3:    # 旋轉
                 angular = 0.5 if value > 0 else -0.5
-                cmd = f"source ~/catkin_ws/devel/setup.bash && rostopic pub /cmd_vel geometry_msgs/Twist -r 10 '{{linear: {{x: 0, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: {angular}}}}}'"
+                linear_x, angular_z = 0, angular
             elif block_type == 4:  # 前進
-                cmd = "source ~/catkin_ws/devel/setup.bash && rostopic pub /cmd_vel geometry_msgs/Twist -r 10 '{linear: {x: 0.1, y: 0, z: 0}, angular: {x: 0, y: 0, z: 0}}'"
+                linear_x, angular_z = 0.1, 0
             elif block_type == 5:  # 後退
-                cmd = "source ~/catkin_ws/devel/setup.bash && rostopic pub /cmd_vel geometry_msgs/Twist -r 10 '{linear: {x: -0.1, y: 0, z: 0}, angular: {x: 0, y: 0, z: 0}}'"
-            if not cmd:
+                linear_x, angular_z = -0.1, 0
+            else:
                 return
-            print(f"[MOTION DEBUG] Sending: {cmd}")
-            result = subprocess.run(
-                ['bash', '-c', cmd],
-                capture_output=True, text=True
-            )
-            if result.stderr:
-                print(f"[MOTION DEBUG] stderr: {result.stderr}")
+
+            def run():
+                subprocess.run(
+                    ['bash', '-c',
+                     f"source ~/catkin_ws/devel/setup.bash && "
+                     f"rostopic pub /cmd_vel geometry_msgs/Twist "
+                     f"'{{linear: {{x: {linear_x}, y: 0, z: 0}}, "
+                     f"angular: {{x: 0, y: 0, z: {angular_z}}}}}'"],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                )
+                time.sleep(0.3)   # 移動持續時間
+                # 停止
+                subprocess.run(
+                    ['bash', '-c',
+                     "source ~/catkin_ws/devel/setup.bash && "
+                     "rostopic pub /cmd_vel geometry_msgs/Twist "
+                     "'{linear: {x: 0, y: 0, z: 0}, angular: {x: 0, y: 0, z: 0}}'"],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                )
+
+            threading.Thread(target=run, daemon=True).start()
 
         threading.Thread(target=send_cmd, daemon=True).start()
 
