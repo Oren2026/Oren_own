@@ -3,17 +3,17 @@
   "subtitle": "TurtleBot 3 Burger × ROS × OpenCV",
   "category": "fira",
   "status": "in-progress",
-  "nextMilestone": "PID 循線整合 + 任務串接",
+  "nextMilestone": "實機測試 core_node_controller 串接流程",
   "progress": {
     "圓環/交叉路口": "done",
     "循線置中": "done",
-    "交通號誌": "todo",
-    "障礙/減速區": "todo",
-    "平交道柵欄": "todo",
-    "隧道/暗區": "todo",
-    "停車": "todo",
-    "S 型彎道": "todo",
-    "任務串接": "todo"
+    "交通號誌": "done",
+    "障礙/減速區": "done",
+    "平交道柵欄": "done",
+    "隧道/暗區": "done",
+    "停車": "done",
+    "S 型彎道": "done",
+    "任務串接": "done"
   },
   "missions": [
     {
@@ -113,6 +113,11 @@
     "待購買": []
   },
   "updates": [
+    {
+      "date": "2026-04-19",
+      "text": "重構 core_node_controller：移除外部/mission依賴，改為自動依序執行所有關卡（黑皮版本fnControlNode）。更新launcher_gui：執行任務開Terminal，M2/M5移除多餘launch命令，grid修復為每2按鈕一組。確認M1-M7按鈕與core_node_controller獨立運作。",
+      "category": "架構更新"
+    },
     {
       "date": "2026-03-26",
       "text": "JSON集中資料架構 + index極簡化實驗；廢除01~05編號，改為research/architecture/tech/updates/",
