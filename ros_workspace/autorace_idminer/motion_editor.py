@@ -269,11 +269,11 @@ class MotionEditor:
             cmd = None
             if block_type == 3:    # 旋轉
                 angular = 0.5 if value > 0 else -0.5
-                cmd = f"rostopic pub /cmd_vel geometry_msgs/Twist -1 0 0 0 0 0 0 {angular}"
+                cmd = f"rostopic pub /cmd_vel geometry_msgs/Twist -1 -- 0 0 0 0 0 0 {angular}"
             elif block_type == 4:  # 前進
-                cmd = "rostopic pub /cmd_vel geometry_msgs/Twist -1 0.1 0 0 0 0 0 0"
+                cmd = "rostopic pub /cmd_vel geometry_msgs/Twist -1 -- 0.1 0 0 0 0 0 0"
             elif block_type == 5:  # 後退
-                cmd = "rostopic pub /cmd_vel geometry_msgs/Twist -1 -0.1 0 0 0 0 0 0"
+                cmd = "rostopic pub /cmd_vel geometry_msgs/Twist -1 -- -0.1 0 0 0 0 0 0"
             if not cmd:
                 return
             full = f'source ~/catkin_ws/devel/setup.bash && {cmd}'
