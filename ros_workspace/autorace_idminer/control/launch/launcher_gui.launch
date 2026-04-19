@@ -1,0 +1,4 @@
+<launch>
+  <!-- 啟動 TB3 launcher_gui -->
+  <node pkg="autorace_idminer" type="launcher_gui.py" name="launcher_gui" output="screen"/>
+</launch>
