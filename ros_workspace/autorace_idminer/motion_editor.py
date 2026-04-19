@@ -275,7 +275,7 @@ class MotionEditor:
                 cmd = "rostopic pub /cmd_vel geometry_msgs/Twist -1 -- -0.1 0 0 0 0 0 0"
             if not cmd:
                 return
-            full = f'source ~/catkin_ws/devel/setup.bash && {cmd}'
+            full = f'cd /home/autorace && source ~/catkin_ws/devel/setup.bash && {cmd}'
             print(f"[MOTION DEBUG] Sending: {full}")
             result = subprocess.run(
                 ['bash', '-c', full],
