@@ -268,17 +268,16 @@ class MotionEditor:
             cmd = None
             if block_type == 3:    # 旋轉
                 angular = 0.5 if value > 0 else -0.5
-                cmd = f"rostopic pub /cmd_vel geometry_msgs/Twist -1 -- 0 0 0 0 0 0 {angular}"
+                cmd = f"source ~/catkin_ws/devel/setup.bash && rostopic pub /cmd_vel geometry_msgs/Twist --once '{{linear: {{x: 0, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: {angular}}}}}'"
             elif block_type == 4:  # 前進
-                cmd = "rostopic pub /cmd_vel geometry_msgs/Twist -1 -- 0.1 0 0 0 0 0 0"
+                cmd = "source ~/catkin_ws/devel/setup.bash && rostopic pub /cmd_vel geometry_msgs/Twist --once '{linear: {x: 0.1, y: 0, z: 0}, angular: {x: 0, y: 0, z: 0}}'"
             elif block_type == 5:  # 後退
-                cmd = "rostopic pub /cmd_vel geometry_msgs/Twist -1 -- -0.1 0 0 0 0 0 0"
+                cmd = "source ~/catkin_ws/devel/setup.bash && rostopic pub /cmd_vel geometry_msgs/Twist --once '{linear: {x: -0.1, y: 0, z: 0}, angular: {x: 0, y: 0, z: 0}}'"
             if not cmd:
                 return
-            full = f'cd /home/autorace && source ~/catkin_ws/devel/setup.bash && {cmd}'
-            print(f"[MOTION DEBUG] Sending: {full}")
+            print(f"[MOTION DEBUG] Sending: {cmd}")
             result = subprocess.run(
-                ['bash', '-c', full],
+                ['bash', '-c', cmd],
                 capture_output=True, text=True
             )
             if result.stderr:
