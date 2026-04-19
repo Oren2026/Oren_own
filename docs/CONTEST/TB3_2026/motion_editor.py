@@ -99,7 +99,7 @@ def send_moving(block_type, value):
         return
 
     subprocess.run(
-        ['bash', '-c', f'source ~/catkin_ws/devel/setup.bash && {cmd}'],
+        ['bash', '-c', f'cd /home/autorace && source ~/catkin_ws/devel/setup.bash && {cmd}'],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
     )
 
