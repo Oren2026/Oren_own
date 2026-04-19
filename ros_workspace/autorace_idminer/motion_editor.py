@@ -119,7 +119,8 @@ class MotionEditor:
         self.root = tk.Tk()
         self.root.title("TB3 動作序列編輯器")
         self.root.configure(bg='#2b2b2b')
-        self.root.geometry("820x620")
+        self.root.geometry("840x720")
+        self.root.minsize(840, 720)
 
         self.sequence = []
         self.block_widgets = []
