@@ -177,35 +177,38 @@ for i in range(0, len(missions), 2):
         btn.grid(row=row, column=col_offset, padx=5, pady=4)
         btn_refs[name] = btn
 
-# ---- Tool Buttons (left side) ----
-tool_frame = tk.Frame(root, bg='#2b2b2b')
-tool_frame.pack(side=tk.LEFT, padx=15, pady=10)
+# ---- Right Panel: STOP + Tool + D-Pad ----
+right_panel = tk.Frame(root, bg='#2b2b2b')
+right_panel.pack(side=tk.LEFT, padx=15, pady=10)
 
-tk.Label(tool_frame, text="控制工具",
+# STOP ALL - top of right panel
+stop_btn = ttk.Button(right_panel, text="■  STOP ALL",
+                      command=on_stop,
+                      style='Stop.TButton', width=22)
+stop_btn.pack(pady=(0, 12))
+
+# 控制工具
+tk.Label(right_panel, text="控制工具",
          font=('Arial', 11, 'bold'),
-         fg='#dddddd', bg='#2b2b2b').pack(pady=(0, 8))
+         fg='#dddddd', bg='#2b2b2b').pack(pady=(0, 6))
 
 for label, name, cmd in tools:
     if name == "rosn":
         runner = lambda n=name, c=cmd: run_terminal(n, c)
     else:
         runner = lambda n=name, c=cmd: run_bg(n, c)
-    btn = ttk.Button(tool_frame, text=label,
+    btn = ttk.Button(right_panel, text=label,
                      command=runner,
                      style='TButton', width=20)
-    btn.pack(pady=4, fill='x')
+    btn.pack(pady=3, fill='x')
     btn_refs[name] = btn
 
-# ---- D-Pad (bottom right) ----
-dpad_frame = tk.Frame(root, bg='#2b2b2b')
-dpad_frame.pack(side=tk.LEFT, padx=15, pady=10)
-
-tk.Label(dpad_frame, text="方向控制",
+# 方向控制
+tk.Label(right_panel, text="方向控制",
          font=('Arial', 11, 'bold'),
-         fg='#dddddd', bg='#2b2b2b').pack(pady=(0, 6))
+         fg='#dddddd', bg='#2b2b2b').pack(pady=(10, 6))
 
-# 子 frame 專門放 grid，按钮不能用 pack 只能用 grid
-dpad_grid = tk.Frame(dpad_frame, bg='#2b2b2b')
+dpad_grid = tk.Frame(right_panel, bg='#2b2b2b')
 dpad_grid.pack()
 
 dpad_style_normal = {'bg': '#4a4a4a', 'fg': 'white', 'font': ('Arial', 14, 'bold'),
@@ -218,19 +221,9 @@ def make_triangle_btn(parent, text, cmd, row, col, colspan=1):
 
 btn_up    = make_triangle_btn(dpad_grid, "^", tb3_forward,  0, 1)
 btn_left  = make_triangle_btn(dpad_grid, "<", tb3_left,     1, 0)
-btn_stop  = make_triangle_btn(dpad_grid, "X", tb3_stop,     1, 1)
+btn_x     = make_triangle_btn(dpad_grid, "X", tb3_stop,     1, 1)
 btn_right = make_triangle_btn(dpad_grid, ">", tb3_right,   1, 2)
 btn_down  = make_triangle_btn(dpad_grid, "v", tb3_backward, 2, 1)
-
-# ---- Stop Button ----
-tk.Frame(root, bg='#2b2b2b', height=20).pack()
-stop_frame = tk.Frame(root, bg='#2b2b2b')
-stop_frame.pack(pady=10)
-
-stop_btn = ttk.Button(stop_frame, text="■  STOP ALL",
-                      command=on_stop,
-                      style='Stop.TButton', width=22)
-stop_btn.pack()
 
 # ---- Status Bar ----
 status = tk.Label(root, text="Ready",
