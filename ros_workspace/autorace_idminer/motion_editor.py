@@ -9,6 +9,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import subprocess
 import time
+import threading
 
 
 # ============================
@@ -252,16 +253,44 @@ class MotionEditor:
                  font=('Arial', 9), relief='raised', width=6).pack(side=tk.LEFT, padx=2)
 
     # ============================
-    # 即時遙控（方向鍵）
+    # 即時遙控（方向鍵）- 與 launcher_gui 方向鍵同原理
     # ============================
     def _dpad_add(self, block_type, value):
         """
         按方向鍵：車子移動 + block 加入序列
-        使用 /control/moving/state（封閉迴圈，encoder 反饋，精準定位）
-        同時也把這筆記錄進 motion sequence
+        使用 /cmd_vel + threading（已驗證可用的方式）
         """
-        # 1. 車子移動（用 send_moving，與執行按鈕同原理）
-        send_moving(block_type, value)
+        def run():
+            if block_type == 3:    # 旋轉
+                angular = 0.5 if value > 0 else -0.5
+                cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
+                       f"rostopic pub /cmd_vel geometry_msgs/Twist "
+                       f"'{{linear: {{x: 0, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: {angular}}}}}'")
+            elif block_type == 4:  # 前進
+                cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
+                       f"rostopic pub /cmd_vel geometry_msgs/Twist "
+                       f"'{{linear: {{x: 0.1, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: 0}}}}'")
+            elif block_type == 5:  # 後退
+                cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
+                       f"rostopic pub /cmd_vel geometry_msgs/Twist "
+                       f"'{{linear: {{x: -0.1, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: 0}}}}'")
+            else:
+                return
+
+            # 發送移動指令
+            subprocess.run(['bash', '-c', cmd],
+                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            # 等一段時間後停止
+            time.sleep(0.3)
+            subprocess.run(
+                ['bash', '-c',
+                 "cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
+                 "rostopic pub /cmd_vel geometry_msgs/Twist "
+                 "'{linear: {x: 0, y: 0, z: 0}, angular: {x: 0, y: 0, z: 0}}'"],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+
+        threading.Thread(target=run, daemon=True).start()
 
         # 2. 同步加入序列（block 的 value = 使用者看到的公分/度數）
         # forward/backward: value=10cm, rotation: value=90/-90度
