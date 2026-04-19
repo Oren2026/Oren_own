@@ -263,16 +263,16 @@ class MotionEditor:
         import threading
 
         # 1. 車子移動（用 /cmd_vel，與 launcher_gui 相同）
-        # 使用 -1 而非 --once，直接給 args 字串繞過 YAML parser 問題
+        # 使用 -r 10 持續發送（10Hz），車子持續移動直到收到停止指令
         def send_cmd():
             cmd = None
             if block_type == 3:    # 旋轉
                 angular = 0.5 if value > 0 else -0.5
-                cmd = f"source ~/catkin_ws/devel/setup.bash && rostopic pub /cmd_vel geometry_msgs/Twist --once '{{linear: {{x: 0, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: {angular}}}}}'"
+                cmd = f"source ~/catkin_ws/devel/setup.bash && rostopic pub /cmd_vel geometry_msgs/Twist -r 10 '{{linear: {{x: 0, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: {angular}}}}}'"
             elif block_type == 4:  # 前進
-                cmd = "source ~/catkin_ws/devel/setup.bash && rostopic pub /cmd_vel geometry_msgs/Twist --once '{linear: {x: 0.1, y: 0, z: 0}, angular: {x: 0, y: 0, z: 0}}'"
+                cmd = "source ~/catkin_ws/devel/setup.bash && rostopic pub /cmd_vel geometry_msgs/Twist -r 10 '{linear: {x: 0.1, y: 0, z: 0}, angular: {x: 0, y: 0, z: 0}}'"
             elif block_type == 5:  # 後退
-                cmd = "source ~/catkin_ws/devel/setup.bash && rostopic pub /cmd_vel geometry_msgs/Twist --once '{linear: {x: -0.1, y: 0, z: 0}, angular: {x: 0, y: 0, z: 0}}'"
+                cmd = "source ~/catkin_ws/devel/setup.bash && rostopic pub /cmd_vel geometry_msgs/Twist -r 10 '{linear: {x: -0.1, y: 0, z: 0}, angular: {x: 0, y: 0, z: 0}}'"
             if not cmd:
                 return
             print(f"[MOTION DEBUG] Sending: {cmd}")
