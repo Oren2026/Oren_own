@@ -35,6 +35,18 @@ def run_bg(name, command):
     running_pids[name] = proc.pid
     update_all_buttons()
 
+def run_terminal(name, command):
+    """開新 terminal 執行（使用者需要看到輸出）"""
+    kill_process(name)
+    proc = subprocess.Popen(
+        ['osascript', '-e',
+         f'tell app \"Terminal\" to do script \"source ~/catkin_ws/devel/setup.bash && {command} && read\"'],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+    running_pids[name] = proc.pid
+    update_all_buttons()
+
 def on_stop():
     kill_all()
     update_all_buttons()
@@ -59,7 +71,7 @@ missions = [
     ("M3 校正",        "m3cal",  "roslaunch detect detect_construction.launch mode:=calibration"),
     ("M4 停車",        "m4",     "roslaunch detect detect_parking.launch"),
     ("M4 校正",        "m4cal",  "roslaunch detect detect_parking.launch mode:=calibration"),
-    ("M5 M彎道",       "m5",     "roslaunch detect detect_lane.launch && roslaunch control control_lane.launch"),
+    ("M5 M彎道",       "m5",     "roslaunch control control_lane.launch"),
     ("M5 校正",        "m5cal",  "roslaunch detect detect_lane.launch mode:=calibration"),
     ("M6 平交道",      "m6",     "roslaunch detect detect_level.launch"),
     ("M6 校正",        "m6cal",  "roslaunch detect detect_level.launch mode:=calibration"),
@@ -68,7 +80,7 @@ missions = [
 ]
 
 tools = [
-    ("狀態機",         "rosn",   "rosrun core core_node_controller.py"),
+    ("執行任務",       "rosn",   "rosrun core core_node_controller.py"),
     ("循線 (dl+cl)",   "lane",   "roslaunch detect detect_lane.launch && roslaunch control control_lane.launch"),
     ("rqt 設定",       "rr",     "rosrun rqt_reconfigure rqt_reconfigure"),
     ("影像檢視",       "riv",    "rosrun rqt_image_view rqt_image_view"),
@@ -155,8 +167,13 @@ tk.Label(tool_frame, text="控制工具",
          fg='#dddddd', bg='#2b2b2b').pack(pady=(0, 8))
 
 for label, name, cmd in tools:
+    # 「執行任務」需要看到 terminal 輸出，其他背景執行即可
+    if name == "rosn":
+        runner = lambda n=name, c=cmd: run_terminal(n, c)
+    else:
+        runner = lambda n=name, c=cmd: run_bg(n, c)
     btn = ttk.Button(tool_frame, text=label,
-                     command=lambda n=name, c=cmd: run_bg(n, c),
+                     command=runner,
                      style='TButton', width=20)
     btn.pack(pady=4, fill='x')
     btn_refs[name] = btn
