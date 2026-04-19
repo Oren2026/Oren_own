@@ -86,6 +86,25 @@ tools = [
     ("影像檢視",       "riv",    "rosrun rqt_image_view rqt_image_view"),
 ]
 
+# ===== TurtleBot Direct Control (via /cmd_vel) =====
+def tb3_cmd(linear_x=0, angular_z=0, duration=0.3):
+    """直接發 /cmd_vel 指令"""
+    import threading
+    def send():
+        subprocess.run(
+            ['bash', '-c',
+             f'source ~/catkin_ws/devel/setup.bash && '
+             f'rostopic pub /cmd_vel geometry_msgs/Twist "{{linear: {{x: {linear_x}, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: {angular_z}}}}}" --once'],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+    threading.Thread(target=send, daemon=True).start()
+
+def tb3_forward():   tb3_cmd(linear_x=0.15)
+def tb3_backward():  tb3_cmd(linear_x=-0.1)
+def tb3_left():      tb3_cmd(angular_z=0.5)
+def tb3_right():     tb3_cmd(angular_z=-0.5)
+def tb3_stop():      tb3_cmd(0, 0)
+
 # ===== Styles =====
 def setup_styles():
     s = ttk.Style()
@@ -158,7 +177,7 @@ for i in range(0, len(missions), 2):
         btn.grid(row=row, column=col_offset, padx=5, pady=4)
         btn_refs[name] = btn
 
-# ---- Tool Buttons (right side) ----
+# ---- Tool Buttons (left side) ----
 tool_frame = tk.Frame(root, bg='#2b2b2b')
 tool_frame.pack(side=tk.LEFT, padx=15, pady=10)
 
@@ -167,7 +186,6 @@ tk.Label(tool_frame, text="控制工具",
          fg='#dddddd', bg='#2b2b2b').pack(pady=(0, 8))
 
 for label, name, cmd in tools:
-    # 「執行任務」需要看到 terminal 輸出，其他背景執行即可
     if name == "rosn":
         runner = lambda n=name, c=cmd: run_terminal(n, c)
     else:
@@ -177,6 +195,30 @@ for label, name, cmd in tools:
                      style='TButton', width=20)
     btn.pack(pady=4, fill='x')
     btn_refs[name] = btn
+
+# ---- D-Pad (bottom right) ----
+dpad_frame = tk.Frame(root, bg='#2b2b2b')
+dpad_frame.pack(side=tk.LEFT, padx=15, pady=10)
+
+tk.Label(dpad_frame, text="方向控制",
+         font=('Arial', 11, 'bold'),
+         fg='#dddddd', bg='#2b2b2b').pack(pady=(0, 6))
+
+# Style for dpad buttons
+dpad_style_normal = {'bg': '#4a4a4a', 'fg': 'white', 'font': ('Arial', 14, 'bold'),
+                     'relief': 'raised', 'bd': 2, 'width': 5, 'height': 2}
+dpad_style_active = {'bg': '#888888', 'relief': 'sunken'}
+
+def make_triangle_btn(parent, text, cmd, row, col, colspan=1):
+    btn = tk.Button(parent, text=text, command=cmd, **dpad_style_normal)
+    btn.grid(row=row, column=col, columnspan=colspan, padx=3, pady=3)
+    return btn
+
+btn_up    = make_triangle_btn(dpad_frame, "▲", tb3_forward,  0, 1)
+btn_left  = make_triangle_btn(dpad_frame, "◀", tb3_left,     1, 0)
+btn_stop  = make_triangle_btn(dpad_frame, "■", tb3_stop,     1, 1)
+btn_right = make_triangle_btn(dpad_frame, "▶", tb3_right,    1, 2)
+btn_down  = make_triangle_btn(dpad_frame, "▼", tb3_backward, 2, 1)
 
 # ---- Stop Button ----
 tk.Frame(root, bg='#2b2b2b', height=20).pack()
