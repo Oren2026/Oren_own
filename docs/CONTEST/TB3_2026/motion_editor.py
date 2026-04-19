@@ -471,9 +471,10 @@ class MotionEditor:
                     lines.append(f"                self.is_moving_complete = False")
                     lines.append(f"                rospy.sleep(2)")
         else:
-            # B 版本：fake_lane 格式
-            # fake_lane: 500=正中, 380=左偏, 610=右偏
-            # loop_count 對應行駛距離：val cm / 10 * 12
+            # B 版本：fake_lane 格式（Intersection 風格）
+            # fake_lane: 500=正中前進, 380=左偏, 610=右偏
+            # 前進/後退：開啟循線行駛 → 停止
+            # 左/右旋：直接 steering，不需額外 reset 序列
             lines = []
             for btype, val in consolidated:
                 if btype == 0:
@@ -488,12 +489,6 @@ class MotionEditor:
                     lines.append(f"                    self.pub_fake_lane.publish({lane_val})")
                     lines.append(f"                    rospy.sleep(0.1)")
                     lines.append(f"                self.pub_lane_toggle.publish(True)")
-                    lines.append(f"                rospy.sleep(2)")
-                    lines.append(f"                self.pub_lane_toggle.publish(False)")
-                    lines.append(f"                for x in range(0, 12):")
-                    lines.append(f"                    self.pub_fake_lane.publish(600)")
-                    lines.append(f"                    rospy.sleep(0.1)")
-                    lines.append(f"                self.pub_lane_toggle.publish(True)")
                 elif btype == 4:
                     loops = int(val / 10 * 12)
                     lines.append(f"                rospy.loginfo('[{MISSION}] S')")
@@ -501,12 +496,8 @@ class MotionEditor:
                     lines.append(f"                    self.pub_fake_lane.publish(500)")
                     lines.append(f"                    rospy.sleep(0.1)")
                     lines.append(f"                self.pub_lane_toggle.publish(True)")
-                    lines.append(f"                rospy.sleep(2)")
+                    lines.append(f"                rospy.sleep({int(val / 10) + 1})")
                     lines.append(f"                self.pub_lane_toggle.publish(False)")
-                    lines.append(f"                for x in range(0, 12):")
-                    lines.append(f"                    self.pub_fake_lane.publish(600)")
-                    lines.append(f"                    rospy.sleep(0.1)")
-                    lines.append(f"                self.pub_lane_toggle.publish(True)")
                 elif btype == 5:
                     loops = int(val / 10 * 12)
                     lines.append(f"                rospy.loginfo('[{MISSION}] B')")
@@ -514,12 +505,8 @@ class MotionEditor:
                     lines.append(f"                    self.pub_fake_lane.publish(500)")
                     lines.append(f"                    rospy.sleep(0.1)")
                     lines.append(f"                self.pub_lane_toggle.publish(True)")
-                    lines.append(f"                rospy.sleep(2)")
+                    lines.append(f"                rospy.sleep({int(val / 10) + 1})")
                     lines.append(f"                self.pub_lane_toggle.publish(False)")
-                    lines.append(f"                for x in range(0, 12):")
-                    lines.append(f"                    self.pub_fake_lane.publish(600)")
-                    lines.append(f"                    rospy.sleep(0.1)")
-                    lines.append(f"                self.pub_lane_toggle.publish(True)")
 
         code = '\n'.join(lines)
         self._show_code(fn, code)
