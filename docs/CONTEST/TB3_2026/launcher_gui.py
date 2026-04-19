@@ -51,27 +51,27 @@ def update_all_buttons():
 
 # ===== Mission Definitions =====
 missions = [
-    ("M1 TrafficLight", "m1",     "roslaunch detect detect_traffic_light.launch"),
-    ("M1 Cal",          "m1cal",  "roslaunch detect detect_traffic_light.launch mode:=calibration"),
-    ("M2 S_Curve",      "m2",     "roslaunch detect detect_lane.launch && roslaunch detect detect_intersection.launch"),
-    ("M2 Cal",          "m2cal",  "roslaunch detect detect_lane.launch mode:=calibration"),
-    ("M3 Construction", "m3",     "roslaunch detect detect_construction.launch"),
-    ("M3 Cal",          "m3cal",  "roslaunch detect detect_construction.launch mode:=calibration"),
-    ("M4 Parking",      "m4",     "roslaunch detect detect_parking.launch"),
-    ("M4 Cal",          "m4cal",  "roslaunch detect detect_parking.launch mode:=calibration"),
-    ("M5 M_Curve",      "m5",     "roslaunch detect detect_lane.launch && roslaunch control control_lane.launch"),
-    ("M5 Cal",          "m5cal",  "roslaunch detect detect_lane.launch mode:=calibration"),
-    ("M6 LevelCrossing","m6",     "roslaunch detect detect_level.launch"),
-    ("M6 Cal",          "m6cal",  "roslaunch detect detect_level.launch mode:=calibration"),
-    ("M7 Tunnel",       "m7",     "roslaunch detect detect_tunnel.launch"),
-    ("M7 Cal",          "m7cal",  "roslaunch detect detect_tunnel.launch mode:=calibration"),
+    ("M1 交通號誌",     "m1",     "roslaunch detect detect_traffic_light.launch"),
+    ("M1 校正",        "m1cal",  "roslaunch detect detect_traffic_light.launch mode:=calibration"),
+    ("M2 S彎道",       "m2",     "roslaunch detect detect_lane.launch && roslaunch detect detect_intersection.launch"),
+    ("M2 校正",        "m2cal",  "roslaunch detect detect_lane.launch mode:=calibration"),
+    ("M3 施工區",      "m3",     "roslaunch detect detect_construction.launch"),
+    ("M3 校正",        "m3cal",  "roslaunch detect detect_construction.launch mode:=calibration"),
+    ("M4 停車",        "m4",     "roslaunch detect detect_parking.launch"),
+    ("M4 校正",        "m4cal",  "roslaunch detect detect_parking.launch mode:=calibration"),
+    ("M5 M彎道",       "m5",     "roslaunch detect detect_lane.launch && roslaunch control control_lane.launch"),
+    ("M5 校正",        "m5cal",  "roslaunch detect detect_lane.launch mode:=calibration"),
+    ("M6 平交道",      "m6",     "roslaunch detect detect_level.launch"),
+    ("M6 校正",        "m6cal",  "roslaunch detect detect_level.launch mode:=calibration"),
+    ("M7 隧道",        "m7",     "roslaunch detect detect_tunnel.launch"),
+    ("M7 校正",        "m7cal",  "roslaunch detect detect_tunnel.launch mode:=calibration"),
 ]
 
 tools = [
-    ("State Machine",   "rosn",   "rosrun core core_node_controller.py"),
-    ("Lane (dl+cl)",    "lane",   "roslaunch detect detect_lane.launch && roslaunch control control_lane.launch"),
-    ("rqt_reconfigure", "rr",     "rosrun rqt_reconfigure rqt_reconfigure"),
-    ("rqt_image_view",  "riv",    "rosrun rqt_image_view rqt_image_view"),
+    ("狀態機",         "rosn",   "rosrun core core_node_controller.py"),
+    ("循線 (dl+cl)",   "lane",   "roslaunch detect detect_lane.launch && roslaunch control control_lane.launch"),
+    ("rqt 設定",       "rr",     "rosrun rqt_reconfigure rqt_reconfigure"),
+    ("影像檢視",       "riv",    "rosrun rqt_image_view rqt_image_view"),
 ]
 
 # ===== Styles =====
@@ -133,7 +133,7 @@ mission_frame.pack(side=tk.LEFT, padx=15, pady=10)
 row = 0
 for label, name, cmd in missions:
     if row == 0:
-        tk.Label(mission_frame, text="Mission Nodes",
+        tk.Label(mission_frame, text="任務節點",
                  font=('Arial', 11, 'bold'),
                  fg='#dddddd', bg='#2b2b2b').grid(row=row, column=0, columnspan=4, pady=(0, 8))
         row += 1
@@ -145,15 +145,14 @@ for label, name, cmd in missions:
     btn.grid(row=row, column=col, padx=5, pady=4)
     btn_refs[name] = btn
 
-    # Alternate row
-    if col == 1:
-        row += 1
+    # Always advance row after placing button
+    row += 1
 
 # ---- Tool Buttons (right side) ----
 tool_frame = tk.Frame(root, bg='#2b2b2b')
 tool_frame.pack(side=tk.LEFT, padx=15, pady=10)
 
-tk.Label(tool_frame, text="Control Tools",
+tk.Label(tool_frame, text="控制工具",
          font=('Arial', 11, 'bold'),
          fg='#dddddd', bg='#2b2b2b').pack(pady=(0, 8))
 
