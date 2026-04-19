@@ -144,24 +144,6 @@ class MotionEditor:
                      bg='#3a3a3a', fg='white', font=('Arial', 10),
                      relief='raised', bd=2, width=16).pack(pady=4)
 
-        tk.Label(left, text="─" * 16, bg='#1e1e1e', fg='#444').pack(pady=10)
-
-        # 匯出
-        tk.Label(left, text="匯出", font=('Arial', 11, 'bold'),
-                fg='white', bg='#1e1e1e').pack()
-        self.fn_var = tk.StringVar(value="parking_moving")
-        tk.Entry(left, textvariable=self.fn_var,
-                bg='#2a2a2a', fg='white', font=('Arial', 10)).pack(pady=4, fill='x', padx=5)
-        tk.Button(left, text="匯出 Python",
-                  command=self.export_code,
-                  bg='#1a1a3a', fg='#aaaaff',
-                  font=('Arial', 10), relief='raised', width=15).pack(pady=6)
-
-        tk.Button(left, text="清除全部",
-                  command=self.clear_all,
-                  bg='#2a2a2a', fg='#cccccc',
-                  font=('Arial', 10), relief='raised', width=15).pack(pady=6)
-
         # ===== 中間：序列區 =====
         center = tk.Frame(self.root, bg='#2b2b2b')
         center.pack(side=tk.LEFT, fill='both', expand=True, padx=10, pady=10)
