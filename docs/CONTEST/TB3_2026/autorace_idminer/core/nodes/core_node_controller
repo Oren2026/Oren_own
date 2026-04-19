@@ -3,7 +3,6 @@
 
 import rospy, roslaunch, os, time
 from enum import Enum
-from threading import Timer
 
 class CoreNodeController():
     def __init__(self):
@@ -23,17 +22,7 @@ class CoreNodeController():
             Finish
         ''')
 
-        # 每個關卡的執行秒數（秒數到就自動進下一關）
-        self.MISSION_DURATION = {
-            self.Mission.TrafficLight.value:  8,    # 賭綠燈
-            self.Mission.Intersection.value:  6,    # S曲線/圓環
-            self.Mission.Construction.value: 6,    # 施工區
-            self.Mission.Parking.value:       1,    # 定點停車
-            self.Mission.LevelCrossing.value: 12,   # 平交道
-            self.Mission.Tunnel.value:        25,   # 隧道（前半）
-        }
-
-        # ========== Launcher enum ==========
+        # Launcher enum（對應 detect/ 和 control/ 裡的 launch 檔）
         self.Launcher = Enum('Launcher', 'dl cl tf isc ct pk mv lcro tun')
 
         # 追蹤各節點是否已啟動
@@ -51,153 +40,138 @@ class CoreNodeController():
 
         self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
 
-        # ========== State ==========
-        self.current_mission = None
-        self.t_next_mission  = None
-        self.mission_active  = False
+        rospy.loginfo("[Controller] ===== 啟動中 =====")
+        rospy.sleep(1)
 
-        # 啟動後直接從第一關開始
-        rospy.loginfo("[Controller] ===== 啟動中，按 Ctrl-C 停止 =====")
-        rospy.sleep(1)  # 留時間給 roscore 穩定
-        self._start_mission(self.Mission.TrafficLight.value)
-
-        loop_rate = rospy.Rate(10)  # 10hz，非阻塞
-
-        while not rospy.is_shutdown():
-            # 檢查時間到，自動進下一關
-            if self.mission_active and rospy.Time.now() >= self.t_next_mission:
-                self._advance()
-
-            loop_rate.sleep()
+        # 直接從第一關開始，依序執行到 Finish
+        self._run_sequence()
 
     # ============================================================
-    # 公共方法：手動跳到指定關卡（除錯用）
+    # 依序執行所有關卡
     # ============================================================
-    def jump_to(self, mission_value):
-        """除錯用：立刻跳到指定關卡"""
-        rospy.loginfo("[Controller] 強制跳到 %s", self.Mission(mission_value).name)
-        self._cancel_timer()
-        self._start_mission(mission_value)
+    def _run_sequence(self):
+        """依序執行：TrafficLight → Intersection → Construction → Parking → LevelCrossing → Tunnel → Finish"""
+        missions = [
+            (self.Mission.TrafficLight.value,    self._enter_traffic_light),
+            (self.Mission.Intersection.value,   self._enter_intersection),
+            (self.Mission.Construction.value,   self._enter_construction),
+            (self.Mission.Parking.value,         self._enter_parking),
+            (self.Mission.LevelCrossing.value,   self._enter_level_crossing),
+            (self.Mission.Tunnel.value,          self._enter_tunnel),
+        ]
+
+        for mission_val, enter_fn in missions:
+            if rospy.is_shutdown():
+                break
+            rospy.loginfo("[Controller] ========================================")
+            rospy.loginfo("[Controller] 進入關卡: %s", self.Mission(mission_val).name)
+            rospy.loginfo("[Controller] 目前啟動中的節點: %s", self._active_nodes())
+            rospy.loginfo("[Controller] ========================================")
+            enter_fn()
+            rospy.sleep(0.5)  # 留一點緩衝再進下一關
+
+        if not rospy.is_shutdown():
+            self._enter_finish()
 
     # ============================================================
-    # 內部方法
+    # 各關卡進入函式（黑皮提供版本）
     # ============================================================
 
-    def _start_mission(self, mission_value):
-        """開始執行指定關卡"""
-        self.current_mission = mission_value
-        self.mission_active  = True
-        duration = self.MISSION_DURATION.get(mission_value, 30)
+    def _enter_traffic_light(self):
+        rospy.loginfo("OPEN TrafficLight")
+        self.fnLaunch(self.Launcher.tf.value, True)
+        self.fnLaunch(self.Launcher.dl.value, False)
+        self.fnLaunch(self.Launcher.cl.value, False)
+        self.fnLaunch(self.Launcher.isc.value, False)
+        self.fnLaunch(self.Launcher.ct.value, False)
+        self.fnLaunch(self.Launcher.pk.value, False)
+        self.fnLaunch(self.Launcher.mv.value, False)
+        self.fnLaunch(self.Launcher.lcro.value, False)
+        self.fnLaunch(self.Launcher.tun.value, False)
 
-        rospy.loginfo("[Controller] ========================================")
-        rospy.loginfo("[Controller] 進入關卡: %s (%.0f秒)", self.Mission(mission_value).name, duration)
-        rospy.loginfo("[Controller] 目前啟動中的節點: %s", self._active_nodes())
-        rospy.loginfo("[Controller] ========================================")
+    def _enter_intersection(self):
+        rospy.loginfo("follow lane then Intersection")
+        self.fnLaunch(self.Launcher.tf.value, False)
+        self.fnLaunch(self.Launcher.dl.value, True)
+        self.fnLaunch(self.Launcher.cl.value, True)
+        rospy.sleep(6)
+        self.fnLaunch(self.Launcher.isc.value, True)
 
-        # 根據關卡開關對應節點
-        if mission_value == self.Mission.TrafficLight.value:
-            self._launch(self.Launcher.tf, True)
-            self._launch(self.Launcher.dl, False)
-            self._launch(self.Launcher.cl, False)
-            self._launch(self.Launcher.isc, False)
-            self._launch(self.Launcher.ct, False)
-            self._launch(self.Launcher.pk, False)
-            self._launch(self.Launcher.mv, False)
-            self._launch(self.Launcher.lcro, False)
-            self._launch(self.Launcher.tun, False)
+    def _enter_construction(self):
+        rospy.loginfo("OPEN Construction")
+        self.fnLaunch(self.Launcher.isc.value, False)
+        self.fnLaunch(self.Launcher.dl.value, True)
+        self.fnLaunch(self.Launcher.cl.value, True)
+        self.fnLaunch(self.Launcher.ct.value, True)
+        rospy.sleep(6)
+        self.fnLaunch(self.Launcher.mv.value, True)
 
-        elif mission_value == self.Mission.Intersection.value:
-            self._launch(self.Launcher.tf, False)
-            self._launch(self.Launcher.dl, True)
-            self._launch(self.Launcher.cl, True)
-            self._launch(self.Launcher.isc, True)
-            self._launch(self.Launcher.ct, False)
-            self._launch(self.Launcher.pk, False)
-            self._launch(self.Launcher.mv, False)
-            self._launch(self.Launcher.lcro, False)
-            self._launch(self.Launcher.tun, False)
+    def _enter_parking(self):
+        rospy.loginfo("OPEN Parking")
+        self.fnLaunch(self.Launcher.dl.value, False)
+        self.fnLaunch(self.Launcher.cl.value, False)
+        self.fnLaunch(self.Launcher.ct.value, False)
+        rospy.sleep(1)
+        self.fnLaunch(self.Launcher.pk.value, True)
 
-        elif mission_value == self.Mission.Construction.value:
-            self._launch(self.Launcher.tf, False)
-            self._launch(self.Launcher.dl, True)
-            self._launch(self.Launcher.cl, True)
-            self._launch(self.Launcher.isc, False)
-            self._launch(self.Launcher.ct, True)
-            self._launch(self.Launcher.pk, False)
-            self._launch(self.Launcher.mv, True)
-            self._launch(self.Launcher.lcro, False)
-            self._launch(self.Launcher.tun, False)
+    def _enter_level_crossing(self):
+        rospy.loginfo("OPEN LevelCrossing")
+        self.fnLaunch(self.Launcher.mv.value, False)
+        self.fnLaunch(self.Launcher.pk.value, False)
+        self.fnLaunch(self.Launcher.dl.value, True)
+        self.fnLaunch(self.Launcher.cl.value, True)
+        rospy.sleep(12)
+        self.fnLaunch(self.Launcher.lcro.value, True)
 
-        elif mission_value == self.Mission.Parking.value:
-            self._launch(self.Launcher.tf, False)
-            self._launch(self.Launcher.dl, False)
-            self._launch(self.Launcher.cl, False)
-            self._launch(self.Launcher.isc, False)
-            self._launch(self.Launcher.ct, False)
-            self._launch(self.Launcher.pk, True)
-            self._launch(self.Launcher.mv, False)
-            self._launch(self.Launcher.lcro, False)
-            self._launch(self.Launcher.tun, False)
+    def _enter_tunnel(self):
+        rospy.loginfo("OPEN Tunnel")
+        self.fnLaunch(self.Launcher.lcro.value, False)
+        self.fnLaunch(self.Launcher.dl.value, True)
+        self.fnLaunch(self.Launcher.cl.value, True)
+        rospy.sleep(25)
+        self.fnLaunch(self.Launcher.dl.value, False)
+        self.fnLaunch(self.Launcher.tun.value, True)
+        rospy.sleep(2)
+        self.fnLaunch(self.Launcher.mv.value, True)
 
-        elif mission_value == self.Mission.LevelCrossing.value:
-            self._launch(self.Launcher.tf, False)
-            self._launch(self.Launcher.dl, True)
-            self._launch(self.Launcher.cl, True)
-            self._launch(self.Launcher.isc, False)
-            self._launch(self.Launcher.ct, False)
-            self._launch(self.Launcher.pk, False)
-            self._launch(self.Launcher.mv, False)
-            self._launch(self.Launcher.lcro, True)
-            self._launch(self.Launcher.tun, False)
+    def _enter_finish(self):
+        rospy.loginfo("===== 比賽完成 =====")
+        self.fnLaunch(self.Launcher.tf.value, False)
+        self.fnLaunch(self.Launcher.dl.value, False)
+        self.fnLaunch(self.Launcher.cl.value, False)
+        self.fnLaunch(self.Launcher.isc.value, False)
+        self.fnLaunch(self.Launcher.ct.value, False)
+        self.fnLaunch(self.Launcher.pk.value, False)
+        self.fnLaunch(self.Launcher.mv.value, False)
+        self.fnLaunch(self.Launcher.lcro.value, False)
+        self.fnLaunch(self.Launcher.tun.value, False)
+        rospy.loginfo("所有節點已關閉")
 
-        elif mission_value == self.Mission.Tunnel.value:
-            self._launch(self.Launcher.tf, False)
-            self._launch(self.Launcher.dl, True)
-            self._launch(self.Launcher.cl, True)
-            self._launch(self.Launcher.isc, False)
-            self._launch(self.Launcher.ct, False)
-            self._launch(self.Launcher.pk, False)
-            self._launch(self.Launcher.mv, False)
-            self._launch(self.Launcher.lcro, False)
-            self._launch(self.Launcher.tun, False)
-            # 25秒後進 Tunnel 第二階段
-            rospy.sleep(25)
-            self._launch(self.Launcher.dl, False)
-            self._launch(self.Launcher.tun, True)
-            rospy.sleep(2)
-            self._launch(self.Launcher.mv, True)
+    # ============================================================
+    # 節點啟動/關閉（新版本 dictionary 管理）
+    # ============================================================
 
-        elif mission_value == self.Mission.Finish.value:
-            rospy.loginfo("[Controller] ===== 比賽完成 =====")
-            self._shutdown_all()
-
-        # 設定下一關計時
-        if mission_value != self.Mission.Finish.value:
-            self.t_next_mission = rospy.Time.now() + rospy.Duration(duration)
-            rospy.loginfo("[Controller] %d 秒後自動進下一關", duration)
-
-    def _advance(self):
-        """時間到，進下一關"""
-        self.mission_active = False
-        current = self.current_mission
-        next_mission = current + 1
-
-        if next_mission <= self.Mission.Finish.value:
-            rospy.loginfo("[Controller] >> 計時到了，進下一關")
-            self._start_mission(next_mission)
-        else:
-            self._start_mission(self.Mission.Finish.value)
-
-    def _active_nodes(self):
-        return [k for k, v in self.launchers.items() if v['active']]
-
-    def _launch(self, launcher_enum, is_start):
-        """統一的 launch/shutdown 介面"""
-        key = launcher_enum.name.lower()
+    def fnLaunch(self, launch_num, is_start):
+        """對照 Launcher enum value 來啟動或關閉節點"""
+        key_map = {
+            self.Launcher.dl.value:    'dl',
+            self.Launcher.cl.value:    'cl',
+            self.Launcher.tf.value:    'tf',
+            self.Launcher.isc.value:   'isc',
+            self.Launcher.ct.value:    'ct',
+            self.Launcher.pk.value:    'pk',
+            self.Launcher.mv.value:    'mv',
+            self.Launcher.lcro.value: 'lcro',
+            self.Launcher.tun.value:   'tun',
+        }
+        key = key_map.get(launch_num)
+        if key is None:
+            rospy.logwarn("[Controller] 未知 launch_num: %s", launch_num)
+            return
 
         if is_start:
             if not self.launchers[key]['active']:
-                launch_file = self._get_launch_file(launcher_enum)
+                launch_file = self._get_launch_file(key)
                 if launch_file is None:
                     rospy.logwarn("[Controller] %s 沒有對應 launch 檔", key)
                     return
@@ -211,7 +185,7 @@ class CoreNodeController():
                 self.launchers[key]['active'] = True
                 rospy.loginfo("[Controller] 啟動 +++ %s", key)
             else:
-                pass  # 已啟動
+                rospy.loginfo("[Controller] %s 已啟動（跳過）", key)
         else:
             if self.launchers[key]['active']:
                 self.launchers[key]['handle'].shutdown()
@@ -219,9 +193,9 @@ class CoreNodeController():
                 self.launchers[key]['active'] = False
                 rospy.loginfo("[Controller] 關閉 --- %s", key)
             else:
-                pass  # 已關閉
+                rospy.loginfo("[Controller] %s 已關閉（跳過）", key)
 
-    def _get_launch_file(self, launcher_enum):
+    def _get_launch_file(self, key):
         mapping = {
             'dl':   'detect/launch/detect_lane.launch',
             'cl':   'control/launch/control_lane.launch',
@@ -233,14 +207,10 @@ class CoreNodeController():
             'lcro': 'detect/launch/detect_level.launch',
             'tun':  'detect/launch/detect_tunnel.launch',
         }
-        return mapping.get(launcher_enum.name.lower())
+        return mapping.get(key)
 
-    def _cancel_timer(self):
-        pass  # 非阻塞計時，不需要 cancel
-
-    def _shutdown_all(self):
-        for key in self.launchers:
-            self._launch(getattr(self.Launcher, key.upper()), False)
+    def _active_nodes(self):
+        return [k for k, v in self.launchers.items() if v['active']]
 
 # --------------------------------------------------
 if __name__ == '__main__':
