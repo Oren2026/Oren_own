@@ -167,26 +167,26 @@ class MotionEditor:
         # ---- 1. 執行控制 ----
         tk.Label(right, text="執行控制",
                 font=('Arial', 12, 'bold'),
-                fg='white', bg='#1e1e1e').pack(pady=(10, 8))
+                fg='white', bg='#1e1e1e').pack(pady=(15, 10))
 
         self.status_label = tk.Label(right, text="待機",
-                                     fg='#aaaaaa', bg='#1e1e1e', font=('Arial', 10))
+                                     fg='#aaaaaa', bg='#1e1e1e', font=('Arial', 11))
         self.status_label.pack()
 
         self.exec_btn = tk.Button(right, text="▶ 執行序列",
                                   command=self.execute_sequence,
                                   bg='#1a3a1a', fg='#88ff88',
-                                  font=('Arial', 11, 'bold'),
-                                  relief='raised', width=15)
-        self.exec_btn.pack(pady=5)
+                                  font=('Arial', 12, 'bold'),
+                                  relief='raised', width=16, height=2)
+        self.exec_btn.pack(pady=8)
 
         self.stop_btn = tk.Button(right, text="■ 停止",
                                   command=self.stop_execute,
                                   bg='#3a1a1a', fg='#ff8888',
-                                  font=('Arial', 11, 'bold'),
+                                  font=('Arial', 12, 'bold'),
                                   state='disabled',
-                                  relief='raised', width=15)
-        self.stop_btn.pack(pady=5)
+                                  relief='raised', width=16, height=2)
+        self.stop_btn.pack(pady=8)
 
         # ---- 分隔線 ----
         tk.Label(right, text="─" * 16, bg='#1e1e1e', fg='#444').pack(pady=(8, 5))
@@ -280,18 +280,16 @@ class MotionEditor:
         import threading
 
         # 1. 車子移動（用 /cmd_vel，與 launcher_gui 相同）
+        # 使用 -1 而非 --once，直接給 args 字串繞過 YAML parser 問題
         def send_cmd():
             cmd = None
             if block_type == 3:    # 旋轉
                 angular = 0.5 if value > 0 else -0.5
-                cmd = (f"rostopic pub /cmd_vel geometry_msgs/Twist "
-                       f"{{linear: {{x: 0, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: {angular}}}}} --once")
+                cmd = f"rostopic pub /cmd_vel geometry_msgs/Twist -1 0 0 0 0 0 0 {angular}"
             elif block_type == 4:  # 前進
-                cmd = (f"rostopic pub /cmd_vel geometry_msgs/Twist "
-                       f"{{linear: {{x: 0.1, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: 0}}}} --once")
+                cmd = "rostopic pub /cmd_vel geometry_msgs/Twist -1 0.1 0 0 0 0 0 0"
             elif block_type == 5:  # 後退
-                cmd = (f"rostopic pub /cmd_vel geometry_msgs/Twist "
-                       f"{{linear: {{x: -0.1, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: 0}}}} --once")
+                cmd = "rostopic pub /cmd_vel geometry_msgs/Twist -1 -0.1 0 0 0 0 0 0"
             if not cmd:
                 return
             full = f'source ~/catkin_ws/devel/setup.bash && {cmd}'
