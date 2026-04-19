@@ -262,8 +262,10 @@ class MotionEditor:
         """
         import threading
 
-        # 1. 車子移動（Python threading + rosservice 計時，發送後自動停止）
+        # 1. 車子移動（Python threading + 計時，發送後自動停止）
         def send_cmd():
+            dur = 1.8 if block_type == 3 else 0.6  # 旋轉1.8s，前進/後退0.6s
+
             if block_type == 3:    # 旋轉
                 angular = 0.5 if value > 0 else -0.5
                 linear_x, angular_z = 0, angular
@@ -283,7 +285,7 @@ class MotionEditor:
                 r = subprocess.run(['bash', '-c', cmd], capture_output=True, text=True)
                 print(f"[MOTION DEBUG] stdout: {r.stdout}")
                 print(f"[MOTION DEBUG] stderr: {r.stderr}")
-                time.sleep(0.3)
+                time.sleep(dur)
                 # 停止
                 r2 = subprocess.run(
                     ['bash', '-c',
@@ -296,7 +298,7 @@ class MotionEditor:
 
             threading.Thread(target=run, daemon=True).start()
 
-        threading.Thread(target=send_cmd, daemon=True).start()
+        send_cmd()  # 啟動車子移動
 
         # 2. 同步加入序列（block 的 value = 使用者看到的公分/度數）
         # forward/backward: value=10cm, rotation: value=90/-90度
