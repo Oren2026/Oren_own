@@ -243,6 +243,17 @@ class MotionEditor:
                 bg='#2a2a2a', fg='white', font=('Arial', 10),
                 width=13).pack(side=tk.LEFT, padx=3)
 
+        # 匯出版本選擇
+        ver_frame = tk.Frame(right, bg='#1e1e1e')
+        ver_frame.pack(pady=2)
+        self.export_ver = tk.StringVar(value='A')
+        tk.Radiobutton(ver_frame, text="A (moving)", variable=self.export_ver, value='A',
+                       bg='#1e1e1e', fg='#aaa', font=('Arial', 9),
+                       selectcolor='#3a3a1a').pack(side=tk.LEFT, padx=4)
+        tk.Radiobutton(ver_frame, text="B (fake_lane)", variable=self.export_ver, value='B',
+                       bg='#1e1e1e', fg='#aaa', font=('Arial', 9),
+                       selectcolor='#3a3a1a').pack(side=tk.LEFT, padx=4)
+
         btn_row = tk.Frame(right, bg='#1e1e1e')
         btn_row.pack(pady=4)
         tk.Button(btn_row, text="匯出 .py",
@@ -403,6 +414,7 @@ class MotionEditor:
     def export_code(self):
         fn = self.fn_var.get().strip().replace(' ', '_') or "parking_moving"
         MISSION = fn.split('_')[0].upper() or "PARKING"
+        ver = self.export_ver.get()
 
         # 自動總結：合併同 type 連續指令
         consolidated = []
@@ -416,47 +428,98 @@ class MotionEditor:
                 else:
                     consolidated.append([btype, val])
 
-        lines = []
-        for btype, val in consolidated:
-            if btype == 0:
-                lines.append(f"                rospy.loginfo('[{MISSION}] WAIT {val}s')")
-                lines.append(f"                rospy.sleep({val})")
-            elif btype == 3:
-                direction = 'R' if val > 0 else 'L'
-                lines.append(f"                rospy.loginfo('[{MISSION}] {direction}')")
-                lines.append(f"                msg_moving.moving_type= 3")
-                lines.append(f"                msg_moving.moving_value_angular= {abs(val)}")
-                lines.append(f"                msg_moving.moving_value_linear= 0.0")
-                lines.append(f"                self.pub_moving.publish(msg_moving)")
-                lines.append(f"                while True:")
-                lines.append(f"                    if self.is_moving_complete == True:")
-                lines.append(f"                        break")
-                lines.append(f"                self.is_moving_complete = False")
-                lines.append(f"                rospy.sleep(2)")
-            elif btype == 4:
-                linear_m = val / 100.0
-                lines.append(f"                rospy.loginfo('[{MISSION}] S')")
-                lines.append(f"                msg_moving.moving_type= 4")
-                lines.append(f"                msg_moving.moving_value_angular= 0.0")
-                lines.append(f"                msg_moving.moving_value_linear= {linear_m}")
-                lines.append(f"                self.pub_moving.publish(msg_moving)")
-                lines.append(f"                while True:")
-                lines.append(f"                    if self.is_moving_complete == True:")
-                lines.append(f"                        break")
-                lines.append(f"                self.is_moving_complete = False")
-                lines.append(f"                rospy.sleep(2)")
-            elif btype == 5:
-                linear_m = val / 100.0
-                lines.append(f"                rospy.loginfo('[{MISSION}] B')")
-                lines.append(f"                msg_moving.moving_type= 5")
-                lines.append(f"                msg_moving.moving_value_angular= 0.0")
-                lines.append(f"                msg_moving.moving_value_linear= {linear_m}")
-                lines.append(f"                self.pub_moving.publish(msg_moving)")
-                lines.append(f"                while True:")
-                lines.append(f"                    if self.is_moving_complete == True:")
-                lines.append(f"                        break")
-                lines.append(f"                self.is_moving_complete = False")
-                lines.append(f"                rospy.sleep(2)")
+        if ver == 'A':
+            lines = []
+            for btype, val in consolidated:
+                if btype == 0:
+                    lines.append(f"                rospy.loginfo('[{MISSION}] WAIT {val}s')")
+                    lines.append(f"                rospy.sleep({val})")
+                elif btype == 3:
+                    direction = 'R' if val > 0 else 'L'
+                    lines.append(f"                rospy.loginfo('[{MISSION}] {direction}')")
+                    lines.append(f"                msg_moving.moving_type= 3")
+                    lines.append(f"                msg_moving.moving_value_angular= {abs(val)}")
+                    lines.append(f"                msg_moving.moving_value_linear= 0.0")
+                    lines.append(f"                self.pub_moving.publish(msg_moving)")
+                    lines.append(f"                while True:")
+                    lines.append(f"                    if self.is_moving_complete == True:")
+                    lines.append(f"                        break")
+                    lines.append(f"                self.is_moving_complete = False")
+                    lines.append(f"                rospy.sleep(2)")
+                elif btype == 4:
+                    linear_m = val / 100.0
+                    lines.append(f"                rospy.loginfo('[{MISSION}] S')")
+                    lines.append(f"                msg_moving.moving_type= 4")
+                    lines.append(f"                msg_moving.moving_value_angular= 0.0")
+                    lines.append(f"                msg_moving.moving_value_linear= {linear_m}")
+                    lines.append(f"                self.pub_moving.publish(msg_moving)")
+                    lines.append(f"                while True:")
+                    lines.append(f"                    if self.is_moving_complete == True:")
+                    lines.append(f"                        break")
+                    lines.append(f"                self.is_moving_complete = False")
+                    lines.append(f"                rospy.sleep(2)")
+                elif btype == 5:
+                    linear_m = val / 100.0
+                    lines.append(f"                rospy.loginfo('[{MISSION}] B')")
+                    lines.append(f"                msg_moving.moving_type= 5")
+                    lines.append(f"                msg_moving.moving_value_angular= 0.0")
+                    lines.append(f"                msg_moving.moving_value_linear= {linear_m}")
+                    lines.append(f"                self.pub_moving.publish(msg_moving)")
+                    lines.append(f"                while True:")
+                    lines.append(f"                    if self.is_moving_complete == True:")
+                    lines.append(f"                        break")
+                    lines.append(f"                self.is_moving_complete = False")
+                    lines.append(f"                rospy.sleep(2)")
+        else:
+            # B 版本：fake_lane 格式
+            # fake_lane: 500=正中, 380=左偏, 610=右偏
+            # loop_count 對應行駛距離：val cm / 10 * 12
+            lines = []
+            for btype, val in consolidated:
+                if btype == 0:
+                    lines.append(f"                rospy.loginfo('[{MISSION}] WAIT {val}s')")
+                    lines.append(f"                rospy.sleep({val})")
+                elif btype == 3:
+                    direction = 'RIGHT' if val < 0 else 'LEFT'
+                    lane_val = 610 if val < 0 else 380
+                    loops = int(abs(val) / 90 * 12)
+                    lines.append(f"                rospy.loginfo('[{MISSION}] {direction}')")
+                    lines.append(f"                for x in range(0, {loops}):")
+                    lines.append(f"                    self.pub_fake_lane.publish({lane_val})")
+                    lines.append(f"                    rospy.sleep(0.1)")
+                    lines.append(f"                self.pub_lane_toggle.publish(True)")
+                    lines.append(f"                rospy.sleep(2)")
+                    lines.append(f"                self.pub_lane_toggle.publish(False)")
+                    lines.append(f"                for x in range(0, 12):")
+                    lines.append(f"                    self.pub_fake_lane.publish(600)")
+                    lines.append(f"                    rospy.sleep(0.1)")
+                    lines.append(f"                self.pub_lane_toggle.publish(True)")
+                elif btype == 4:
+                    loops = int(val / 10 * 12)
+                    lines.append(f"                rospy.loginfo('[{MISSION}] S')")
+                    lines.append(f"                for x in range(0, {loops}):")
+                    lines.append(f"                    self.pub_fake_lane.publish(500)")
+                    lines.append(f"                    rospy.sleep(0.1)")
+                    lines.append(f"                self.pub_lane_toggle.publish(True)")
+                    lines.append(f"                rospy.sleep(2)")
+                    lines.append(f"                self.pub_lane_toggle.publish(False)")
+                    lines.append(f"                for x in range(0, 12):")
+                    lines.append(f"                    self.pub_fake_lane.publish(600)")
+                    lines.append(f"                    rospy.sleep(0.1)")
+                    lines.append(f"                self.pub_lane_toggle.publish(True)")
+                elif btype == 5:
+                    loops = int(val / 10 * 12)
+                    lines.append(f"                rospy.loginfo('[{MISSION}] B')")
+                    lines.append(f"                for x in range(0, {loops}):")
+                    lines.append(f"                    self.pub_fake_lane.publish(500)")
+                    lines.append(f"                    rospy.sleep(0.1)")
+                    lines.append(f"                self.pub_lane_toggle.publish(True)")
+                    lines.append(f"                rospy.sleep(2)")
+                    lines.append(f"                self.pub_lane_toggle.publish(False)")
+                    lines.append(f"                for x in range(0, 12):")
+                    lines.append(f"                    self.pub_fake_lane.publish(600)")
+                    lines.append(f"                    rospy.sleep(0.1)")
+                    lines.append(f"                self.pub_lane_toggle.publish(True)")
 
         code = '\n'.join(lines)
         self._show_code(fn, code)
