@@ -407,6 +407,7 @@ class MotionEditor:
     # ============================
     def export_code(self):
         fn = self.fn_var.get().strip().replace(' ', '_') or "parking_moving"
+        MISSION = fn.split('_')[0].upper() or "PARKING"
 
         # 自動總結：合併同 type 連續指令
         consolidated = []
@@ -420,66 +421,47 @@ class MotionEditor:
                 else:
                     consolidated.append([btype, val])
 
-        # 前進/後退預設 sleep 秒數（可調整）
-        sleep_after = {4: 2, 5: 2, 3: 1}  # 前進2秒、後退2秒、旋轉1秒
-
-        lines = [
-            "#!/usr/bin/env python",
-            "# -*- coding: utf-8 -*-",
-            f'"""',
-            f"自動產出：{fn}",
-            f"原始 {len(self.sequence)} 指令 → 總結後 {len(consolidated)} 指令",
-            f'"""',
-            "",
-            "import rospy",
-            "from turtlebot3_autorace_msgs.msg import MovingParam",
-            "",
-        ]
-
+        lines = []
         for btype, val in consolidated:
             if btype == 0:
-                lines.append(f"    rospy.loginfo('[MOTION] 等待 {val} 秒')")
-                lines.append(f"    rospy.sleep({val})")
+                lines.append(f"                rospy.loginfo('[{MISSION}] WAIT {val}s')")
+                lines.append(f"                rospy.sleep({val})")
             elif btype == 3:
-                angular = abs(val)
-                direction = "右轉" if val > 0 else "左轉"
-                lines.append(f"    rospy.loginfo('[MOTION] {direction} {angular} 度')")
-                lines.append(f"    msg_moving.moving_type = 3")
-                lines.append(f"    msg_moving.moving_value_angular = {angular}")
-                lines.append(f"    msg_moving.moving_value_linear = 0.0")
-                lines.append(f"    self.pub_moving.publish(msg_moving)")
-                lines.append(f"    while True:")
-                lines.append(f"        if self.is_moving_complete == True:")
-                lines.append(f"            break")
-                lines.append(f"    self.is_moving_complete = False")
-                lines.append(f"    rospy.sleep({sleep_after.get(3, 1)})")
+                direction = 'R' if val > 0 else 'L'
+                lines.append(f"                rospy.loginfo('[{MISSION}] {direction}')")
+                lines.append(f"                msg_moving.moving_type= 3")
+                lines.append(f"                msg_moving.moving_value_angular= {abs(val)}")
+                lines.append(f"                msg_moving.moving_value_linear= 0.0")
+                lines.append(f"                self.pub_moving.publish(msg_moving)")
+                lines.append(f"                while True:")
+                lines.append(f"                    if self.is_moving_complete == True:")
+                lines.append(f"                        break")
+                lines.append(f"                self.is_moving_complete = False")
+                lines.append(f"                rospy.sleep(2)")
             elif btype == 4:
                 linear_m = val / 100.0
-                lines.append(f"    rospy.loginfo('[MOTION] 前進 {val} cm')")
-                lines.append(f"    msg_moving.moving_type = 4")
-                lines.append(f"    msg_moving.moving_value_angular = 0.0")
-                lines.append(f"    msg_moving.moving_value_linear = {linear_m}")
-                lines.append(f"    self.pub_moving.publish(msg_moving)")
-                lines.append(f"    while True:")
-                lines.append(f"        if self.is_moving_complete == True:")
-                lines.append(f"            break")
-                lines.append(f"    self.is_moving_complete = False")
-                lines.append(f"    rospy.sleep({sleep_after.get(4, 2)})")
+                lines.append(f"                rospy.loginfo('[{MISSION}] S')")
+                lines.append(f"                msg_moving.moving_type= 4")
+                lines.append(f"                msg_moving.moving_value_angular= 0.0")
+                lines.append(f"                msg_moving.moving_value_linear= {linear_m}")
+                lines.append(f"                self.pub_moving.publish(msg_moving)")
+                lines.append(f"                while True:")
+                lines.append(f"                    if self.is_moving_complete == True:")
+                lines.append(f"                        break")
+                lines.append(f"                self.is_moving_complete = False")
+                lines.append(f"                rospy.sleep(2)")
             elif btype == 5:
                 linear_m = val / 100.0
-                lines.append(f"    rospy.loginfo('[MOTION] 後退 {val} cm')")
-                lines.append(f"    msg_moving.moving_type = 5")
-                lines.append(f"    msg_moving.moving_value_angular = 0.0")
-                lines.append(f"    msg_moving.moving_value_linear = {linear_m}")
-                lines.append(f"    self.pub_moving.publish(msg_moving)")
-                lines.append(f"    while True:")
-                lines.append(f"        if self.is_moving_complete == True:")
-                lines.append(f"            break")
-                lines.append(f"    self.is_moving_complete = False")
-                lines.append(f"    rospy.sleep({sleep_after.get(5, 2)})")
-            lines.append("")
-
-        lines.append("    rospy.loginfo('[MOTION] 序列執行完成')")
+                lines.append(f"                rospy.loginfo('[{MISSION}] B')")
+                lines.append(f"                msg_moving.moving_type= 5")
+                lines.append(f"                msg_moving.moving_value_angular= 0.0")
+                lines.append(f"                msg_moving.moving_value_linear= {linear_m}")
+                lines.append(f"                self.pub_moving.publish(msg_moving)")
+                lines.append(f"                while True:")
+                lines.append(f"                    if self.is_moving_complete == True:")
+                lines.append(f"                        break")
+                lines.append(f"                self.is_moving_complete = False")
+                lines.append(f"                rospy.sleep(2)")
 
         code = '\n'.join(lines)
         self._show_code(fn, code)
