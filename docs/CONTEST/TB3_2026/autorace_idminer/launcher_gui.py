@@ -53,7 +53,7 @@ def update_all_buttons():
 missions = [
     ("M1 交通號誌",     "m1",     "roslaunch detect detect_traffic_light.launch"),
     ("M1 校正",        "m1cal",  "roslaunch detect detect_traffic_light.launch mode:=calibration"),
-    ("M2 S彎道",       "m2",     "roslaunch detect detect_lane.launch && roslaunch detect detect_intersection.launch"),
+    ("M2 S彎道",       "m2",     "roslaunch detect detect_intersection.launch"),
     ("M2 校正",        "m2cal",  "roslaunch detect detect_lane.launch mode:=calibration"),
     ("M3 施工區",      "m3",     "roslaunch detect detect_construction.launch"),
     ("M3 校正",        "m3cal",  "roslaunch detect detect_construction.launch mode:=calibration"),
@@ -130,23 +130,21 @@ subtitle.pack(pady=(0, 12))
 mission_frame = tk.Frame(root, bg='#2b2b2b')
 mission_frame.pack(side=tk.LEFT, padx=15, pady=10)
 
-row = 0
-for label, name, cmd in missions:
-    if row == 0:
-        tk.Label(mission_frame, text="任務節點",
-                 font=('Arial', 11, 'bold'),
-                 fg='#dddddd', bg='#2b2b2b').grid(row=row, column=0, columnspan=4, pady=(0, 8))
-        row += 1
+# Header row
+tk.Label(mission_frame, text="任務節點",
+         font=('Arial', 11, 'bold'),
+         fg='#dddddd', bg='#2b2b2b').grid(row=0, column=0, columnspan=2, pady=(0, 8), sticky='w')
 
-    col = (row - 1) % 2
-    btn = ttk.Button(mission_frame, text=label,
-                      command=lambda n=name, c=cmd: run_bg(n, c),
-                      style='TButton', width=18)
-    btn.grid(row=row, column=col, padx=5, pady=4)
-    btn_refs[name] = btn
-
-    # Always advance row after placing button
-    row += 1
+# 每兩筆一組（M1+Cal, M2+Cal, ...），排在同一 row
+for i in range(0, len(missions), 2):
+    row = 1 + i // 2
+    for col_offset, item in enumerate(missions[i:i+2]):
+        label, name, cmd = item
+        btn = ttk.Button(mission_frame, text=label,
+                          command=lambda n=name, c=cmd: run_bg(n, c),
+                          style='TButton', width=18)
+        btn.grid(row=row, column=col_offset, padx=5, pady=4)
+        btn_refs[name] = btn
 
 # ---- Tool Buttons (right side) ----
 tool_frame = tk.Frame(root, bg='#2b2b2b')
