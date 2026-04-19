@@ -85,9 +85,11 @@ def send_moving(block_type, value):
         time.sleep(value)
         return
 
-    if block_type == 3:  # 旋轉：value = 度數
+    if block_type == 3:  # 旋轉：value = 度數（正=左，負=右）
+        angular = abs(value)
+        mtype = 2 if value > 0 else 3  # 2=left, 3=right
         cmd = (f"rostopic pub /control/moving/state turtlebot3_autorace_msgs/MovingParam "
-               f"'{{moving_type: 3, moving_value_linear: 0.0, moving_value_angular: {value}}}' --once")
+               f"'{{moving_type: {mtype}, moving_value_linear: 0.0, moving_value_angular: {angular}}}' --once")
     elif block_type == 4:  # 前進：value = 公分，轉公尺
         linear = value / 100.0
         cmd = (f"rostopic pub /control/moving/state turtlebot3_autorace_msgs/MovingParam "
@@ -261,11 +263,12 @@ class MotionEditor:
         使用 /control/moving/state + --once（封閉迴圈，精準定位）
         """
         def run():
-            if block_type == 3:    # 旋轉：value = 度數
+            if block_type == 3:    # 旋轉：value = 度數（正=左，負=右）
                 angular = abs(value)
+                mtype = 2 if value > 0 else 3  # 2=left, 3=right
                 cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
                        f"rostopic pub /control/moving/state turtlebot3_autorace_msgs/MovingParam "
-                       f"'{{moving_type: 3, moving_value_linear: 0.0, moving_value_angular: {angular}}}' --once")
+                       f"'{{moving_type: {mtype}, moving_value_linear: 0.0, moving_value_angular: {angular}}}' --once")
             elif block_type == 4:  # 前進：value = 公分，轉公尺
                 linear = value / 100.0
                 cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
