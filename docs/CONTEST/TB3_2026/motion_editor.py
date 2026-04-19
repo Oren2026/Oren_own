@@ -275,23 +275,24 @@ class MotionEditor:
                 return
 
             def run():
-                subprocess.run(
-                    ['bash', '-c',
-                     f"source ~/catkin_ws/devel/setup.bash && "
-                     f"rostopic pub /cmd_vel geometry_msgs/Twist "
-                     f"'{{linear: {{x: {linear_x}, y: 0, z: 0}}, "
-                     f"angular: {{x: 0, y: 0, z: {angular_z}}}}}'"],
-                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-                )
-                time.sleep(0.3)   # 移動持續時間
+                cmd = (f"source ~/catkin_ws/devel/setup.bash && "
+                       f"rostopic pub /cmd_vel geometry_msgs/Twist "
+                       f"'{{linear: {{x: {linear_x}, y: 0, z: 0}}, "
+                       f"angular: {{x: 0, y: 0, z: {angular_z}}}}}'")
+                print(f"[MOTION DEBUG] cmd: {cmd}")
+                r = subprocess.run(['bash', '-c', cmd], capture_output=True, text=True)
+                print(f"[MOTION DEBUG] stdout: {r.stdout}")
+                print(f"[MOTION DEBUG] stderr: {r.stderr}")
+                time.sleep(0.3)
                 # 停止
-                subprocess.run(
+                r2 = subprocess.run(
                     ['bash', '-c',
                      "source ~/catkin_ws/devel/setup.bash && "
                      "rostopic pub /cmd_vel geometry_msgs/Twist "
                      "'{linear: {x: 0, y: 0, z: 0}, angular: {x: 0, y: 0, z: 0}}'"],
-                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                    capture_output=True, text=True
                 )
+                print(f"[MOTION DEBUG] stop stderr: {r2.stderr}")
 
             threading.Thread(target=run, daemon=True).start()
 
