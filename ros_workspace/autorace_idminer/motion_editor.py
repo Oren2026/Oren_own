@@ -225,6 +225,100 @@ class MotionEditor:
                 justify='left', fg='#777', bg='#1e1e1e',
                 font=('Arial', 9)).pack(pady=5)
 
+        # ===== 即時遙控按鈕（方向鍵） =====
+        tk.Label(right, text="─" * 14, bg='#1e1e1e', fg='#444').pack(pady=(15, 5))
+        tk.Label(right, text="即時遙控",
+                font=('Arial', 10, 'bold'),
+                fg='#dddddd', bg='#1e1e1e').pack()
+
+        dpad_frame = tk.Frame(right, bg='#1e1e1e')
+        dpad_frame.pack(pady=8)
+
+        dpad_style = {'bg': '#3a3a3a', 'fg': 'white',
+                      'font': ('Arial', 10, 'bold'),
+                      'relief': 'raised', 'bd': 2, 'width': 5, 'height': 2}
+
+        # 上：前進（type=4, 10cm）
+        tk.Button(dpad_frame, text="▲\n前進",
+                 command=lambda: self._dpad_add(4, 10),
+                 **dpad_style).grid(row=0, column=1, padx=3, pady=3)
+
+        # 左：左旋轉（type=3, +90度）
+        tk.Button(dpad_frame, text="◀\n左旋",
+                 command=lambda: self._dpad_add(3, 90),
+                 **dpad_style).grid(row=1, column=0, padx=3, pady=3)
+
+        # 中：停止（發零速度）
+        tk.Button(dpad_frame, text="X\n停止",
+                 command=self._dpad_stop,
+                 bg='#5a3a3a', fg='#ffcccc',
+                 font=('Arial', 10, 'bold'),
+                 relief='raised', bd=2, width=5, height=2).grid(row=1, column=1, padx=3, pady=3)
+
+        # 右：右旋轉（type=3, -90度）
+        tk.Button(dpad_frame, text="▶\n右旋",
+                 command=lambda: self._dpad_add(3, -90),
+                 **dpad_style).grid(row=1, column=2, padx=3, pady=3)
+
+        # 下：後退（type=5, 10cm）
+        tk.Button(dpad_frame, text="▼\n後退",
+                 command=lambda: self._dpad_add(5, 10),
+                 **dpad_style).grid(row=2, column=1, padx=3, pady=3)
+
+    # ============================
+    # 即時遙控（方向鍵）
+    # ============================
+    def _dpad_add(self, block_type, value):
+        """
+        按方向鍵：車子移動 + block 加入序列
+        與 launcher_gui 方向鍵同原理：發 /cmd_vel 一次，車子持續移動
+        同時也把這筆記錄進 motion sequence
+        """
+        import threading
+
+        # 1. 車子移動（用 /cmd_vel，與 launcher_gui 相同）
+        def send_cmd():
+            if block_type == 3:    # 旋轉
+                angular = 0.5 if value > 0 else -0.5
+                cmd = (f"rostopic pub /cmd_vel geometry_msgs/Twist "
+                       f"{{linear: {{x: 0, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: {angular}}}}} --once")
+            elif block_type == 4:  # 前進
+                cmd = (f"rostopic pub /cmd_vel geometry_msgs/Twist "
+                       f"{{linear: {{x: 0.1, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: 0}}}} --once")
+            elif block_type == 5:  # 後退
+                cmd = (f"rostopic pub /cmd_vel geometry_msgs/Twist "
+                       f"{{linear: {{x: -0.1, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: 0}}}} --once")
+            else:
+                return
+            subprocess.run(
+                ['bash', '-c', f'source ~/catkin_ws/devel/setup.bash && {cmd}'],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+
+        threading.Thread(target=send_cmd, daemon=True).start()
+
+        # 2. 同步加入序列（block 的 value = 使用者看到的公分/度數）
+        # forward/backward: value=10cm, rotation: value=90/-90度
+        self.sequence.append((block_type, value))
+        self._rebuild()
+
+        # 3. 更新狀態列
+        names = {3: "旋轉", 4: "前進", 5: "後退"}
+        unit = "cm" if block_type in (4, 5) else "度"
+        self.status_label.config(
+            text=f"#{len(self.sequence)} {names.get(block_type,'?')} {abs(value)}{unit}",
+            fg='#ffaa00')
+
+    def _dpad_stop(self):
+        """發送零速度，車子停止"""
+        cmd = (f"rostopic pub /cmd_vel geometry_msgs/Twist "
+               f"{{linear: {{x: 0, y: 0, z: 0}}, angular: {{x: 0, y: 0, z: 0}}}} --once")
+        subprocess.run(
+            ['bash', '-c', f'source ~/catkin_ws/devel/setup.bash && {cmd}'],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+        self.status_label.config(text="已停止", fg='#ff6666')
+
     # ============================
     # Block 操作
     # ============================
