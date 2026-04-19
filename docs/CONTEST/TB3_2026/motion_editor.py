@@ -257,48 +257,11 @@ class MotionEditor:
     def _dpad_add(self, block_type, value):
         """
         按方向鍵：車子移動 + block 加入序列
-        與 launcher_gui 方向鍵同原理：發 /cmd_vel 一次，車子持續移動
+        使用 /control/moving/state（封閉迴圈，encoder 反饋，精準定位）
         同時也把這筆記錄進 motion sequence
         """
-        import threading
-
-        # 1. 車子移動（Python threading + 計時，發送後自動停止）
-        def send_cmd():
-            dur = 1.8 if block_type == 3 else 0.6  # 旋轉1.8s，前進/後退0.6s
-
-            if block_type == 3:    # 旋轉
-                angular = 0.5 if value > 0 else -0.5
-                linear_x, angular_z = 0, angular
-            elif block_type == 4:  # 前進
-                linear_x, angular_z = 0.1, 0
-            elif block_type == 5:  # 後退
-                linear_x, angular_z = -0.1, 0
-            else:
-                return
-
-            def run():
-                cmd = (f"source ~/catkin_ws/devel/setup.bash && "
-                       f"rostopic pub /cmd_vel geometry_msgs/Twist "
-                       f"'{{linear: {{x: {linear_x}, y: 0, z: 0}}, "
-                       f"angular: {{x: 0, y: 0, z: {angular_z}}}}}'")
-                print(f"[MOTION DEBUG] cmd: {cmd}")
-                r = subprocess.run(['bash', '-c', cmd], capture_output=True, text=True)
-                print(f"[MOTION DEBUG] stdout: {r.stdout}")
-                print(f"[MOTION DEBUG] stderr: {r.stderr}")
-                time.sleep(dur)
-                # 停止
-                r2 = subprocess.run(
-                    ['bash', '-c',
-                     "source ~/catkin_ws/devel/setup.bash && "
-                     "rostopic pub /cmd_vel geometry_msgs/Twist "
-                     "'{linear: {x: 0, y: 0, z: 0}, angular: {x: 0, y: 0, z: 0}}'"],
-                    capture_output=True, text=True
-                )
-                print(f"[MOTION DEBUG] stop stderr: {r2.stderr}")
-
-            threading.Thread(target=run, daemon=True).start()
-
-        send_cmd()  # 啟動車子移動
+        # 1. 車子移動（用 send_moving，與執行按鈕同原理）
+        send_moving(block_type, value)
 
         # 2. 同步加入序列（block 的 value = 使用者看到的公分/度數）
         # forward/backward: value=10cm, rotation: value=90/-90度
