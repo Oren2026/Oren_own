@@ -87,15 +87,15 @@ def send_moving(block_type, value):
 
     if block_type == 3:  # 旋轉：value = 度數
         cmd = (f"rostopic pub /control/moving/state turtlebot3_autorace_msgs/MovingParam "
-               f"{{moving_type: 3, moving_value_linear: 0.0, moving_value_angular: {value}}} --once")
+               f"'{{moving_type: 3, moving_value_linear: 0.0, moving_value_angular: {value}}}' --once")
     elif block_type == 4:  # 前進：value = 公分，轉公尺
         linear = value / 100.0
         cmd = (f"rostopic pub /control/moving/state turtlebot3_autorace_msgs/MovingParam "
-               f"{{moving_type: 4, moving_value_linear: {linear}, moving_value_angular: 0.0}} --once")
+               f"'{{moving_type: 4, moving_value_linear: {linear}, moving_value_angular: 0.0}}' --once")
     elif block_type == 5:  # 後退：value = 公分，轉公尺
         linear = value / 100.0
         cmd = (f"rostopic pub /control/moving/state turtlebot3_autorace_msgs/MovingParam "
-               f"{{moving_type: 5, moving_value_linear: {linear}, moving_value_angular: 0.0}} --once")
+               f"'{{moving_type: 5, moving_value_linear: {linear}, moving_value_angular: 0.0}}' --once")
     else:
         return
 
