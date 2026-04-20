@@ -437,7 +437,7 @@ class MotionEditor:
                 elif btype == 3:
                     direction = 'L' if val > 0 else 'R'
                     lines.append(f"                rospy.loginfo('[{MISSION}] {direction}')")
-                    lines.append(f"                msg_moving.moving_type= 3")
+                    lines.append(f"                msg_moving.moving_type= {2 if val > 0 else 3}")
                     lines.append(f"                msg_moving.moving_value_angular= {abs(val)}")
                     lines.append(f"                msg_moving.moving_value_linear= 0.0")
                     lines.append(f"                self.pub_moving.publish(msg_moving)")
