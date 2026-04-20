@@ -25,5 +25,6 @@
     }
   ],
   "files": ["detect_level.py"],
+  "video": "assets/videos/level_test.mp4",
   "testStatus": "passed"
 }

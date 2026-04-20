@@ -25,5 +25,6 @@
     }
   ],
   "files": ["detect_parking.py"],
+  "video": "assets/videos/parking_test.mp4",
   "testStatus": "passed"
 }
