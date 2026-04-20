@@ -3,17 +3,17 @@
   "subtitle": "TurtleBot 3 Burger × ROS × OpenCV",
   "category": "fira",
   "status": "in-progress",
-  "nextMilestone": "實機測試 core_node_controller 串接流程",
+  "nextMilestone": "完成隧道、施工區實測，整合全關卡串接",
   "progress": {
     "圓環/交叉路口": "done",
     "循線置中": "done",
     "交通號誌": "done",
     "障礙/減速區": "done",
     "平交道柵欄": "done",
-    "隧道/暗區": "done",
+    "隧道/暗區": "todo",
     "停車": "done",
     "S 型彎道": "done",
-    "任務串接": "done"
+    "任務串接": "todo"
   },
   "missions": [
     {
@@ -37,10 +37,11 @@
     {
       "id": "traffic_light",
       "name": "交通號誌",
-      "status": "todo",
+      "status": "done",
       "files": [
         "detect_traffic_light.py"
-      ]
+      ],
+      "testStatus": "passed"
     },
     {
       "id": "construction",
@@ -53,10 +54,11 @@
     {
       "id": "level_crossing",
       "name": "平交道柵欄",
-      "status": "todo",
+      "status": "done",
       "files": [
         "detect_level.py"
-      ]
+      ],
+      "testStatus": "passed"
     },
     {
       "id": "tunnel",
@@ -69,18 +71,20 @@
     {
       "id": "parking",
       "name": "停車",
-      "status": "todo",
+      "status": "done",
       "files": [
         "detect_parking.py"
-      ]
+      ],
+      "testStatus": "passed"
     },
     {
       "id": "s_curve",
       "name": "S 型彎道",
-      "status": "todo",
+      "status": "done",
       "files": [
         "detect_lane.py"
-      ]
+      ],
+      "testStatus": "passed"
     },
     {
       "id": "integration",
@@ -129,6 +133,6 @@
       "category": "進度"
     }
   ],
-  "doneCount": 2,
+  "doneCount": 5,
   "totalMissions": 9
 }
