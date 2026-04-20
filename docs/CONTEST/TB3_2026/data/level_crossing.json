@@ -3,27 +3,27 @@
   "name": { "zh": "平交道柵欄", "en": "Level Crossing" },
   "category": "mission",
   "description": "偵測紅白條紋柵欄，確認柵欄升起才能前進。",
-  "status": "todo",
+  "status": "done",
   "subConcepts": [
     {
       "id": "stripe_detection",
       "name": { "zh": "紅白條紋偵測", "en": "Stripe Pattern Detection" },
-      "status": "todo",
+      "status": "done",
       "description": "辨識平交道柵欄的紅白條紋圖案"
     },
     {
       "id": "barrier_state",
       "name": { "zh": "柵欄狀態判斷", "en": "Barrier State Detection" },
-      "status": "todo",
+      "status": "done",
       "description": "確認柵欄已升起（障礙解除）"
     },
     {
       "id": "safe_pass",
       "name": { "zh": "安全通過", "en": "Safe Pass" },
-      "status": "todo",
+      "status": "done",
       "description": "柵欄升起後安全通過平交道"
     }
   ],
   "files": ["detect_level.py"],
-  "testStatus": "untested"
+  "testStatus": "passed"
 }
