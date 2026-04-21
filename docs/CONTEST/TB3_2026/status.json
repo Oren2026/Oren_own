@@ -3,7 +3,7 @@
   "subtitle": "TurtleBot 3 Burger × ROS × OpenCV",
   "category": "fira",
   "status": "in-progress",
-  "nextMilestone": "完成隧道、施工區實測，整合全關卡串接",
+  "nextMilestone": "完成隧道偵測實測，整合全關卡串接",
   "progress": {
     "圓環/交叉路口": "done",
     "循線置中": "done",
@@ -46,10 +46,11 @@
     {
       "id": "construction",
       "name": "障礙/減速區",
-      "status": "todo",
+      "status": "done",
       "files": [
         "detect_construction.py"
-      ]
+      ],
+      "testStatus": "passed"
     },
     {
       "id": "level_crossing",
@@ -91,7 +92,7 @@
       "name": "任務串接",
       "status": "todo",
       "files": [
-        "core_node_controller.py"
+        "core_node_controller"
       ]
     }
   ],
@@ -118,6 +119,16 @@
   },
   "updates": [
     {
+      "date": "2026-04-21",
+      "text": "施工區（障礙/減速區）實測通過，6/9 關卡完成。剩餘：隧道偵測 + 任務串接。launcher_gui 今日修復4個 Bug：make_slam_btn指令判斷錯誤、osascript跨平台問題、for迴圈閉包問題、core_node_controller多餘副檔名。",
+      "category": "進度更新"
+    },
+    {
+      "date": "2026-04-20",
+      "text": "多關卡實測完成，停車、平交道、交通號誌、S彎道皆通過（[詳見](./updates/更新記錄.html)）",
+      "category": "進度更新"
+    },
+    {
       "date": "2026-04-19",
       "text": "重構 core_node_controller：移除外部/mission依賴，改為自動依序執行所有關卡（黑皮版本fnControlNode）。更新launcher_gui：執行任務開Terminal，M2/M5移除多餘launch命令，grid修復為每2按鈕一組。確認M1-M7按鈕與core_node_controller獨立運作。",
       "category": "架構更新"
@@ -133,6 +144,6 @@
       "category": "進度"
     }
   ],
-  "doneCount": 5,
+  "doneCount": 6,
   "totalMissions": 9
 }
