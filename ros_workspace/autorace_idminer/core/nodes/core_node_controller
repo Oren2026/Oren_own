@@ -1,0 +1,219 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import rospy, roslaunch, os, time
+from enum import Enum
+
+class CoreNodeController():
+    def __init__(self):
+        self.ros_package_path = os.path.dirname(os.path.realpath(__file__))
+        self.ros_package_path = self.ros_package_path.replace('core/nodes', '')
+
+        # ========== Mission Sequence ==========
+        # 完全自己跑，不需要外部 /mission 控制
+        self.Mission = Enum('Mission', '''
+            Idle
+            TrafficLight
+            Intersection
+            Construction
+            Parking
+            LevelCrossing
+            Tunnel
+            Finish
+        ''')
+
+        # Launcher enum（對應 detect/ 和 control/ 裡的 launch 檔）
+        self.Launcher = Enum('Launcher', 'dl cl tf isc ct pk mv lcro tun')
+
+        # 追蹤各節點是否已啟動
+        self.launchers = {
+            'dl':    {'active': False, 'handle': None},
+            'cl':    {'active': False, 'handle': None},
+            'tf':    {'active': False, 'handle': None},
+            'isc':   {'active': False, 'handle': None},
+            'ct':    {'active': False, 'handle': None},
+            'pk':    {'active': False, 'handle': None},
+            'mv':    {'active': False, 'handle': None},
+            'lcro':  {'active': False, 'handle': None},
+            'tun':   {'active': False, 'handle': None},
+        }
+
+        self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+
+        rospy.loginfo("[Controller] ===== 啟動中 =====")
+        rospy.sleep(1)
+
+        # 直接從第一關開始，依序執行到 Finish
+        self._run_sequence()
+
+    # ============================================================
+    # 依序執行所有關卡
+    # ============================================================
+    def _run_sequence(self):
+        """依序執行：TrafficLight → Intersection → Construction → Parking → LevelCrossing → Tunnel → Finish"""
+        missions = [
+            (self.Mission.TrafficLight.value,    self._enter_traffic_light),
+            (self.Mission.Intersection.value,   self._enter_intersection),
+            (self.Mission.Construction.value,   self._enter_construction),
+            (self.Mission.Parking.value,         self._enter_parking),
+            (self.Mission.LevelCrossing.value,   self._enter_level_crossing),
+            (self.Mission.Tunnel.value,          self._enter_tunnel),
+        ]
+
+        for mission_val, enter_fn in missions:
+            if rospy.is_shutdown():
+                break
+            rospy.loginfo("[Controller] ========================================")
+            rospy.loginfo("[Controller] 進入關卡: %s", self.Mission(mission_val).name)
+            rospy.loginfo("[Controller] 目前啟動中的節點: %s", self._active_nodes())
+            rospy.loginfo("[Controller] ========================================")
+            enter_fn()
+            rospy.sleep(0.5)  # 留一點緩衝再進下一關
+
+        if not rospy.is_shutdown():
+            self._enter_finish()
+
+    # ============================================================
+    # 各關卡進入函式（黑皮提供版本）
+    # ============================================================
+
+    def _enter_traffic_light(self):
+        rospy.loginfo("OPEN TrafficLight")
+        self.fnLaunch(self.Launcher.tf.value, True)
+        self.fnLaunch(self.Launcher.dl.value, False)
+        self.fnLaunch(self.Launcher.cl.value, False)
+        self.fnLaunch(self.Launcher.isc.value, False)
+        self.fnLaunch(self.Launcher.ct.value, False)
+        self.fnLaunch(self.Launcher.pk.value, False)
+        self.fnLaunch(self.Launcher.mv.value, False)
+        self.fnLaunch(self.Launcher.lcro.value, False)
+        self.fnLaunch(self.Launcher.tun.value, False)
+
+    def _enter_intersection(self):
+        rospy.loginfo("follow lane then Intersection")
+        self.fnLaunch(self.Launcher.tf.value, False)
+        self.fnLaunch(self.Launcher.dl.value, True)
+        self.fnLaunch(self.Launcher.cl.value, True)
+        rospy.sleep(6)
+        self.fnLaunch(self.Launcher.isc.value, True)
+
+    def _enter_construction(self):
+        rospy.loginfo("OPEN Construction")
+        self.fnLaunch(self.Launcher.isc.value, False)
+        self.fnLaunch(self.Launcher.dl.value, True)
+        self.fnLaunch(self.Launcher.cl.value, True)
+        self.fnLaunch(self.Launcher.ct.value, True)
+        rospy.sleep(6)
+        self.fnLaunch(self.Launcher.mv.value, True)
+
+    def _enter_parking(self):
+        rospy.loginfo("OPEN Parking")
+        self.fnLaunch(self.Launcher.dl.value, False)
+        self.fnLaunch(self.Launcher.cl.value, False)
+        self.fnLaunch(self.Launcher.ct.value, False)
+        rospy.sleep(1)
+        self.fnLaunch(self.Launcher.pk.value, True)
+
+    def _enter_level_crossing(self):
+        rospy.loginfo("OPEN LevelCrossing")
+        self.fnLaunch(self.Launcher.mv.value, False)
+        self.fnLaunch(self.Launcher.pk.value, False)
+        self.fnLaunch(self.Launcher.dl.value, True)
+        self.fnLaunch(self.Launcher.cl.value, True)
+        rospy.sleep(12)
+        self.fnLaunch(self.Launcher.lcro.value, True)
+
+    def _enter_tunnel(self):
+        rospy.loginfo("OPEN Tunnel")
+        self.fnLaunch(self.Launcher.lcro.value, False)
+        self.fnLaunch(self.Launcher.dl.value, True)
+        self.fnLaunch(self.Launcher.cl.value, True)
+        rospy.sleep(25)
+        self.fnLaunch(self.Launcher.dl.value, False)
+        self.fnLaunch(self.Launcher.tun.value, True)
+        rospy.sleep(2)
+        self.fnLaunch(self.Launcher.mv.value, True)
+
+    def _enter_finish(self):
+        rospy.loginfo("===== 比賽完成 =====")
+        self.fnLaunch(self.Launcher.tf.value, False)
+        self.fnLaunch(self.Launcher.dl.value, False)
+        self.fnLaunch(self.Launcher.cl.value, False)
+        self.fnLaunch(self.Launcher.isc.value, False)
+        self.fnLaunch(self.Launcher.ct.value, False)
+        self.fnLaunch(self.Launcher.pk.value, False)
+        self.fnLaunch(self.Launcher.mv.value, False)
+        self.fnLaunch(self.Launcher.lcro.value, False)
+        self.fnLaunch(self.Launcher.tun.value, False)
+        rospy.loginfo("所有節點已關閉")
+
+    # ============================================================
+    # 節點啟動/關閉（新版本 dictionary 管理）
+    # ============================================================
+
+    def fnLaunch(self, launch_num, is_start):
+        """對照 Launcher enum value 來啟動或關閉節點"""
+        key_map = {
+            self.Launcher.dl.value:    'dl',
+            self.Launcher.cl.value:    'cl',
+            self.Launcher.tf.value:    'tf',
+            self.Launcher.isc.value:   'isc',
+            self.Launcher.ct.value:    'ct',
+            self.Launcher.pk.value:    'pk',
+            self.Launcher.mv.value:    'mv',
+            self.Launcher.lcro.value: 'lcro',
+            self.Launcher.tun.value:   'tun',
+        }
+        key = key_map.get(launch_num)
+        if key is None:
+            rospy.logwarn("[Controller] 未知 launch_num: %s", launch_num)
+            return
+
+        if is_start:
+            if not self.launchers[key]['active']:
+                launch_file = self._get_launch_file(key)
+                if launch_file is None:
+                    rospy.logwarn("[Controller] %s 沒有對應 launch 檔", key)
+                    return
+                handle = roslaunch.scriptapi.ROSLaunch()
+                handle = roslaunch.parent.ROSLaunchParent(
+                    self.uuid,
+                    [self.ros_package_path + launch_file]
+                )
+                handle.start()
+                self.launchers[key]['handle'] = handle
+                self.launchers[key]['active'] = True
+                rospy.loginfo("[Controller] 啟動 +++ %s", key)
+            else:
+                rospy.loginfo("[Controller] %s 已啟動（跳過）", key)
+        else:
+            if self.launchers[key]['active']:
+                self.launchers[key]['handle'].shutdown()
+                self.launchers[key]['handle'] = None
+                self.launchers[key]['active'] = False
+                rospy.loginfo("[Controller] 關閉 --- %s", key)
+            else:
+                rospy.loginfo("[Controller] %s 已關閉（跳過）", key)
+
+    def _get_launch_file(self, key):
+        mapping = {
+            'dl':   'detect/launch/detect_lane.launch',
+            'cl':   'control/launch/control_lane.launch',
+            'tf':   'detect/launch/detect_traffic_light.launch',
+            'isc':  'detect/launch/detect_intersection.launch',
+            'ct':   'detect/launch/detect_construction.launch',
+            'pk':   'detect/launch/detect_parking.launch',
+            'mv':   'control/launch/control_moving.launch',
+            'lcro': 'detect/launch/detect_level.launch',
+            'tun':  'detect/launch/detect_tunnel.launch',
+        }
+        return mapping.get(key)
+
+    def _active_nodes(self):
+        return [k for k, v in self.launchers.items() if v['active']]
+
+# --------------------------------------------------
+if __name__ == '__main__':
+    rospy.init_node('core_node_controller')
+    node = CoreNodeController()
+    rospy.spin()
