@@ -302,20 +302,25 @@ slam_btn_defs = [
 def make_slam_btn(label, name, mode):
     """工廠函式，每個按鈕封裝自己的邏輯，閉包問題掰掰"""
     if mode == "terminal":
-        cmd = "roslaunch control control_tunnel.launch"
-        runner = lambda: run_terminal(name, cmd)
+        if name == "slam":
+            cmd = "roslaunch turtlebot3_slam turtlebot3_slam.launch"
+        elif name == "teleop":
+            cmd = "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch"
+        else:  # tunnel
+            cmd = "roslaunch control control_tunnel.launch"
+        runner = lambda n=name, c=cmd: run_terminal(n, c)
     elif mode == "save":
         runner = run_save_map
     elif mode == "reset":
         runner = run_reset
-    else:
+    else:  # bg mode
         if name == "slam":
             cmd = "roslaunch turtlebot3_slam turtlebot3_slam.launch"
         elif name == "teleop":
             cmd = "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch"
         else:
             cmd = "roslaunch control control_tunnel.launch"
-        runner = lambda n=name, c=cmd: run_bg(n, c)
+        runner = lambda n=name, c=cmd: run_bg(n, cmd)
     btn = ttk.Button(right_panel, text=label, command=runner,
                      style='TButton', width=20)
     btn.pack(pady=3, fill='x')
