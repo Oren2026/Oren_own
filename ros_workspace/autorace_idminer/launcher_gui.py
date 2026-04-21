@@ -255,18 +255,22 @@ def run_persistent(name, cmd):
     persistent_pids[name] = proc.pid
     update_all_buttons()
 
-for label, name, cmd in tools:
+def make_tool_btn(label, name, cmd):
+    """工廠函式，避免 for 迴圈閉包問題"""
     if name == "rosn":
-        runner = lambda n=name, c=cmd: run_terminal(n, c)
+        runner = lambda: run_terminal(name, cmd)
     elif name in ("rr", "riv"):
-        runner = lambda n=name, c=cmd: run_persistent(n, c)
+        runner = lambda: run_persistent(name, cmd)
     else:
-        runner = lambda n=name, c=cmd: run_bg(n, c)
+        runner = lambda: run_bg(name, cmd)
     btn = ttk.Button(right_panel, text=label,
                      command=runner,
                      style='TButton', width=20)
     btn.pack(pady=3, fill='x')
     btn_refs[name] = btn
+
+for label, name, cmd in tools:
+    make_tool_btn(label, name, cmd)
 
 # 循線按鈕（dl + cl 分別背景執行）
 btn_lane = ttk.Button(right_panel, text="循線 (dl+cl)",
