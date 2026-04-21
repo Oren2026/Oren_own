@@ -1,25 +1,25 @@
 # ===== TB3 2026 AutoRace 任務快捷指令 =====
-# 用法：加到 ~/.bashrc 最底部：source ~/catkin_ws/src/turtlebot3_autorace/ros_aliases
+# 用法：加到 ~/.bashrc 最底部：source ~/catkin_ws/src/autorace_idminer/ros_aliases
 
-# -------- 快速指令 --------
+# -------- 任務測試 --------
 
-# 任務測試（單一節點）
 alias ros1='roslaunch detect detect_traffic_light.launch'
 alias ros1cal='roslaunch detect detect_traffic_light.launch mode:=calibration'
-alias ros2='roslaunch detect detect_lane.launch && roslaunch detect detect_intersection.launch'
+alias ros2='roslaunch detect detect_intersection.launch'
 alias ros2cal='roslaunch detect detect_lane.launch mode:=calibration'
 alias ros3='roslaunch detect detect_construction.launch'
 alias ros3cal='roslaunch detect detect_construction.launch mode:=calibration'
 alias ros4='roslaunch detect detect_parking.launch'
 alias ros4cal='roslaunch detect detect_parking.launch mode:=calibration'
-alias ros5='roslaunch detect detect_lane.launch && roslaunch control control_lane.launch'
+alias ros5='roslaunch control control_lane.launch'
 alias ros5cal='roslaunch detect detect_lane.launch mode:=calibration'
 alias ros6='roslaunch detect detect_level.launch'
 alias ros6cal='roslaunch detect detect_level.launch mode:=calibration'
 alias ros7='roslaunch detect detect_tunnel.launch'
 alias ros7cal='roslaunch detect detect_tunnel.launch mode:=calibration'
 
-# 循線控制
+# -------- 循線控制 --------
+
 alias rosdl='roslaunch detect detect_lane.launch'
 alias rosdlcal='roslaunch detect detect_lane.launch mode:=calibration'
 alias roscl='roslaunch control control_lane.launch'
@@ -27,11 +27,9 @@ alias rosck='roslaunch control control_moving.launch'
 
 # -------- 狀態機 --------
 
-# core_node_controller（狀態機）
 alias rosn='rosrun core core_node_controller.py'
-alias rosnc='rosrun core core_node_controller.py'  # 測試模式（未來擴充用）
+alias rosnc='rosrun core core_node_controller.py'
 
-# 手動觸發 mission（用於測試狀態切換）
 alias rosgo1='rostopic pub /mission std_msgs/UInt8 "data: 1"'
 alias rosgo2='rostopic pub /mission std_msgs/UInt8 "data: 2"'
 alias rosgo3='rostopic pub /mission std_msgs/UInt8 "data: 3"'
@@ -43,43 +41,40 @@ alias rosgo8='rostopic pub /mission std_msgs/UInt8 "data: 8"'
 
 # -------- 工具 --------
 
-# rqt 工具捷徑
-alias rosrr='rosrun rqt_reconfigure rqt_reconfigure'    # 動態調整參數（滑動條）
-alias rosriv='rosrun rqt_image_view rqt_image_view'      # 看影像輸出
-alias rosmon='rosrun rqt_robot_monitor rqt_robot_monitor'  # 機器人狀態監控
-
-# GUI 啟動器
-alias rosmotion='python3 ~/catkin_ws/src/autorace_idminer/motion_editor.py'  # motion_editor
+alias rosrr='rosrun rqt_reconfigure rqt_reconfigure'
+alias rosriv='rosrun rqt_image_view rqt_image_view'
+alias rosmon='rosrun rqt_robot_monitor rqt_robot_monitor'
 
 # -------- SLAM / 導航 --------
 
-alias rosslam='roslaunch turtlebot3_slam turtlebot3_slam.launch'           # SLAM 建圖
-alias rosteleop='roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch' # 鍵盤遙控（建圖時用）
-alias rosnav='roslaunch turtlebot3_navigation move_base.launch'             # 導航（需先有地圖）
-alias rosremote='roslaunch turtlebot3_bringup turtlebot3_remote.launch'       # TB3 遙控模式
-alias rossavemap='rosrun map_server map_saver -f ~/map'                      # 儲存地圖（~/map.yaml + ~/map.pgm）
-alias rosreset='rostopic pub /reset std_msgs/Empty \'{}\' --once'            # 定位重置
+alias rosslam='roslaunch turtlebot3_slam turtlebot3_slam.launch'
+alias rosteleop='roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch'
+alias rosnav='roslaunch turtlebot3_navigation move_base.launch'
+alias rosremote='roslaunch turtlebot3_bringup turtlebot3_remote.launch'
+alias rossavemap='rosrun map_server map_saver -f ~/map'
+alias rosreset='rostopic pub /reset std_msgs/Empty "{}" --once'
+alias roscontrol_tunnel='roslaunch control control_tunnel.launch'
 
 # -------- 位置指令 --------
 
-alias rosecho_goal='rostopic echo /move_base_simple/goal'  # 確認目標位置
+alias rosecho_goal='rostopic echo /move_base_simple/goal'
 
 # -------- GUI 啟動器 --------
-alias roslauncher='python3 ~/catkin_ws/src/turtlebot3_autorace/launcher_gui.py'
 
-# 停止所有節點（情急之用）
+alias roslauncher='python3 ~/catkin_ws/src/autorace_idminer/launcher_gui.py'
+alias rosmotion='python3 ~/catkin_ws/src/autorace_idminer/motion_editor.py'
+
+# -------- 快速操作 --------
+
 alias rosstop='pkill -f "roslaunch\|rosrun"'
-
-# 清除畫面 + 顯示執行中節點
 alias rosstat='clear && echo "=== Running Nodes ===" && rosnode list 2>/dev/null && echo "=== Active Topics ===" && rostopic list 2>/dev/null | head -20'
 
-# rpi 控制（TurtleBot SSH + 自動設定 ROS 環境）
+# -------- rpi 控制 --------
 alias rpi='ssh ubuntu@192.168.0.104'
-alias rpienv='ssh ubuntu@192.168.0.104 "export ROS_MASTER_URI=http://192.168.0.103:11311 && export ROS_IP=192.168.0.104"'
 
 # -------- 快速說明 --------
 
-function ros-help {
+ros-help() {
     echo "=========================================="
     echo " TB3 2026 AutoRace 快捷指令"
     echo "=========================================="
@@ -87,41 +82,47 @@ function ros-help {
     echo " 任務測試："
     echo "   ros1          交通號誌（正常模式）"
     echo "   ros1cal       交通號誌（校正模式）"
-    echo "   ros2          S曲線（岔路+循線）"
-    echo "   ros2cal       車道線校正"
+    echo "   ros2          S曲線"
+    echo "   ros2cal       S曲線校正"
     echo "   ros3          施工區"
     echo "   ros3cal       施工區校正"
     echo "   ros4          停車場"
     echo "   ros4cal       停車場校正"
-    echo "   ros5          M曲線（循線）"
-    echo "   ros5cal       車道線校正"
+    echo "   ros5          M曲線"
+    echo "   ros5cal       M曲線校正"
     echo "   ros6          平交道"
     echo "   ros6cal       平交道校正"
     echo "   ros7          隧道"
     echo "   ros7cal       隧道校正"
     echo ""
-    echo " 控制："
-    echo "   rosn          啟動 core_node_controller（狀態機）"
+    echo " 循線控制："
     echo "   rosdl         車道線偵測"
+    echo "   rosdlcal      車道線校正"
     echo "   roscl         循線控制"
     echo "   rosck         移動控制"
     echo ""
-    echo " 手動觸發 mission："
-    echo "   rosgo1 ~ rosgo8"
+    echo " 狀態機："
+    echo "   rosn          啟動 core_node_controller"
+    echo "   rosgo1~rosgo8 手動觸發各任務"
     echo ""
     echo " 工具："
-    echo "   roslauncher    GUI 控制面板（按鈕啟動各節點）"
-    echo "   rosrr         rqt_reconfigure（滑動調整參數）"
-    echo "   rosriv        rqt_image_view（看影像輸出）"
-    echo "   rosmon        rqt_robot_monitor（機器人狀態監控）"
-    echo "   rosmotion     motion_editor（運動軌跡編輯器）"
+    echo "   roslauncher   GUI 控制面板"
+    echo "   rosmotion     motion_editor"
+    echo "   rosrr         rqt_reconfigure"
+    echo "   rosriv        rqt_image_view"
+    echo "   rosmon        rqt_robot_monitor"
+    echo ""
+    echo " SLAM/導航："
     echo "   rosslam       SLAM 建圖"
-    echo "   rosteleop     鍵盤遙控（建圖時用）"
-    echo "   rosnav        導航模式（需先有地圖）"
+    echo "   rosteleop     鍵盤遙控"
+    echo "   rosnav        導航模式"
     echo "   rosremote     TB3 遙控模式"
+    echo "   roscontrol_tunnel  隧道導航"
     echo "   rossavemap    儲存地圖"
     echo "   rosreset      定位重置"
     echo "   rosecho_goal  查看目標位置"
+    echo ""
+    echo " 快速操作："
     echo "   rosstop       停止所有節點"
     echo "   rosstat       查看執行中節點"
     echo "   rpi           SSH 連線 TurtleBot"
