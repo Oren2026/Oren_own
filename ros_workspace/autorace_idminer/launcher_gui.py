@@ -283,8 +283,8 @@ def run_save_map():
     run_terminal("savmap", "rosrun map_server map_saver -f ~/map")
 
 slam_btn_defs = [
-    ("SLAM建圖",      "slam",    "bg"),          # 背景
-    ("鍵盤遙控",      "teleop",  "bg"),          # 背景
+    ("SLAM建圖",      "slam",    "terminal"),    # 開 Terminal（含 rviz）
+    ("鍵盤遙控",      "teleop",  "terminal"),    # 開 Terminal 互動
     ("隧道導航",      "tunnel",  "terminal"),    # 開 Terminal（含 rviz）
     ("儲存地圖",      "savmap",  "save"),        # 開 Terminal 存圖
     ("定位重置",      "reset",   "reset"),       # rostopic pub 一次性

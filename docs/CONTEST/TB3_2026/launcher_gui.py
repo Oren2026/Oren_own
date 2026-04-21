@@ -266,6 +266,55 @@ btn_lane = ttk.Button(right_panel, text="循線 (dl+cl)",
 btn_lane.pack(pady=3, fill='x')
 btn_refs["lane"] = btn_lane
 
+# SLAM / 導航工具
+tk.Label(right_panel, text="SLAM / 導航",
+         font=('Arial', 11, 'bold'),
+         fg='#dddddd', bg='#2b2b2b').pack(pady=(10, 6))
+
+# 定位重置 - 一次性 rostopic pub
+def run_reset():
+    subprocess.run(['bash', '-c',
+                    'source ~/catkin_ws/devel/setup.bash && '
+                    'rostopic pub /reset std_msgs/Empty \'{}\' --once'],
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+# 儲存地圖 - 開 Terminal（需要用視窗互動）
+def run_save_map():
+    run_terminal("savmap", "rosrun map_server map_saver -f ~/map")
+
+slam_btn_defs = [
+    ("SLAM建圖",      "slam",    "terminal"),    # 開 Terminal（含 rviz）
+    ("鍵盤遙控",      "teleop",  "terminal"),    # 開 Terminal 互動
+    ("隧道導航",      "tunnel",  "terminal"),    # 開 Terminal（含 rviz）
+    ("儲存地圖",      "savmap",  "save"),        # 開 Terminal 存圖
+    ("定位重置",      "reset",   "reset"),       # rostopic pub 一次性
+]
+
+def make_slam_btn(label, name, mode):
+    """工廠函式，每個按鈕封裝自己的邏輯，閉包問題掰掰"""
+    if mode == "terminal":
+        cmd = "roslaunch control control_tunnel.launch"
+        runner = lambda: run_terminal(name, cmd)
+    elif mode == "save":
+        runner = run_save_map
+    elif mode == "reset":
+        runner = run_reset
+    else:
+        if name == "slam":
+            cmd = "roslaunch turtlebot3_slam turtlebot3_slam.launch"
+        elif name == "teleop":
+            cmd = "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch"
+        else:
+            cmd = "roslaunch control control_tunnel.launch"
+        runner = lambda n=name, c=cmd: run_bg(n, c)
+    btn = ttk.Button(right_panel, text=label, command=runner,
+                     style='TButton', width=20)
+    btn.pack(pady=3, fill='x')
+    btn_refs[name] = btn
+
+for label, name, mode in slam_btn_defs:
+    make_slam_btn(label, name, mode)
+
 # 方向控制
 tk.Label(right_panel, text="方向控制",
          font=('Arial', 11, 'bold'),
