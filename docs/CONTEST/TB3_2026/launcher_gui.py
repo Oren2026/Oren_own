@@ -126,7 +126,7 @@ missions = [
 ]
 
 tools = [
-    ("執行任務",           "rosn",   "rosrun core core_node_controller.py"),
+    ("執行任務",           "rosn",   "rosrun core core_node_controller"),
     ("運動控制",           "cmov",   "roslaunch control control_moving.launch"),
     ("rqt 設定",           "rr",     "rosrun rqt_reconfigure rqt_reconfigure"),
     ("影像檢視",           "riv",    "rosrun rqt_image_view rqt_image_view"),
