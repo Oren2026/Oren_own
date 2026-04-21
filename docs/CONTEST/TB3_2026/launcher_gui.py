@@ -51,12 +51,21 @@ def run_bg(name, command):
 def run_terminal(name, command):
     """開新 terminal 執行（使用者需要看到輸出）"""
     kill_process(name)
-    proc = subprocess.Popen(
-        ['osascript', '-e',
-         f'tell app \"Terminal\" to do script \"source ~/catkin_ws/devel/setup.bash && {command} && read\"'],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
+    import platform
+    sys = platform.system()
+    if sys == 'Darwin':  # macOS
+        proc = subprocess.Popen(
+            ['osascript', '-e',
+             f'tell app \"Terminal\" to do script \"source ~/catkin_ws/devel/setup.bash && {command} && read\"'],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+    else:  # Linux (Ubuntu)
+        terminal_cmd = 'gnome-terminal'
+        proc = subprocess.Popen(
+            [terminal_cmd, '--', 'bash', '-c',
+             f'source ~/catkin_ws/devel/setup.bash && {command} && read'],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
     running_pids[name] = proc.pid
     update_all_buttons()
 
