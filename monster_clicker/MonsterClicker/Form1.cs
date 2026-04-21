@@ -10,7 +10,7 @@ namespace MonsterClicker
         {
             InitializeComponent();
             _state.ResetMonster();
-            UpdateUI();
+            UpdateAll();
         }
 
         // ===== 點擊攻擊 =====
