@@ -284,12 +284,15 @@ tk.Label(right_panel, text="SLAM / 導航",
          font=('Arial', 11, 'bold'),
          fg='#dddddd', bg='#2b2b2b').pack(pady=(10, 6))
 
-# 定位重置 - 一次性 rostopic pub
+# 定位重置 - 一次性 rostopic pub（非同步，不卡 GUI）
 def run_reset():
-    subprocess.run(['bash', '-c',
-                    'source ~/catkin_ws/devel/setup.bash && '
-                    'rostopic pub /reset std_msgs/Empty \'{}\' --once'],
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    threading.Thread(target=lambda:
+        subprocess.run(['bash', '-c',
+                        'source ~/catkin_ws/devel/setup.bash && '
+                        'rostopic pub /reset std_msgs/Empty \'{}\' --once'],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL),
+        daemon=True
+    ).start()
 
 # 儲存地圖 - 開 Terminal（需要用視窗互動）
 def run_save_map():
