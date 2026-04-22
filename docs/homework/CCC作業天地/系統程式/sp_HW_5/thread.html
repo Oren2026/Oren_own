@@ -1,0 +1,96 @@
+# 📚 Thread 執行緒概念
+
+## 什麼是執行緒（Thread）？
+
+執行緒是作業系統能夠進行運算排程的最小單位。一個 **Process（行程）** 可以擁有多個執行緒，它們共享同一塊記憶體空間，但各自有獨立的堆疊（Stack）與暫存器狀態。
+
+---
+
+## Process vs Thread
+
+| 特性 | Process | Thread |
+|------|---------|--------|
+| 記憶體 | 獨立位址空間 | 共享所屬 Process 的記憶體 |
+| 創建成本 | 高（需複製整個空間） | 低（共享記憶體，快速建立） |
+| 通訊 | IPC（管道、共享記憶體等） | 直接讀寫共享變數 |
+| 穩定性 | 一個崩潰不影響另一個 | 一個崩潰導致整個 Process 崩潰 |
+| 獨立性 | 完全獨立 | 共享資源，需同步 |
+
+---
+
+## 為什麼要用多執行緒？
+
+### ✅ 優點
+- **並發執行**：多個執行緒可在多核心 CPU 上真正平行執行
+- **效率高**：執行緒建立/切換成本遠低於 Process
+- **資源共享**：共享記憶體減少複製開銷
+- **快速回應**：IO 等待時可切換到其他執行緒
+
+### ❌ 風險
+- **Race Condition**：同時存取共享資料，結果不確定
+- **Deadlock**：執行緒互相等待對方釋放資源，卡死不前進
+- **Starvation**：某執行緒始終得不到資源，長期被餓死
+
+---
+
+## 一個執行緒的生命週期
+
+```
+NEW → READY → RUNNING → BLOCKED/WAITING → TERMINATED
+         ↑          ↓
+         └──────────┘（CPU 時間片用完，、作業系統調度）
+```
+
+- **NEW**：執行緒正在被創建
+- **READY**：等待 CPU 排程
+- **RUNNING**：正在執行
+- **BLOCKED/WAITING**：等待資源或同步條件（如 I/O、鎖）
+- **TERMINATED**：執行完畢
+
+---
+
+## 執行緒在作業系統中的實現
+
+### 用户層執行緒（ULT）
+- 由函式庫管理（如 `pthread`），作業系統不感知
+- 切換快，但一個執行緒阻塞會阻塞整個 Process
+
+### 核心層執行緒（KLT）
+- 由作業系統核心直接管理
+- 一個執行緒阻塞不影響其他執行緒
+
+### 兩者混合：多對一、一對一、多對多模型
+
+---
+
+## 執行緒安全（Thread Safety）
+
+當多個執行緒訪問同一筆資料時，需要確保程式行為是正確的。
+
+```c
+// 不安全：兩個執行緒同時執行 i++，最終 i 可能只增加了 1 次
+int i = 0;
+thread A: i = i + 1;  // read(i) → inc → write(i)
+thread B: i = i + 1;  // read(i) → inc → write(i)  ← 覆蓋了 A 的結果
+```
+
+```c
+// 安全：使用 Mutex 保護臨界區
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_lock(&mutex);
+i = i + 1;  // 臨界區：同時只有一個執行緒能進入
+pthread_mutex_unlock(&mutex);
+```
+
+---
+
+## 相關主題
+
+- [Race Condition](race_condition.html) — 執行緒同時存取共享資料
+- [Mutex](mutex.html) — 用互斥鎖保護臨界區
+- [Deadlock](deadlock.html) — 執行緒互相等待，形成循環僵局
+- [銀行模擬](../bank_simulation/index.html) — 體驗 Race Condition 與 Mutex
+
+---
+
+*本頁為 sp_HW_5 系統程式作業的輔助教材*

@@ -32,7 +32,6 @@
 
     .info-box {
       background: #16213e;
-      border: 1px solid #0f3460;
       border-radius: 8px;
       padding: 15px;
       margin-bottom: 20px;
@@ -99,7 +98,7 @@
       height: 100%;
       background: #00d4ff;
       width: 0%;
-      transition: width 0.1s;
+      transition: width 0.05s;
     }
 
     .stats {
@@ -109,8 +108,9 @@
       margin-bottom: 15px;
       font-size: 13px;
       color: #888;
+      flex-wrap: wrap;
     }
-    .stat span { color: #00d4ff; }
+    .stats span { color: #00d4ff; }
 
     .simulation-area {
       display: grid;
@@ -130,7 +130,7 @@
       background: #0d1b2a;
       border-radius: 4px;
       padding: 8px;
-      height: 280px;
+      height: 200px;
       overflow-y: auto;
       font-size: 12px;
       line-height: 1.9;
@@ -183,18 +183,19 @@
 <body>
 <div class="container">
   <h1>🏦 銀行存提款模擬</h1>
-<a class="back-btn" href="../index.html">← 返回</a>
+  <a class="back-btn" href="../index.html">← 返回</a>
 
   <div class="info-box danger">
     <h3>🔴 無 Mutex — Race Condition 演示</h3>
-    執行緒 A 和 B 交替進行「讀取→修改→寫入」，導致彼此覆蓋對方的結果。
+    執行緒 A（存款 $2）和執行緒 B（存款 $1）同時操作同一帳戶。
+    由於「讀取→修改→寫入」不是原子操作，兩執行緒會互相覆蓋对方的結果，造成資料遺失。
     <div class="hint">💡 點「單步」觀察每次操作如何交錯</div>
   </div>
 
   <div class="info-box safe">
     <h3>🔵 有 Mutex — 正確示範</h3>
-    執行緒進入臨界區前上鎖，離開後解鎖。同一時間只有一個執行緒能操作余額。
-    <div class="hint">💡 點「單步」觀察：另一執行緒必須等到鎖釋放才能進入</div>
+    執行緒進入臨界區前上鎖，離開後解鎖。同一時間只有一個執行緒能操作余額，確保資料一致。
+    <div class="hint">💡 點「單步」或「快速執行」觀察：另一執行緒必須等到鎖釋放才能進入</div>
   </div>
 
   <div class="mode-toggle">
@@ -216,17 +217,17 @@
   <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
 
   <div class="stats">
-    <div>輪次：<span id="round">0</span>/10</div>
+    <div>已完成：<span id="round">0</span> / <span id="totalOps">100000</span> 筆</div>
     <div>A 存款：<span id="sumA">$0</span></div>
     <div>B 存款：<span id="sumB">$0</span></div>
-    <div>操作：<span id="opCount">0</span></div>
     <div>累積遺失：<span id="lostTotal" style="color:#e94560">$0</span></div>
   </div>
 
   <div class="controls">
     <button class="btn-success" id="btnStep" onclick="doStep()">⚡ 單步執行</button>
+    <button class="btn-warning" id="btnFast" onclick="runFast()">⚡ 快速執行（全100000筆）</button>
     <button class="btn-danger" id="btnAuto" onclick="startAuto()">▶ 自動執行</button>
-    <button class="btn-warning" id="btnPause" onclick="pauseAuto()" disabled>⏸ 暫停</button>
+    <button class="btn-primary" id="btnPause" onclick="pauseAuto()" disabled>⏸ 暫停</button>
     <button class="btn-primary" onclick="resetSim()">🔄 重置</button>
   </div>
 
@@ -237,11 +238,11 @@
 
   <div class="simulation-area">
     <div class="thread-panel">
-      <h3>📋 執行緒 A（存款 $100）</h3>
+      <h3>📋 執行緒 A（存款 $2）</h3>
       <div class="log-area" id="logA"></div>
     </div>
     <div class="thread-panel">
-      <h3>📋 執行緒 B（存款 $200）</h3>
+      <h3>📋 執行緒 B（存款 $1）</h3>
       <div class="log-area" id="logB"></div>
     </div>
   </div>
@@ -254,17 +255,21 @@
 </div>
 
 <script>
+// ===== 設定 =====
+const AMOUNT_A = 2;   // A 每次存款
+const AMOUNT_B = 1;   // B 每次存款
+const MAX_OPS = 100000; // 總操作次數（A+B各100000筆）
+
 // ===== 狀態 =====
 let balance = 0;
 let useMutex = false;
-let round = 0;
+let opCount = 0;      // 已完成操作數（A+B合計）
 let sumA = 0;
 let sumB = 0;
-let opCount = 0;
 let paused = false;
 let autoTimer = null;
 let stepCount = 0;
-let totalLost = 0; // 累積遺失金額
+let totalLost = 0;    // 累積遺失金額
 
 const logA = document.getElementById('logA');
 const logB = document.getElementById('logB');
@@ -285,15 +290,14 @@ function log(thread, msg, type = 'info') {
 
 function updateUI() {
   document.getElementById('balance').textContent = balance.toLocaleString();
-  document.getElementById('round').textContent = round;
+  document.getElementById('round').textContent = opCount.toLocaleString();
   document.getElementById('sumA').textContent = '$' + sumA.toLocaleString();
   document.getElementById('sumB').textContent = '$' + sumB.toLocaleString();
-  document.getElementById('opCount').textContent = opCount;
   document.getElementById('lostTotal').textContent = '$' + totalLost.toLocaleString();
-  document.getElementById('progress').style.width = Math.min(round / 10 * 100, 100) + '%';
+  document.getElementById('progress').style.width = Math.min(opCount / MAX_OPS * 100, 100) + '%';
 }
 
-function showExplanation(title, balance_before, a_action, a_after, b_action, b_after, finalBalance, activeThread, roundLoss) {
+function showExplanation(title, balance_before, a_action, a_after, b_action, b_after, finalBalance, roundLoss) {
   const box = document.getElementById('explanation');
   const titleEl = document.getElementById('exTitle');
   const stepBox = document.getElementById('stepBox');
@@ -304,29 +308,29 @@ function showExplanation(title, balance_before, a_action, a_after, b_action, b_a
   if (!useMutex) {
     stepBox.innerHTML = `
       <div class="row"><span class="label">起始餘額</span><span class="result">$${balance_before}</span></div>
-      <div style="color:#888;margin:4px 0;">① 執行緒 A（存款 $100）搶先執行：</div>
+      <div style="color:#888;margin:4px 0;">① 執行緒 A（存款 $${AMOUNT_A}）搶先執行：</div>
       <div class="row"><span class="label">A 讀取</span><span class="val-a">餘額 = $${balance_before}</span></div>
-      <div class="row"><span class="label">A 計算</span><span class="val-a">${balance_before} + 100 = $${a_after}</span></div>
+      <div class="row"><span class="label">A 計算</span><span class="val-a">${balance_before} + ${AMOUNT_A} = $${a_after}</span></div>
       <div class="row"><span class="label">A 寫入</span><span class="val-a">餘額 = $${a_after}</span></div>
-      <div style="color:#888;margin:4px 0;">② 執行緒 B（存款 $200）同時讀到相同余額：</div>
+      <div style="color:#888;margin:4px 0;">② 執行緒 B（存款 $${AMOUNT_B}）同時讀到相同余額：</div>
       <div class="row"><span class="label">B 讀取</span><span class="val-b">餘額 = $${balance_before}（A寫入前的舊值！）</span></div>
-      <div class="row"><span class="label">B 計算</span><span class="val-b">${balance_before} + 200 = $${b_after}</span></div>
+      <div class="row"><span class="label">B 計算</span><span class="val-b">${balance_before} + ${AMOUNT_B} = $${b_after}</span></div>
       <div class="row"><span class="label">B 寫入</span><span class="val-b">餘額 = $${b_after}（覆蓋了A的結果）</span></div>
-      <div style="color:#ffd93d;margin-top:6px;">🔴 本輪損失：$100（A的$100被B覆蓋）</div>
+      <div style="color:#ffd93d;margin-top:6px;">🔴 本輪損失：$1（A的$2被B覆蓋成只算$1）</div>
       <div style="color:#ffd93d;">🔴 累積遺失：$${totalLost}</div>
-      <div style="color:#888;margin-top:4px;">正確應為：$${finalBalance}，實際：$${balance_before + 300} = $${balance_before} + $100 + $200</div>
+      <div style="color:#888;margin-top:4px;">正確應為：$${finalBalance}，實際：$${balance_before} + $${AMOUNT_A} + $${AMOUNT_B} = $${balance_before + AMOUNT_A + AMOUNT_B}</div>
     `;
   } else {
     stepBox.innerHTML = `
       <div class="row"><span class="label">起始餘額</span><span class="result">$${balance_before}</span></div>
       <div style="color:#ffd93d;margin:4px 0;">🔒 執行緒 A 取得 Lock（Lock保護中）</div>
       <div class="row"><span class="label">A 讀取</span><span class="val-a">餘額 = $${balance_before}</span></div>
-      <div class="row"><span class="label">A 計算</span><span class="val-a">${balance_before} + 100 = $${a_after}</span></div>
+      <div class="row"><span class="label">A 計算</span><span class="val-a">${balance_before} + ${AMOUNT_A} = $${a_after}</span></div>
       <div class="row"><span class="label">A 寫入</span><span class="val-a">餘額 = $${a_after}</span></div>
       <div style="color:#6bcb77;margin:4px 0;">🔓 執行緒 A 釋放 Lock</div>
       <div style="color:#ffd93d;margin:4px 0;">🔒 執行緒 B 取得 Lock（A 完成後 B 才能進）</div>
       <div class="row"><span class="label">B 讀取</span><span class="val-b">餘額 = $${a_after}（A寫入後的值）</span></div>
-      <div class="row"><span class="label">B 計算</span><span class="val-b">${a_after} + 200 = $${b_after}</span></div>
+      <div class="row"><span class="label">B 計算</span><span class="val-b">${a_after} + ${AMOUNT_B} = $${b_after}</span></div>
       <div class="row"><span class="label">B 寫入</span><span class="val-b">餘額 = $${b_after}</span></div>
       <div style="color:#6bcb77;margin-top:6px;">🔓 執行緒 B 釋放 Lock</div>
       <div style="color:#6bcb77;">✅ 本輪損失：$0（兩筆存款都正確入帳）</div>
@@ -334,114 +338,145 @@ function showExplanation(title, balance_before, a_action, a_after, b_action, b_a
   }
 }
 
-// ===== 單步執行邏輯 =====
-// 輪次執行：每次輪次交替讓 A 或 B 完成一次完整的「讀取→計算→寫入」
-// 無 mutex：A 和 B 可以「交錯」讀取（都拿到舊值）
-// 有 mutex：每次輪次只有一個執行緒能完整執行
-
+// ===== 單步執行 =====
 function doStep() {
-  if (round >= 10) return;
+  if (opCount >= MAX_OPS) return;
 
   const beforeBalance = balance;
-  round++;
+  opCount++;
 
   if (!useMutex) {
-    // ===== 無 Mutex：示範 Race Condition =====
-    // A 先讀取（拿到當前余額）
+    // ===== 無 Mutex：Race Condition — 兩執行緒同時讀到同余額 =====
     const a_read = balance;
-    // B 也讀取（拿到相同的余額！因為 A 還沒寫入）
-    const b_read = balance;
+    const b_read = balance; // B 也讀到相同的舊值！
 
-    // A 計算並寫入
-    const a_new = a_read + 100;
+    const a_new = a_read + AMOUNT_A;
     balance = a_new;
-    sumA += 100;
-    log('A', `READ  余額=${a_read}  |  MOD  ${a_read}+100=${a_new}  |  WRITE 余額=${a_new}`, 'deposit');
-    log('A', `🔒 取得 Lock（視覺化用）`, 'mutex-lock');
-    log('A', `🔓 釋放 Lock`, 'mutex-unlock');
+    sumA += AMOUNT_A;
 
-    // B 計算並寫入（覆蓋了 A 的結果！）
-    const b_new = b_read + 200;
+    const b_new = b_read + AMOUNT_B;
     balance = b_new;
-    sumB += 200;
-    log('B', `READ  余額=${b_read}  |  MOD  ${b_read}+200=${b_new}  |  WRITE 余額=${b_new}`, 'deposit');
-    log('B', `（B 讀到了 A 寫入前的值，覆蓋了 A 的結果）`, 'error');
+    sumB += AMOUNT_B;
 
-    // 說明這次 Race Condition
-    const expected = beforeBalance + 300;
-    // 本輪損失：A寫入$new但B也從舊值開始算，覆蓋了A的$100 → 本輪實際少算了$100
-    const roundLoss = 100;
+    // 本輪損失：A 被 B 覆蓋，B 只算進了 AMOUNT_B，所以 A 的 AMOUNT_A 損失了 (AMOUNT_A - AMOUNT_B)
+    const roundLoss = AMOUNT_A - AMOUNT_B; // = 1
     totalLost += roundLoss;
+
     showExplanation(
-      `⚠️ Race Condition！輪次 ${round}（本輪損失 +$100）`,
-      beforeBalance,
-      a_new,
-      a_new,
-      b_new,
-      b_new,
-      expected,
-      'A→B',
+      `⚠️ Race Condition！第 ${opCount} 筆（本輪損失 $${roundLoss}）`,
+      beforeBalance, a_new, a_new, b_new, b_new,
+      beforeBalance + AMOUNT_A + AMOUNT_B,
       roundLoss
     );
-
   } else {
-    // ===== 有 Mutex：正確示範 =====
-    // A 完整執行（Lock 保護）
-    log('A', `🔒 Lock 獲取`, 'mutex-lock');
+    // ===== 有 Mutex：序列化執行 =====
     const a_read = balance;
-    const a_new = a_read + 100;
+    const a_new = a_read + AMOUNT_A;
     balance = a_new;
-    sumA += 100;
-    log('A', `READ  余額=${a_read}  |  MOD  ${a_read}+100=${a_new}  |  WRITE 余額=${a_new}`, 'deposit');
-    log('A', `🔓 Lock 釋放 → B 才能進入`, 'mutex-unlock');
+    sumA += AMOUNT_A;
 
-    // B 必須等 A 完成後才能開始（Lock 已釋放）
-    log('B', `等待 Lock...（A 正在操作）`, 'idle');
-    log('B', `🔒 Lock 獲取`, 'mutex-lock');
-    const b_read = balance; // 這時候拿到的是 A 寫入後的值
-    const b_new = b_read + 200;
+    const b_read = balance;
+    const b_new = b_read + AMOUNT_B;
     balance = b_new;
-    sumB += 200;
-    log('B', `READ  余額=${b_read}  |  MOD  ${b_read}+200=${b_new}  |  WRITE 余額=${b_new}`, 'deposit');
-    log('B', `🔓 Lock 釋放`, 'mutex-unlock');
+    sumB += AMOUNT_B;
 
-    const expected = beforeBalance + 300;
     showExplanation(
-      `✅ Mutex 保護成功！輪次 ${round}（A完整→B完整，無損失）`,
-      beforeBalance,
-      a_new,
-      b_new,
-      b_new,
-      b_new,
-      expected,
-      'A→B',
+      `✅ Mutex 保護成功！第 ${opCount} 筆（A完整→B完整，無損失）`,
+      beforeBalance, a_new, b_new, b_new, b_new,
+      beforeBalance + AMOUNT_A + AMOUNT_B,
       0
     );
   }
 
-  opCount += 2;
   updateUI();
 
-  if (round >= 10) {
+  if (opCount >= MAX_OPS) {
     showResult();
   }
+}
+
+// ===== 快速執行（一次跑完所有） =====
+function runFast() {
+  if (opCount >= MAX_OPS) { resetSim(); return; }
+
+  // 快速模式：直接跑完所有，最後再更新UI
+  const startOp = opCount;
+  const startSumA = sumA;
+  const startSumB = sumB;
+  const startLost = totalLost;
+  const startBalance = balance;
+
+  for (let i = startOp; i < MAX_OPS; i++) {
+    if (!useMutex) {
+      const a_read = balance;
+      const b_read = balance;
+      balance = a_read + AMOUNT_A;
+      sumA += AMOUNT_A;
+      balance = b_read + AMOUNT_B;
+      sumB += AMOUNT_B;
+      totalLost += (AMOUNT_A - AMOUNT_B);
+    } else {
+      balance += AMOUNT_A;
+      sumA += AMOUNT_A;
+      balance += AMOUNT_B;
+      sumB += AMOUNT_B;
+    }
+    opCount = i + 1;
+  }
+
+  updateUI();
+
+  const expected = startBalance + (MAX_OPS - startOp) * (AMOUNT_A + AMOUNT_B);
+  const diff = balance - expected;
+
+  // 更新說明框為總結
+  const box = document.getElementById('explanation');
+  const titleEl = document.getElementById('exTitle');
+  const stepBox = document.getElementById('stepBox');
+  box.style.display = 'block';
+
+  if (!useMutex) {
+    titleEl.textContent = `⚠️ Race Condition 結束！${MAX_OPS - startOp} 筆操作`;
+    stepBox.innerHTML = `
+      <div class="row"><span class="label">起始餘額</span><span class="result">$${startBalance.toLocaleString()}</span></div>
+      <div class="row"><span class="label">A 存款合計</span><span class="val-a">$${sumA.toLocaleString()}（${(MAX_OPS - startOp).toLocaleString()} 筆 × $${AMOUNT_A}）</span></div>
+      <div class="row"><span class="label">B 存款合計</span><span class="val-b">$${sumB.toLocaleString()}（${(MAX_OPS - startOp).toLocaleString()} 筆 × $${AMOUNT_B}）</span></div>
+      <div class="row"><span class="label">正確餘額</span><span class="result">$${expected.toLocaleString()}</span></div>
+      <div class="row"><span class="label">實際餘額</span><span style="color:#e94560">$${balance.toLocaleString()}</span></div>
+      <div style="color:#ffd93d;margin-top:8px;font-size:14px;">🔴 累積遺失：$${totalLost.toLocaleString()}（$${AMOUNT_A - AMOUNT_B}/筆，共 ${(MAX_OPS - startOp).toLocaleString()} 筆）</div>
+      <div style="color:#888;margin-top:6px;font-size:12px;">Race Condition 每次讓 A 的 $${AMOUNT_A} 被 B 的 $${AMOUNT_B} 覆蓋，每筆損失 $${AMOUNT_A - AMOUNT_B}</div>
+    `;
+  } else {
+    titleEl.textContent = `✅ Mutex 保護成功！${MAX_OPS - startOp} 筆操作`;
+    stepBox.innerHTML = `
+      <div class="row"><span class="label">起始餘額</span><span class="result">$${startBalance.toLocaleString()}</span></div>
+      <div class="row"><span class="label">A 存款合計</span><span class="val-a">$${sumA.toLocaleString()}（${(MAX_OPS - startOp).toLocaleString()} 筆 × $${AMOUNT_A}）</span></div>
+      <div class="row"><span class="label">B 存款合計</span><span class="val-b">$${sumB.toLocaleString()}（${(MAX_OPS - startOp).toLocaleString()} 筆 × $${AMOUNT_B}）</span></div>
+      <div class="row"><span class="label">正確餘額</span><span class="result">$${expected.toLocaleString()}</span></div>
+      <div class="row"><span class="label">實際餘額</span><span style="color:#6bcb77">$${balance.toLocaleString()}</span></div>
+      <div style="color:#6bcb77;margin-top:8px;font-size:14px;">✅ 0 差異！Mutex 保護下每筆操作都正確入帳</div>
+    `;
+  }
+
+  showResult();
 }
 
 function showResult() {
   const panel = document.getElementById('resultPanel');
   panel.style.display = 'block';
-  const expected = 3000; // 10 輪 × (100+200) = 3000
-  document.getElementById('resultTitle').textContent = '🏁 10 輪結束（每輪：A存100 + B存200）';
+  const expected = MAX_OPS * (AMOUNT_A + AMOUNT_B);
+  document.getElementById('resultTitle').textContent = `🏁 ${MAX_OPS.toLocaleString()} 筆結束（各 ${MAX_OPS.toLocaleString()} 筆：A存$${AMOUNT_A} + B存$${AMOUNT_B}）`;
   document.getElementById('resultValue').textContent = '最終餘額：$' + balance.toLocaleString();
   const status = document.getElementById('resultStatus');
   if (balance === expected) {
-    status.innerHTML = `<span style="color:#6bcb77; font-size:18px">✅ 正確！$3,000 = A總和$1,000 + B總和$2,000</span>`;
+    status.innerHTML = `<span style="color:#6bcb77; font-size:18px">✅ 正確！$${expected.toLocaleString()} = A總和$${sumA.toLocaleString()} + B總和$${sumB.toLocaleString()}</span>`;
   } else {
-    const diff = balance - expected;
-    status.innerHTML = `<span style="color:#e94560; font-size:18px">❌ 錯誤！差了 $${Math.abs(diff).toLocaleString()}</span>
+    const diff = Math.abs(balance - expected);
+    status.innerHTML = `<span style="color:#e94560; font-size:18px">❌ 錯誤！差了 $${diff.toLocaleString()}</span>
       <div style="color:#888; font-size:12px; margin-top:8px;">
-        原因：兩個執行緒同時讀到「舊值」，後寫入的執行緒覆蓋了先寫入的結果。
-        <br>例：余額$0，A讀到$0算完寫入$100，但B也讀到$0，算完直接覆蓋成$200。
+        原因：Race Condition — 兩個執行緒同時讀到「舊值」，後寫入的執行緒覆蓋了先寫入的結果。<br>
+        每筆損失 $${AMOUNT_A - AMOUNT_B}（A 的 $${AMOUNT_A} 被 B 的 $${AMOUNT_B} 覆蓋），<br>
+        共 ${MAX_OPS.toLocaleString()} 筆，累積損失約 $${totalLost.toLocaleString()}。
       </div>`;
   }
   if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
@@ -449,20 +484,20 @@ function showResult() {
 
 function startAuto() {
   if (autoTimer) return;
-  if (round >= 10) { resetSim(); }
+  if (opCount >= MAX_OPS) { resetSim(); }
   document.getElementById('btnPause').disabled = false;
   document.getElementById('btnAuto').disabled = true;
   paused = false;
   autoTimer = setInterval(() => {
     if (paused) return;
     doStep();
-    if (round >= 10) {
+    if (opCount >= MAX_OPS) {
       clearInterval(autoTimer);
       autoTimer = null;
       document.getElementById('btnAuto').disabled = false;
       document.getElementById('btnPause').disabled = true;
     }
-  }, 800);
+  }, 0); // 0ms 間隔，全速執行
 }
 
 function pauseAuto() {
@@ -474,10 +509,9 @@ function resetSim() {
   if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
   paused = false;
   balance = 0;
-  round = 0;
+  opCount = 0;
   sumA = 0;
   sumB = 0;
-  opCount = 0;
   stepCount = 0;
   totalLost = 0;
   logA.innerHTML = '';

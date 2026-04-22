@@ -1,0 +1,106 @@
+# 🔐 Mutex 互斥鎖
+
+## 核心概念
+
+**Mutex（Mutual Exclusion，互助排除）** 是一種用於解決 Race Condition 的同步機制。它確保同一時間只有一個執行緒能進入「臨界區」（Critical Section）執行共享資料的操作。
+
+> 想像廁所的門鎖：一人進入後上鎖，其他人必須在外面等。用完後開鎖離開，下一個人才能進去。
+
+---
+
+## 為什麼需要 Mutex？
+
+多執行緒的問題往往出在**非原子操作（Non-Atomic Operation）**。一個看起來簡單的 `balance = balance + 1` 在底層是三個獨立的機器指令：
+
+```
+1. READ   ：從記憶體讀取 balance 到暫存器
+2. MODIFY ：暫存器 +1
+3. WRITE  ：把暫存器值寫回記憶體
+```
+
+如果執行緒 A 做完第1步後被踢出 CPU，執行緒 B 進來做了完整的 1→2→3，A 回來後繼續做 2→3，這樣 A 的修改就被覆蓋了。
+
+---
+
+## Mutex 的四個特性
+
+| 特性 | 說明 |
+|------|------|
+| **互斥（Mutual Exclusion）** | 臨界區同一時間只有一個執行緒能進入 |
+| **進展（Progress）** | 如果沒有人在臨界區，申請進入的執行緒一定能進 |
+| **有限等待（Bounded Waiting）** | 每個執行緒最終都能進入，不會永久等待 |
+| **非佔用（No Busy Waiting）** | 等待的執行緒不消耗 CPU（作業系統會將其阻塞） |
+
+---
+
+## 語法使用（pthread 為例）
+
+```c
+#include <pthread.h>
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+// 進入臨界區：加鎖
+pthread_mutex_lock(&mutex);
+// ===== 臨界區（Critical Section）=====
+// 只有這個執行緒能執行這裡的程式碼
+balance = balance + amount;
+// ======================================
+// 離開臨界區：解鎖
+pthread_mutex_unlock(&mutex);
+```
+
+---
+
+## 與銀行模擬的對應
+
+在[銀行存提款模擬](../bank_simulation/index.html)中：
+
+| 模式 | 行為 | 結果 |
+|------|------|------|
+| **無 Mutex** | A 和 B 同時讀余額，同時計算，同時寫入 | 後寫入的覆蓋先寫入的，存款遺失 |
+| **有 Mutex** | A 先取得鎖，完整執行後釋放，B 才能進入 | 兩筆存款都正確入帳 |
+
+---
+
+## Mutex 的缺點
+
+### 1. 效能損耗
+鎖的取得/釋放有成本，過度使用會讓程式變慢。
+
+### 2. 死結風險（Deadlock）
+如果執行緒在持有鎖的狀態下嘗試取得另一個鎖，而那個鎖正被別人持有，就可能形成**循環等待**，所有執行緒卡死。
+
+### 3. 優先權反轉（Priority Inversion）
+低優先權執行緒持有鎖，高優先權執行緒一直等待。
+
+---
+
+## 常見替代方案
+
+| 機制 | 說明 |
+|------|------|
+| **Semaphore** | 允許 N 個執行緒同時進入（計數型號誌） |
+| **Monitor** | 更高階的同步結構，自動加鎖（如 Java `synchronized`） |
+| **Lock-free** | 使用硬體提供的原子指令（CAS）無鎖實現 |
+| **Read-Write Lock** | 讀可以並發，寫必須獨占 |
+
+---
+
+## 總結
+
+```
+沒有 Mutex：
+  A: READ(balance=$0) ──→ 被踢出CPU
+  B: READ(balance=$0) → MODIFY($0+$1=$1) → WRITE($1)
+  A: → MODIFY($0+$2=$2) → WRITE($2)    ← 覆蓋了 B 的結果！
+
+有 Mutex：
+  A: 🔒 Lock → READ($0) → MODIFY($0+$2=$2) → WRITE($2) → 🔓 Unlock
+  B: （等待鎖）→ 🔒 Lock → READ($2) → MODIFY($2+$1=$3) → WRITE($3) → 🔓 Unlock
+```
+
+---
+
+*相關主題：[Race Condition](race_condition.html) — Mutex 要解決的問題*
+*[銀行模擬](../bank_simulation/index.html) — 實際體驗 Mutex 的效果*

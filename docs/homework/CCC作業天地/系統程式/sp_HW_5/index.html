@@ -12,19 +12,8 @@
       min-height: 100vh;
       padding: 20px;
     }
-    h1 {
-      text-align: center;
-      color: #00d4ff;
-      font-size: 2.2em;
-      margin-bottom: 8px;
-      letter-spacing: 2px;
-    }
-    .subtitle {
-      text-align: center;
-      color: #888;
-      font-size: 14px;
-      margin-bottom: 40px;
-    }
+    h1 { text-align: center; color: #00d4ff; margin-bottom: 8px; font-size: 2.2em; letter-spacing: 2px; }
+    .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 40px; }
     .container { max-width: 900px; margin: 0 auto; }
 
     .hero {
@@ -37,6 +26,17 @@
     }
     .hero h1 { font-size: 2.5em; margin-bottom: 10px; }
     .hero p { color: #888; font-size: 15px; }
+    .hero .tagline { color:#eee; font-size:14px; max-width:600px; margin:10px auto 0; line-height:1.7; }
+
+    .section-title {
+      font-size: 0.85em;
+      color: #555;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #1a2a4a;
+      padding-bottom: 8px;
+    }
 
     .topic-grid {
       display: grid;
@@ -51,26 +51,10 @@
       border: 1px solid #0f3460;
       transition: transform 0.2s, border-color 0.2s;
     }
-    .topic-card:hover {
-      transform: translateY(-4px);
-      border-color: #00d4ff;
-    }
-    .topic-card .num {
-      font-size: 11px;
-      color: #555;
-      letter-spacing: 2px;
-      margin-bottom: 8px;
-    }
-    .topic-card h2 {
-      font-size: 1.1em;
-      margin-bottom: 10px;
-    }
-    .topic-card p {
-      font-size: 13px;
-      color: #888;
-      line-height: 1.7;
-      margin-bottom: 14px;
-    }
+    .topic-card:hover { transform: translateY(-4px); border-color: #00d4ff; }
+    .topic-card .num { font-size: 11px; color: #555; letter-spacing: 2px; margin-bottom: 8px; }
+    .topic-card h2 { font-size: 1.1em; margin-bottom: 10px; }
+    .topic-card p { font-size: 13px; color: #888; line-height: 1.7; margin-bottom: 14px; }
     .topic-card .tag {
       display: inline-block;
       padding: 3px 10px;
@@ -95,21 +79,7 @@
     }
     .topic-card a:hover { background: #1a4a7a; }
 
-    .sim-section {
-      margin-bottom: 40px;
-    }
-    .sim-section h2 {
-      font-size: 1em;
-      color: #555;
-      letter-spacing: 2px;
-      margin-bottom: 16px;
-      text-transform: uppercase;
-    }
-    .sim-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .sim-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
     .sim-item {
       display: flex;
       align-items: center;
@@ -128,6 +98,25 @@
     .sim-item .info p { font-size: 12px; color: #888; }
     .sim-item .arrow { margin-left: auto; color: #555; font-size: 18px; }
 
+    .doc-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 40px; }
+    .doc-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #16213e;
+      border-radius: 8px;
+      padding: 14px 18px;
+      border: 1px solid #0f3460;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s;
+    }
+    .doc-item:hover { border-color: #ffd93d; }
+    .doc-item .doc-icon { font-size: 20px; }
+    .doc-item .info h3 { font-size: 14px; color: #ffd93d; margin-bottom: 2px; }
+    .doc-item .info p { font-size: 12px; color: #888; }
+    .doc-item .arrow { margin-left: auto; color: #555; }
+
     .footer {
       text-align: center;
       color: #555;
@@ -143,38 +132,37 @@
   <div class="hero">
     <h1>🍜 Thread 執行緒與同步機制</h1>
     <p class="subtitle">sp_HW_5 — 系統程式作業</p>
-    <p style="color:#888;font-size:13px;max-width:600px;margin:0 auto;">
+    <p class="tagline">
       透過互動式模擬，了解 Race Condition、Mutex、Deadlock 與 Producer-Consumer Problem
     </p>
   </div>
 
+  <!-- 主題概念卡 -->
   <div class="topic-grid">
     <div class="topic-card">
       <div class="num">TOPIC 01</div>
       <h2>Race Condition<br>競態條件</h2>
       <p>多執行緒同時讀寫共享資料，執行順序不確定導致結果錯誤。</p>
       <span class="tag tag-red">共享資料</span><span class="tag tag-red">非原子操作</span>
-      <a href="race_condition.html">📖 說明文件</a>
-      <a href="bank_simulation/index.html">🔗 銀行模擬 →</a>
+      <a href="thread.html">📖 Thread 概念</a>
+      <a href="race_condition.html">📖 Race Condition</a>
     </div>
-
     <div class="topic-card">
       <div class="num">TOPIC 02</div>
       <h2>Mutex<br>互斥鎖</h2>
       <p>透過 Lock/Unlock 確保同一時間只有一個執行緒能進入臨界區。</p>
       <span class="tag tag-blue">Lock</span><span class="tag tag-blue">Critical Section</span>
+      <a href="mutex.html">📖 Mutex 說明</a>
       <a href="bank_simulation/index.html">🔗 銀行模擬 →</a>
     </div>
-
     <div class="topic-card">
       <div class="num">TOPIC 03</div>
       <h2>Deadlock<br>死結</h2>
       <p>循環等待：P1等P2拿資源、P2等P1，形成永不前進的僵局。</p>
       <span class="tag tag-yellow">循環等待</span><span class="tag tag-yellow">持有並等待</span>
-      <a href="deadlock.html">📖 說明文件</a>
+      <a href="deadlock.html">📖 Deadlock 說明</a>
       <a href="dining_philosophers/index.html">🔗 哲學家用餐 →</a>
     </div>
-
     <div class="topic-card">
       <div class="num">TOPIC 04</div>
       <h2>Producer-<br>Consumer</h2>
@@ -184,39 +172,89 @@
     </div>
   </div>
 
-  <div class="sim-section">
-    <h2>// 互動式模擬</h2>
-    <div class="sim-list">
-      <a class="sim-item" href="bank_simulation/index.html">
-        <div class="icon">🏦</div>
-        <div class="info">
-          <h3>銀行存提款模擬</h3>
-          <p>同一帳戶多人同時存提，驗證 Mutex 保護效果。10輪後結算累積損失。</p>
-        </div>
-        <div class="arrow">→</div>
-      </a>
-      <a class="sim-item" href="dining_philosophers/index.html">
-        <div class="icon">🍜</div>
-        <div class="info">
-          <h3>哲學家用餐問題</h3>
-          <p>演示 Deadlock 形成（循環等待）與解決方式（固定順序）。5位哲學家圓桌。</p>
-        </div>
-        <div class="arrow">→</div>
-      </a>
-      <a class="sim-item" href="producer_consumer/index.html">
-        <div class="icon">📦</div>
-        <div class="info">
-          <h3>生產者消費者問題</h3>
-          <p>緩衝區的放入/取出，排程與狀態可視化。</p>
-        </div>
-        <div class="arrow">→</div>
-      </a>
-    </div>
+  <!-- 互動式模擬 -->
+  <div class="section-title">// 互動式模擬</div>
+  <div class="sim-list">
+    <a class="sim-item" href="bank_simulation/index.html">
+      <div class="icon">🏦</div>
+      <div class="info">
+        <h3>銀行存提款模擬</h3>
+        <p>同一帳戶，執行緒 A 存款 $2、執行緒 B 存款 $1，各 100,000 次，驗證 Mutex 保護效果。</p>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="sim-item" href="dining_philosophers/index.html">
+      <div class="icon">🍜</div>
+      <div class="info">
+        <h3>哲學家用餐問題</h3>
+        <p>演示 Deadlock 形成（循環等待）與解決方式（固定順序）。5位哲學家圓桌。</p>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="sim-item" href="producer_consumer/index.html">
+      <div class="icon">📦</div>
+      <div class="info">
+        <h3>生產者消費者問題</h3>
+        <p>緩衝區的放入/取出，排程與狀態可視化。</p>
+      </div>
+      <div class="arrow">→</div>
+    </a>
   </div>
 
-  <div class="footer">
-    sp_HW_5 — 系統程式作業 | 2026
+  <!-- 實作文件 -->
+  <div class="section-title">// 實作文件</div>
+  <div class="doc-list">
+    <a class="doc-item" href="thread.html">
+      <div class="doc-icon">📚</div>
+      <div class="info">
+        <h3>Thread & 執行緒概念</h3>
+        <p>什麼是執行緒、Process 與 Thread 的區別、多執行緒的優勢與風險</p>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="doc-item" href="race_condition.html">
+      <div class="doc-icon">⚠️</div>
+      <div class="info">
+        <h3>Race Condition 競態條件</h3>
+        <p>發生的原因、經典情境、Read-Modify-Write 問題與銀行帳戶範例</p>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="doc-item" href="mutex.html">
+      <div class="doc-icon">🔐</div>
+      <div class="info">
+        <h3>Mutex 互斥鎖</h3>
+        <p>Lock/Unlock 機制、Critical Section、與 Race Condition 的關係</p>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="doc-item" href="deadlock.html">
+      <div class="doc-icon">💀</div>
+      <div class="info">
+        <h3>Deadlock 死結</h3>
+        <p>四個必要條件、循環等待、哲學家用餐問題與解決策略</p>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="doc-item" href="implementation.html">
+      <div class="doc-icon">🔧</div>
+      <div class="info">
+        <h3>實作說明</h3>
+        <p>銀行模擬、生產者消費者、哲學家用餐的實作細節與程式碼解說</p>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="doc-item" href="ai_collab.html">
+      <div class="doc-icon">🤖</div>
+      <div class="info">
+        <h3>與 AI 協作的對話精華</h3>
+        <p>如何與 AI 溝通、迭代修正、產出高品質作業的過程記錄</p>
+      </div>
+      <div class="arrow">→</div>
+    </a>
   </div>
+
+  <div class="footer">sp_HW_5 — 系統程式作業 | 2026</div>
 </div>
 </body>
 </html>

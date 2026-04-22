@@ -4,37 +4,50 @@
 
 ---
 
-## 作業項目
+## 四大主題文件
 
-### 1. Race Condition（競態條件）
-當多個執行緒同時存取並修改共享資料，結果取決於執行順序，稱為 Race Condition。
-- 📖 說明文件：[race_condition.md](race_condition.md)
-- 🔗 銀行模擬：[bank_simulation/](https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B3%BB%E7%B5%B1%E7%A8%8B%E5%BC%8F/sp_HW_5/bank_simulation/index.html)
-
-### 2. Mutex（互斥鎖）
-用於保護共享資源，確保同一時間只有一個執行緒能進入臨界區。
-- 🔗 銀行模擬（有用到）：[bank_simulation/](https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B3%BB%E7%B5%B1%E7%A8%8B%E5%BC%8F/sp_HW_5/bank_simulation/index.html)
-
-### 3. Deadlock（死結）
-兩個以上執行緒互相等待對方釋放資源，導致全部卡死。
-- 📖 說明文件：[deadlock.md](deadlock.md)
-- 🔗 哲學家用餐：[dining_philosophers/](https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B3%BB%E7%B5%B1%E7%A8%8B%E5%BC%8F/sp_HW_5/dining_philosophers/index.html)
-
-### 4. Producer-Consumer Problem（生產者消費者問題）
-經典的同步問題，考驗如何同時處理「互斥」與「同步」。
-- 🔗 互動模擬：[producer_consumer/](https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B3%BB%E7%B5%B1%E7%A8%8B%E5%BC%8F/sp_HW_5/producer_consumer/index.html)
+| 主題 | 說明 | 文件 |
+|------|------|------|
+| Thread | 執行緒基本概念、Process 與 Thread 差異 | [thread.html](thread.html) |
+| Race Condition | 競態條件、Read-Modify-Write 問題 | [race_condition.html](race_condition.html) |
+| Mutex | 互斥鎖、Lock/Unlock、臨界區保護 | [mutex.html](mutex.html) |
+| Deadlock | 死結四條件、循環等待、解決策略 | [deadlock.html](deadlock.html) |
 
 ---
 
-## 互動式模擬列表
+## 互動式模擬
 
-| 模擬 | 說明 |
-|------|------|
-| [銀行存提款](https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B3%BB%E7%B5%B1%E7%A8%8B%E5%BC%8F/sp_HW_5/bank_simulation/index.html) | 同一帳戶多人同時存提，驗證 mutex 保護效果 |
-| [生產者消費者](https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B3%BB%E7%B5%B1%E7%A8%8B%E5%BC%8F/sp_HW_5/producer_consumer/index.html) | 緩衝區的放入/取出，排程可視化 |
-| [哲學家用餐](https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B3%BB%E7%B5%B1%E7%A8%8B%E5%BC%8F/sp_HW_5/dining_philosophers/index.html) | 演示死結形成與解決方式 |
+| 模擬 | 說明 | 連結 |
+|------|------|------|
+| 🏦 銀行存提款 | 執行緒 A 存 $2、執行緒 B 存 $1，各 100,000 次，可單步或快速執行，驗證 Race Condition 與 Mutex 效果 | [bank_simulation/](https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B3%BB%E7%B5%B1%E7%A8%8B%E5%BC%8F/sp_HW_5/bank_simulation/index.html) |
+| 🍜 哲學家用餐 | 5位哲學家圓桌，演示 Deadlock 形成與打破循環等待的解法 | [dining_philosophers/](https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B3%BB%E7%B5%B1%E7%A8%8B%E5%BC%8F/sp_HW_5/dining_philosophers/index.html) |
+| 📦 生產者消費者 | 緩衝區放入/取出，同步與互斥條件可視化 | [producer_consumer/](https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B3%BB%E7%B5%B1%E7%A8%8B%E5%BC%8F/sp_HW_5/producer_consumer/index.html) |
 
 ---
 
-## 實作說明
-- [doc.md](doc.md) — 各程式的實作細節與解說
+## 實作文件
+
+- [implementation.html](implementation.html) — 三個程式的實作解說與程式碼說明
+- [ai_collab.html](ai_collab.html) — 與 AI 協作的對話精華（方法論記錄）
+- [index.html](index.html) — 主題式入口網頁（推薦从这里开始）
+
+---
+
+## 交付物一覽
+
+```
+sp_HW_5/
+├── index.html              # 登陸頁
+├── thread.html             # Thread 概念
+├── race_condition.html     # Race Condition 說明
+├── mutex.html              # Mutex 說明
+├── deadlock.html           # Deadlock 說明
+├── implementation.html     # 實作說明
+├── ai_collab.html          # AI 協作方法論
+├── bank_simulation/
+│   └── index.html          # 銀行存提款模擬
+├── dining_philosophers/
+│   └── index.html          # 哲學家用餐
+└── producer_consumer/
+    └── index.html          # 生產者消費者
+```
