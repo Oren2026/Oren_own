@@ -1,0 +1,347 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import rospy, roslaunch, os
+from enum import Enum
+from std_msgs.msg import UInt8
+
+class CoreNodeController():
+    def __init__(self):
+        self.ros_package_path = os.path.dirname(os.path.realpath(__file__))
+        self.ros_package_path = self.ros_package_path.replace('core/nodes', '')
+
+        # ========== Subscriber ==========
+        # 監聽每個 detect node 完成的訊號
+        self.sub_mission = rospy.Subscriber('/mission', UInt8, self.cbReceiveMode, queue_size=1)
+
+        # 各關卡子步驟（預留擴充）
+        # rospy.Subscriber('/mission/intersection', UInt8, self.cbIntersectionStep, queue_size=1)
+
+        # ========== Enum ==========
+        self.Mission = Enum('Mission', 'Idle TrafficLight Intersection Construction Parking LevelCrossing Tunnel')
+
+        # ========== State ==========
+        self.is_triggered = False
+        self.current_mode = self.Mission.Idle.value
+
+        # launcher enum（對應 detect/ 和 control/ 裡的 launch 檔）
+        # dl=detect_lane, cl=control_lane, tf=traffic_light,
+        # isc=intersection, ct=construction, pk=parking,
+        # mv=control_moving, lcro=level_crossing, tun=detect_tunnel,
+        # ctun=control_tunnel
+        self.Launcher = Enum('Launcher', 'dl cl tf isc ct pk mv lcro tun ctun')
+
+        # 各節點啟動狀態
+        self.launch_dl = False
+        self.launch_cl = False
+        self.launch_tf = False
+        self.launch_isc = False
+        self.launch_ct = False
+        self.launch_pk = False
+        self.launch_mv = False
+        self.launch_lcro = False
+        self.launch_tun = False
+        self.launch_ctun = False
+
+        self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+
+        rospy.loginfo("[Controller] ===== 啟動中 =====")
+
+        loop_rate = rospy.Rate(10)  # 10hz
+
+        while not rospy.is_shutdown():
+            if self.is_triggered == True:
+                self.fnControlNode()
+            loop_rate.sleep()
+
+    def cbReceiveMode(self, mode_msg):
+        rospy.loginfo("[Controller] 收到 /mission = %d", mode_msg.data)
+        self.current_mode = mode_msg.data
+        self.is_triggered = True
+
+    # ========== 各關卡控制邏輯（使用 sleep 作為主要時序控制）==========
+    def fnControlNode(self):
+
+        if self.current_mode == self.Mission.TrafficLight.value:  # 2
+            rospy.loginfo("[Controller] === TrafficLight ===")
+            # 只開 tf（紅綠燈檢測），等待綠燈出現
+            # detect_traffic_light 內部會等綠燈出現，再往前推進並發下一個 /mission
+            self.fnLaunch(self.Launcher.tf.value, True)
+
+        elif self.current_mode == self.Mission.Intersection.value:  # 3
+            rospy.loginfo("[Controller] === Intersection ===")
+            self.fnLaunch(self.Launcher.dl.value, True)     # 開車道檢測
+            self.fnLaunch(self.Launcher.cl.value, True)     # 開車道控制
+            self.fnLaunch(self.Launcher.tf.value, False)    # 關閉紅綠燈檢測
+            rospy.sleep(6)                                   # 預估通過時間
+            self.fnLaunch(self.Launcher.isc.value, True)     # 開岔路辨識
+
+        elif self.current_mode == self.Mission.Construction.value:  # 4
+            rospy.loginfo("[Controller] === Construction ===")
+            self.fnLaunch(self.Launcher.isc.value, False)   # 關閉岔路辨識
+            self.fnLaunch(self.Launcher.dl.value, True)      # 開車道檢測
+            self.fnLaunch(self.Launcher.cl.value, True)      # 開車道控制
+            self.fnLaunch(self.Launcher.ct.value, True)      # 開障礙物偵測
+            rospy.sleep(6)                                   # 預估障礙閃避時間
+            self.fnLaunch(self.Launcher.mv.value, True)      # 開動作控制
+
+        elif self.current_mode == self.Mission.Parking.value:  # 5
+            rospy.loginfo("[Controller] === Parking ===")
+            self.fnLaunch(self.Launcher.dl.value, False)     # 關閉車道檢測
+            self.fnLaunch(self.Launcher.cl.value, False)     # 關閉車道控制
+            self.fnLaunch(self.Launcher.ct.value, False)      # 關閉障礙物偵測
+            rospy.sleep(1)                                   # 緩衝
+            self.fnLaunch(self.Launcher.pk.value, True)      # 開停車偵測
+
+        elif self.current_mode == self.Mission.LevelCrossing.value:  # 6
+            rospy.loginfo("[Controller] === LevelCrossing ===")
+            self.fnLaunch(self.Launcher.mv.value, False)     # 關閉動作控制
+            self.fnLaunch(self.Launcher.pk.value, False)     # 關閉停車偵測
+            self.fnLaunch(self.Launcher.dl.value, True)     # 開車道檢測
+            self.fnLaunch(self.Launcher.cl.value, True)     # 開車道控制
+            rospy.sleep(12)                                  # 預估平交道通過時間
+            self.fnLaunch(self.Launcher.lcro.value, True)   # 開平交道偵測
+
+        elif self.current_mode == self.Mission.Tunnel.value:  # 7
+            rospy.loginfo("[Controller] === Tunnel ===")
+            self.fnLaunch(self.Launcher.lcro.value, False)  # 關閉平交道偵測
+            self.fnLaunch(self.Launcher.dl.value, True)     # 開車道檢測
+            self.fnLaunch(self.Launcher.cl.value, True)    # 開車道控制
+            rospy.sleep(25)                                  # 預估進入隧道時間
+            self.fnLaunch(self.Launcher.dl.value, False)   # 關閉車道檢測
+            self.fnLaunch(self.Launcher.tun.value, True)    # 開隧道偵測
+            rospy.sleep(2)                                   # 等待隧道定位
+            self.fnLaunch(self.Launcher.mv.value, True)     # 開動作控制（最後前進）
+
+        self.is_triggered = False
+
+    # ========== 節點啟動/關閉（各 launcher 獨立管理）==========
+    def fnLaunch(self, launch_num, is_start):
+
+        # 基準線發布（detect_lane）
+        if launch_num == self.Launcher.dl.value:
+            if is_start == True:
+                if self.launch_dl == False:
+                    self.dl = roslaunch.scriptapi.ROSLaunch()
+                    self.dl = roslaunch.parent.ROSLaunchParent(
+                        self.uuid,
+                        [self.ros_package_path + "detect/launch/detect_lane.launch"]
+                    )
+                    self.launch_dl = True
+                    self.dl.start()
+                    rospy.loginfo("[Controller] 啟動 ++ dl")
+                else:
+                    rospy.loginfo("[Controller] dl 已啟動（跳過）")
+            else:
+                if self.launch_dl == True:
+                    self.dl.shutdown()
+                    self.launch_dl = False
+                    rospy.loginfo("[Controller] 關閉 -- dl")
+                else:
+                    rospy.loginfo("[Controller] dl 已關閉（跳過）")
+
+        # 巡線控制（control_lane）
+        elif launch_num == self.Launcher.cl.value:
+            if is_start == True:
+                if self.launch_cl == False:
+                    self.cl = roslaunch.scriptapi.ROSLaunch()
+                    self.cl = roslaunch.parent.ROSLaunchParent(
+                        self.uuid,
+                        [self.ros_package_path + "control/launch/control_lane.launch"]
+                    )
+                    self.launch_cl = True
+                    self.cl.start()
+                    rospy.loginfo("[Controller] 啟動 ++ cl")
+                else:
+                    rospy.loginfo("[Controller] cl 已啟動（跳過）")
+            else:
+                if self.launch_cl == True:
+                    self.cl.shutdown()
+                    self.launch_cl = False
+                    rospy.loginfo("[Controller] 關閉 -- cl")
+                else:
+                    rospy.loginfo("[Controller] cl 已關閉（跳過）")
+
+        # 紅綠燈辨識（detect_traffic_light）
+        elif launch_num == self.Launcher.tf.value:
+            if is_start == True:
+                if self.launch_tf == False:
+                    self.tf = roslaunch.scriptapi.ROSLaunch()
+                    self.tf = roslaunch.parent.ROSLaunchParent(
+                        self.uuid,
+                        [self.ros_package_path + "detect/launch/detect_traffic_light.launch"]
+                    )
+                    self.launch_tf = True
+                    self.tf.start()
+                    rospy.loginfo("[Controller] 啟動 ++ tf")
+                else:
+                    rospy.loginfo("[Controller] tf 已啟動（跳過）")
+            else:
+                if self.launch_tf == True:
+                    self.tf.shutdown()
+                    self.launch_tf = False
+                    rospy.loginfo("[Controller] 關閉 -- tf")
+                else:
+                    rospy.loginfo("[Controller] tf 已關閉（跳過）")
+
+        # 岔路辨識（detect_intersection）
+        elif launch_num == self.Launcher.isc.value:
+            if is_start == True:
+                if self.launch_isc == False:
+                    self.isc = roslaunch.scriptapi.ROSLaunch()
+                    self.isc = roslaunch.parent.ROSLaunchParent(
+                        self.uuid,
+                        [self.ros_package_path + "detect/launch/detect_intersection.launch"]
+                    )
+                    self.launch_isc = True
+                    self.isc.start()
+                    rospy.loginfo("[Controller] 啟動 ++ isc")
+                else:
+                    rospy.loginfo("[Controller] isc 已啟動（跳過）")
+            else:
+                if self.launch_isc == True:
+                    self.isc.shutdown()
+                    self.launch_isc = False
+                    rospy.loginfo("[Controller] 關閉 -- isc")
+                else:
+                    rospy.loginfo("[Controller] isc 已關閉（跳過）")
+
+        # 障礙物偵測（detect_construction）
+        elif launch_num == self.Launcher.ct.value:
+            if is_start == True:
+                if self.launch_ct == False:
+                    self.ct = roslaunch.scriptapi.ROSLaunch()
+                    self.ct = roslaunch.parent.ROSLaunchParent(
+                        self.uuid,
+                        [self.ros_package_path + "detect/launch/detect_construction.launch"]
+                    )
+                    self.launch_ct = True
+                    self.ct.start()
+                    rospy.loginfo("[Controller] 啟動 ++ ct")
+                else:
+                    rospy.loginfo("[Controller] ct 已啟動（跳過）")
+            else:
+                if self.launch_ct == True:
+                    self.ct.shutdown()
+                    self.launch_ct = False
+                    rospy.loginfo("[Controller] 關閉 -- ct")
+                else:
+                    rospy.loginfo("[Controller] ct 已關閉（跳過）")
+
+        # 停車偵測（detect_parking）
+        elif launch_num == self.Launcher.pk.value:
+            if is_start == True:
+                if self.launch_pk == False:
+                    self.pk = roslaunch.scriptapi.ROSLaunch()
+                    self.pk = roslaunch.parent.ROSLaunchParent(
+                        self.uuid,
+                        [self.ros_package_path + "detect/launch/detect_parking.launch"]
+                    )
+                    self.launch_pk = True
+                    self.pk.start()
+                    rospy.loginfo("[Controller] 啟動 ++ pk")
+                else:
+                    rospy.loginfo("[Controller] pk 已啟動（跳過）")
+            else:
+                if self.launch_pk == True:
+                    self.pk.shutdown()
+                    self.launch_pk = False
+                    rospy.loginfo("[Controller] 關閉 -- pk")
+                else:
+                    rospy.loginfo("[Controller] pk 已關閉（跳過）")
+
+        # 動作控制（control_moving）
+        elif launch_num == self.Launcher.mv.value:
+            if is_start == True:
+                if self.launch_mv == False:
+                    self.mv = roslaunch.scriptapi.ROSLaunch()
+                    self.mv = roslaunch.parent.ROSLaunchParent(
+                        self.uuid,
+                        [self.ros_package_path + "control/launch/control_moving.launch"]
+                    )
+                    self.launch_mv = True
+                    self.mv.start()
+                    rospy.loginfo("[Controller] 啟動 ++ mv")
+                else:
+                    rospy.loginfo("[Controller] mv 已啟動（跳過）")
+            else:
+                if self.launch_mv == True:
+                    self.mv.shutdown()
+                    self.launch_mv = False
+                    rospy.loginfo("[Controller] 關閉 -- mv")
+                else:
+                    rospy.loginfo("[Controller] mv 已關閉（跳過）")
+
+        # 平交道偵測（detect_level）
+        elif launch_num == self.Launcher.lcro.value:
+            if is_start == True:
+                if self.launch_lcro == False:
+                    self.lcro = roslaunch.scriptapi.ROSLaunch()
+                    self.lcro = roslaunch.parent.ROSLaunchParent(
+                        self.uuid,
+                        [self.ros_package_path + "detect/launch/detect_level.launch"]
+                    )
+                    self.launch_lcro = True
+                    self.lcro.start()
+                    rospy.loginfo("[Controller] 啟動 ++ lcro")
+                else:
+                    rospy.loginfo("[Controller] lcro 已啟動（跳過）")
+            else:
+                if self.launch_lcro == True:
+                    self.lcro.shutdown()
+                    self.launch_lcro = False
+                    rospy.loginfo("[Controller] 關閉 -- lcro")
+                else:
+                    rospy.loginfo("[Controller] lcro 已關閉（跳過）")
+
+        # 隧道偵測（detect_tunnel）
+        elif launch_num == self.Launcher.tun.value:
+            if is_start == True:
+                if self.launch_tun == False:
+                    self.tun = roslaunch.scriptapi.ROSLaunch()
+                    self.tun = roslaunch.parent.ROSLaunchParent(
+                        self.uuid,
+                        [self.ros_package_path + "detect/launch/detect_tunnel.launch"]
+                    )
+                    self.launch_tun = True
+                    self.tun.start()
+                    rospy.loginfo("[Controller] 啟動 ++ tun")
+                else:
+                    rospy.loginfo("[Controller] tun 已啟動（跳過）")
+            else:
+                if self.launch_tun == True:
+                    self.tun.shutdown()
+                    self.launch_tun = False
+                    rospy.loginfo("[Controller] 關閉 -- tun")
+                else:
+                    rospy.loginfo("[Controller] tun 已關閉（跳過）")
+
+        # 隧道導航控制（control_tunnel，含 map_server + AMCL + move_base）
+        elif launch_num == self.Launcher.ctun.value:
+            if is_start == True:
+                if self.launch_ctun == False:
+                    self.ctun = roslaunch.scriptapi.ROSLaunch()
+                    self.ctun = roslaunch.parent.ROSLaunchParent(
+                        self.uuid,
+                        [self.ros_package_path + "control/launch/control_tunnel.launch"]
+                    )
+                    self.launch_ctun = True
+                    self.ctun.start()
+                    rospy.loginfo("[Controller] 啟動 ++ ctun")
+                else:
+                    rospy.loginfo("[Controller] ctun 已啟動（跳過）")
+            else:
+                if self.launch_ctun == True:
+                    self.ctun.shutdown()
+                    self.launch_ctun = False
+                    rospy.loginfo("[Controller] 關閉 -- ctun")
+                else:
+                    rospy.loginfo("[Controller] ctun 已關閉（跳過）")
+
+        else:
+            rospy.logwarn("[Controller] 未知 launch_num: %d", launch_num)
+
+if __name__ == '__main__':
+    rospy.init_node('core_node_controller')
+    node = CoreNodeController()
+    rospy.spin()
