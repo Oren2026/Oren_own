@@ -49,21 +49,38 @@ def run_bg(name, command):
     update_all_buttons()
 
 def run_terminal(name, command):
-    """開新 terminal 執行（使用者需要看到輸出）"""
+    """開新 terminal 執行（使用者需要看到輸出）
+       Ctrl+C 只殺指令程序，shell 和 Terminal 保持開著
+    """
     kill_process(name)
     import platform
     sys = platform.system()
     if sys == 'Darwin':  # macOS
+        # trap SIGINT 不傳給子程序，wait 讓 shell 等在這裡不退出
+        shell_cmd = (
+            f'trap \'\' INT; '
+            f'source ~/catkin_ws/devel/setup.bash && {command} & '
+            f'ROS_PID=$!; '
+            f'wait $ROS_PID; '
+            f'echo \"Process ended. Press Enter to close.\"; '
+            f'read'
+        )
         proc = subprocess.Popen(
             ['osascript', '-e',
-             f'tell app \"Terminal\" to do script \"source ~/catkin_ws/devel/setup.bash && {command} && read\"'],
+             f'tell app \"Terminal\" to do script "{shell_cmd}"'],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
         )
     else:  # Linux (Ubuntu)
-        terminal_cmd = 'gnome-terminal'
+        shell_cmd = (
+            "trap INT; "
+            "source ~/catkin_ws/devel/setup.bash && " + command + " & "
+            "ROS_PID=$!; "
+            "wait $ROS_PID; "
+            'echo "Process ended. Press Enter to close."; '
+            "read"
+        )
         proc = subprocess.Popen(
-            [terminal_cmd, '--', 'bash', '-c',
-             f'source ~/catkin_ws/devel/setup.bash && {command} && read'],
+            ['gnome-terminal', '--', 'bash', '-c', shell_cmd],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
         )
     running_pids[name] = proc.pid
