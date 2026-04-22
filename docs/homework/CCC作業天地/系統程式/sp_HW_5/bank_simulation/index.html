@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>銀行存提款模擬 - Race Condition 演示</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      color: #eee;
+      font-family: 'Courier New', monospace;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #00d4ff;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .info-box {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .info-box h3 { color: #e94560; margin-bottom: 10px; }
+    .info-box.danger { border-left: 4px solid #e94560; }
+    .info-box.safe { border-left: 4px solid #00d4ff; }
+
+    .balance-display {
+      text-align: center;
+      font-size: 48px;
+      color: #00d4ff;
+      margin: 20px 0;
+    }
+    .balance-label { font-size: 16px; color: #888; }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      transition: opacity 0.2s;
+    }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-danger { background: #e94560; color: white; }
+    .btn-primary { background: #0f3460; color: #00d4ff; }
+    .btn-success { background: #1b9c4e; color: white; }
+
+    .mode-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .mode-toggle label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .mode-toggle input:checked + span { color: #00d4ff; }
+
+    .simulation-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 700px) {
+      .simulation-area { grid-template-columns: 1fr; }
+    }
+
+    .thread-panel {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      padding: 15px;
+      min-height: 200px;
+    }
+    .thread-panel h3 {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #0f3460;
+      padding-bottom: 8px;
+    }
+    .log-area {
+      background: #0d1b2a;
+      border-radius: 4px;
+      padding: 10px;
+      height: 300px;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+    .log-entry { border-bottom: 1px solid #1a2a4a; padding: 2px 0; }
+    .log-entry.deposit { color: #00d4ff; }
+    .log-entry.withdraw { color: #e94560; }
+    .log-entry.error { color: #ff6b6b; }
+    .log-entry.info { color: #888; }
+    .log-entry.mutex-lock { color: #ffd93d; }
+    .log-entry.mutex-unlock { color: #6bcb77; }
+
+    .result-panel {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+    .result-panel h3 { color: #888; margin-bottom: 15px; }
+    .result-value { font-size: 36px; margin: 10px 0; }
+    .result-expected { font-size: 14px; color: #888; }
+    .result-match { color: #6bcb77; }
+    .result-mismatch { color: #e94560; }
+
+    .progress-bar {
+      height: 6px;
+      background: #0f3460;
+      border-radius: 3px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #00d4ff;
+      width: 0%;
+      transition: width 0.1s;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 15px;
+      font-size: 13px;
+      color: #888;
+    }
+    .stat span { color: #00d4ff; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🏦 銀行存提款模擬</h1>
+
+  <div class="info-box danger">
+    <h3>❌ 沒有 Mutex（Race Condition 範例）</h3>
+    兩個執行緒同時讀取余額 → 分別計算 → 分別回寫。
+    結果：兩次-$100，但余額只扣一次！
+  </div>
+
+  <div class="info-box safe">
+    <h3>✅ 有 Mutex（正確示範）</h3>
+    執行緒進入臨界區前上鎖，離開後解鎖。
+    同一時間只有一個執行緒能操作余額，結果100%正確。
+  </div>
+
+  <div class="mode-toggle">
+    <label>
+      <input type="radio" name="mode" value="unsafe" checked onchange="setMode('unsafe')">
+      <span>🔴 不使用 Mutex（會出錯）</span>
+    </label>
+    <label>
+      <input type="radio" name="mode" value="safe" onchange="setMode('safe')">
+      <span>🔵 使用 Mutex（100%正確）</span>
+    </label>
+  </div>
+
+  <div class="balance-display">
+    <div class="balance-label">帳戶餘額</div>
+    $<span id="balance">1000</span>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+  <div class="stats">
+    <div>操作：<span id="opCount">0</span> / <span id="totalOps">200000</span></div>
+    <div>執行緒 A：<span id="countA">0</span> 次</div>
+    <div>執行緒 B：<span id="countB">0</span> 次</div>
+  </div>
+
+  <div class="controls">
+    <button class="btn-danger" id="btnStart" onclick="startSimulation()">▶ 開始模擬 100,000 次</button>
+    <button class="btn-primary" onclick="resetSimulation()">🔄 重置</button>
+  </div>
+
+  <div class="simulation-area">
+    <div class="thread-panel">
+      <h3>📋 執行緒 A（提款 $1）</h3>
+      <div class="log-area" id="logA"></div>
+    </div>
+    <div class="thread-panel">
+      <h3>📋 執行緒 B（存款 $1）</h3>
+      <div class="log-area" id="logB"></div>
+    </div>
+  </div>
+
+  <div class="result-panel" id="resultPanel" style="margin-top:20px; display:none;">
+    <h3>模擬結果</h3>
+    <div class="result-value" id="resultValue"></div>
+    <div class="result-expected" id="resultExpected"></div>
+    <div id="resultStatus"></div>
+  </div>
+</div>
+
+<script>
+let balance = 1000;
+let useMutex = false;
+let opsCount = 0;
+let countA = 0;
+let countB = 0;
+let running = false;
+let logSeq = 0;
+
+const TOTAL_OPS = 100000;
+const logA = document.getElementById('logA');
+const logB = document.getElementById('logB');
+const progress = document.getElementById('progress');
+
+function setMode(mode) {
+  useMutex = (mode === 'safe');
+}
+
+function addLog(thread, html) {
+  const el = thread === 'A' ? logA : logB;
+  const div = document.createElement('div');
+  div.className = 'log-entry';
+  div.innerHTML = `[${++logSeq}] ${html}`;
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+}
+
+function updateUI() {
+  document.getElementById('balance').textContent = balance.toLocaleString();
+  document.getElementById('opCount').textContent = opsCount.toLocaleString();
+  document.getElementById('countA').textContent = countA.toLocaleString();
+  document.getElementById('countB').textContent = countB.toLocaleString();
+  progress.style.width = (opsCount / TOTAL_OPS * 100) + '%';
+}
+
+// 模擬臨界區：讀取-修改-寫入（可加入隨機延遲模擬真實競爭）
+async function criticalSection(threadId, isDeposit, amount) {
+  const tid = threadId === 'A' ? 'A' : 'B';
+
+  if (useMutex) {
+    addLog(tid, `<span style="color:#ffd93d">🔒 Lock 獲取</span>`);
+  }
+
+  // ===== READ =====
+  const readBalance = balance;
+  addLog(tid, `READ  余額 = ${readBalance.toLocaleString()}`);
+
+  // 模擬 CPU 運算延遲（真實環境中其他執行緒可能在這裡切入）
+  await new Promise(r => setTimeout(r, 0));
+
+  // ===== MODIFY =====
+  const newBalance = isDeposit ? readBalance + amount : readBalance - amount;
+  addLog(tid, `MOD   新餘額 = ${newBalance.toLocaleString()} (${isDeposit ? '+' : '-'}${amount})`);
+
+  // 模擬記憶體寫入延遲
+  await new Promise(r => setTimeout(r, 0));
+
+  // ===== WRITE =====
+  balance = newBalance;
+  addLog(tid, `WRITE 余額更新為 ${balance.toLocaleString()}`);
+
+  if (useMutex) {
+    addLog(tid, `<span style="color:#6bcb77">🔓 Lock 釋放</span>`);
+  }
+}
+
+async function threadA() {
+  const amount = 1; // 提款 $1
+  for (let i = 0; i < TOTAL_OPS / 2 && running; i++) {
+    await criticalSection('A', false, amount);
+    countA++;
+    opsCount++;
+    updateUI();
+    // 小延遲讓另一執行緒也有機會切入
+    await new Promise(r => setTimeout(r, 0));
+  }
+}
+
+async function threadB() {
+  const amount = 1; // 存款 $1
+  for (let i = 0; i < TOTAL_OPS / 2 && running; i++) {
+    await criticalSection('B', true, amount);
+    countB++;
+    opsCount++;
+    updateUI();
+    await new Promise(r => setTimeout(r, 0));
+  }
+}
+
+async function startSimulation() {
+  if (running) return;
+  resetSimulation();
+  running = true;
+  document.getElementById('btnStart').disabled = true;
+
+  // 同時啟動兩個「執行緒」（async function 同時跑）
+  await Promise.all([threadA(), threadB()]);
+
+  running = false;
+  document.getElementById('btnStart').disabled = false;
+  showResult();
+}
+
+function resetSimulation() {
+  running = false;
+  balance = 1000;
+  opsCount = 0;
+  countA = 0;
+  countB = 0;
+  logSeq = 0;
+  logA.innerHTML = '';
+  logB.innerHTML = '';
+  document.getElementById('resultPanel').style.display = 'none';
+  updateUI();
+}
+
+function showResult() {
+  const expected = 1000; // 存 50000 次 +1，提 50000 次 -1，應該回到 1000
+  const panel = document.getElementById('resultPanel');
+  panel.style.display = 'block';
+  document.getElementById('resultValue').textContent = '$' + balance.toLocaleString();
+  document.getElementById('resultExpected').textContent = '期望值：$1,000';
+
+  const status = document.getElementById('resultStatus');
+  if (balance === expected) {
+    status.innerHTML = `<span style="color:#6bcb77; font-size:20px">✅ 正確！餘額無誤差</span>`;
+  } else {
+    const diff = balance - expected;
+    status.innerHTML = `<span style="color:#e94560; font-size:20px">❌ 錯誤！差了 $${Math.abs(diff).toLocaleString()}</span><br>
+    <span style="color:#888; font-size:13px">這就是 Race Condition：兩個執行緒的「讀取-修改-寫入」交錯執行，覆蓋了彼此的結果</span>`;
+  }
+}
+</script>
+</body>
+</html>

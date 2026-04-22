@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>生產者消費者問題 - 同步機制演示</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      color: #eee;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #00d4ff;
+      margin-bottom: 10px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+
+    .info-box {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .info-box h3 { color: #e94560; margin-bottom: 8px; }
+    .info-box.green { border-left: 4px solid #6bcb77; }
+
+    .buffer-container {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .buffer-label {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 10px;
+    }
+    .buffer-slots {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-height: 60px;
+    }
+    .slot {
+      width: 60px;
+      height: 60px;
+      border: 2px solid #0f3460;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      position: relative;
+    }
+    .slot.empty {
+      border-style: dashed;
+      color: #333;
+    }
+    .slot.filled { border-color: #00d4ff; color: #00d4ff; background: #0f3460; }
+    .slot.producing { border-color: #ffd93d; color: #ffd93d; background: #2a2a0a; animation: pulse 0.3s;}
+    .slot.consuming { border-color: #e94560; color: #e94560; background: #2a0a1a; animation: pulse 0.3s;}
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+
+    .buffer-index {
+      position: absolute;
+      bottom: -18px;
+      font-size: 10px;
+      color: #555;
+    }
+
+    .controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-danger { background: #e94560; color: white; }
+    .btn-primary { background: #0f3460; color: #00d4ff; }
+    .btn-success { background: #1b9c4e; color: white; }
+
+    .threads-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    @media (max-width: 600px) { .threads-row { grid-template-columns: 1fr; } }
+    .thread-panel {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 15px;
+    }
+    .thread-panel h3 { font-size: 14px; margin-bottom: 8px; }
+    .thread-panel h3.producer { color: #ffd93d; }
+    .thread-panel h3.consumer { color: #e94560; }
+    .semaphores {
+      display: flex;
+      gap: 15px;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+    .semaphores span { color: #888; }
+    .semaphores .val { color: #00d4ff; font-weight: bold; }
+    .thread-log {
+      background: #0d1b2a;
+      border-radius: 4px;
+      padding: 8px;
+      height: 150px;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+    .log-line { border-bottom: 1px solid #1a2a4a; padding: 1px 0; }
+    .log-line.produce { color: #ffd93d; }
+    .log-line.consume { color: #e94560; }
+    .log-line.wait { color: #888; font-style: italic; }
+    .log-line.sem { color: #00d4ff; }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 13px;
+      color: #888;
+      margin-top: 15px;
+    }
+    .legend span { display: flex; align-items: center; gap: 5px; }
+    .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+    .dot.full { background: #00d4ff; }
+    .dot.empty { background: transparent; border: 1px dashed #555; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>📦 生產者消費者問題</h1>
+
+  <div class="info-box">
+    <h3>🔑 三個同步工具</h3>
+    <b>empty Semaphore</b>：記錄空位數量（初始 = 緩衝區大小）<br>
+    <b>full Semaphore</b>：記錄已有資料數量（初始 = 0）<br>
+    <b>mutex</b>：保護緩衝區索引操作（避免 Race Condition）
+  </div>
+
+  <div class="buffer-container">
+    <div class="buffer-label">共享緩衝區（大小 = 5）</div>
+    <div class="buffer-slots" id="bufferSlots"></div>
+    <div class="legend">
+      <span><span class="dot full"></span> 有資料</span>
+      <span><span class="dot empty"></span> 空位</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn-success" id="btnStep" onclick="doStep()">⚡ 單步執行</button>
+    <button class="btn-danger" id="btnAuto" onclick="startAuto()">▶ 自動執行（5步/秒）</button>
+    <button class="btn-primary" onclick="resetBuffer()">🔄 重置</button>
+  </div>
+
+  <div class="threads-row">
+    <div class="thread-panel">
+      <h3 class="producer">🟡 生產者 Producer</h3>
+      <div class="semaphores">
+        empty: <span class="val" id="semEmpty">5</span> | full: <span class="val" id="semFull">0</span>
+      </div>
+      <div class="thread-log" id="producerLog"></div>
+    </div>
+    <div class="thread-panel">
+      <h3 class="consumer">🔴 消費者 Consumer</h3>
+      <div class="semaphores">
+        empty: <span class="val" id="semEmpty2">5</span> | full: <span class="val" id="semFull2">0</span>
+      </div>
+      <div class="thread-log" id="consumerLog"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BUFFER_SIZE = 5;
+let buffer = new Array(BUFFER_SIZE).fill(null); // null = empty
+let empty = BUFFER_SIZE;
+let full = 0;
+let inIdx = 0;
+let outIdx = 0;
+let running = false;
+let autoInterval = null;
+let stepCount = 0;
+let waitingProducer = false;
+let waitingConsumer = false;
+
+function renderBuffer() {
+  const el = document.getElementById('bufferSlots');
+  el.innerHTML = '';
+  for (let i = 0; i < BUFFER_SIZE; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'slot ' + (buffer[i] !== null ? 'filled' : 'empty');
+    slot.innerHTML = buffer[i] !== null ? buffer[i] : '—';
+    const idx = document.createElement('div');
+    idx.className = 'buffer-index';
+    idx.textContent = i;
+    slot.appendChild(idx);
+    el.appendChild(slot);
+  }
+  document.getElementById('semEmpty').textContent = empty;
+  document.getElementById('semEmpty2').textContent = empty;
+  document.getElementById('semFull').textContent = full;
+  document.getElementById('semFull2').textContent = full;
+}
+
+function log(thread, msg, type) {
+  const el = document.getElementById(thread === 'P' ? 'producerLog' : 'consumerLog');
+  const div = document.createElement('div');
+  div.className = 'log-line ' + type;
+  div.textContent = `[${++stepCount}] ${msg}`;
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+}
+
+function flashSlot(index, type) {
+  const slots = document.querySelectorAll('.slot');
+  if (slots[index]) {
+    slots[index].classList.add(type);
+    setTimeout(() => slots[index].classList.remove(type), 300);
+  }
+}
+
+async function doStep() {
+  if (running) return;
+  running = true;
+
+  // 決定誰先執行（輪流或隨機）
+  // 策略：full>0 時消費者可以跑；empty>0 時生產者可以跑
+  const canProduce = empty > 0;
+  const canConsume = full > 0;
+
+  if (canProduce && (!canConsume || Math.random() > 0.4)) {
+    // ===== 生產者 =====
+    log('P', `sem_wait(&empty) → empty: ${empty} → ${empty - 1}`, 'wait');
+    empty--;
+    const item = Math.floor(Math.random() * 99) + 1;
+
+    log('P', `pthread_mutex_lock(&mutex)`, 'sem');
+    buffer[inIdx] = item;
+    flashSlot(inIdx, 'producing');
+    log('P', `放入 [${inIdx}] = ${item}`, 'produce');
+
+    inIdx = (inIdx + 1) % BUFFER_SIZE;
+    log('P', `pthread_mutex_unlock(&mutex)`, 'sem');
+    log('P', `sem_post(&full) → full: ${full} → ${full + 1}`, 'sem');
+    full++;
+  } else if (canConsume) {
+    // ===== 消費者 =====
+    log('C', `sem_wait(&full) → full: ${full} → ${full - 1}`, 'wait');
+    full--;
+    log('C', `pthread_mutex_lock(&mutex)`, 'sem');
+    const item = buffer[outIdx];
+    buffer[outIdx] = null;
+    flashSlot(outIdx, 'consuming');
+    log('C', `取出 [${outIdx}] = ${item}`, 'consume');
+
+    outIdx = (outIdx + 1) % BUFFER_SIZE;
+    log('C', `pthread_mutex_unlock(&mutex)`, 'sem');
+    log('C', `sem_post(&empty) → empty: ${empty} → ${empty + 1}`, 'sem');
+    empty++;
+  } else {
+    // 兩邊都卡住
+    if (!waitingProducer) { log('P', `等待 empty...（緩衝區滿）`, 'wait'); waitingProducer = true; }
+    if (!waitingConsumer) { log('C', `等待 full...（緩衝區空）`, 'wait'); waitingConsumer = true; }
+  }
+
+  renderBuffer();
+  running = false;
+}
+
+function startAuto() {
+  if (autoInterval) {
+    clearInterval(autoInterval);
+    autoInterval = null;
+    document.getElementById('btnAuto').textContent = '▶ 自動執行（5步/秒）';
+    return;
+  }
+  document.getElementById('btnAuto').textContent = '⏸ 暫停';
+  autoInterval = setInterval(doStep, 200);
+}
+
+function resetBuffer() {
+  if (autoInterval) {
+    clearInterval(autoInterval);
+    autoInterval = null;
+    document.getElementById('btnAuto').textContent = '▶ 自動執行（5步/秒）';
+  }
+  buffer = new Array(BUFFER_SIZE).fill(null);
+  empty = BUFFER_SIZE;
+  full = 0;
+  inIdx = 0;
+  outIdx = 0;
+  stepCount = 0;
+  waitingProducer = false;
+  waitingConsumer = false;
+  document.getElementById('producerLog').innerHTML = '';
+  document.getElementById('consumerLog').innerHTML = '';
+  renderBuffer();
+}
+
+renderBuffer();
+</script>
+</body>
+</html>
