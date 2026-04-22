@@ -91,17 +91,104 @@
     }
     .phil-badge .pname { font-weight: bold; }
     .phil-badge .pstate { font-size: 10px; }
-    .phil-badge .pchop { font-size: 10px; color: #888; }
     .phil-badge.thinking { border-color: #555; color: #888; }
     .phil-badge.hungry { border-color: #ffd93d; color: #ffd93d; }
     .phil-badge.eating { border-color: #6bcb77; color: #6bcb77; }
     .phil-badge.deadlock { border-color: #ff4444; color: #ff4444; background: #2a0000; }
 
-    .table-wrapper {
+    /* ===== 圓桌佈局 ===== */
+    .table-area {
       display: flex;
       justify-content: center;
       margin-bottom: 15px;
     }
+
+    .circle-table {
+      position: relative;
+      width: 420px;
+      height: 420px;
+    }
+
+    .table-surface {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 180px;
+      height: 100px;
+      background: #16213e;
+      border: 2px solid #0f3460;
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    /* 哲學家位置：0=top, 1=right-top, 2=right-bottom, 3=left-bottom, 4=left-top */
+    .phil-slot {
+      position: absolute;
+      z-index: 2;
+    }
+    .phil-0 { top: 0; left: 50%; transform: translateX(-50%); }
+    .phil-1 { top: 60px; right: 10px; }
+    .phil-2 { bottom: 10px; right: 60px; }
+    .phil-3 { bottom: 10px; left: 60px; }
+    .phil-4 { top: 60px; left: 10px; }
+
+    .philosopher {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+      background: #0f3460;
+      border: 2px solid #555;
+      text-align: center;
+      line-height: 1.3;
+      transition: all 0.3s;
+    }
+    .philosopher.thinking { background: #0f3460; border-color: #555; color: #888; }
+    .philosopher.hungry { background: #1a1a00; border-color: #ffd93d; color: #ffd93d; }
+    .philosopher.eating { background: #001a0a; border-color: #6bcb77; color: #6bcb77; }
+    .philosopher.deadlock { background: #2a0000; border-color: #ff4444; color: #ff4444; }
+
+    /* 筷子：固定位置在哲學家之間 */
+    .chopstick-slot {
+      position: absolute;
+      width: 8px;
+      height: 48px;
+      background: #555;
+      border-radius: 4px;
+      z-index: 1;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .chopstick-slot.used { background: #ffd93d; box-shadow: 0 0 10px #ffd93d88; }
+
+    /* 筷子0: P0(top)-P1(right-top) 之間，右側 */
+    .chop-0 { top: 28px; right: 88px; transform: rotate(72deg); transform-origin: top center; }
+    /* 筷子1: P1(right-top)-P2(right-bottom) 之間，下方 */
+    .chop-1 { top: 185px; right: 28px; transform: rotate(144deg); transform-origin: top center; }
+    /* 筷子2: P2(right-bottom)-P3(left-bottom) 之間，左側 */
+    .chop-2 { bottom: 28px; right: 88px; transform: rotate(-144deg); transform-origin: bottom center; }
+    /* 筷子3: P3(left-bottom)-P4(left-top) 之間，上方 */
+    .chop-3 { bottom: 28px; left: 88px; transform: rotate(144deg); transform-origin: bottom center; }
+    /* 筷子4: P4(left-top)-P0(top) 之間，左側 */
+    .chop-4 { top: 185px; left: 28px; transform: rotate(-144deg); transform-origin: top center; }
+
+    /* 每支筷子標明共享者 */
+    .chop-tag {
+      position: absolute;
+      font-size: 10px;
+      color: #555;
+      white-space: nowrap;
+    }
+    .chop-0 .chop-tag { top: -16px; right: -20px; }
+    .chop-1 .chop-tag { top: -16px; right: -20px; }
+    .chop-2 .chop-tag { bottom: -16px; right: -20px; }
+    .chop-3 .chop-tag { bottom: -16px; left: -20px; }
+    .chop-4 .chop-tag { top: -16px; left: -20px; }
 
     .legend {
       display: flex;
@@ -175,37 +262,34 @@
     <span>🥢 金色=已被拿</span>
   </div>
 
-  <div class="table-wrapper">
-    <!--
-      圓桌 SVG 精確佈局（半徑160，中心200,200）：
-      P0: -90°(頂), P1: -18°, P2: 54°, P3: 126°, P4: 198° (均分72°)
-      chop[i] 在 P_i 和 P_{i+1} 中間，角度 bisector，半徑約132（半徑-哲學家半徑+筷子半徑）
-    -->
-    <svg width="420" height="420" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-      <!-- 桌子 -->
-      <ellipse cx="200" cy="200" rx="90" ry="50" fill="#16213e" stroke="#0f3460" stroke-width="2"/>
+  <div class="table-area">
+    <div class="circle-table" id="table">
+      <div class="table-surface"></div>
 
-      <!-- 筷子（粗線條，精確座標） -->
-      <line id="chop-line-0" x1="80"  y1="48"  x2="108" y2="72"  stroke="#555" stroke-width="7" stroke-linecap="round"/>
-      <line id="chop-line-1" x1="238" y1="138" x2="266" y2="164" stroke="#555" stroke-width="7" stroke-linecap="round"/>
-      <line id="chop-line-2" x1="186" y1="299" x2="214" y2="325" stroke="#555" stroke-width="7" stroke-linecap="round"/>
-      <line id="chop-line-3" x1="38"  y1="336" x2="64"  y2="362" stroke="#555" stroke-width="7" stroke-linecap="round"/>
-      <line id="chop-line-4" x1="80"  y1="188" x2="108" y2="164" stroke="#555" stroke-width="7" stroke-linecap="round"/>
+      <!-- 筷子（固定位置） -->
+      <div class="chopstick-slot chop-0" id="chop0">
+        <div class="chop-tag">🥢0 P0-P1</div>
+      </div>
+      <div class="chopstick-slot chop-1" id="chop1">
+        <div class="chop-tag">🥢1 P1-P2</div>
+      </div>
+      <div class="chopstick-slot chop-2" id="chop2">
+        <div class="chop-tag">🥢2 P2-P3</div>
+      </div>
+      <div class="chopstick-slot chop-3" id="chop3">
+        <div class="chop-tag">🥢3 P3-P4</div>
+      </div>
+      <div class="chopstick-slot chop-4" id="chop4">
+        <div class="chop-tag">🥢4 P4-P0</div>
+      </div>
 
-      <!-- 筷子編號 -->
-      <text id="chop-label-0" x="94"  y="40"  fill="#555" font-size="10" text-anchor="middle" font-family="Courier New">🥢0</text>
-      <text id="chop-label-1" x="252" y="132" fill="#555" font-size="10" text-anchor="middle" font-family="Courier New">🥢1</text>
-      <text id="chop-label-2" x="200" y="348" fill="#555" font-size="10" text-anchor="middle" font-family="Courier New">🥢2</text>
-      <text id="chop-label-3" x="51"  y="380" fill="#555" font-size="10" text-anchor="middle" font-family="Courier New">🥢3</text>
-      <text id="chop-label-4" x="51"  y="180" fill="#555" font-size="10" text-anchor="middle" font-family="Courier New">🥢4</text>
-
-      <!-- 哲學家圓圈（半徑28） -->
-      <g id="phil-g-0" transform="translate(200,40)"><circle r="28" fill="#0f3460" stroke="#555" stroke-width="2"/><text y="4" text-anchor="middle" fill="#888" font-size="11" font-family="Courier New" font-weight="bold">P0</text><text id="phil-state-0" y="16" text-anchor="middle" fill="#888" font-size="9" font-family="Courier New">思考</text></g>
-      <g id="phil-g-1" transform="translate(352,151)"><circle r="28" fill="#0f3460" stroke="#555" stroke-width="2"/><text y="4" text-anchor="middle" fill="#888" font-size="11" font-family="Courier New" font-weight="bold">P1</text><text id="phil-state-1" y="16" text-anchor="middle" fill="#888" font-size="9" font-family="Courier New">思考</text></g>
-      <g id="phil-g-2" transform="translate(294,329)"><circle r="28" fill="#0f3460" stroke="#555" stroke-width="2"/><text y="4" text-anchor="middle" fill="#888" font-size="11" font-family="Courier New" font-weight="bold">P2</text><text id="phil-state-2" y="16" text-anchor="middle" fill="#888" font-size="9" font-family="Courier New">思考</text></g>
-      <g id="phil-g-3" transform="translate(106,329)"><circle r="28" fill="#0f3460" stroke="#555" stroke-width="2"/><text y="4" text-anchor="middle" fill="#888" font-size="11" font-family="Courier New" font-weight="bold">P3</text><text id="phil-state-3" y="16" text-anchor="middle" fill="#888" font-size="9" font-family="Courier New">思考</text></g>
-      <g id="phil-g-4" transform="translate(48,151)"><circle r="28" fill="#0f3460" stroke="#555" stroke-width="2"/><text y="4" text-anchor="middle" fill="#888" font-size="11" font-family="Courier New" font-weight="bold">P4</text><text id="phil-state-4" y="16" text-anchor="middle" fill="#888" font-size="9" font-family="Courier New">思考</text></g>
-    </svg>
+      <!-- 哲學家（固定slot位置） -->
+      <div class="phil-slot phil-0"><div class="philosopher thinking" id="phil0">P0<br>思考</div></div>
+      <div class="phil-slot phil-1"><div class="philosopher thinking" id="phil1">P1<br>思考</div></div>
+      <div class="phil-slot phil-2"><div class="philosopher thinking" id="phil2">P2<br>思考</div></div>
+      <div class="phil-slot phil-3"><div class="philosopher thinking" id="phil3">P3<br>思考</div></div>
+      <div class="phil-slot phil-4"><div class="philosopher thinking" id="phil4">P4<br>思考</div></div>
+    </div>
   </div>
 
   <div class="log-box" id="logBox"></div>
@@ -213,39 +297,9 @@
 
 <script>
 const N = 5;
-const PHIL_R = 160; // 哲學家所在圓的半徑
-const CX = 200, CY = 200; // 中心
-const PHIL_RADIUS = 28;  // 哲學家圓圈半徑
-const CHOP_LEN = 22;     // 筷子長度
-const CHOP_GAP = 8;      // 筷子與哲學家的間距
-
-// 哲學家位置：從top開始每隔72度
-// phil[i] 的圓心
-function philPos(i) {
-  const angleDeg = -90 + i * 72;
-  const angleRad = angleDeg * Math.PI / 180;
-  return {
-    x: CX + PHIL_R * Math.cos(angleRad),
-    y: CY + PHIL_R * Math.sin(angleRad)
-  };
-}
-
-// 筷子i: 在 phil[i] 和 phil[(i+1)%5] 的連線上
-// 筷子從 phil[i] 的邊緣延伸到 phil[(i+1)%5] 的邊緣
-function chopPos(i) {
-  const p1 = philPos(i);
-  const p2 = philPos((i + 1) % N);
-  const dx = p2.x - p1.x;
-  const dy = p2.y - p1.y;
-  const dist = Math.sqrt(dx * dx + dy * dy);
-  const ux = dx / dist, uy = dy / dist;
-  // 從 p1 往外移動到圓周邊緣，再到筷子尾端
-  const startX = p1.x + ux * (PHIL_RADIUS + CHOP_GAP);
-  const startY = p1.y + uy * (PHIL_RADIUS + CHOP_GAP);
-  const endX = p1.x + ux * (PHIL_RADIUS + CHOP_GAP + CHOP_LEN);
-  const endY = p1.y + uy * (PHIL_RADIUS + CHOP_GAP + CHOP_LEN);
-  return { x1: startX, y1: startY, x2: endX, y2: endY, angle: Math.atan2(dy, dx) * 180 / Math.PI };
-}
+// 筷子共享：chop[i] 由 P_i 和 P_{i+1} 共享
+function left(i) { return (i - 1 + N) % N; }
+function right(i) { return i; }
 
 let chopsticks = new Array(N).fill(false);
 let state = new Array(N).fill('thinking');
@@ -255,11 +309,6 @@ let eatCount = new Array(N).fill(0);
 let autoTimer = null;
 let globalSeq = 0;
 let currentPhil = 0;
-
-// 筷子共享：chop[i] 由 P_i 和 P_{i+1} 共享
-// P_i 的右筷子 = chop[i]，P_i 的左筷子 = chop[(i-1)%5]
-function left(i) { return (i - 1 + N) % N; }
-function right(i) { return i; }
 
 function log(msg, type = 'info') {
   const box = document.getElementById('logBox');
@@ -272,30 +321,15 @@ function log(msg, type = 'info') {
 
 function updateUI() {
   for (let i = 0; i < N; i++) {
-    const g = document.getElementById('phil-g-' + i);
-    const stateText = document.getElementById('phil-state-' + i);
-    const circle = g.querySelector('circle');
-    g.setAttribute('class', 'phil-' + i);
+    const phil = document.getElementById('phil' + i);
+    phil.className = 'philosopher ' + state[i];
     const labels = ['思考', '飢餓', '吃飯', '死結'];
-    const colors = ['#888', '#ffd93d', '#6bcb77', '#ff4444'];
     const idx = state[i] === 'thinking' ? 0 : state[i] === 'hungry' ? 1 : state[i] === 'eating' ? 2 : 3;
-    stateText.textContent = labels[idx];
-    stateText.setAttribute('fill', colors[idx]);
-    const strokeColor = colors[idx];
-    circle.setAttribute('stroke', strokeColor);
-    circle.setAttribute('fill', idx === 0 ? '#0f3460' : idx === 1 ? '#1a1a00' : idx === 2 ? '#001a0a' : '#2a0000');
+    phil.innerHTML = `P${i}<br>${labels[idx]}`;
   }
-  // 筷子顏色
   for (let i = 0; i < N; i++) {
-    const line = document.getElementById('chop-line-' + i);
-    const label = document.getElementById('chop-label-' + i);
-    if (chopsticks[i]) {
-      line.setAttribute('stroke', '#ffd93d');
-      label.setAttribute('fill', '#ffd93d');
-    } else {
-      line.setAttribute('stroke', '#555');
-      label.setAttribute('fill', '#555');
-    }
+    const chop = document.getElementById('chop' + i);
+    chop.className = 'chopstick-slot chop-' + i + (chopsticks[i] ? ' used' : '');
   }
   // 狀態列
   const row = document.getElementById('statusRow');
@@ -304,15 +338,16 @@ function updateUI() {
     const div = document.createElement('div');
     div.className = 'phil-badge ' + state[i];
     const label = state[i] === 'thinking' ? '思考' : state[i] === 'hungry' ? '飢餓' : state[i] === 'eating' ? '吃飯' : '死結';
-    const chopL = chopsticks[left(i)] ? '✓L' : '·L';
-    const chopR = chopsticks[right(i)] ? '✓R' : '·R';
-    div.innerHTML = `<span class="pname">P${i}</span><span class="pstate">${label}</span><span class="pchop">${chopL} ${chopR}</span>`;
+    const chopL = chopsticks[left(i)] ? '✓' : '·';
+    const chopR = chopsticks[right(i)] ? '✓' : '·';
+    div.innerHTML = `<span class="pname">P${i}</span><span class="pstate">${label}</span><span style="font-size:10px;color:#888">左${chopL}右${chopR}</span>`;
     row.appendChild(div);
   }
 }
 
 function tryAcquire(i) {
   if (useOrder) {
+    // ===== 固定順序：先拿編號小的筷子 =====
     const [first, second] = left(i) < right(i) ? [left(i), right(i)] : [right(i), left(i)];
     if (!chopsticks[first]) {
       chopsticks[first] = true;
@@ -331,6 +366,8 @@ function tryAcquire(i) {
       return 'hungry';
     }
   } else {
+    // ===== 無順序：左手（編號i）優先 =====
+    // BUG示範：拿到左手後等右手，但不等右手就保持持有左手 → 造成循環等待
     if (!chopsticks[left(i)]) {
       chopsticks[left(i)] = true;
       log(`P${i} 拿到🥢${left(i)}（左手）`, 'lock');
@@ -340,7 +377,7 @@ function tryAcquire(i) {
         return 'eating';
       } else {
         log(`P${i} 等🥢${right(i)}（被P${right(i)}拿著）→ 持有🥢${left(i)}不放`, 'hungry');
-        return 'hungry'; // 沒釋放左手 → 死結根源
+        return 'hungry'; // 沒釋放左手！這就是死結的根源
       }
     } else {
       log(`P${i} 等🥢${left(i)}...（被P${left(i)}拿著）`, 'hungry');
