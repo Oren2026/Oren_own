@@ -13,6 +13,21 @@
       padding: 20px;
     }
     h1 { text-align: center; color: #00d4ff; margin-bottom: 20px; }
+    .back-btn {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      background: #0f3460;
+      color: #00d4ff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      text-decoration: none;
+      z-index: 100;
+    }
+    .back-btn:hover { background: #1a4a7a; }
     .container { max-width: 1000px; margin: 0 auto; }
 
     .info-box {
@@ -168,6 +183,7 @@
 <body>
 <div class="container">
   <h1>🏦 銀行存提款模擬</h1>
+<a class="back-btn" href="../index.html">← 返回</a>
 
   <div class="info-box danger">
     <h3>🔴 無 Mutex — Race Condition 演示</h3>
@@ -200,10 +216,11 @@
   <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
 
   <div class="stats">
-    <div>輪次：<span id="round">0</span></div>
-    <div>A 存款總額：<span id="sumA">$0</span></div>
-    <div>B 存款總額：<span id="sumB">$0</span></div>
+    <div>輪次：<span id="round">0</span>/10</div>
+    <div>A 存款：<span id="sumA">$0</span></div>
+    <div>B 存款：<span id="sumB">$0</span></div>
     <div>操作：<span id="opCount">0</span></div>
+    <div>累積遺失：<span id="lostTotal" style="color:#e94560">$0</span></div>
   </div>
 
   <div class="controls">
@@ -247,6 +264,7 @@ let opCount = 0;
 let paused = false;
 let autoTimer = null;
 let stepCount = 0;
+let totalLost = 0; // 累積遺失金額
 
 const logA = document.getElementById('logA');
 const logB = document.getElementById('logB');
@@ -271,10 +289,11 @@ function updateUI() {
   document.getElementById('sumA').textContent = '$' + sumA.toLocaleString();
   document.getElementById('sumB').textContent = '$' + sumB.toLocaleString();
   document.getElementById('opCount').textContent = opCount;
+  document.getElementById('lostTotal').textContent = '$' + totalLost.toLocaleString();
   document.getElementById('progress').style.width = Math.min(round / 10 * 100, 100) + '%';
 }
 
-function showExplanation(title, balance_before, a_action, a_after, b_action, b_after, finalBalance, activeThread) {
+function showExplanation(title, balance_before, a_action, a_after, b_action, b_after, finalBalance, activeThread, roundLoss) {
   const box = document.getElementById('explanation');
   const titleEl = document.getElementById('exTitle');
   const stepBox = document.getElementById('stepBox');
@@ -289,26 +308,28 @@ function showExplanation(title, balance_before, a_action, a_after, b_action, b_a
       <div class="row"><span class="label">A 讀取</span><span class="val-a">餘額 = $${balance_before}</span></div>
       <div class="row"><span class="label">A 計算</span><span class="val-a">${balance_before} + 100 = $${a_after}</span></div>
       <div class="row"><span class="label">A 寫入</span><span class="val-a">餘額 = $${a_after}</span></div>
-      <div style="color:#888;margin:4px 0;">② 執行緒 B（存款 $200）接著執行：</div>
-      <div class="row"><span class="label">B 讀取</span><span class="val-b">餘額 = $${a_after}</span></div>
-      <div class="row"><span class="label">B 計算</span><span class="val-b">${a_after} + 200 = $${b_after}</span></div>
-      <div class="row"><span class="label">B 寫入</span><span class="val-b">餘額 = $${b_after}</span></div>
-      <div style="color:#ffd93d;margin-top:8px;">最終餘額：$${b_after}（正確應為 $$${finalBalance}）</div>
+      <div style="color:#888;margin:4px 0;">② 執行緒 B（存款 $200）同時讀到相同余額：</div>
+      <div class="row"><span class="label">B 讀取</span><span class="val-b">餘額 = $${balance_before}（A寫入前的舊值！）</span></div>
+      <div class="row"><span class="label">B 計算</span><span class="val-b">${balance_before} + 200 = $${b_after}</span></div>
+      <div class="row"><span class="label">B 寫入</span><span class="val-b">餘額 = $${b_after}（覆蓋了A的結果）</span></div>
+      <div style="color:#ffd93d;margin-top:6px;">🔴 本輪損失：$100（A的$100被B覆蓋）</div>
+      <div style="color:#ffd93d;">🔴 累積遺失：$${totalLost}</div>
+      <div style="color:#888;margin-top:4px;">正確應為：$${finalBalance}，實際：$${balance_before + 300} = $${balance_before} + $100 + $200</div>
     `;
   } else {
     stepBox.innerHTML = `
       <div class="row"><span class="label">起始餘額</span><span class="result">$${balance_before}</span></div>
-      <div style="color:#ffd93d;margin:4px 0;">🔒 執行緒 A 取得 Lock</div>
+      <div style="color:#ffd93d;margin:4px 0;">🔒 執行緒 A 取得 Lock（Lock保護中）</div>
       <div class="row"><span class="label">A 讀取</span><span class="val-a">餘額 = $${balance_before}</span></div>
       <div class="row"><span class="label">A 計算</span><span class="val-a">${balance_before} + 100 = $${a_after}</span></div>
       <div class="row"><span class="label">A 寫入</span><span class="val-a">餘額 = $${a_after}</span></div>
       <div style="color:#6bcb77;margin:4px 0;">🔓 執行緒 A 釋放 Lock</div>
       <div style="color:#ffd93d;margin:4px 0;">🔒 執行緒 B 取得 Lock（A 完成後 B 才能進）</div>
-      <div class="row"><span class="label">B 讀取</span><span class="val-b">餘額 = $${a_after}</span></div>
+      <div class="row"><span class="label">B 讀取</span><span class="val-b">餘額 = $${a_after}（A寫入後的值）</span></div>
       <div class="row"><span class="label">B 計算</span><span class="val-b">${a_after} + 200 = $${b_after}</span></div>
       <div class="row"><span class="label">B 寫入</span><span class="val-b">餘額 = $${b_after}</span></div>
-      <div style="color:#6bcb77;margin-top:8px;">🔓 執行緒 B 釋放 Lock</div>
-      <div style="color:#6bcb77;margin-top:4px;">最終餘額：$${b_after}（正確！）</div>
+      <div style="color:#6bcb77;margin-top:6px;">🔓 執行緒 B 釋放 Lock</div>
+      <div style="color:#6bcb77;">✅ 本輪損失：$0（兩筆存款都正確入帳）</div>
     `;
   }
 }
@@ -348,15 +369,19 @@ function doStep() {
 
     // 說明這次 Race Condition
     const expected = beforeBalance + 300;
+    // 本輪損失：A寫入$new但B也從舊值開始算，覆蓋了A的$100 → 本輪實際少算了$100
+    const roundLoss = 100;
+    totalLost += roundLoss;
     showExplanation(
-      `⚠️ Race Condition 發生！輪次 ${round}`,
+      `⚠️ Race Condition！輪次 ${round}（本輪損失 +$100）`,
       beforeBalance,
       a_new,
       a_new,
       b_new,
       b_new,
       expected,
-      'A→B'
+      'A→B',
+      roundLoss
     );
 
   } else {
@@ -382,14 +407,15 @@ function doStep() {
 
     const expected = beforeBalance + 300;
     showExplanation(
-      `✅ Mutex 保護成功！輪次 ${round}（操作順序：A完整 → B完整）`,
+      `✅ Mutex 保護成功！輪次 ${round}（A完整→B完整，無損失）`,
       beforeBalance,
       a_new,
       b_new,
       b_new,
       b_new,
       expected,
-      'A→B'
+      'A→B',
+      0
     );
   }
 
@@ -453,6 +479,7 @@ function resetSim() {
   sumB = 0;
   opCount = 0;
   stepCount = 0;
+  totalLost = 0;
   logA.innerHTML = '';
   logB.innerHTML = '';
   document.getElementById('resultPanel').style.display = 'none';

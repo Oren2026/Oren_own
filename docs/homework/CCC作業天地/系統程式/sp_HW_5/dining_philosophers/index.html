@@ -12,6 +12,21 @@
       padding: 20px;
     }
     h1 { text-align: center; color: #00d4ff; margin-bottom: 10px; }
+    .back-btn {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      background: #0f3460;
+      color: #00d4ff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      text-decoration: none;
+      z-index: 100;
+    }
+    .back-btn:hover { background: #1a4a7a; }
     .container { max-width: 950px; margin: 0 auto; }
 
     .info-box {
@@ -63,35 +78,64 @@
       flex-wrap: wrap;
       margin-bottom: 10px;
     }
-    .phil-status {
-      padding: 5px 12px;
+    .phil-badge {
+      padding: 5px 10px;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 11px;
       border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      min-width: 60px;
     }
-    .phil-status.thinking { border-color: #555; color: #888; }
-    .phil-status.hungry { border-color: #ffd93d; color: #ffd93d; }
-    .phil-status.eating { border-color: #6bcb77; color: #6bcb77; }
-    .phil-status.deadlock { border-color: #ff4444; color: #ff4444; background: #2a0000; }
+    .phil-badge .pname { font-weight: bold; }
+    .phil-badge .pstate { font-size: 10px; }
+    .phil-badge.thinking { border-color: #555; color: #888; }
+    .phil-badge.hungry { border-color: #ffd93d; color: #ffd93d; }
+    .phil-badge.eating { border-color: #6bcb77; color: #6bcb77; }
+    .phil-badge.deadlock { border-color: #ff4444; color: #ff4444; background: #2a0000; }
 
+    /* ===== 圓桌佈局 ===== */
     .table-area {
       display: flex;
       justify-content: center;
       margin-bottom: 15px;
     }
-    .table {
+
+    .circle-table {
       position: relative;
-      width: 400px;
-      height: 400px;
-      border: 3px solid #0f3460;
-      border-radius: 50%;
-      background: #16213e;
+      width: 420px;
+      height: 420px;
     }
 
-    .philosopher {
+    .table-surface {
       position: absolute;
-      width: 72px;
-      height: 72px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 180px;
+      height: 100px;
+      background: #16213e;
+      border: 2px solid #0f3460;
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    /* 哲學家位置：0=top, 1=right-top, 2=right-bottom, 3=left-bottom, 4=left-top */
+    .phil-slot {
+      position: absolute;
+      z-index: 2;
+    }
+    .phil-0 { top: 0; left: 50%; transform: translateX(-50%); }
+    .phil-1 { top: 60px; right: 10px; }
+    .phil-2 { bottom: 10px; right: 60px; }
+    .phil-3 { bottom: 10px; left: 60px; }
+    .phil-4 { top: 60px; left: 10px; }
+
+    .philosopher {
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       display: flex;
       flex-direction: column;
@@ -99,51 +143,52 @@
       justify-content: center;
       font-size: 11px;
       font-weight: bold;
-      transition: all 0.3s;
       background: #0f3460;
       border: 2px solid #555;
-      z-index: 2;
       text-align: center;
       line-height: 1.3;
+      transition: all 0.3s;
     }
     .philosopher.thinking { background: #0f3460; border-color: #555; color: #888; }
     .philosopher.hungry { background: #1a1a00; border-color: #ffd93d; color: #ffd93d; }
     .philosopher.eating { background: #001a0a; border-color: #6bcb77; color: #6bcb77; }
     .philosopher.deadlock { background: #2a0000; border-color: #ff4444; color: #ff4444; }
 
-    .chopstick {
+    /* 筷子：固定位置在哲學家之間 */
+    .chopstick-slot {
       position: absolute;
-      width: 7px;
-      height: 55px;
+      width: 8px;
+      height: 48px;
       background: #555;
-      border-radius: 3px;
+      border-radius: 4px;
       z-index: 1;
-      transition: all 0.3s;
+      transition: background 0.3s, box-shadow 0.3s;
     }
-    .chopstick.used { background: #ffd93d; box-shadow: 0 0 8px #ffd93d55; }
-    .chopstick-label {
+    .chopstick-slot.used { background: #ffd93d; box-shadow: 0 0 10px #ffd93d88; }
+
+    /* 筷子0: P0(top)-P1(right-top) 之間，右側 */
+    .chop-0 { top: 28px; right: 88px; transform: rotate(72deg); transform-origin: top center; }
+    /* 筷子1: P1(right-top)-P2(right-bottom) 之間，下方 */
+    .chop-1 { top: 185px; right: 28px; transform: rotate(144deg); transform-origin: top center; }
+    /* 筷子2: P2(right-bottom)-P3(left-bottom) 之間，左側 */
+    .chop-2 { bottom: 28px; right: 88px; transform: rotate(-144deg); transform-origin: bottom center; }
+    /* 筷子3: P3(left-bottom)-P4(left-top) 之間，上方 */
+    .chop-3 { bottom: 28px; left: 88px; transform: rotate(144deg); transform-origin: bottom center; }
+    /* 筷子4: P4(left-top)-P0(top) 之間，左側 */
+    .chop-4 { top: 185px; left: 28px; transform: rotate(-144deg); transform-origin: top center; }
+
+    /* 每支筷子標明共享者 */
+    .chop-tag {
       position: absolute;
       font-size: 10px;
       color: #555;
+      white-space: nowrap;
     }
-
-    .phil-0 { top: -6px; left: 50%; transform: translateX(-50%) translateY(-50%); }
-    .phil-1 { top: 85px; right: -6px; transform: translateX(50%) translateY(0); }
-    .phil-2 { bottom: -6px; left: 50%; transform: translateX(-50%) translateY(50%); }
-    .phil-3 { bottom: 85px; left: -6px; transform: translateX(0) translateY(0); }
-    .phil-4 { top: 85px; left: -6px; transform: translateX(0) translateY(0); }
-
-    /* 筷子在哲學家之間 */
-    /* chop 0: between phil 0 (top) and phil 1 (right) */
-    .chop-0 { top: 40px; right: 50px; transform: rotate(35deg); transform-origin: top center; }
-    /* chop 1: between phil 1 (right) and phil 2 (bottom) */
-    .chop-1 { top: 155px; right: -3px; transform: rotate(85deg); transform-origin: top center; }
-    /* chop 2: between phil 2 (bottom) and phil 3 (left-bottom) */
-    .chop-2 { bottom: 40px; right: 50px; transform: rotate(145deg); transform-origin: bottom center; }
-    /* chop 3: between phil 3 (left-bottom) and phil 4 (left-top) */
-    .chop-3 { bottom: 40px; left: 50px; transform: rotate(-145deg); transform-origin: bottom center; }
-    /* chop 4: between phil 4 (left-top) and phil 0 (top) */
-    .chop-4 { top: 155px; left: -3px; transform: rotate(-85deg); transform-origin: top center; }
+    .chop-0 .chop-tag { top: -16px; right: -20px; }
+    .chop-1 .chop-tag { top: -16px; right: -20px; }
+    .chop-2 .chop-tag { bottom: -16px; right: -20px; }
+    .chop-3 .chop-tag { bottom: -16px; left: -20px; }
+    .chop-4 .chop-tag { top: -16px; left: -20px; }
 
     .legend {
       display: flex;
@@ -166,29 +211,28 @@
     }
     .log-line { border-bottom: 1px solid #1a2a4a; padding: 1px 4px; }
     .log-line.eat { color: #6bcb77; }
-    .log-line.think { color: #888; }
-    .log-line.hungry { color: #ffd93d; }
     .log-line.lock { color: #ffd93d; }
     .log-line.unlock { color: #6bcb77; }
+    .log-line.hungry { color: #ffd93d; }
     .log-line.deadlock { color: #ff4444; font-weight: bold; }
     .log-line.info { color: #555; }
     .log-line.sequential { color: #00d4ff; }
   </style>
 </head>
 <body>
+<a class="back-btn" href="../index.html">← 返回</a>
+
 <div class="container">
   <h1>🍜 哲學家用餐問題</h1>
 
   <div class="info-box danger">
     <h3>🔴 無順序（會死結）</h3>
-    每個哲學家都「先拿左邊，再拿右邊」筷子。當 5 人同時搶走左邊的筷子，右邊的都被鄰居拿著 → <strong>循環等待，死結！</strong>
+    每個哲學家都「先拿左邊、再拿右邊」筷子。當5人同時搶走左邊的筷子，右邊都被鄰居拿著 → <strong>循環等待，死結！</strong>
   </div>
 
   <div class="info-box green">
     <h3>🟢 固定順序（防死結）</h3>
-    規定：所有哲學家都先拿「編號較小的筷子」。
-    <br>→ P0、P1、P2、P3、P4 都搶筷子0，但只有 P0 先拿到。P0 吃完 → 釋放 → P1 才能繼續。
-    <br>→ 形成鎖鏈（Chain）而非循環，不會死結。
+    規定：所有哲學家都先拿「編號較小的筷子」。例如：都先搶筷子0，P0先拿到後吃飯→釋放→P1才能繼續。不會形成循環，不會死結。
   </div>
 
   <div class="mode-toggle">
@@ -215,20 +259,36 @@
     <span>🟢 吃飯</span>
     <span>⚫ 思考</span>
     <span>🔴 死結</span>
+    <span>🥢 金色=已被拿</span>
   </div>
 
   <div class="table-area">
-    <div class="table" id="table">
-      <div class="chopstick chop-0" id="chop0"></div>
-      <div class="chopstick chop-1" id="chop1"></div>
-      <div class="chopstick chop-2" id="chop2"></div>
-      <div class="chopstick chop-3" id="chop3"></div>
-      <div class="chopstick chop-4" id="chop4"></div>
-      <div class="philosopher phil-0 thinking" id="phil0">P0<br>思考中</div>
-      <div class="philosopher phil-1 thinking" id="phil1">P1<br>思考中</div>
-      <div class="philosopher phil-2 thinking" id="phil2">P2<br>思考中</div>
-      <div class="philosopher phil-3 thinking" id="phil3">P3<br>思考中</div>
-      <div class="philosopher phil-4 thinking" id="phil4">P4<br>思考中</div>
+    <div class="circle-table" id="table">
+      <div class="table-surface"></div>
+
+      <!-- 筷子（固定位置） -->
+      <div class="chopstick-slot chop-0" id="chop0">
+        <div class="chop-tag">🥢0 P0-P1</div>
+      </div>
+      <div class="chopstick-slot chop-1" id="chop1">
+        <div class="chop-tag">🥢1 P1-P2</div>
+      </div>
+      <div class="chopstick-slot chop-2" id="chop2">
+        <div class="chop-tag">🥢2 P2-P3</div>
+      </div>
+      <div class="chopstick-slot chop-3" id="chop3">
+        <div class="chop-tag">🥢3 P3-P4</div>
+      </div>
+      <div class="chopstick-slot chop-4" id="chop4">
+        <div class="chop-tag">🥢4 P4-P0</div>
+      </div>
+
+      <!-- 哲學家（固定slot位置） -->
+      <div class="phil-slot phil-0"><div class="philosopher thinking" id="phil0">P0<br>思考</div></div>
+      <div class="phil-slot phil-1"><div class="philosopher thinking" id="phil1">P1<br>思考</div></div>
+      <div class="phil-slot phil-2"><div class="philosopher thinking" id="phil2">P2<br>思考</div></div>
+      <div class="phil-slot phil-3"><div class="philosopher thinking" id="phil3">P3<br>思考</div></div>
+      <div class="phil-slot phil-4"><div class="philosopher thinking" id="phil4">P4<br>思考</div></div>
     </div>
   </div>
 
@@ -237,18 +297,18 @@
 
 <script>
 const N = 5;
-let chopsticks = new Array(N).fill(false); // 筷子狀態：false=可用, true=被占用
-let state = new Array(N).fill('thinking'); // thinking, hungry, eating, deadlock
-let holding = new Array(N).fill(-1); // 記錄哲學家當前持有一支筷子時拿的是哪支（用於調適）
+// 筷子共享：chop[i] 由 phil[i] 和 phil[(i+1)%5] 共享
+function left(i) { return i; }
+function right(i) { return (i + 1) % N; }
+
+let chopsticks = new Array(N).fill(false);
+let state = new Array(N).fill('thinking');
 let useOrder = false;
-let stepCount = 0;
 let deadlockDetected = false;
 let eatCount = new Array(N).fill(0);
 let autoTimer = null;
 let globalSeq = 0;
-
-function left(i) { return i; }
-function right(i) { return (i + 1) % N; }
+let currentPhil = 0;
 
 function log(msg, type = 'info') {
   const box = document.getElementById('logBox');
@@ -262,67 +322,65 @@ function log(msg, type = 'info') {
 function updateUI() {
   for (let i = 0; i < N; i++) {
     const phil = document.getElementById('phil' + i);
-    phil.className = 'philosopher phil-' + i + ' ' + state[i];
-    const labels = ['思考中', '飢餓中', '吃飯中', '⚠ 死結'];
+    phil.className = 'philosopher ' + state[i];
+    const labels = ['思考', '飢餓', '吃飯', '死結'];
     const idx = state[i] === 'thinking' ? 0 : state[i] === 'hungry' ? 1 : state[i] === 'eating' ? 2 : 3;
     phil.innerHTML = `P${i}<br>${labels[idx]}`;
   }
   for (let i = 0; i < N; i++) {
-    document.getElementById('chop' + i).className = 'chopstick chop-' + i + (chopsticks[i] ? ' used' : '');
+    const chop = document.getElementById('chop' + i);
+    chop.className = 'chopstick-slot chop-' + i + (chopsticks[i] ? ' used' : '');
   }
+  // 狀態列
   const row = document.getElementById('statusRow');
   row.innerHTML = '';
   for (let i = 0; i < N; i++) {
     const div = document.createElement('div');
-    div.className = 'phil-status ' + state[i];
-    const label = state[i] === 'thinking' ? '思考' : state[i] === 'hungry' ? '飢餓' : state[i] === 'eating' ? '吃飯中' : '死結';
-    div.textContent = `P${i}: ${label}`;
+    div.className = 'phil-badge ' + state[i];
+    const label = state[i] === 'thinking' ? '思考' : state[i] === 'hungry' ? '飢餓' : state[i] === 'eating' ? '吃飯' : '死結';
+    const chopL = chopsticks[left(i)] ? '✓' : '·';
+    const chopR = chopsticks[right(i)] ? '✓' : '·';
+    div.innerHTML = `<span class="pname">P${i}</span><span class="pstate">${label}</span><span style="font-size:10px;color:#888">左${chopL}右${chopR}</span>`;
     row.appendChild(div);
   }
 }
 
 function tryAcquire(i) {
   if (useOrder) {
-    // ===== 固定順序：先拿編號小的 =====
+    // ===== 固定順序：先拿編號小的筷子 =====
     const [first, second] = left(i) < right(i) ? [left(i), right(i)] : [right(i), left(i)];
     if (!chopsticks[first]) {
       chopsticks[first] = true;
-      holding[i] = first;
-      log(`P${i} 拿到筷子 ${first}（編號小）`, 'lock');
+      log(`P${i} 拿到🥢${first}（編號小）`, 'lock');
       if (!chopsticks[second]) {
         chopsticks[second] = true;
-        log(`P${i} 拿到筷子 ${second} → 開始吃飯！`, 'eat');
-        holding[i] = -1;
+        log(`P${i} 拿到🥢${second} → 開始吃飯！`, 'eat');
         return 'eating';
       } else {
-        // 第一支拿到了，但第二支被占用 → 釋放第一支，等待
-        log(`P${i} 等筷子 ${second}... 先釋放 ${first}`, 'hungry');
+        log(`P${i} 等🥢${second}（被鄰居拿著）→ 釋放🥢${first}`, 'hungry');
         chopsticks[first] = false;
-        holding[i] = -1;
         return 'hungry';
       }
     } else {
-      log(`P${i} 等待筷子 ${first}...`, 'hungry');
+      log(`P${i} 等🥢${first}...（被鄰居拿著）`, 'hungry');
       return 'hungry';
     }
   } else {
-    // ===== 無順序：左手（left）優先 =====
-    // 這會造成循環等待：所有人同時拿到左邊，等右邊 → 死結
+    // ===== 無順序：左手（編號i）優先 =====
+    // BUG示範：拿到左手後等右手，但不等右手就保持持有左手 → 造成循環等待
     if (!chopsticks[left(i)]) {
       chopsticks[left(i)] = true;
-      holding[i] = left(i);
-      log(`P${i} 拿到筷子 ${left(i)}（左手）`, 'lock');
+      log(`P${i} 拿到🥢${left(i)}（左手）`, 'lock');
       if (!chopsticks[right(i)]) {
         chopsticks[right(i)] = true;
-        log(`P${i} 拿到筷子 ${right(i)} → 開始吃飯！`, 'eat');
-        holding[i] = -1;
+        log(`P${i} 拿到🥢${right(i)} → 吃飯！`, 'eat');
         return 'eating';
       } else {
-        log(`P${i} 等筷子 ${right(i)}...（右手被鄰居拿著）`, 'hungry');
-        return 'hungry';
+        log(`P${i} 等🥢${right(i)}（被P${right(i)}拿著）→ 持有🥢${left(i)}不放`, 'hungry');
+        return 'hungry'; // 沒釋放左手！這就是死結的根源
       }
     } else {
-      log(`P${i} 等筷子 ${left(i)}...（左手被鄰居拿著）`, 'hungry');
+      log(`P${i} 等🥢${left(i)}...（被P${left(i)}拿著）`, 'hungry');
       return 'hungry';
     }
   }
@@ -331,46 +389,36 @@ function tryAcquire(i) {
 function release(i) {
   chopsticks[left(i)] = false;
   chopsticks[right(i)] = false;
-  holding[i] = -1;
-  log(`P${i} 吃完，放下筷子 ${left(i)} 和 ${right(i)}`, 'unlock');
+  log(`P${i} 吃完，放下🥢${left(i)}和🥢${right(i)}`, 'unlock');
   state[i] = 'thinking';
 }
 
 function checkDeadlock() {
-  // 死結條件：所有人都在飢餓/等待，且沒有人在吃飯
   return state.every(s => s === 'hungry') && !state.some(s => s === 'eating');
 }
 
-let currentPhil = 0; // 輪流處理的哲學家指標
-
 function doStep() {
   if (deadlockDetected) return;
-
   let madeProgress = false;
 
-  // 輪流檢查每個哲學家（每次只讓一個採取行動）
   for (let attempt = 0; attempt < N; attempt++) {
     const i = (currentPhil + attempt) % N;
-
     if (state[i] === 'thinking') {
       state[i] = 'hungry';
-      log(`P${i} 感到飢餓，嘗試拿筷子`, 'hungry');
+      log(`P${i} 感到飢餓`, 'hungry');
       const result = tryAcquire(i);
       state[i] = result;
       if (result === 'eating') eatCount[i]++;
       madeProgress = true;
       break;
     }
-
     if (state[i] === 'hungry') {
-      // 再次嘗試獲取筷子
       const result = tryAcquire(i);
       state[i] = result;
       if (result === 'eating') eatCount[i]++;
       madeProgress = true;
       break;
     }
-
     if (state[i] === 'eating') {
       release(i);
       madeProgress = true;
@@ -381,23 +429,18 @@ function doStep() {
   currentPhil = (currentPhil + 1) % N;
   updateUI();
 
-  // 檢查死結
   if (checkDeadlock()) {
     state = state.map(() => 'deadlock');
     deadlockDetected = true;
-    log('⚠ DEADLOCK! 所有哲學家都在等待鄰居的筷子，形成循環等待，沒人能吃飯', 'deadlock');
+    log('⚠ DEADLOCK! 所有哲學家都在等鄰居的筷子，循環等待形成！', 'deadlock');
     updateUI();
     if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
-    return;
   }
-
-  // 安全模式下：如果連續很多輪都沒有人吃飯，說明發生了飢餓（starvation）
-  // 但邏輯上固定順序不會死結，只會有飢餓問題（某個哲學家很久沒吃到）
 }
 
 function startAuto() {
   if (autoTimer) { clearInterval(autoTimer); autoTimer = null; document.getElementById('btnAuto').textContent = '▶ 自動執行'; return; }
-  document.getElementById('btnAuto').textContent = '⏸ 暫停中';
+  document.getElementById('btnAuto').textContent = '⏸ 暫停';
   autoTimer = setInterval(doStep, 700);
 }
 
@@ -405,18 +448,15 @@ function resetSim() {
   if (autoTimer) { clearInterval(autoTimer); autoTimer = null; document.getElementById('btnAuto').textContent = '▶ 自動執行'; }
   chopsticks = new Array(N).fill(false);
   state = new Array(N).fill('thinking');
-  holding = new Array(N).fill(-1);
   eatCount = new Array(N).fill(0);
-  stepCount = 0;
   globalSeq = 0;
   deadlockDetected = false;
   currentPhil = 0;
   document.getElementById('logBox').innerHTML = '';
-  log('=== 哲學家們開始思考人生... ===', 'info');
   if (!useOrder) {
-    log('模式：無順序（左手優先）— 點「自動執行」觀察死結形成', 'info');
+    log('🔴 模式：無順序（左手優先）→ 觀察死結形成', 'info');
   } else {
-    log('模式：固定順序（先拿編號小的）— 點「自動執行」觀察正常運作', 'sequential');
+    log('🟢 模式：固定順序（先拿編號小的）→ 正常運作，不死結', 'sequential');
   }
   updateUI();
 }
