@@ -353,10 +353,15 @@ function doStep() {
     const a_new = a_read + AMOUNT_A;
     balance = a_new;
     sumA += AMOUNT_A;
+    log('A', `READ  余額=$ ${a_read}  |  MOD  $${a_read}+$${AMOUNT_A}=$${a_new}  |  WRITE $${a_new}`, 'deposit');
+    log('A', `🔒 取得 Lock（視覺化）`, 'mutex-lock');
+    log('A', `🔓 釋放 Lock`, 'mutex-unlock');
 
     const b_new = b_read + AMOUNT_B;
     balance = b_new;
     sumB += AMOUNT_B;
+    log('B', `READ  余額=$ ${b_read}  |  MOD  $${b_read}+$${AMOUNT_B}=$${b_new}  |  WRITE $${b_new}`, 'deposit');
+    log('B', `（B 讀到了 A 寫入前的舊值，覆蓋了 A 的存款）`, 'error');
 
     // 本輪損失：A 被 B 覆蓋，B 只算進了 AMOUNT_B，所以 A 的 AMOUNT_A 損失了 (AMOUNT_A - AMOUNT_B)
     const roundLoss = AMOUNT_A - AMOUNT_B; // = 1
@@ -370,15 +375,22 @@ function doStep() {
     );
   } else {
     // ===== 有 Mutex：序列化執行 =====
+    log('A', `🔒 Lock 獲取`, 'mutex-lock');
     const a_read = balance;
     const a_new = a_read + AMOUNT_A;
     balance = a_new;
     sumA += AMOUNT_A;
+    log('A', `READ  余額=$ ${a_read}  |  MOD  $${a_read}+$${AMOUNT_A}=$${a_new}  |  WRITE $${a_new}`, 'deposit');
+    log('A', `🔓 Lock 釋放 → B 才能進入`, 'mutex-unlock');
 
-    const b_read = balance;
+    log('B', `等待 Lock...（A 正在操作）`, 'idle');
+    log('B', `🔒 Lock 獲取`, 'mutex-lock');
+    const b_read = balance; // 這時候拿到的是 A 寫入後的值
     const b_new = b_read + AMOUNT_B;
     balance = b_new;
     sumB += AMOUNT_B;
+    log('B', `READ  余額=$ ${b_read}  |  MOD  $${b_read}+$${AMOUNT_B}=$${b_new}  |  WRITE $${b_new}`, 'deposit');
+    log('B', `🔓 Lock 釋放`, 'mutex-unlock');
 
     showExplanation(
       `✅ Mutex 保護成功！第 ${opCount} 筆（A完整→B完整，無損失）`,
