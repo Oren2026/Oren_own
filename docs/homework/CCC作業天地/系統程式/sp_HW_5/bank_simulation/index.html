@@ -12,15 +12,9 @@
       min-height: 100vh;
       padding: 20px;
     }
-    h1 {
-      text-align: center;
-      color: #00d4ff;
-      margin-bottom: 20px;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
+    h1 { text-align: center; color: #00d4ff; margin-bottom: 20px; }
+    .container { max-width: 1000px; margin: 0 auto; }
+
     .info-box {
       background: #16213e;
       border: 1px solid #0f3460;
@@ -30,38 +24,10 @@
       font-size: 14px;
       line-height: 1.6;
     }
-    .info-box h3 { color: #e94560; margin-bottom: 10px; }
-    .info-box.danger { border-left: 4px solid #e94560; }
-    .info-box.safe { border-left: 4px solid #00d4ff; }
-
-    .balance-display {
-      text-align: center;
-      font-size: 48px;
-      color: #00d4ff;
-      margin: 20px 0;
-    }
-    .balance-label { font-size: 16px; color: #888; }
-
-    .controls {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 14px;
-      transition: opacity 0.2s;
-    }
-    button:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-danger { background: #e94560; color: white; }
-    .btn-primary { background: #0f3460; color: #00d4ff; }
-    .btn-success { background: #1b9c4e; color: white; }
+    .info-box h3 { margin-bottom: 6px; }
+    .info-box.danger { border-left: 4px solid #e94560; color: #e94560; }
+    .info-box.safe { border-left: 4px solid #00d4ff; color: #00d4ff; }
+    .info-box .hint { color: #888; font-size: 12px; margin-top: 4px; }
 
     .mode-toggle {
       display: flex;
@@ -76,66 +42,42 @@
       cursor: pointer;
       font-size: 14px;
     }
-    .mode-toggle input:checked + span { color: #00d4ff; }
+    .mode-toggle input:checked + span { color: #00d4ff; font-weight: bold; }
 
-    .simulation-area {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-    @media (max-width: 700px) {
-      .simulation-area { grid-template-columns: 1fr; }
-    }
-
-    .thread-panel {
-      background: #16213e;
-      border: 1px solid #0f3460;
-      border-radius: 8px;
-      padding: 15px;
-      min-height: 200px;
-    }
-    .thread-panel h3 {
-      font-size: 14px;
-      color: #888;
-      margin-bottom: 10px;
-      border-bottom: 1px solid #0f3460;
-      padding-bottom: 8px;
-    }
-    .log-area {
-      background: #0d1b2a;
-      border-radius: 4px;
-      padding: 10px;
-      height: 300px;
-      overflow-y: auto;
-      font-size: 12px;
-      line-height: 1.8;
-    }
-    .log-entry { border-bottom: 1px solid #1a2a4a; padding: 2px 0; }
-    .log-entry.deposit { color: #00d4ff; }
-    .log-entry.withdraw { color: #e94560; }
-    .log-entry.error { color: #ff6b6b; }
-    .log-entry.info { color: #888; }
-    .log-entry.mutex-lock { color: #ffd93d; }
-    .log-entry.mutex-unlock { color: #6bcb77; }
-
-    .result-panel {
-      background: #16213e;
-      border: 1px solid #0f3460;
-      border-radius: 8px;
-      padding: 20px;
+    .balance-display {
       text-align: center;
+      font-size: 48px;
+      color: #00d4ff;
+      margin: 15px 0;
     }
-    .result-panel h3 { color: #888; margin-bottom: 15px; }
-    .result-value { font-size: 36px; margin: 10px 0; }
-    .result-expected { font-size: 14px; color: #888; }
-    .result-match { color: #6bcb77; }
-    .result-mismatch { color: #e94560; }
+    .balance-label { font-size: 16px; color: #888; }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-danger { background: #e94560; color: white; }
+    .btn-primary { background: #0f3460; color: #00d4ff; }
+    .btn-success { background: #1b9c4e; color: white; }
+    .btn-warning { background: #ffd93d; color: #1a1a2e; }
 
     .progress-bar {
       height: 6px;
       background: #0f3460;
       border-radius: 3px;
-      margin-top: 10px;
+      margin: 10px 0;
       overflow: hidden;
     }
     .progress-fill {
@@ -149,11 +91,78 @@
       display: flex;
       justify-content: center;
       gap: 30px;
-      margin-top: 15px;
+      margin-bottom: 15px;
       font-size: 13px;
       color: #888;
     }
     .stat span { color: #00d4ff; }
+
+    .simulation-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 700px) { .simulation-area { grid-template-columns: 1fr; } }
+
+    .thread-panel {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      padding: 15px;
+    }
+    .thread-panel h3 { font-size: 13px; color: #888; margin-bottom: 8px; border-bottom: 1px solid #0f3460; padding-bottom: 6px; }
+    .log-area {
+      background: #0d1b2a;
+      border-radius: 4px;
+      padding: 8px;
+      height: 280px;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.9;
+    }
+    .log-entry { border-bottom: 1px solid #1a2a4a; padding: 2px 0; }
+    .log-entry.deposit { color: #00d4ff; }
+    .log-entry.withdraw { color: #e94560; }
+    .log-entry.error { color: #ff6b6b; }
+    .log-entry.info { color: #555; }
+    .log-entry.mutex-lock { color: #ffd93d; }
+    .log-entry.mutex-unlock { color: #6bcb77; }
+    .log-entry.idle { color: #555; font-style: italic; }
+
+    .result-panel {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .result-value { font-size: 36px; margin: 10px 0; }
+    .result-match { color: #6bcb77; }
+    .result-mismatch { color: #e94560; }
+
+    .explanation {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 15px;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .explanation h4 { color: #ffd93d; margin-bottom: 8px; }
+    .step-box {
+      background: #0d1b2a;
+      border-radius: 6px;
+      padding: 12px;
+      margin: 8px 0;
+      font-size: 12px;
+    }
+    .step-box .row { display: flex; gap: 15px; margin: 3px 0; }
+    .step-box .label { color: #888; width: 90px; flex-shrink: 0; }
+    .step-box .val-a { color: #e94560; }
+    .step-box .val-b { color: #00d4ff; }
+    .step-box .result { color: #ffd93d; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -161,196 +170,297 @@
   <h1>🏦 銀行存提款模擬</h1>
 
   <div class="info-box danger">
-    <h3>❌ 沒有 Mutex（Race Condition 範例）</h3>
-    兩個執行緒同時讀取余額 → 分別計算 → 分別回寫。
-    結果：兩次-$100，但余額只扣一次！
+    <h3>🔴 無 Mutex — Race Condition 演示</h3>
+    執行緒 A 和 B 交替進行「讀取→修改→寫入」，導致彼此覆蓋對方的結果。
+    <div class="hint">💡 點「單步」觀察每次操作如何交錯</div>
   </div>
 
   <div class="info-box safe">
-    <h3>✅ 有 Mutex（正確示範）</h3>
-    執行緒進入臨界區前上鎖，離開後解鎖。
-    同一時間只有一個執行緒能操作余額，結果100%正確。
+    <h3>🔵 有 Mutex — 正確示範</h3>
+    執行緒進入臨界區前上鎖，離開後解鎖。同一時間只有一個執行緒能操作余額。
+    <div class="hint">💡 點「單步」觀察：另一執行緒必須等到鎖釋放才能進入</div>
   </div>
 
   <div class="mode-toggle">
     <label>
       <input type="radio" name="mode" value="unsafe" checked onchange="setMode('unsafe')">
-      <span>🔴 不使用 Mutex（會出錯）</span>
+      <span>🔴 不使用 Mutex（Race Condition）</span>
     </label>
     <label>
       <input type="radio" name="mode" value="safe" onchange="setMode('safe')">
-      <span>🔵 使用 Mutex（100%正確）</span>
+      <span>🔵 使用 Mutex（互斥保護）</span>
     </label>
   </div>
 
   <div class="balance-display">
     <div class="balance-label">帳戶餘額</div>
-    $<span id="balance">1000</span>
+    $<span id="balance">0</span>
   </div>
 
   <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
 
   <div class="stats">
-    <div>操作：<span id="opCount">0</span> / <span id="totalOps">200000</span></div>
-    <div>執行緒 A：<span id="countA">0</span> 次</div>
-    <div>執行緒 B：<span id="countB">0</span> 次</div>
+    <div>輪次：<span id="round">0</span></div>
+    <div>A 存款總額：<span id="sumA">$0</span></div>
+    <div>B 存款總額：<span id="sumB">$0</span></div>
+    <div>操作：<span id="opCount">0</span></div>
   </div>
 
   <div class="controls">
-    <button class="btn-danger" id="btnStart" onclick="startSimulation()">▶ 開始模擬 100,000 次</button>
-    <button class="btn-primary" onclick="resetSimulation()">🔄 重置</button>
+    <button class="btn-success" id="btnStep" onclick="doStep()">⚡ 單步執行</button>
+    <button class="btn-danger" id="btnAuto" onclick="startAuto()">▶ 自動執行</button>
+    <button class="btn-warning" id="btnPause" onclick="pauseAuto()" disabled>⏸ 暫停</button>
+    <button class="btn-primary" onclick="resetSim()">🔄 重置</button>
+  </div>
+
+  <div class="explanation" id="explanation" style="display:none;">
+    <h4 id="exTitle"></h4>
+    <div class="step-box" id="stepBox"></div>
   </div>
 
   <div class="simulation-area">
     <div class="thread-panel">
-      <h3>📋 執行緒 A（提款 $1）</h3>
+      <h3>📋 執行緒 A（存款 $100）</h3>
       <div class="log-area" id="logA"></div>
     </div>
     <div class="thread-panel">
-      <h3>📋 執行緒 B（存款 $1）</h3>
+      <h3>📋 執行緒 B（存款 $200）</h3>
       <div class="log-area" id="logB"></div>
     </div>
   </div>
 
-  <div class="result-panel" id="resultPanel" style="margin-top:20px; display:none;">
-    <h3>模擬結果</h3>
+  <div class="result-panel" id="resultPanel" style="display:none;">
+    <h3 id="resultTitle"></h3>
     <div class="result-value" id="resultValue"></div>
-    <div class="result-expected" id="resultExpected"></div>
     <div id="resultStatus"></div>
   </div>
 </div>
 
 <script>
-let balance = 1000;
+// ===== 狀態 =====
+let balance = 0;
 let useMutex = false;
-let opsCount = 0;
-let countA = 0;
-let countB = 0;
-let running = false;
-let logSeq = 0;
+let round = 0;
+let sumA = 0;
+let sumB = 0;
+let opCount = 0;
+let paused = false;
+let autoTimer = null;
+let stepCount = 0;
 
-const TOTAL_OPS = 100000;
 const logA = document.getElementById('logA');
 const logB = document.getElementById('logB');
-const progress = document.getElementById('progress');
 
 function setMode(mode) {
   useMutex = (mode === 'safe');
+  resetSim();
 }
 
-function addLog(thread, html) {
+function log(thread, msg, type = 'info') {
   const el = thread === 'A' ? logA : logB;
   const div = document.createElement('div');
-  div.className = 'log-entry';
-  div.innerHTML = `[${++logSeq}] ${html}`;
+  div.className = 'log-entry ' + type;
+  div.textContent = `[${++stepCount}] ${msg}`;
   el.appendChild(div);
   el.scrollTop = el.scrollHeight;
 }
 
 function updateUI() {
   document.getElementById('balance').textContent = balance.toLocaleString();
-  document.getElementById('opCount').textContent = opsCount.toLocaleString();
-  document.getElementById('countA').textContent = countA.toLocaleString();
-  document.getElementById('countB').textContent = countB.toLocaleString();
-  progress.style.width = (opsCount / TOTAL_OPS * 100) + '%';
+  document.getElementById('round').textContent = round;
+  document.getElementById('sumA').textContent = '$' + sumA.toLocaleString();
+  document.getElementById('sumB').textContent = '$' + sumB.toLocaleString();
+  document.getElementById('opCount').textContent = opCount;
+  document.getElementById('progress').style.width = Math.min(round / 10 * 100, 100) + '%';
 }
 
-// 模擬臨界區：讀取-修改-寫入（可加入隨機延遲模擬真實競爭）
-async function criticalSection(threadId, isDeposit, amount) {
-  const tid = threadId === 'A' ? 'A' : 'B';
+function showExplanation(title, balance_before, a_action, a_after, b_action, b_after, finalBalance, activeThread) {
+  const box = document.getElementById('explanation');
+  const titleEl = document.getElementById('exTitle');
+  const stepBox = document.getElementById('stepBox');
 
-  if (useMutex) {
-    addLog(tid, `<span style="color:#ffd93d">🔒 Lock 獲取</span>`);
-  }
+  box.style.display = 'block';
+  titleEl.textContent = title;
 
-  // ===== READ =====
-  const readBalance = balance;
-  addLog(tid, `READ  余額 = ${readBalance.toLocaleString()}`);
-
-  // 模擬 CPU 運算延遲（真實環境中其他執行緒可能在這裡切入）
-  await new Promise(r => setTimeout(r, 0));
-
-  // ===== MODIFY =====
-  const newBalance = isDeposit ? readBalance + amount : readBalance - amount;
-  addLog(tid, `MOD   新餘額 = ${newBalance.toLocaleString()} (${isDeposit ? '+' : '-'}${amount})`);
-
-  // 模擬記憶體寫入延遲
-  await new Promise(r => setTimeout(r, 0));
-
-  // ===== WRITE =====
-  balance = newBalance;
-  addLog(tid, `WRITE 余額更新為 ${balance.toLocaleString()}`);
-
-  if (useMutex) {
-    addLog(tid, `<span style="color:#6bcb77">🔓 Lock 釋放</span>`);
-  }
-}
-
-async function threadA() {
-  const amount = 1; // 提款 $1
-  for (let i = 0; i < TOTAL_OPS / 2 && running; i++) {
-    await criticalSection('A', false, amount);
-    countA++;
-    opsCount++;
-    updateUI();
-    // 小延遲讓另一執行緒也有機會切入
-    await new Promise(r => setTimeout(r, 0));
+  if (!useMutex) {
+    stepBox.innerHTML = `
+      <div class="row"><span class="label">起始餘額</span><span class="result">$${balance_before}</span></div>
+      <div style="color:#888;margin:4px 0;">① 執行緒 A（存款 $100）搶先執行：</div>
+      <div class="row"><span class="label">A 讀取</span><span class="val-a">餘額 = $${balance_before}</span></div>
+      <div class="row"><span class="label">A 計算</span><span class="val-a">${balance_before} + 100 = $${a_after}</span></div>
+      <div class="row"><span class="label">A 寫入</span><span class="val-a">餘額 = $${a_after}</span></div>
+      <div style="color:#888;margin:4px 0;">② 執行緒 B（存款 $200）接著執行：</div>
+      <div class="row"><span class="label">B 讀取</span><span class="val-b">餘額 = $${a_after}</span></div>
+      <div class="row"><span class="label">B 計算</span><span class="val-b">${a_after} + 200 = $${b_after}</span></div>
+      <div class="row"><span class="label">B 寫入</span><span class="val-b">餘額 = $${b_after}</span></div>
+      <div style="color:#ffd93d;margin-top:8px;">最終餘額：$${b_after}（正確應為 $$${finalBalance}）</div>
+    `;
+  } else {
+    stepBox.innerHTML = `
+      <div class="row"><span class="label">起始餘額</span><span class="result">$${balance_before}</span></div>
+      <div style="color:#ffd93d;margin:4px 0;">🔒 執行緒 A 取得 Lock</div>
+      <div class="row"><span class="label">A 讀取</span><span class="val-a">餘額 = $${balance_before}</span></div>
+      <div class="row"><span class="label">A 計算</span><span class="val-a">${balance_before} + 100 = $${a_after}</span></div>
+      <div class="row"><span class="label">A 寫入</span><span class="val-a">餘額 = $${a_after}</span></div>
+      <div style="color:#6bcb77;margin:4px 0;">🔓 執行緒 A 釋放 Lock</div>
+      <div style="color:#ffd93d;margin:4px 0;">🔒 執行緒 B 取得 Lock（A 完成後 B 才能進）</div>
+      <div class="row"><span class="label">B 讀取</span><span class="val-b">餘額 = $${a_after}</span></div>
+      <div class="row"><span class="label">B 計算</span><span class="val-b">${a_after} + 200 = $${b_after}</span></div>
+      <div class="row"><span class="label">B 寫入</span><span class="val-b">餘額 = $${b_after}</span></div>
+      <div style="color:#6bcb77;margin-top:8px;">🔓 執行緒 B 釋放 Lock</div>
+      <div style="color:#6bcb77;margin-top:4px;">最終餘額：$${b_after}（正確！）</div>
+    `;
   }
 }
 
-async function threadB() {
-  const amount = 1; // 存款 $1
-  for (let i = 0; i < TOTAL_OPS / 2 && running; i++) {
-    await criticalSection('B', true, amount);
-    countB++;
-    opsCount++;
-    updateUI();
-    await new Promise(r => setTimeout(r, 0));
+// ===== 單步執行邏輯 =====
+// 輪次執行：每次輪次交替讓 A 或 B 完成一次完整的「讀取→計算→寫入」
+// 無 mutex：A 和 B 可以「交錯」讀取（都拿到舊值）
+// 有 mutex：每次輪次只有一個執行緒能完整執行
+
+function doStep() {
+  if (round >= 10) return;
+
+  const beforeBalance = balance;
+  round++;
+
+  if (!useMutex) {
+    // ===== 無 Mutex：示範 Race Condition =====
+    // A 先讀取（拿到當前余額）
+    const a_read = balance;
+    // B 也讀取（拿到相同的余額！因為 A 還沒寫入）
+    const b_read = balance;
+
+    // A 計算並寫入
+    const a_new = a_read + 100;
+    balance = a_new;
+    sumA += 100;
+    log('A', `READ  余額=${a_read}  |  MOD  ${a_read}+100=${a_new}  |  WRITE 余額=${a_new}`, 'deposit');
+    log('A', `🔒 取得 Lock（視覺化用）`, 'mutex-lock');
+    log('A', `🔓 釋放 Lock`, 'mutex-unlock');
+
+    // B 計算並寫入（覆蓋了 A 的結果！）
+    const b_new = b_read + 200;
+    balance = b_new;
+    sumB += 200;
+    log('B', `READ  余額=${b_read}  |  MOD  ${b_read}+200=${b_new}  |  WRITE 余額=${b_new}`, 'deposit');
+    log('B', `（B 讀到了 A 寫入前的值，覆蓋了 A 的結果）`, 'error');
+
+    // 說明這次 Race Condition
+    const expected = beforeBalance + 300;
+    showExplanation(
+      `⚠️ Race Condition 發生！輪次 ${round}`,
+      beforeBalance,
+      a_new,
+      a_new,
+      b_new,
+      b_new,
+      expected,
+      'A→B'
+    );
+
+  } else {
+    // ===== 有 Mutex：正確示範 =====
+    // A 完整執行（Lock 保護）
+    log('A', `🔒 Lock 獲取`, 'mutex-lock');
+    const a_read = balance;
+    const a_new = a_read + 100;
+    balance = a_new;
+    sumA += 100;
+    log('A', `READ  余額=${a_read}  |  MOD  ${a_read}+100=${a_new}  |  WRITE 余額=${a_new}`, 'deposit');
+    log('A', `🔓 Lock 釋放 → B 才能進入`, 'mutex-unlock');
+
+    // B 必須等 A 完成後才能開始（Lock 已釋放）
+    log('B', `等待 Lock...（A 正在操作）`, 'idle');
+    log('B', `🔒 Lock 獲取`, 'mutex-lock');
+    const b_read = balance; // 這時候拿到的是 A 寫入後的值
+    const b_new = b_read + 200;
+    balance = b_new;
+    sumB += 200;
+    log('B', `READ  余額=${b_read}  |  MOD  ${b_read}+200=${b_new}  |  WRITE 余額=${b_new}`, 'deposit');
+    log('B', `🔓 Lock 釋放`, 'mutex-unlock');
+
+    const expected = beforeBalance + 300;
+    showExplanation(
+      `✅ Mutex 保護成功！輪次 ${round}（操作順序：A完整 → B完整）`,
+      beforeBalance,
+      a_new,
+      b_new,
+      b_new,
+      b_new,
+      expected,
+      'A→B'
+    );
   }
-}
 
-async function startSimulation() {
-  if (running) return;
-  resetSimulation();
-  running = true;
-  document.getElementById('btnStart').disabled = true;
-
-  // 同時啟動兩個「執行緒」（async function 同時跑）
-  await Promise.all([threadA(), threadB()]);
-
-  running = false;
-  document.getElementById('btnStart').disabled = false;
-  showResult();
-}
-
-function resetSimulation() {
-  running = false;
-  balance = 1000;
-  opsCount = 0;
-  countA = 0;
-  countB = 0;
-  logSeq = 0;
-  logA.innerHTML = '';
-  logB.innerHTML = '';
-  document.getElementById('resultPanel').style.display = 'none';
+  opCount += 2;
   updateUI();
+
+  if (round >= 10) {
+    showResult();
+  }
 }
 
 function showResult() {
-  const expected = 1000; // 存 50000 次 +1，提 50000 次 -1，應該回到 1000
   const panel = document.getElementById('resultPanel');
   panel.style.display = 'block';
-  document.getElementById('resultValue').textContent = '$' + balance.toLocaleString();
-  document.getElementById('resultExpected').textContent = '期望值：$1,000';
-
+  const expected = 3000; // 10 輪 × (100+200) = 3000
+  document.getElementById('resultTitle').textContent = '🏁 10 輪結束（每輪：A存100 + B存200）';
+  document.getElementById('resultValue').textContent = '最終餘額：$' + balance.toLocaleString();
   const status = document.getElementById('resultStatus');
   if (balance === expected) {
-    status.innerHTML = `<span style="color:#6bcb77; font-size:20px">✅ 正確！餘額無誤差</span>`;
+    status.innerHTML = `<span style="color:#6bcb77; font-size:18px">✅ 正確！$3,000 = A總和$1,000 + B總和$2,000</span>`;
   } else {
     const diff = balance - expected;
-    status.innerHTML = `<span style="color:#e94560; font-size:20px">❌ 錯誤！差了 $${Math.abs(diff).toLocaleString()}</span><br>
-    <span style="color:#888; font-size:13px">這就是 Race Condition：兩個執行緒的「讀取-修改-寫入」交錯執行，覆蓋了彼此的結果</span>`;
+    status.innerHTML = `<span style="color:#e94560; font-size:18px">❌ 錯誤！差了 $${Math.abs(diff).toLocaleString()}</span>
+      <div style="color:#888; font-size:12px; margin-top:8px;">
+        原因：兩個執行緒同時讀到「舊值」，後寫入的執行緒覆蓋了先寫入的結果。
+        <br>例：余額$0，A讀到$0算完寫入$100，但B也讀到$0，算完直接覆蓋成$200。
+      </div>`;
   }
+  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+}
+
+function startAuto() {
+  if (autoTimer) return;
+  if (round >= 10) { resetSim(); }
+  document.getElementById('btnPause').disabled = false;
+  document.getElementById('btnAuto').disabled = true;
+  paused = false;
+  autoTimer = setInterval(() => {
+    if (paused) return;
+    doStep();
+    if (round >= 10) {
+      clearInterval(autoTimer);
+      autoTimer = null;
+      document.getElementById('btnAuto').disabled = false;
+      document.getElementById('btnPause').disabled = true;
+    }
+  }, 800);
+}
+
+function pauseAuto() {
+  paused = !paused;
+  document.getElementById('btnPause').textContent = paused ? '▶ 繼續' : '⏸ 暫停';
+}
+
+function resetSim() {
+  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+  paused = false;
+  balance = 0;
+  round = 0;
+  sumA = 0;
+  sumB = 0;
+  opCount = 0;
+  stepCount = 0;
+  logA.innerHTML = '';
+  logB.innerHTML = '';
+  document.getElementById('resultPanel').style.display = 'none';
+  document.getElementById('explanation').style.display = 'none';
+  document.getElementById('btnAuto').disabled = false;
+  document.getElementById('btnPause').disabled = true;
+  document.getElementById('btnPause').textContent = '⏸ 暫停';
+  updateUI();
 }
 </script>
 </body>

@@ -12,7 +12,7 @@
       padding: 20px;
     }
     h1 { text-align: center; color: #00d4ff; margin-bottom: 10px; }
-    .container { max-width: 900px; margin: 0 auto; }
+    .container { max-width: 950px; margin: 0 auto; }
 
     .info-box {
       background: #16213e;
@@ -24,7 +24,7 @@
     }
     .info-box.danger { border-left: 4px solid #e94560; }
     .info-box.green { border-left: 4px solid #6bcb77; }
-    .info-box h3 { margin-bottom: 8px; }
+    .info-box h3 { margin-bottom: 6px; }
 
     .mode-toggle {
       display: flex;
@@ -40,7 +40,7 @@
       cursor: pointer;
       font-size: 14px;
     }
-    .mode-toggle input:checked + span { color: #00d4ff; }
+    .mode-toggle input:checked + span { color: #00d4ff; font-weight: bold; }
 
     .controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
     button {
@@ -56,11 +56,33 @@
     .btn-primary { background: #0f3460; color: #00d4ff; }
     .btn-success { background: #1b9c4e; color: white; }
 
+    .status-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .phil-status {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      border: 1px solid;
+    }
+    .phil-status.thinking { border-color: #555; color: #888; }
+    .phil-status.hungry { border-color: #ffd93d; color: #ffd93d; }
+    .phil-status.eating { border-color: #6bcb77; color: #6bcb77; }
+    .phil-status.deadlock { border-color: #ff4444; color: #ff4444; background: #2a0000; }
+
+    .table-area {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
     .table {
       position: relative;
       width: 400px;
       height: 400px;
-      margin: 0 auto 20px;
       border: 3px solid #0f3460;
       border-radius: 50%;
       background: #16213e;
@@ -68,8 +90,8 @@
 
     .philosopher {
       position: absolute;
-      width: 70px;
-      height: 70px;
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
       display: flex;
       flex-direction: column;
@@ -79,72 +101,65 @@
       font-weight: bold;
       transition: all 0.3s;
       background: #0f3460;
-      border: 2px solid #00d4ff;
+      border: 2px solid #555;
       z-index: 2;
+      text-align: center;
+      line-height: 1.3;
     }
     .philosopher.thinking { background: #0f3460; border-color: #555; color: #888; }
-    .philosopher.hungry { background: #2a2a0a; border-color: #ffd93d; color: #ffd93d; }
-    .philosopher.eating { background: #0a2a1a; border-color: #6bcb77; color: #6bcb77; }
-    .philosopher.waiting { background: #2a0a0a; border-color: #e94560; color: #e94560; }
-    .philosopher.deadlock { background: #3a0a0a; border-color: #ff4444; color: #ff4444; animation: blink 0.5s infinite; }
-
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    .philosopher.hungry { background: #1a1a00; border-color: #ffd93d; color: #ffd93d; }
+    .philosopher.eating { background: #001a0a; border-color: #6bcb77; color: #6bcb77; }
+    .philosopher.deadlock { background: #2a0000; border-color: #ff4444; color: #ff4444; }
 
     .chopstick {
       position: absolute;
-      width: 6px;
-      height: 50px;
-      background: #444;
+      width: 7px;
+      height: 55px;
+      background: #555;
       border-radius: 3px;
       z-index: 1;
       transition: all 0.3s;
     }
-    .chopstick.used { background: #ffd93d; }
+    .chopstick.used { background: #ffd93d; box-shadow: 0 0 8px #ffd93d55; }
     .chopstick-label {
       position: absolute;
       font-size: 10px;
       color: #555;
     }
 
-    /* 5 philosophers positioned around the table */
-    /* 0 = top, then clockwise: 0,1,2,3,4 */
-    .phil-0 { top: -10px; left: 50%; transform: translateX(-50%) translateY(-50%); }
-    .phil-1 { top: 90px; right: -10px; transform: translateX(50%) translateY(-50%); }
-    .phil-2 { bottom: -10px; left: 50%; transform: translateX(-50%) translateY(50%); }
-    .phil-3 { bottom: 90px; left: -10px; transform: translateX(-50%) translateY(-50%); }
-    .phil-4 { top: 90px; left: -10px; transform: translateX(-50%) translateY(-50%); }
+    .phil-0 { top: -6px; left: 50%; transform: translateX(-50%) translateY(-50%); }
+    .phil-1 { top: 85px; right: -6px; transform: translateX(50%) translateY(0); }
+    .phil-2 { bottom: -6px; left: 50%; transform: translateX(-50%) translateY(50%); }
+    .phil-3 { bottom: 85px; left: -6px; transform: translateX(0) translateY(0); }
+    .phil-4 { top: 85px; left: -6px; transform: translateX(0) translateY(0); }
 
-    /* chopsticks between philosophers (between 0-1, 1-2, 2-3, 3-4, 4-0) */
-    .chop-0 { top: 45px; right: 55px; transform: rotate(30deg); } /* between 0 and 1 */
-    .chop-1 { top: 155px; right: -3px; transform: rotate(90deg); } /* between 1 and 2 */
-    .chop-2 { bottom: 45px; right: 55px; transform: rotate(150deg); } /* between 2 and 3 */
-    .chop-3 { bottom: 45px; left: 55px; transform: rotate(-150deg); } /* between 3 and 4 */
-    .chop-4 { top: 155px; left: -3px; transform: rotate(-90deg); } /* between 4 and 0 */
+    /* 筷子在哲學家之間 */
+    /* chop 0: between phil 0 (top) and phil 1 (right) */
+    .chop-0 { top: 40px; right: 50px; transform: rotate(35deg); transform-origin: top center; }
+    /* chop 1: between phil 1 (right) and phil 2 (bottom) */
+    .chop-1 { top: 155px; right: -3px; transform: rotate(85deg); transform-origin: top center; }
+    /* chop 2: between phil 2 (bottom) and phil 3 (left-bottom) */
+    .chop-2 { bottom: 40px; right: 50px; transform: rotate(145deg); transform-origin: bottom center; }
+    /* chop 3: between phil 3 (left-bottom) and phil 4 (left-top) */
+    .chop-3 { bottom: 40px; left: 50px; transform: rotate(-145deg); transform-origin: bottom center; }
+    /* chop 4: between phil 4 (left-top) and phil 0 (top) */
+    .chop-4 { top: 155px; left: -3px; transform: rotate(-85deg); transform-origin: top center; }
 
-    .status-row {
+    .legend {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 15px;
-    }
-    .phil-status {
-      padding: 6px 12px;
-      border-radius: 20px;
+      gap: 20px;
       font-size: 12px;
-      border: 1px solid;
+      color: #888;
+      margin-bottom: 10px;
     }
-    .phil-status.thinking { border-color: #555; color: #888; }
-    .phil-status.hungry { border-color: #ffd93d; color: #ffd93d; }
-    .phil-status.eating { border-color: #6bcb77; color: #6bcb77; }
-    .phil-status.waiting { border-color: #e94560; color: #e94560; }
-    .phil-status.deadlock { border-color: #ff4444; color: #ff4444; }
+    .legend span { display: flex; align-items: center; gap: 5px; }
 
     .log-box {
       background: #0d1b2a;
       border-radius: 8px;
       padding: 12px;
-      height: 150px;
+      height: 160px;
       overflow-y: auto;
       font-size: 12px;
       line-height: 1.8;
@@ -157,6 +172,7 @@
     .log-line.unlock { color: #6bcb77; }
     .log-line.deadlock { color: #ff4444; font-weight: bold; }
     .log-line.info { color: #555; }
+    .log-line.sequential { color: #00d4ff; }
   </style>
 </head>
 <body>
@@ -164,26 +180,25 @@
   <h1>🍜 哲學家用餐問題</h1>
 
   <div class="info-box danger">
-    <h3>🔴 潛在死結情境</h3>
-    每個哲學家都先拿起左邊的筷子再去拿右邊的筷子。
-    當 5 個人同時拿起左邊的筷子，右邊的筷子都被鄰居拿著，沒有人能吃飯——形成**循環等待（Circular Wait）**，死結！
+    <h3>🔴 無順序（會死結）</h3>
+    每個哲學家都「先拿左邊，再拿右邊」筷子。當 5 人同時搶走左邊的筷子，右邊的都被鄰居拿著 → <strong>循環等待，死結！</strong>
   </div>
 
   <div class="info-box green">
-    <h3>🟢 解決方案：固定加鎖順序</h3>
-    編號 0-4，強制「先拿編號小的筷子」。
-    哲學家 0：先拿筷子 0；哲學家 1：先拿筷子 0（已被拿走，等！）
-    不會形成循環，執行緒 0 永遠先拿到兩支筷子吃飯 → 吃完釋放 → 下一位。
+    <h3>🟢 固定順序（防死結）</h3>
+    規定：所有哲學家都先拿「編號較小的筷子」。
+    <br>→ P0、P1、P2、P3、P4 都搶筷子0，但只有 P0 先拿到。P0 吃完 → 釋放 → P1 才能繼續。
+    <br>→ 形成鎖鏈（Chain）而非循環，不會死結。
   </div>
 
   <div class="mode-toggle">
     <label>
       <input type="radio" name="mode" value="unsafe" checked onchange="setMode('unsafe')">
-      <span>🔴 無順序（會死結）</span>
+      <span>🔴 無順序（左手優先）→ 死結</span>
     </label>
     <label>
       <input type="radio" name="mode" value="safe" onchange="setMode('safe')">
-      <span>🟢 固定順序（防死結）</span>
+      <span>🟢 固定順序（先拿編號小的）→ 不死結</span>
     </label>
   </div>
 
@@ -195,19 +210,26 @@
 
   <div class="status-row" id="statusRow"></div>
 
-  <div class="table" id="table">
-    <!-- Chopsticks -->
-    <div class="chopstick chop-0" id="chop0"></div>
-    <div class="chopstick chop-1" id="chop1"></div>
-    <div class="chopstick chop-2" id="chop2"></div>
-    <div class="chopstick chop-3" id="chop3"></div>
-    <div class="chopstick chop-4" id="chop4"></div>
-    <!-- Philosophers -->
-    <div class="philosopher phil-0 thinking" id="phil0">P0<br>思考中</div>
-    <div class="philosopher phil-1 thinking" id="phil1">P1<br>思考中</div>
-    <div class="philosopher phil-2 thinking" id="phil2">P2<br>思考中</div>
-    <div class="philosopher phil-3 thinking" id="phil3">P3<br>思考中</div>
-    <div class="philosopher phil-4 thinking" id="phil4">P4<br>思考中</div>
+  <div class="legend">
+    <span>🟡 飢餓</span>
+    <span>🟢 吃飯</span>
+    <span>⚫ 思考</span>
+    <span>🔴 死結</span>
+  </div>
+
+  <div class="table-area">
+    <div class="table" id="table">
+      <div class="chopstick chop-0" id="chop0"></div>
+      <div class="chopstick chop-1" id="chop1"></div>
+      <div class="chopstick chop-2" id="chop2"></div>
+      <div class="chopstick chop-3" id="chop3"></div>
+      <div class="chopstick chop-4" id="chop4"></div>
+      <div class="philosopher phil-0 thinking" id="phil0">P0<br>思考中</div>
+      <div class="philosopher phil-1 thinking" id="phil1">P1<br>思考中</div>
+      <div class="philosopher phil-2 thinking" id="phil2">P2<br>思考中</div>
+      <div class="philosopher phil-3 thinking" id="phil3">P3<br>思考中</div>
+      <div class="philosopher phil-4 thinking" id="phil4">P4<br>思考中</div>
+    </div>
   </div>
 
   <div class="log-box" id="logBox"></div>
@@ -215,19 +237,24 @@
 
 <script>
 const N = 5;
-let chopsticks = new Array(N).fill(false); // false = available
-let state = new Array(N).fill('thinking'); // thinking, hungry, eating, waiting
-let stepCount = 0;
+let chopsticks = new Array(N).fill(false); // 筷子狀態：false=可用, true=被占用
+let state = new Array(N).fill('thinking'); // thinking, hungry, eating, deadlock
+let holding = new Array(N).fill(-1); // 記錄哲學家當前持有一支筷子時拿的是哪支（用於調適）
 let useOrder = false;
-let running = false;
+let stepCount = 0;
 let deadlockDetected = false;
+let eatCount = new Array(N).fill(0);
 let autoTimer = null;
+let globalSeq = 0;
+
+function left(i) { return i; }
+function right(i) { return (i + 1) % N; }
 
 function log(msg, type = 'info') {
   const box = document.getElementById('logBox');
   const div = document.createElement('div');
   div.className = 'log-line ' + type;
-  div.textContent = `[${++stepCount}] ${msg}`;
+  div.textContent = `[${++globalSeq}] ${msg}`;
   box.appendChild(div);
   box.scrollTop = box.scrollHeight;
 }
@@ -236,66 +263,67 @@ function updateUI() {
   for (let i = 0; i < N; i++) {
     const phil = document.getElementById('phil' + i);
     phil.className = 'philosopher phil-' + i + ' ' + state[i];
-    const labels = ['思考中', '飢餓中', '吃飯中', '等待中...', '⚠ 死結！'];
-    phil.innerHTML = `P${i}<br>${labels[state[i] === 'thinking' ? 0 : state[i] === 'hungry' ? 1 : state[i] === 'eating' ? 2 : state[i] === 'waiting' ? 3 : 4]}`;
+    const labels = ['思考中', '飢餓中', '吃飯中', '⚠ 死結'];
+    const idx = state[i] === 'thinking' ? 0 : state[i] === 'hungry' ? 1 : state[i] === 'eating' ? 2 : 3;
+    phil.innerHTML = `P${i}<br>${labels[idx]}`;
   }
-  // Update chopstick visual
   for (let i = 0; i < N; i++) {
     document.getElementById('chop' + i).className = 'chopstick chop-' + i + (chopsticks[i] ? ' used' : '');
   }
-  // Update status row
   const row = document.getElementById('statusRow');
   row.innerHTML = '';
   for (let i = 0; i < N; i++) {
     const div = document.createElement('div');
     div.className = 'phil-status ' + state[i];
-    div.textContent = `P${i}: ${state[i] === 'thinking' ? '思考' : state[i] === 'hungry' ? '飢餓' : state[i] === 'eating' ? '吃飯' : state[i] === 'waiting' ? '等待' : '死結'}`;
+    const label = state[i] === 'thinking' ? '思考' : state[i] === 'hungry' ? '飢餓' : state[i] === 'eating' ? '吃飯中' : '死結';
+    div.textContent = `P${i}: ${label}`;
     row.appendChild(div);
   }
 }
 
-function left(i) { return i; }
-function right(i) { return (i + 1) % N; }
-
-function canEat(i) {
-  return !chopsticks[left(i)] && !chopsticks[right(i)];
-}
-
 function tryAcquire(i) {
   if (useOrder) {
-    // 固定順序：先拿編號小的
+    // ===== 固定順序：先拿編號小的 =====
     const [first, second] = left(i) < right(i) ? [left(i), right(i)] : [right(i), left(i)];
     if (!chopsticks[first]) {
       chopsticks[first] = true;
-      log(`P${i} 拿取筷子 ${first}`, 'lock');
+      holding[i] = first;
+      log(`P${i} 拿到筷子 ${first}（編號小）`, 'lock');
       if (!chopsticks[second]) {
         chopsticks[second] = true;
-        log(`P${i} 拿取筷子 ${second}`, 'lock');
-        return true;
+        log(`P${i} 拿到筷子 ${second} → 開始吃飯！`, 'eat');
+        holding[i] = -1;
+        return 'eating';
       } else {
-        log(`P${i} 等待筷子 ${second}...`, 'hungry');
-        return false;
+        // 第一支拿到了，但第二支被占用 → 釋放第一支，等待
+        log(`P${i} 等筷子 ${second}... 先釋放 ${first}`, 'hungry');
+        chopsticks[first] = false;
+        holding[i] = -1;
+        return 'hungry';
       }
     } else {
       log(`P${i} 等待筷子 ${first}...`, 'hungry');
-      return false;
+      return 'hungry';
     }
   } else {
-    // 無順序：左手優先
+    // ===== 無順序：左手（left）優先 =====
+    // 這會造成循環等待：所有人同時拿到左邊，等右邊 → 死結
     if (!chopsticks[left(i)]) {
       chopsticks[left(i)] = true;
-      log(`P${i} 拿起左邊筷子 ${left(i)}`, 'lock');
+      holding[i] = left(i);
+      log(`P${i} 拿到筷子 ${left(i)}（左手）`, 'lock');
       if (!chopsticks[right(i)]) {
         chopsticks[right(i)] = true;
-        log(`P${i} 拿起右邊筷子 ${right(i)}`, 'lock');
-        return true;
+        log(`P${i} 拿到筷子 ${right(i)} → 開始吃飯！`, 'eat');
+        holding[i] = -1;
+        return 'eating';
       } else {
-        log(`P${i} 等待右邊筷子 ${right(i)}...`, 'hungry');
-        return false;
+        log(`P${i} 等筷子 ${right(i)}...（右手被鄰居拿著）`, 'hungry');
+        return 'hungry';
       }
     } else {
-      log(`P${i} 等待左邊筷子 ${left(i)}...`, 'hungry');
-      return false;
+      log(`P${i} 等筷子 ${left(i)}...（左手被鄰居拿著）`, 'hungry');
+      return 'hungry';
     }
   }
 }
@@ -303,86 +331,93 @@ function tryAcquire(i) {
 function release(i) {
   chopsticks[left(i)] = false;
   chopsticks[right(i)] = false;
-  log(`P${i} 放下筷子 ${left(i)} 和 ${right(i)}`, 'unlock');
+  holding[i] = -1;
+  log(`P${i} 吃完，放下筷子 ${left(i)} 和 ${right(i)}`, 'unlock');
   state[i] = 'thinking';
 }
 
-async function doStep() {
-  if (running) return;
-  running = true;
+function checkDeadlock() {
+  // 死結條件：所有人都在飢餓/等待，且沒有人在吃飯
+  return state.every(s => s === 'hungry') && !state.some(s => s === 'eating');
+}
 
-  if (deadlockDetected) {
-    running = false;
-    return;
-  }
+let currentPhil = 0; // 輪流處理的哲學家指標
 
-  // 找到處於飢餓或等待狀態的哲學家，嘗試吃飯
+function doStep() {
+  if (deadlockDetected) return;
+
   let madeProgress = false;
 
-  for (let i = 0; i < N; i++) {
+  // 輪流檢查每個哲學家（每次只讓一個採取行動）
+  for (let attempt = 0; attempt < N; attempt++) {
+    const i = (currentPhil + attempt) % N;
+
     if (state[i] === 'thinking') {
       state[i] = 'hungry';
       log(`P${i} 感到飢餓，嘗試拿筷子`, 'hungry');
-      updateUI();
-      madeProgress = true;
-      break; // 一次只讓一個哲學家行動
-    }
-    if (state[i] === 'hungry' || state[i] === 'waiting') {
-      if (canEat(i)) {
-        state[i] = 'eating';
-        log(`P${i} 開始吃飯！`, 'eat');
-      } else {
-        state[i] = 'waiting';
-      }
-      updateUI();
+      const result = tryAcquire(i);
+      state[i] = result;
+      if (result === 'eating') eatCount[i]++;
       madeProgress = true;
       break;
     }
+
+    if (state[i] === 'hungry') {
+      // 再次嘗試獲取筷子
+      const result = tryAcquire(i);
+      state[i] = result;
+      if (result === 'eating') eatCount[i]++;
+      madeProgress = true;
+      break;
+    }
+
     if (state[i] === 'eating') {
       release(i);
-      updateUI();
       madeProgress = true;
       break;
     }
   }
 
-  // 檢查死結：所有人都在等待/飢餓且拿不到筷子
-  const allStuck = state.every(s => s === 'waiting' || s === 'hungry') && !state.some(s => s === 'eating');
-  if (allStuck && !madeProgress) {
-    state = state.map(() => 'waiting');
+  currentPhil = (currentPhil + 1) % N;
+  updateUI();
+
+  // 檢查死結
+  if (checkDeadlock()) {
+    state = state.map(() => 'deadlock');
     deadlockDetected = true;
-    state[0] = 'deadlock'; // 標記第一個為死結顯示
-    for (let i = 1; i < N; i++) state[i] = 'waiting';
-    log('⚠ DEADLOCK! 所有哲學家都在等待鄰居的筷子，沒人能吃飯', 'deadlock');
-    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; document.getElementById('btnAuto').textContent = '▶ 自動執行'; }
+    log('⚠ DEADLOCK! 所有哲學家都在等待鄰居的筷子，形成循環等待，沒人能吃飯', 'deadlock');
     updateUI();
-    running = false;
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
     return;
   }
 
-  running = false;
+  // 安全模式下：如果連續很多輪都沒有人吃飯，說明發生了飢餓（starvation）
+  // 但邏輯上固定順序不會死結，只會有飢餓問題（某個哲學家很久沒吃到）
 }
 
 function startAuto() {
-  if (autoTimer) {
-    clearInterval(autoTimer);
-    autoTimer = null;
-    document.getElementById('btnAuto').textContent = '▶ 自動執行';
-    return;
-  }
-  document.getElementById('btnAuto').textContent = '⏸ 暫停';
-  autoTimer = setInterval(doStep, 600);
+  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; document.getElementById('btnAuto').textContent = '▶ 自動執行'; return; }
+  document.getElementById('btnAuto').textContent = '⏸ 暫停中';
+  autoTimer = setInterval(doStep, 700);
 }
 
 function resetSim() {
   if (autoTimer) { clearInterval(autoTimer); autoTimer = null; document.getElementById('btnAuto').textContent = '▶ 自動執行'; }
   chopsticks = new Array(N).fill(false);
   state = new Array(N).fill('thinking');
+  holding = new Array(N).fill(-1);
+  eatCount = new Array(N).fill(0);
   stepCount = 0;
-  running = false;
+  globalSeq = 0;
   deadlockDetected = false;
+  currentPhil = 0;
   document.getElementById('logBox').innerHTML = '';
-  log('哲學家們開始思考...', 'info');
+  log('=== 哲學家們開始思考人生... ===', 'info');
+  if (!useOrder) {
+    log('模式：無順序（左手優先）— 點「自動執行」觀察死結形成', 'info');
+  } else {
+    log('模式：固定順序（先拿編號小的）— 點「自動執行」觀察正常運作', 'sequential');
+  }
   updateUI();
 }
 
