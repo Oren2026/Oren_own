@@ -96,7 +96,7 @@
     .phil-badge.eating { border-color: #6bcb77; color: #6bcb77; }
     .phil-badge.deadlock { border-color: #ff4444; color: #ff4444; background: #2a0000; }
 
-    /* ===== 圓桌佈局 ===== */
+    /* ===== 圓桌佈局：420x420 container, center=(210,210), phil radius=160 ===== */
     .table-area {
       display: flex;
       justify-content: center;
@@ -109,6 +109,7 @@
       height: 420px;
     }
 
+    /* 桌子 */
     .table-surface {
       position: absolute;
       top: 50%;
@@ -122,16 +123,23 @@
       z-index: 0;
     }
 
-    /* 哲學家位置：0=top, 1=right-top, 2=right-bottom, 3=left-bottom, 4=left-top */
+    /* 每個插槽用 translate + rotate 定位在半徑160的圓上，中心(210,210) */
+    /* P0:top, P1:72°, P2:144°, P3:216°, P4:288° */
     .phil-slot {
       position: absolute;
+      top: 50%;
+      left: 50%;
       z-index: 2;
+      /* 先移到中心，再拉開到半徑160 */
+      margin-top: -35px;   /* -半個哲學家高度 */
+      margin-left: -35px;  /* -半個哲學家寬度 */
     }
-    .phil-0 { top: 0; left: 50%; transform: translateX(-50%); }
-    .phil-1 { top: 60px; right: 10px; }
-    .phil-2 { bottom: 10px; right: 60px; }
-    .phil-3 { bottom: 10px; left: 60px; }
-    .phil-4 { top: 60px; left: 10px; }
+    /* rotate: 角度, translate: 往外拉多少 */
+    .phil-0 { transform: rotate(-90deg) translateY(-160px) rotate(90deg); }
+    .phil-1 { transform: rotate(-18deg) translateY(-160px) rotate(18deg); }
+    .phil-2 { transform: rotate(54deg)  translateY(-160px) rotate(-54deg); }
+    .phil-3 { transform: rotate(126deg) translateY(-160px) rotate(-126deg); }
+    .phil-4 { transform: rotate(198deg) translateY(-160px) rotate(-198deg); }
 
     .philosopher {
       width: 70px;
@@ -154,41 +162,44 @@
     .philosopher.eating { background: #001a0a; border-color: #6bcb77; color: #6bcb77; }
     .philosopher.deadlock { background: #2a0000; border-color: #ff4444; color: #ff4444; }
 
-    /* 筷子：固定位置在哲學家之間 */
-    .chopstick-slot {
+    /* 筷子：同樣用 rotate+translate 在半徑135的圓上，插在各哲學家之間 */
+    .chop-slot {
       position: absolute;
-      width: 8px;
-      height: 48px;
-      background: #555;
-      border-radius: 4px;
+      top: 50%;
+      left: 50%;
       z-index: 1;
+      margin-top: -6px;   /* -筷子半高 */
+      margin-left: -18px;  /* -筷子半寬 */
+    }
+    .chopstick-body {
+      width: 36px;
+      height: 12px;
+      background: #555;
+      border-radius: 6px;
       transition: background 0.3s, box-shadow 0.3s;
     }
-    .chopstick-slot.used { background: #ffd93d; box-shadow: 0 0 10px #ffd93d88; }
+    .chopstick-body.used { background: #ffd93d; box-shadow: 0 0 10px #ffd93d88; }
 
-    /* 筷子0: P0(top)-P1(right-top) 之間，右側 */
-    .chop-0 { top: 28px; right: 88px; transform: rotate(72deg); transform-origin: top center; }
-    /* 筷子1: P1(right-top)-P2(right-bottom) 之間，下方 */
-    .chop-1 { top: 185px; right: 28px; transform: rotate(144deg); transform-origin: top center; }
-    /* 筷子2: P2(right-bottom)-P3(left-bottom) 之間，左側 */
-    .chop-2 { bottom: 28px; right: 88px; transform: rotate(-144deg); transform-origin: bottom center; }
-    /* 筷子3: P3(left-bottom)-P4(left-top) 之間，上方 */
-    .chop-3 { bottom: 28px; left: 88px; transform: rotate(144deg); transform-origin: bottom center; }
-    /* 筷子4: P4(left-top)-P0(top) 之間，左側 */
-    .chop-4 { top: 185px; left: 28px; transform: rotate(-144deg); transform-origin: top center; }
+    /* chop[i] 在 P_i 和 P_{i+1} 中間 → bisector角度 = -90 + i*72 + 36 */
+    .chop-0 { transform: rotate(-54deg) translateY(-135px) rotate(54deg); }
+    .chop-1 { transform: rotate(18deg)  translateY(-135px) rotate(-18deg); }
+    .chop-2 { transform: rotate(90deg)  translateY(-135px) rotate(-90deg); }
+    .chop-3 { transform: rotate(162deg) translateY(-135px) rotate(-162deg); }
+    .chop-4 { transform: rotate(234deg) translateY(-135px) rotate(-234deg); }
 
-    /* 每支筷子標明共享者 */
+    /* 筷子兩端標示共享哲學家 */
     .chop-tag {
       position: absolute;
-      font-size: 10px;
+      font-size: 9px;
       color: #555;
       white-space: nowrap;
     }
-    .chop-0 .chop-tag { top: -16px; right: -20px; }
-    .chop-1 .chop-tag { top: -16px; right: -20px; }
-    .chop-2 .chop-tag { bottom: -16px; right: -20px; }
-    .chop-3 .chop-tag { bottom: -16px; left: -20px; }
-    .chop-4 .chop-tag { top: -16px; left: -20px; }
+    /* 每支筷子的標籤在筷子左端外側 */
+    .chop-0 .chop-tag { bottom: 14px; left: -4px; }
+    .chop-1 .chop-tag { bottom: 14px; left: -4px; }
+    .chop-2 .chop-tag { bottom: 14px; left: -4px; }
+    .chop-3 .chop-tag { top: 14px; left: -4px; }
+    .chop-4 .chop-tag { top: 14px; left: -4px; }
 
     .legend {
       display: flex;
@@ -266,21 +277,21 @@
     <div class="circle-table" id="table">
       <div class="table-surface"></div>
 
-      <!-- 筷子（固定位置） -->
-      <div class="chopstick-slot chop-0" id="chop0">
-        <div class="chop-tag">🥢0 P0-P1</div>
+      <!-- 筷子（固定位置，chop-slot包chopstick-body） -->
+      <div class="chop-slot chop-0" id="chop0">
+        <div class="chopstick-body"><div class="chop-tag">🥢0 P0-P1</div></div>
       </div>
-      <div class="chopstick-slot chop-1" id="chop1">
-        <div class="chop-tag">🥢1 P1-P2</div>
+      <div class="chop-slot chop-1" id="chop1">
+        <div class="chopstick-body"><div class="chop-tag">🥢1 P1-P2</div></div>
       </div>
-      <div class="chopstick-slot chop-2" id="chop2">
-        <div class="chop-tag">🥢2 P2-P3</div>
+      <div class="chop-slot chop-2" id="chop2">
+        <div class="chopstick-body"><div class="chop-tag">🥢2 P2-P3</div></div>
       </div>
-      <div class="chopstick-slot chop-3" id="chop3">
-        <div class="chop-tag">🥢3 P3-P4</div>
+      <div class="chop-slot chop-3" id="chop3">
+        <div class="chopstick-body"><div class="chop-tag">🥢3 P3-P4</div></div>
       </div>
-      <div class="chopstick-slot chop-4" id="chop4">
-        <div class="chop-tag">🥢4 P4-P0</div>
+      <div class="chop-slot chop-4" id="chop4">
+        <div class="chopstick-body"><div class="chop-tag">🥢4 P4-P0</div></div>
       </div>
 
       <!-- 哲學家（固定slot位置） -->
@@ -329,7 +340,8 @@ function updateUI() {
   }
   for (let i = 0; i < N; i++) {
     const chop = document.getElementById('chop' + i);
-    chop.className = 'chopstick-slot chop-' + i + (chopsticks[i] ? ' used' : '');
+    chop.className = 'chop-slot chop-' + i;
+    chop.querySelector('.chopstick-body').className = 'chopstick-body' + (chopsticks[i] ? ' used' : '');
   }
   // 狀態列
   const row = document.getElementById('statusRow');
