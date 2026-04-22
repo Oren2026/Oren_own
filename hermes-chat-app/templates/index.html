@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hermes Chat Hub</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1117; --surface: #1a1d27; --surface2: #242838; --border: #2e3348;
+      --text: #e2e8f0; --muted: #64748b; --accent: #3b82f6;
+      --danger: #ef4444; --success: #22c55e; --warning: #f59e0b;
+      --purple: #8b5cf6; --pink: #ec4899;
+    }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+    #topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; gap: 12px; min-height: 52px; flex-shrink: 0; }
+    #topbar h1 { font-size: 16px; font-weight: 600; }
+    #topbar .badge { font-size: 11px; background: var(--accent); color: white; padding: 2px 8px; border-radius: 10px; }
+    .topbar-spacer { flex: 1; }
+    #connection-status { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+    #connection-status.connected .dot { background: var(--success); }
+
+    #main { display: flex; flex: 1; overflow: hidden; }
+
+    /* ── 左欄 ── */
+    #sidebar { width: 240px; min-width: 240px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+    #sidebar h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 14px 16px 8px; }
+    .agent-btn { display: flex; align-items: center; gap: 10px; padding: 10px 16px; cursor: pointer; border: none; background: transparent; color: var(--text); font-size: 14px; text-align: left; width: 100%; transition: background 0.15s; border-left: 3px solid transparent; }
+    .agent-btn:hover { background: var(--surface2); }
+    .agent-btn.active { background: var(--surface2); border-left-color: var(--accent); }
+    .agent-btn .emoji { font-size: 18px; }
+    .agent-btn .name { font-weight: 500; }
+
+    .sidebar-section { padding: 16px 12px 8px; display: flex; align-items: center; gap: 6px; }
+    .sidebar-section span { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); flex: 1; }
+    .icon-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 4px; border-radius: 4px; transition: background 0.15s, color 0.15s; }
+    .icon-btn:hover { background: var(--surface2); color: var(--text); }
+
+    #session-list { flex: 1; overflow-y: auto; padding: 0 0 8px; }
+    .session-item { position: relative; padding: 8px 28px 8px 16px; font-size: 12px; color: var(--muted); cursor: pointer; border-left: 3px solid transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background 0.15s; }
+    .session-item:hover { background: var(--surface2); color: var(--text); }
+    .session-item.active { background: var(--surface2); border-left-color: var(--accent); color: var(--text); }
+    .session-item .si-mode { display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 3px; margin-right: 4px; font-weight: 600; text-transform: uppercase; }
+    .si-mode.acc { background: #1e3a5f; color: #60a5fa; }
+    .si-mode.eph { background: #2d1f1f; color: #f87171; }
+    .si-mode.sel { background: #1f2d1f; color: #4ade80; }
+    .session-item .si-delete { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); opacity: 0; font-size: 11px; color: var(--danger); background: none; border: none; cursor: pointer; transition: opacity 0.15s; }
+    .session-item:hover .si-delete { opacity: 1; }
+
+    #memory-section { border-top: 1px solid var(--border); padding: 8px 0; max-height: 200px; overflow-y: auto; }
+    #memory-section h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 4px 16px 6px; display: flex; align-items: center; gap: 6px; }
+    .memory-item { padding: 6px 28px 6px 16px; font-size: 11px; color: var(--text); border-left: 2px solid var(--success); margin: 2px 8px; background: var(--surface2); border-radius: 0 4px 4px 0; position: relative; cursor: default; }
+    .memory-item .mem-agent { font-size: 9px; color: var(--muted); text-transform: uppercase; }
+    .memory-item .mem-content { margin-top: 2px; line-height: 1.4; }
+    .memory-item .mem-delete { position: absolute; right: 6px; top: 4px; opacity: 0; font-size: 10px; color: var(--danger); background: none; border: none; cursor: pointer; }
+    .memory-item:hover .mem-delete { opacity: 1; }
+
+    /* ── 中欄 ── */
+    #chat-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--border); }
+    #chat-header { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; font-size: 13px; flex-shrink: 0; background: var(--surface); }
+    #chat-header .emoji-label { font-size: 18px; }
+    #chat-header .agent-name { font-weight: 600; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    #mode-badge { font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); color: var(--text); background: var(--surface2); transition: background 0.15s; }
+    #mode-badge:hover { background: var(--border); }
+    #mode-badge.acc { background: #1e3a5f; border-color: #3b82f6; color: #60a5fa; }
+    #mode-badge.eph { background: #2d1f1f; border-color: #ef4444; color: #f87171; }
+    #mode-badge.sel { background: #1f2d1f; border-color: #22c55e; color: #4ade80; }
+    #hermes-sid { font-size: 10px; color: var(--muted); font-family: monospace; }
+    #remember-btn { font-size: 12px; padding: 3px 10px; border-radius: 6px; border: 1px solid var(--success); background: none; color: var(--success); cursor: pointer; transition: background 0.15s; display: none; }
+    #remember-btn:hover { background: rgba(34,197,94,0.15); }
+    #remember-btn.show { display: inline-block; }
+
+    #messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .msg { max-width: 85%; line-height: 1.6; font-size: 14px; white-space: pre-wrap; word-break: break-word; }
+    .msg.user { align-self: flex-end; background: var(--accent); color: white; padding: 10px 14px; border-radius: 16px 16px 4px 16px; }
+    .msg.assistant { align-self: flex-start; background: var(--surface2); padding: 10px 14px; border-radius: 16px 16px 16px 4px; border: 1px solid var(--border); }
+    .msg .msg-meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .msg.user .msg-meta { text-align: right; }
+
+    .typing-indicator { display: flex; gap: 4px; padding: 4px 0; }
+    .typing-indicator span { width: 7px; height: 7px; background: var(--muted); border-radius: 50%; animation: bounce 1.2s infinite; }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+
+    #input-area { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; flex-shrink: 0; }
+    #message-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; color: var(--text); font-size: 14px; resize: none; font-family: inherit; outline: none; min-height: 42px; max-height: 120px; transition: border-color 0.15s; }
+    #message-input:focus { border-color: var(--accent); }
+    #send-btn { background: var(--accent); color: white; border: none; border-radius: 10px; padding: 0 18px; font-size: 14px; cursor: pointer; font-weight: 500; transition: background 0.15s; }
+    #send-btn:hover { background: #2563eb; }
+    #send-btn:disabled { background: var(--muted); cursor: not-allowed; }
+
+    /* ── 右欄 ── */
+    #output-panel { width: 420px; min-width: 320px; background: var(--surface); display: flex; flex-direction: column; overflow: hidden; }
+    #output-header { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); flex-shrink: 0; }
+    #output-tabs { display: flex; gap: 4px; margin-left: auto; }
+    .output-tab { padding: 4px 10px; border-radius: 6px; border: none; background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; }
+    .output-tab.active { background: var(--surface2); color: var(--text); }
+    #output-content { flex: 1; overflow-y: auto; padding: 12px; font-family: 'SF Mono', monospace; font-size: 12px; line-height: 1.7; }
+    .output-line { margin-bottom: 2px; }
+    .output-line.stdout { color: var(--text); }
+    .output-line.stderr { color: #f87171; }
+    .output-line.status { color: var(--accent); font-style: italic; }
+    .output-line.block { color: var(--success); }
+    .output-line .ts { color: var(--muted); margin-right: 6px; font-size: 10px; }
+    #output-content .empty-state { color: var(--muted); font-style: italic; font-size: 13px; text-align: center; padding-top: 40px; font-family: inherit; }
+    #html-preview { display: none; flex: 1; overflow: hidden; }
+    #html-preview iframe { width: 100%; height: 100%; border: none; background: white; border-radius: 6px; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>Hermes Chat Hub</h1>
+  <span class="badge">v2 · 三層記憶</span>
+  <div class="topbar-spacer"></div>
+  <div id="connection-status"><span class="dot"></span><span>連線中</span></div>
+</div>
+
+<div id="main">
+  <!-- 左：Agent + Session -->
+  <div id="sidebar">
+    <h3>選擇 Agent</h3>
+    <div id="agent-list">
+      <button class="agent-btn active" data-agent="Hermes Coder" onclick="selectAgent(this)">
+        <span class="emoji">🔵</span><span class="name">Hermes Coder</span>
+      </button>
+      <button class="agent-btn" data-agent="Hermes Research" onclick="selectAgent(this)">
+        <span class="emoji">🟣</span><span class="name">Hermes Research</span>
+      </button>
+      <button class="agent-btn" data-agent="Hermes Creative" onclick="selectAgent(this)">
+        <span class="emoji">🩷</span><span class="name">Hermes Creative</span>
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <span>Sessions</span>
+      <button class="icon-btn" title="新對話" onclick="newChat()">+</button>
+      <button class="icon-btn" title="記憶庫" onclick="toggleMemory()">🧠</button>
+    </div>
+    <div id="session-list"></div>
+
+    <div id="memory-section" style="display:none;">
+      <h4>🧠 選擇性記憶 <button class="icon-btn" onclick="toggleMemory()" style="margin-left:auto;font-size:11px">✕</button></h4>
+      <div id="memory-list"></div>
+    </div>
+  </div>
+
+  <!-- 中：聊天室 -->
+  <div id="chat-panel">
+    <div id="chat-header">
+      <span class="emoji-label" id="current-agent-label">🔵</span>
+      <strong class="agent-name" id="current-agent-name">Hermes Coder</strong>
+      <div class="header-right">
+        <span id="mode-badge" class="acc" title="點擊切換模式" onclick="cycleMode()">累積</span>
+        <span id="hermes-sid"></span>
+        <button id="remember-btn" title="記憶這次對話" onclick="rememberThis()">📌 記憶</button>
+      </div>
+    </div>
+    <div id="messages">
+      <div class="msg assistant">
+        你好！我是 Hermes Coder。有什麼我可以幫你的？
+        <div class="msg-meta">Hermes Coder</div>
+      </div>
+    </div>
+    <div id="input-area">
+      <textarea id="message-input" placeholder="輸入訊息..." rows="1" onkeydown="handleKey(event)"></textarea>
+      <button id="send-btn" onclick="sendMessage()">傳送</button>
+    </div>
+  </div>
+
+  <!-- 右：任務輸出 -->
+  <div id="output-panel">
+    <div id="output-header">
+      <span>📋 任務輸出</span>
+      <div id="output-tabs">
+        <button class="output-tab active" onclick="switchOutputTab('log')">Log</button>
+        <button class="output-tab" onclick="switchOutputTab('preview')">HTML Preview</button>
+      </div>
+    </div>
+    <div id="output-content"><div class="empty-state">等待任務執行...</div></div>
+    <div id="html-preview" style="display:none;"><iframe id="preview-iframe"></iframe></div>
+  </div>
+</div>
+
+<script>
+  // ─── 狀態 ────────────────────────────────────────────────
+  let currentAgent = "Hermes Coder";
+  let currentSessionId = "sess_" + Date.now();
+  let currentMode = "accumulating";  // accumulating | ephemeral | selective
+  let outputTab = "log";
+  let connected = false;
+  let lastExchange = null;  // 用於「記憶這次」
+
+  // conversations: "agent|sessionId" -> [{role, content, ts}, ...]
+  const conversations = {};
+  // sessions metadata: "sessionId" -> {mode, hermes_sid, agent, created_at}
+  const sessionMeta = {};
+
+  const socket = io("http://localhost:5177");
+
+  socket.on("connect", () => {
+    connected = true;
+    setConnectionStatus(true);
+  });
+  socket.on("disconnect", () => {
+    connected = false;
+    setConnectionStatus(false);
+  });
+  socket.on("output", (data) => appendOutput(data.type, data.content, data.timestamp));
+
+  function setConnectionStatus(ok) {
+    const el = document.getElementById("connection-status");
+    el.classList.toggle("connected", ok);
+    el.querySelector("span:last-child").textContent = ok ? "已連線" : "已斷線";
+  }
+
+  // ─── Agent 切換 ─────────────────────────────────────────
+  function selectAgent(btn) {
+    saveCurrentConversation();
+    document.querySelectorAll(".agent-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentAgent = btn.dataset.agent;
+    document.getElementById("current-agent-label").textContent = btn.querySelector(".emoji").textContent;
+    document.getElementById("current-agent-name").textContent = currentAgent;
+    currentSessionId = "sess_" + Date.now();
+    sessionMeta[currentSessionId] = { agent: currentAgent, mode: currentMode, hermes_sid: null, created_at: new Date().toISOString() };
+    loadOrCreateConversation();
+    renderSessionList();
+    updateModeBadge();
+    clearOutput();
+  }
+
+  // ─── Session 模式 ────────────────────────────────────────
+  const MODE_LABELS = { accumulating: "累積", ephemeral: "單次", selective: "書籤" };
+  const MODE_CLASS  = { accumulating: "acc", ephemeral: "eph", selective: "sel" };
+  const MODE_ORDER  = ["accumulating", "ephemeral", "selective"];
+
+  function cycleMode() {
+    const idx = MODE_ORDER.indexOf(currentMode);
+    currentMode = MODE_ORDER[(idx + 1) % MODE_ORDER.length];
+    if (sessionMeta[currentSessionId]) sessionMeta[currentSessionId].mode = currentMode;
+    updateModeBadge();
+    updateRememberBtn();
+    // 更新 server
+    fetch(`/api/sessions/${currentSessionId}`, {
+      method: "PATCH", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode: currentMode })
+    });
+  }
+
+  function updateModeBadge() {
+    const badge = document.getElementById("mode-badge");
+    badge.textContent = MODE_LABELS[currentMode];
+    badge.className = "mode-badge " + MODE_CLASS[currentMode];
+    // 同步 header agent label
+    const agentEmoji = document.querySelector(`.agent-btn[data-agent="${currentAgent}"] .emoji`)?.textContent || "🔵";
+    document.getElementById("current-agent-label").textContent = agentEmoji;
+    document.getElementById("current-agent-name").textContent = currentAgent;
+  }
+
+  function updateRememberBtn() {
+    document.getElementById("remember-btn").classList.toggle("show", currentMode === "selective");
+  }
+
+  // ─── 新對話 ──────────────────────────────────────────────
+  function newChat() {
+    saveCurrentConversation();
+    currentSessionId = "sess_" + Date.now();
+    sessionMeta[currentSessionId] = { agent: currentAgent, mode: currentMode, hermes_sid: null, created_at: new Date().toISOString() };
+    document.getElementById("messages").innerHTML = `
+      <div class="msg assistant">
+        你好！我是 ${currentAgent}。有什麼我可以幫你的？
+        <div class="msg-meta">${currentAgent}</div>
+      </div>`;
+    document.getElementById("hermes-sid").textContent = "";
+    updateModeBadge();
+    updateRememberBtn();
+    clearOutput();
+    renderSessionList();
+  }
+
+  // ─── 送訊息 ──────────────────────────────────────────────
+  async function sendMessage() {
+    const input = document.getElementById("message-input");
+    const text = input.value.trim();
+    if (!text) return;
+
+    appendMsg("user", text);
+    input.value = "";
+    input.style.height = "auto";
+
+    const loadingEl = document.createElement("div");
+    loadingEl.className = "msg assistant";
+    loadingEl.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
+    document.getElementById("messages").appendChild(loadingEl);
+    scrollToBottom();
+
+    lastExchange = { user: text };
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          agent: currentAgent,
+          message: text,
+          session_id: currentSessionId,
+          mode: currentMode,
+        }),
+      });
+      const data = await res.json();
+      loadingEl.remove();
+
+      if (data.error) {
+        appendMsg("assistant", `❌ 錯誤：${data.error}`);
+      } else {
+        appendMsg("assistant", data.response);
+        lastExchange.assistant = data.response;
+
+        // 更新 meta
+        if (sessionMeta[currentSessionId]) {
+          sessionMeta[currentSessionId].hermes_sid = data.hermes_sid || sessionMeta[currentSessionId].hermes_sid;
+        }
+        if (data.hermes_sid) {
+          document.getElementById("hermes-sid").textContent = data.hermes_sid;
+        }
+
+        // 寫入 conversations
+        const key = currentAgent + "|" + currentSessionId;
+        if (!conversations[key]) conversations[key] = [];
+        conversations[key].push({ role: "user", content: text, ts: Date.now() });
+        conversations[key].push({ role: "assistant", content: data.response, ts: Date.now() });
+
+        renderSessionList();
+        updateRememberBtn();
+      }
+    } catch (err) {
+      loadingEl.remove();
+      appendMsg("assistant", `❌ 網路錯誤：${err.message}`);
+    }
+  }
+
+  // ─── 記憶功能 ────────────────────────────────────────────
+  function rememberThis() {
+    if (!lastExchange || !lastExchange.user || !lastExchange.assistant) return;
+    const content = `【問】${lastExchange.user}\n【答】${lastExchange.assistant}`;
+    fetch("/api/memories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ agent: currentAgent, content }),
+    }).then(() => {
+      lastExchange = null;
+      document.getElementById("remember-btn").classList.remove("show");
+      loadMemories();
+    });
+  }
+
+  async function loadMemories() {
+    try {
+      const res = await fetch("/api/memories");
+      const data = await res.json();
+      const list = document.getElementById("memory-list");
+      if (!data.memories || data.memories.length === 0) {
+        list.innerHTML = '<div style="color:var(--muted);font-size:11px;padding:8px 16px">尚無記憶</div>';
+        return;
+      }
+      list.innerHTML = data.memories.map(m => `
+        <div class="memory-item">
+          <div class="mem-agent">${m.agent}</div>
+          <div class="mem-content">${escapeHtml(m.content)}</div>
+          <button class="mem-delete" onclick="deleteMemory('${m.id}')">✕</button>
+        </div>`).join("");
+    } catch {}
+  }
+
+  async function deleteMemory(id) {
+    await fetch(`/api/memories/${id}`, { method: "DELETE" });
+    loadMemories();
+  }
+
+  function toggleMemory() {
+    const el = document.getElementById("memory-section");
+    const isHidden = el.style.display === "none" || el.style.display === "";
+    el.style.display = isHidden ? "block" : "none";
+    if (isHidden) loadMemories();
+  }
+
+  // ─── Session 管理 ────────────────────────────────────────
+  async function loadSessions() {
+    try {
+      const res = await fetch("/api/sessions");
+      const data = await res.json();
+      for (const s of data.sessions) {
+        sessionMeta[s.id] = { agent: s.agent, mode: s.mode, hermes_sid: s.hermes_sid, created_at: s.created_at };
+      }
+    } catch {}
+  }
+
+  function renderSessionList() {
+    const list = document.getElementById("session-list");
+    const agentSessions = Object.entries(sessionMeta).filter(([, m]) => m.agent === currentAgent);
+    if (agentSessions.length === 0) {
+      list.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:8px 16px">尚無對話記錄</div>';
+      return;
+    }
+    list.innerHTML = agentSessions
+      .sort((a, b) => (b[1].created_at || "").localeCompare(a[1].created_at || ""))
+      .map(([sid, meta]) => {
+        const key = currentAgent + "|" + sid;
+        const msgs = conversations[key] || [];
+        const lastMsg = msgs.length > 0 ? msgs[msgs.length - 1].content : "新對話";
+        const preview = (lastMsg || "新對話").slice(0, 28) + (lastMsg && lastMsg.length > 28 ? "…" : "");
+        const mc = MODE_CLASS[meta.mode] || "acc";
+        const isActive = sid === currentSessionId;
+        return `<div class="session-item${isActive ? " active" : ""}" onclick="loadSession('${sid}')">
+          <span class="si-mode ${mc}">${MODE_LABELS[meta.mode] || "累積"}</span>${escapeHtml(preview)}
+          <button class="si-delete" onclick="event.stopPropagation();deleteSession('${sid}')">✕</button>
+        </div>`;
+      }).join("");
+  }
+
+  function loadSession(sid) {
+    saveCurrentConversation();
+    currentSessionId = sid;
+    const meta = sessionMeta[sid] || { agent: currentAgent, mode: "accumulating", hermes_sid: null };
+    currentAgent = meta.agent;
+    currentMode = meta.mode || "accumulating";
+
+    // update agent buttons
+    document.querySelectorAll(".agent-btn").forEach(b => {
+      b.classList.toggle("active", b.dataset.agent === currentAgent);
+    });
+
+    document.getElementById("current-agent-label").textContent =
+      document.querySelector(`.agent-btn[data-agent="${currentAgent}"] .emoji`)?.textContent || "🔵";
+    document.getElementById("current-agent-name").textContent = currentAgent;
+    document.getElementById("hermes-sid").textContent = meta.hermes_sid || "";
+
+    updateModeBadge();
+    updateRememberBtn();
+
+    const key = currentAgent + "|" + sid;
+    if (conversations[key] && conversations[key].length > 0) {
+      const msgs = document.getElementById("messages");
+      msgs.innerHTML = conversations[key].map(m => {
+        const meta2 = m.role === "user" ? "" : `<div class="msg-meta">${currentAgent}</div>`;
+        return `<div class="msg ${m.role}">${escapeHtml(m.content)}${meta2}</div>`;
+      }).join("");
+    } else {
+      document.getElementById("messages").innerHTML = `
+        <div class="msg assistant">
+          你好！我是 ${currentAgent}。有什麼我可以幫你的？
+          <div class="msg-meta">${currentAgent}</div>
+        </div>`;
+    }
+    scrollToBottom();
+    renderSessionList();
+    clearOutput();
+  }
+
+  async function deleteSession(sid) {
+    await fetch(`/api/sessions/${sid}`, { method: "DELETE" });
+    delete sessionMeta[sid];
+    const key = currentAgent + "|" + sid;
+    delete conversations[key];
+    if (sid === currentSessionId) {
+      currentSessionId = "sess_" + Date.now();
+      sessionMeta[currentSessionId] = { agent: currentAgent, mode: currentMode, hermes_sid: null, created_at: new Date().toISOString() };
+      document.getElementById("messages").innerHTML = `
+        <div class="msg assistant">
+          你好！我是 ${currentAgent}。有什麼我可以幫你的？
+          <div class="msg-meta">${currentAgent}</div>
+        </div>`;
+      document.getElementById("hermes-sid").textContent = "";
+    }
+    renderSessionList();
+  }
+
+  function saveCurrentConversation() {
+    const key = currentAgent + "|" + currentSessionId;
+    const msgEls = document.querySelectorAll("#messages .msg");
+    if (msgEls.length <= 1 && !conversations[key]) return;
+    const stored = (conversations[key] || []).length;
+    const current = Array.from(msgEls).slice(stored);
+    if (!conversations[key]) conversations[key] = [];
+    current.forEach(el => {
+      const role = el.classList.contains("user") ? "user" : "assistant";
+      const clone = el.cloneNode(true);
+      clone.querySelector(".msg-meta")?.remove();
+      const text = clone.textContent.trim();
+      if (text) conversations[key].push({ role, content: text, ts: Date.now() });
+    });
+  }
+
+  // ─── 訊息渲染 ────────────────────────────────────────────
+  function appendMsg(role, content) {
+    const msgs = document.getElementById("messages");
+    const div = document.createElement("div");
+    div.className = `msg ${role}`;
+    const meta = role === "user" ? "" : `<div class="msg-meta">${currentAgent}</div>`;
+    div.innerHTML = escapeHtml(content) + meta;
+    msgs.appendChild(div);
+    scrollToBottom();
+  }
+
+  function scrollToBottom() {
+    const msgs = document.getElementById("messages");
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function escapeHtml(text) {
+    if (!text) return "";
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function loadOrCreateConversation() {
+    const key = currentAgent + "|" + currentSessionId;
+    if (conversations[key] && conversations[key].length > 0) {
+      const msgs = document.getElementById("messages");
+      msgs.innerHTML = conversations[key].map(m => {
+        const meta = m.role === "user" ? "" : `<div class="msg-meta">${currentAgent}</div>`;
+        return `<div class="msg ${m.role}">${escapeHtml(m.content)}${meta}</div>`;
+      }).join("");
+    } else {
+      document.getElementById("messages").innerHTML = `
+        <div class="msg assistant">
+          你好！我是 ${currentAgent}。有什麼我可以幫你的？
+          <div class="msg-meta">${currentAgent}</div>
+        </div>`;
+    }
+    scrollToBottom();
+    // restore hermes sid
+    const meta = sessionMeta[currentSessionId];
+    if (meta?.hermes_sid) document.getElementById("hermes-sid").textContent = meta.hermes_sid;
+    updateModeBadge();
+    updateRememberBtn();
+  }
+
+  // ─── 任務輸出 ────────────────────────────────────────────
+  function appendOutput(type, content, timestamp) {
+    const container = document.getElementById("output-content");
+    if (outputTab !== "log") return;
+    const empty = container.querySelector(".empty-state");
+    if (empty) empty.remove();
+
+    // 偵測「已產出：路徑」，自動讀檔並 render HTML
+    const producedMatch = content.match(/已產出：([^\s\n]+)/);
+    if (producedMatch) {
+      const filePath = producedMatch[1].replace(/[`'"']/g, "");
+      fetch(`/api/file?path=${encodeURIComponent(filePath)}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.content && (data.content.includes("<!DOCTYPE") || data.content.includes("<html") || data.content.includes("<div") || data.content.includes("<p"))) {
+            const iframe = document.getElementById("preview-iframe");
+            iframe.srcdoc = data.content;
+            document.getElementById("html-preview").style.display = "flex";
+            switchOutputTab("preview");
+          }
+        })
+        .catch(() => {});
+    }
+
+    // 偵測純 HTML 內容（直接輸出）
+    if (content.includes("<!DOCTYPE") || content.includes("<html")) {
+      const iframe = document.getElementById("preview-iframe");
+      iframe.srcdoc = content;
+      document.getElementById("html-preview").style.display = "flex";
+      switchOutputTab("preview");
+      return;
+    }
+
+    const lines = content.split("\n");
+    const ts = timestamp ? new Date(timestamp).toLocaleTimeString("zh-TW") : "";
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      const div = document.createElement("div");
+      div.className = `output-line ${type}`;
+      div.innerHTML = (ts ? `<span class="ts">${ts}</span>` : "") + escapeHtml(line);
+      container.appendChild(div);
+    }
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function clearOutput() {
+    const container = document.getElementById("output-content");
+    container.innerHTML = '<div class="empty-state">等待任務執行...</div>';
+    document.getElementById("html-preview").style.display = "none";
+  }
+
+  function switchOutputTab(tab) {
+    outputTab = tab;
+    document.querySelectorAll(".output-tab").forEach(t => t.classList.remove("active"));
+    document.querySelector(`.output-tab[onclick="switchOutputTab('${tab}')"]`).classList.add("active");
+    document.getElementById("output-content").style.display = tab === "log" ? "block" : "none";
+    document.getElementById("html-preview").style.display = tab === "preview" ? "flex" : "none";
+  }
+
+  // ─── 輸入框 ──────────────────────────────────────────────
+  document.getElementById("message-input").addEventListener("input", function () {
+    this.style.height = "auto";
+    this.style.height = Math.min(this.scrollHeight, 120) + "px";
+  });
+
+  function handleKey(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  // ─── 初始化 ──────────────────────────────────────────────
+  sessionMeta[currentSessionId] = { agent: currentAgent, mode: currentMode, hermes_sid: null, created_at: new Date().toISOString() };
+  renderSessionList();
+  updateModeBadge();
+  updateRememberBtn();
+  loadSessions();
+</script>
+</body>
+</html>

@@ -1,96 +1,245 @@
-# 📚 Thread 執行緒概念
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Thread 執行緒概念 — sp_HW_5</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      color: #eee;
+      font-family: 'Courier New', monospace;
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.7;
+    }
+    a { color: #00d4ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 800px; margin: 0 auto; }
 
-## 什麼是執行緒（Thread）？
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 24px;
+      padding: 7px 14px;
+      background: #0f3460;
+      color: #00d4ff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .back-btn:hover { background: #1a4a7a; text-decoration: none; }
 
-執行緒是作業系統能夠進行運算排程的最小單位。一個 **Process（行程）** 可以擁有多個執行緒，它們共享同一塊記憶體空間，但各自有獨立的堆疊（Stack）與暫存器狀態。
+    h1 {
+      font-size: 1.8em;
+      color: #00d4ff;
+      margin-bottom: 8px;
+    }
+    h2 {
+      font-size: 1.2em;
+      color: #00d4ff;
+      margin: 32px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #0f3460;
+    }
+    h3 {
+      font-size: 1em;
+      color: #ffd93d;
+      margin: 20px 0 10px;
+    }
+    p { margin-bottom: 12px; color: #ccc; }
 
----
+    .lead {
+      font-size: 15px;
+      color: #888;
+      margin-bottom: 28px;
+      padding: 14px 18px;
+      background: #16213e;
+      border-radius: 8px;
+      border-left: 3px solid #0f3460;
+    }
 
-## Process vs Thread
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 20px;
+      font-size: 14px;
+    }
+    th {
+      background: #0f3460;
+      color: #00d4ff;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #1a2a4a;
+      color: #ccc;
+    }
+    tr:hover td { background: #16213e; }
 
-| 特性 | Process | Thread |
-|------|---------|--------|
-| 記憶體 | 獨立位址空間 | 共享所屬 Process 的記憶體 |
-| 創建成本 | 高（需複製整個空間） | 低（共享記憶體，快速建立） |
-| 通訊 | IPC（管道、共享記憶體等） | 直接讀寫共享變數 |
-| 穩定性 | 一個崩潰不影響另一個 | 一個崩潰導致整個 Process 崩潰 |
-| 獨立性 | 完全獨立 | 共享資源，需同步 |
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .tag {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+    .tag-red { background: #2a0a0a; color: #e94560; border: 1px solid #e94560; }
+    .tag-blue { background: #0a1a2a; color: #00d4ff; border: 1px solid #00d4ff; }
+    .tag-yellow { background: #1a1a00; color: #ffd93d; border: 1px solid #ffd93d; }
 
----
+    .pro, .con { margin: 8px 0 8px 18px; font-size: 14px; }
+    .pro { color: #6bcb77; }
+    .con { color: #e94560; }
 
-## 為什麼要用多執行緒？
+    .lifecycle {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 18px 24px;
+      margin: 14px 0;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+      color: #00d4ff;
+      letter-spacing: 1px;
+    }
+    .lifecycle .arrow { color: #ffd93d; }
 
-### ✅ 優點
-- **並發執行**：多個執行緒可在多核心 CPU 上真正平行執行
-- **效率高**：執行緒建立/切換成本遠低於 Process
-- **資源共享**：共享記憶體減少複製開銷
-- **快速回應**：IO 等待時可切換到其他執行緒
+    .code-block {
+      background: #0d1b2a;
+      border: 1px solid #1a2a4a;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 14px 0;
+      font-size: 13px;
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .code-block .comment { color: #555; }
+    .code-block .keyword { color: #e94560; }
+    .code-block .string { color: #6bcb77; }
+    .code-block .fn { color: #ffd93d; }
+    .code-block .macro { color: #00d4ff; }
 
-### ❌ 風險
-- **Race Condition**：同時存取共享資料，結果不確定
-- **Deadlock**：執行緒互相等待對方釋放資源，卡死不前進
-- **Starvation**：某執行緒始終得不到資源，長期被餓死
+    .related {
+      margin-top: 36px;
+      padding: 18px 22px;
+      background: #16213e;
+      border-radius: 10px;
+      border: 1px solid #0f3460;
+    }
+    .related h3 { color: #00d4ff; margin-top: 0; }
+    .related ul { list-style: none; margin-top: 10px; }
+    .related li { padding: 5px 0; font-size: 14px; }
+    .related li::before { content: '→ '; color: #555; }
 
----
+    .footer {
+      text-align: center;
+      color: #555;
+      font-size: 12px;
+      padding: 24px;
+      margin-top: 40px;
+      border-top: 1px solid #1a2a4a;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <a class="back-btn" href="index.html">← 返回首頁</a>
 
-## 一個執行緒的生命週期
+  <h1>📚 Thread 執行緒概念</h1>
+  <p class="lead">執行緒是作業系統能夠進行運算排程的最小單位。一個 Process 可以擁有多個執行緒，共享同一塊記憶體空間，但各自有獨立的堆疊（Stack）與暫存器狀態。</p>
 
-```
-NEW → READY → RUNNING → BLOCKED/WAITING → TERMINATED
-         ↑          ↓
-         └──────────┘（CPU 時間片用完，、作業系統調度）
-```
+  <h2>Process vs Thread</h2>
+  <table>
+    <tr><th>特性</th><th>Process</th><th>Thread</th></tr>
+    <tr><td>記憶體</td><td>獨立位址空間</td><td>共享所屬 Process 的記憶體</td></tr>
+    <tr><td>創建成本</td><td>高（需複製整個空間）</td><td>低（共享記憶體，快速建立）</td></tr>
+    <tr><td>通訊</td><td>IPC（管道、共享記憶體等）</td><td>直接讀寫共享變數</td></tr>
+    <tr><td>穩定性</td><td>一個崩潰不影響另一個</td><td>一個崩潰導致整個 Process 崩潰</td></tr>
+    <tr><td>獨立性</td><td>完全獨立</td><td>共享資源，需同步</td></tr>
+  </table>
 
-- **NEW**：執行緒正在被創建
-- **READY**：等待 CPU 排程
-- **RUNNING**：正在執行
-- **BLOCKED/WAITING**：等待資源或同步條件（如 I/O、鎖）
-- **TERMINATED**：執行完畢
+  <h2>為什麼要用多執行緒？</h2>
+  <div class="tag-list">
+    <span class="tag tag-blue">並發執行</span>
+    <span class="tag tag-blue">效率高</span>
+    <span class="tag tag-blue">資源共享</span>
+    <span class="tag tag-blue">快速回應</span>
+  </div>
+  <p class="pro">✅ 並發執行：多個執行緒可在多核心 CPU 上真正平行執行</p>
+  <p class="pro">✅ 效率高：執行緒建立/切換成本遠低於 Process</p>
+  <p class="pro">✅ 資源共享：共享記憶體減少複製開銷</p>
+  <p class="pro">✅ 快速回應：IO 等待時可切換到其他執行緒</p>
 
----
+  <div class="tag-list" style="margin-top:16px">
+    <span class="tag tag-red">Race Condition</span>
+    <span class="tag tag-red">Deadlock</span>
+    <span class="tag tag-red">Starvation</span>
+  </div>
+  <p class="con">❌ Race Condition：同時存取共享資料，結果不確定</p>
+  <p class="con">❌ Deadlock：執行緒互相等待對方釋放資源，卡死不前進</p>
+  <p class="con">❌ Starvation：某執行緒始終得不到資源，長期被餓死</p>
 
-## 執行緒在作業系統中的實現
+  <h2>執行緒的生命週期</h2>
+  <div class="lifecycle">
+    <span style="color:#6bcb77">NEW</span>
+    <span class="arrow"> → </span>
+    <span style="color:#ffd93d">READY</span>
+    <span class="arrow"> → </span>
+    <span style="color:#e94560">RUNNING</span>
+    <span class="arrow"> → </span>
+    <span style="color:#00d4ff">BLOCKED/WAITING</span>
+    <span class="arrow"> → </span>
+    <span style="color:#888">TERMINATED</span>
+  </div>
+  <p>• <strong style="color:#6bcb77">NEW</strong>：執行緒正在被創建</p>
+  <p>• <strong style="color:#ffd93d">READY</strong>：等待 CPU 排程</p>
+  <p>• <strong style="color:#e94560">RUNNING</strong>：正在執行</p>
+  <p>• <strong style="color:#00d4ff">BLOCKED/WAITING</strong>：等待資源或同步條件（如 I/O、鎖）</p>
+  <p>• <strong style="color:#888">TERMINATED</strong>：執行完畢</p>
 
-### 用户層執行緒（ULT）
-- 由函式庫管理（如 `pthread`），作業系統不感知
-- 切換快，但一個執行緒阻塞會阻塞整個 Process
+  <h2>執行緒在作業系統中的實現</h2>
+  <h3>用户層執行緒（ULT）</h3>
+  <p>由函式庫管理（如 <code>pthread</code>），作業系統不感知。切換快，但一個執行緒阻塞會阻塞整個 Process。</p>
 
-### 核心層執行緒（KLT）
-- 由作業系統核心直接管理
-- 一個執行緒阻塞不影響其他執行緒
+  <h3>核心層執行緒（KLT）</h3>
+  <p>由作業系統核心直接管理。一個執行緒阻塞不影響其他執行緒。</p>
 
-### 兩者混合：多對一、一對一、多對多模型
+  <h3>兩者混合</h3>
+  <p>多對一、一對一、多對多模型，視作業系統而定。</p>
 
----
+  <h2>執行緒安全（Thread Safety）</h2>
+  <p>當多個執行緒訪問同一筆資料時，需要確保程式行為是正確的。</p>
 
-## 執行緒安全（Thread Safety）
+  <div class="code-block"><span class="comment">// 不安全：兩個執行緒同時執行 i++，最終 i 可能只增加了 1 次</span>
+<span class="keyword">int</span> i = <span class="string">0</span>;
+thread A: i = i + <span class="string">1</span>;  <span class="comment">// read(i) → inc → write(i)</span>
+thread B: i = i + <span class="string">1</span>;  <span class="comment">// read(i) → inc → write(i) ← 覆蓋了 A 的結果</span></div>
 
-當多個執行緒訪問同一筆資料時，需要確保程式行為是正確的。
+  <div class="code-block"><span class="comment">// 安全：使用 Mutex 保護臨界區</span>
+<span class="macro">pthread_mutex_t</span> mutex = <span class="macro">PTHREAD_MUTEX_INITIALIZER</span>;
 
-```c
-// 不安全：兩個執行緒同時執行 i++，最終 i 可能只增加了 1 次
-int i = 0;
-thread A: i = i + 1;  // read(i) → inc → write(i)
-thread B: i = i + 1;  // read(i) → inc → write(i)  ← 覆蓋了 A 的結果
-```
+<span class="fn">pthread_mutex_lock</span>(&mutex);
+<span class="comment">// ===== 臨界區：同時只有一個執行緒能進入 =====</span>
+i = i + <span class="string">1</span>;
+<span class="comment">// ===========================================</span>
+<span class="fn">pthread_mutex_unlock</span>(&mutex);</div>
 
-```c
-// 安全：使用 Mutex 保護臨界區
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_lock(&mutex);
-i = i + 1;  // 臨界區：同時只有一個執行緒能進入
-pthread_mutex_unlock(&mutex);
-```
+  <div class="related">
+    <h3>相關主題</h3>
+    <ul>
+      <li><a href="race_condition.html">Race Condition</a> — 執行緒同時存取共享資料</li>
+      <li><a href="mutex.html">Mutex</a> — 用互斥鎖保護臨界區</li>
+      <li><a href="deadlock.html">Deadlock</a> — 執行緒互相等待，形成循環僵局</li>
+      <li><a href="bank_simulation/index.html">🏦 銀行模擬</a> — 體驗 Race Condition 與 Mutex</li>
+    </ul>
+  </div>
 
----
-
-## 相關主題
-
-- [Race Condition](race_condition.html) — 執行緒同時存取共享資料
-- [Mutex](mutex.html) — 用互斥鎖保護臨界區
-- [Deadlock](deadlock.html) — 執行緒互相等待，形成循環僵局
-- [銀行模擬](../bank_simulation/index.html) — 體驗 Race Condition 與 Mutex
-
----
-
-*本頁為 sp_HW_5 系統程式作業的輔助教材*
+  <div class="footer">sp_HW_5 — 系統程式作業 | 2026</div>
+</div>
+</body>
+</html>

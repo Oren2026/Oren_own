@@ -1,148 +1,297 @@
-# 🔧 實作說明
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>實作說明 — sp_HW_5</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      color: #eee;
+      font-family: 'Courier New', monospace;
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.7;
+    }
+    a { color: #00d4ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 800px; margin: 0 auto; }
 
-## 概覽
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 24px;
+      padding: 7px 14px;
+      background: #0f3460;
+      color: #00d4ff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .back-btn:hover { background: #1a4a7a; text-decoration: none; }
 
-本頁說明三個互動式模擬的實作方式與核心邏輯。
+    h1 { font-size: 1.8em; color: #00d4ff; margin-bottom: 8px; }
+    h2 {
+      font-size: 1.2em;
+      color: #00d4ff;
+      margin: 36px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #0f3460;
+    }
+    h3 { font-size: 1em; color: #ffd93d; margin: 20px 0 10px; }
+    p { margin-bottom: 12px; color: #ccc; }
 
----
+    .card {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    .card .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .card .icon { font-size: 24px; }
+    .card h3 { color: #00d4ff; margin: 0; font-size: 16px; }
 
-## 🏦 銀行存提款模擬
+    .code-block {
+      background: #0d1b2a;
+      border: 1px solid #1a2a4a;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0;
+      font-size: 13px;
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .code-block .comment { color: #555; }
+    .code-block .keyword { color: #e94560; }
+    .code-block .string { color: #6bcb77; }
+    .code-block .fn { color: #ffd93d; }
+    .code-block .var { color: #00d4ff; }
 
-### 問題情境
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px;
+      font-size: 14px;
+    }
+    th { background: #0f3460; color: #00d4ff; padding: 10px 14px; text-align: left; }
+    td { padding: 9px 14px; border-bottom: 1px solid #1a2a4a; color: #ccc; }
+    tr:hover td { background: #16213e; }
 
-兩個執行緒同時操作同一個銀行帳戶：
-- **執行緒 A**：每次存款 $2
-- **執行緒 B**：每次存款 $1
-- 各執行 **100,000 次**
+    .pro-con {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 14px 0;
+    }
+    @media (max-width: 600px) { .pro-con { grid-template-columns: 1fr; } }
+    .box-pro, .box-con {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .box-pro { border-top: 3px solid #6bcb77; }
+    .box-con { border-top: 3px solid #e94560; }
+    .box-pro h4 { color: #6bcb77; font-size: 13px; margin-bottom: 8px; }
+    .box-con h4 { color: #e94560; font-size: 13px; margin-bottom: 8px; }
+    .box-pro p, .box-con p { font-size: 12px; color: #888; margin: 3px 0; }
 
-### Race Condition 原理
+    .timeline {
+      position: relative;
+      padding-left: 24px;
+      margin: 14px 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #0f3460;
+    }
+    .tl-item {
+      position: relative;
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -21px;
+      top: 7px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #00d4ff;
+    }
+    .tl-item .label { color: #ffd93d; font-weight: bold; }
+    .tl-item .sub { color: #888; font-size: 12px; }
 
-```javascript
-// 無 Mutex 的情況（每次存款實際是三個步驟）
-// 執行緒 A                              // 執行緒 B
-READ(balance)    // $0                  READ(balance)  // $0（同時讀到！）
-MODIFY($0+$2=$2)                       MODIFY($0+$1=$1)
-WRITE($2)         // 余額=$2            WRITE($1)       // 余額=$1（覆蓋！）
-```
+    .related {
+      margin-top: 36px;
+      padding: 18px 22px;
+      background: #16213e;
+      border-radius: 10px;
+      border: 1px solid #0f3460;
+    }
+    .related h3 { color: #00d4ff; margin-top: 0; }
+    .related ul { list-style: none; margin-top: 10px; }
+    .related li { padding: 5px 0; font-size: 14px; }
+    .related li::before { content: '→ '; color: #555; }
 
-**每筆操作損失 $1**（A 的 $2 被 B 的 $1 覆蓋），100,000 筆後：
-- 正確余額：$300,000
-- 實際余額：約 $100,000（取決於搶佔順序）
+    .footer {
+      text-align: center;
+      color: #555;
+      font-size: 12px;
+      padding: 24px;
+      margin-top: 40px;
+      border-top: 1px solid #1a2a4a;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <a class="back-btn" href="index.html">← 返回首頁</a>
 
-### 實作架構
+  <h1>🔧 實作說明</h1>
+  <p style="color:#888; margin-bottom:28px;">三個互動式模擬的實作方式與核心邏輯解析</p>
 
-| 檔案 | 功能 |
-|------|------|
-| `index.html` | 單一檔案，包含所有 HTML/CSS/JS |
+  <!-- 銀行 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="icon">🏦</div>
+      <h3>銀行存提款模擬</h3>
+    </div>
 
-**狀態機**：
-```
-初始余額 = $0
-每回合：余額_before → [A讀取][A修改][A寫入] → [B讀取][B修改][B寫入] → 余額_after
-```
+    <h3>問題情境</h3>
+    <p>兩個執行緒同時操作同一個銀行帳戶：執行緒 A 存款 $2、執行緒 B 存款 $1，各執行 100,000 次。</p>
 
-**無 Mutex**：A 和 B 各自讀到 `balance_before`，然後各自寫入，後寫入覆蓋先寫入。
-**有 Mutex**：A 完整執行完後才釋放鎖，B 才能讀到 A 寫入後的值。
+    <h3>Race Condition 原理</h3>
+    <div class="code-block"><span class="comment">// 無 Mutex：兩執行緒同時讀到同余額，後寫入覆蓋先寫入</span>
+<span class="comment">// 執行緒 A                      // 執行緒 B</span>
+<span class="fn">READ</span>(<span class="var">balance</span>)  <span class="comment">// $0                  READ($0)（同時讀到！）</span>
+<span class="fn">MODIFY</span>($0+$2=$2)                    MODIFY($0+$1=$1)
+<span class="fn">WRITE</span>($2)   <span class="comment">// 余額=$2            WRITE($1)（覆蓋！）</span></div>
 
-### 快速執行模式
+    <p>每筆操作損失 $1（A 的 $2 被 B 的 $1 覆蓋），100,000 筆後累積誤差約 $100,000。</p>
 
-一般單步執行適合教學觀察，但 10 萬次太慢。
-**快速執行**使用 `for` 迴圈直接跑完所有操作，每次迴圈模擬一次 Race Condition，最後一次性更新 UI 並顯示統計結果。
+    <h3>實作架構</h3>
+    <table>
+      <tr><th>模式</th><th>邏輯</th></tr>
+      <tr><td>無 Mutex</td><td>A 和 B 各自讀到 <code>balance_before</code>，然後各自寫入，後寫入覆蓋先寫入</td></tr>
+      <tr><td>有 Mutex</td><td>A 完整執行完後才釋放鎖，B 才能讀到 A 寫入後的值</td></tr>
+    </table>
 
----
+    <h3>快速執行模式</h3>
+    <p>單步執行適合教學觀察，但 100,000 次太慢。<strong>快速執行</strong>使用 <code>for</code> 迴圈直接跑完所有操作，最後一次性更新 UI 並顯示統計結果。</p>
+  </div>
 
-## 🍜 哲學家用餐問題
+  <!-- 哲學家 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="icon">🍜</div>
+      <h3>哲學家用餐問題</h3>
+    </div>
 
-### 問題情境
+    <h3>問題情境</h3>
+    <p>5 位哲學家坐在圓桌周圍，每人之間有一根筷子。哲學家需要同時拿到左右兩根筷子才能開始吃，吃完後放下兩根筷子，鄰居才能拿。</p>
 
-5 位哲學家坐在圓桌周圍，每人之間有一根筷子：
-- 哲學家需要**同時拿到左右兩根筷子**才能開始吃
-- 吃完後**放下兩根筷子**，鄰居才能拿
+    <h3>死結形成</h3>
+    <div class="code-block">哲學家0：拿到 筷子1，等待 筷子0
+哲學家1：拿到 筷子2，等待 筷子1  → 形成循環
+哲學家2：拿到 筷子3，等待 筷子2
+哲學家3：拿到 筷子4，等待 筷子3
+哲學家4：拿到 筷子0，等待 筷子4  ← 循環封閉
+所有人都拿了一根，都等待另一根，永遠吃不到。</div>
 
-### 死結形成
+    <h3>實作架構</h3>
+    <table>
+      <tr><th>狀態</th><th>程式邏輯</th></tr>
+      <tr><td>飢餓（Hungry）</td><td>嘗試取得左右筷子</td></tr>
+      <tr><td>吃飯中（Eating）</td><td>同時拿到兩根筷子</td></tr>
+      <tr><td>思考中（Thinking）</td><td>已放下筷子</td></tr>
+    </table>
 
-若每位哲學家都**先拿右邊、再拿左邊**，就會形成循環等待：
+    <h3>筷子邏輯</h3>
+    <div class="code-block"><span class="comment">// 第 i 位哲學家的左右筷子</span>
+<span class="var">left(i)</span>  = chopsticks[(i - <span class="string">1</span> + <span class="string">5</span>) % <span class="string">5</span>]  <span class="comment">// 左邊筷子（i-1）</span>
+<span class="var">right(i)</span> = chopsticks[i]                 <span class="comment">// 右邊筷子（i）</span></div>
 
-```
-哲學家0：拿到筷子1，等待筷子0
-哲學家1：拿到筷子2，等待筷子1  → 形成循環
-哲學家2：拿到筷子3，等待筷子2
-哲學家3：拿到筷子4，等待筷子3
-哲學家4：拿到筷子0，等待筷子4  ← 循環封閉
-```
+    <h3>解決死結</h3>
+    <p>讓至少一位哲學家改變拿筷子的順序（先拿左再拿右），打破循環等待。</p>
 
-所有人都拿了一根，都等待另一根，永遠吃不到。
+    <h3>視覺呈現</h3>
+    <div class="code-block"><span class="comment">// CSS transform 極座標定位</span>
+<span class="keyword">phil-slot</span>:  rotate(θ) translateY(-<span class="string">160px</span>) rotate(-θ)
+<span class="keyword">chop-slot</span>:  rotate(θ) translateY(-<span class="string">135px</span>) rotate(-θ)</div>
+    <p>θ 為該位置的極座標角度（每格 72°），<code>translateY</code> 距離決定半徑，內層恢復角度確保元素不旋轉。</p>
+  </div>
 
-### 實作架構
+  <!-- 生產者消費者 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="icon">📦</div>
+      <h3>生產者消費者問題</h3>
+    </div>
 
-| 狀態 | 程式狀態 |
-|------|---------|
-| 飢餓（Hungry） | 嘗試取得左右筷子 |
-| 吃飯中（Eating） | 同時拿到兩根筷子 |
-| 思考中（Thinking） | 已放下筷子 |
+    <h3>問題情境</h3>
+    <p>生產者把物品放進緩衝區（上限 N 個），消費者從緩衝區取出物品。緩衝區為空時消費者必須等待；緩衝區滿時生產者必須等待。</p>
 
-**筷子邏輯**（第 i 位哲學家）：
-```javascript
-left(i)  = chopsticks[(i - 1 + 5) % 5]  // 左邊筷子（i-1）
-right(i) = chopsticks[i]                // 右邊筷子（i）
-```
+    <h3>同步條件</h3>
+    <table>
+      <tr><th>條件</th><th>保護什麼</th></tr>
+      <tr><td>互斥（Mutual Exclusion）</td><td>緩衝區同一時間只有一個執行緒能操作</td></tr>
+      <tr><td>同步（Synchronization）</td><td>空/滿的狀態必須正確傳遞</td></tr>
+    </table>
 
-**解決死結**：讓至少一位哲學家改變拿筷子的順序（先拿左再拿右），打破循環等待。
+    <h3>實作架構</h3>
+    <p>使用 <code>setTimeout</code> 模擬非同步的放入/取出操作。緩衝區內容用顏色方塊表示，狀態面板顯示：</p>
+    <ul style="margin:8px 0 8px 20px; font-size:14px; color:#ccc;">
+      <li>緩衝區已使用格數 / 總格數</li>
+      <li>各執行緒目前狀態（運行中 / 等待中）</li>
+      <li>已生產總量 / 已消費總量</li>
+    </ul>
+  </div>
 
-### 視覺呈現
+  <!-- 技術棧 -->
+  <h2>技術棧</h2>
+  <p>所有模擬均為<strong style="color:#ffd93d">純 HTML + CSS + JavaScript</strong>，單一檔案，無需任何框架或依賴：</p>
 
-使用 CSS `transform: rotate()` 對每個哲學家/筷子插槽進行極座標定位：
-```
-phil-slot:  rotate(θ) translateY(-160px) rotate(-θ)
-chop-slot:  rotate(θ) translateY(-135px) rotate(-θ)
-```
-θ 為該位置的極座標角度（每格 72°），`translateY` 距離決定半徑，內層恢復角度確保元素不旋轉。
+  <div class="pro-con">
+    <div class="box-pro">
+      <h4>優點 ✅</h4>
+      <p>直接在瀏覽器開啟即可運行</p>
+      <p>適合教學展示</p>
+      <p>GitHub Pages 直接托管</p>
+      <p>無需 npm install / build</p>
+    </div>
+    <div class="box-con">
+      <h4>限制 ❌</h4>
+      <p>JavaScript 是單執行緒</p>
+      <p>無法真正模擬多核心平行</p>
+      <p>但足以演示邏輯問題：</p>
+      <p>Race Condition 的核心是「時序不確定」，即使單核 CPU 的排程切換也會造成同樣問題</p>
+    </div>
+  </div>
 
----
+  <div class="related">
+    <h3>延伸閱讀</h3>
+    <ul>
+      <li><a href="thread.html">📚 Thread 概念</a> — 執行緒基本知識</li>
+      <li><a href="race_condition.html">⚠️ Race Condition</a> — 銀行模擬背後的原理</li>
+      <li><a href="deadlock.html">💀 Deadlock</a> — 哲學家問題背後的原理</li>
+      <li><a href="bank_simulation/index.html">🏦 銀行模擬</a></li>
+      <li><a href="dining_philosophers/index.html">🍜 哲學家用餐</a></li>
+      <li><a href="producer_consumer/index.html">📦 生產者消費者</a></li>
+    </ul>
+  </div>
 
-## 📦 生產者消費者問題
-
-### 問題情境
-
-- **生產者**：把物品放進緩衝區（上限 N 個）
-- **消費者**：從緩衝區取出物品
-- 緩衝區為空時消費者必須等待；緩衝區滿時生產者必須等待
-
-### 同步條件
-
-| 條件 | 保護什麼 |
-|------|---------|
-| **互斥（Mutual Exclusion）** | 緩衝區同一時間只有一個執行緒能操作 |
-| **同步（Synchronization）** | 空/滿的狀態必須正確傳遞 |
-
-### 實作架構
-
-使用 `setTimeout` 模擬非同步的放入/取出操作。緩衝區內容用顏色方塊表示，狀態面板顯示：
-- 緩衝區已使用格數 / 總格數
-- 各執行緒目前狀態（運行中 / 等待中）
-- 已生產總量 / 已消費總量
-
----
-
-## 技術栈
-
-所有模擬均為**純 HTML + CSS + JavaScript**，單一檔案，無需任何框架或依賴：
-
-```
-優點：
-✅ 直接在瀏覽器開啟即可運行
-✅ 適合教學展示
-✅ GitHub Pages 直接托管
-✅ 無需 npm install / build
-
-缺點：
-❌ JavaScript 是單執行緒，無法真正模擬多核心平行
-   （但足以演示邏輯問題：Race Condition 的核心是「時序不確定」，
-    即使單核 CPU 的排程切換也會造成同樣問題）
-```
-
----
-
-*延伸閱讀：[Thread 概念](thread.html) — 執行緒基本知識*
-*[Race Condition](race_condition.html) — 銀行模擬背後的原理*
-*[Deadlock](deadlock.html) — 哲學家問題背後的原理*
+  <div class="footer">sp_HW_5 — 系統程式作業 | 2026</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Deadlock 死結 — sp_HW_5</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      color: #eee;
+      font-family: 'Courier New', monospace;
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.7;
+    }
+    a { color: #00d4ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 800px; margin: 0 auto; }
+
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 24px;
+      padding: 7px 14px;
+      background: #0f3460;
+      color: #00d4ff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .back-btn:hover { background: #1a4a7a; text-decoration: none; }
+
+    h1 { font-size: 1.8em; color: #00d4ff; margin-bottom: 8px; }
+    h2 {
+      font-size: 1.2em;
+      color: #00d4ff;
+      margin: 32px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #0f3460;
+    }
+    h3 { font-size: 1em; color: #ffd93d; margin: 20px 0 10px; }
+    p { margin-bottom: 12px; color: #ccc; }
+
+    .lead {
+      font-size: 15px;
+      color: #888;
+      margin-bottom: 28px;
+      padding: 14px 18px;
+      background: #16213e;
+      border-radius: 8px;
+      border-left: 3px solid #e94560;
+    }
+
+    .quote {
+      background: #16213e;
+      border-left: 4px solid #ffd93d;
+      padding: 14px 18px;
+      margin: 16px 0;
+      color: #ffd93d;
+      font-size: 14px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 20px;
+      font-size: 14px;
+    }
+    th { background: #0f3460; color: #00d4ff; padding: 10px 14px; text-align: left; }
+    td { padding: 9px 14px; border-bottom: 1px solid #1a2a4a; color: #ccc; }
+    tr:hover td { background: #16213e; }
+    td:first-child { font-weight: bold; }
+
+    .condition-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 14px 0;
+    }
+    @media (max-width: 600px) { .condition-grid { grid-template-columns: 1fr; } }
+    .cond-card {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 16px;
+      border-top: 3px solid #e94560;
+    }
+    .cond-card h4 { color: #e94560; font-size: 13px; margin-bottom: 6px; }
+    .cond-card p { font-size: 13px; color: #888; margin: 0; }
+
+    .cycle-diagram {
+      background: #0d1b2a;
+      border: 1px solid #1a2a4a;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 16px 0;
+      font-size: 13px;
+      line-height: 2;
+      overflow-x: auto;
+    }
+    .cycle-diagram .p0 { color: #e94560; }
+    .cycle-diagram .p1 { color: #ffd93d; }
+    .cycle-diagram .p2 { color: #6bcb77; }
+    .cycle-diagram .p3 { color: #00d4ff; }
+    .cycle-diagram .p4 { color: #bb86fc; }
+    .cycle-diagram .arrow { color: #ffd93d; }
+    .cycle-diagram .wait { color: #e94560; }
+
+    .solution-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 14px 0;
+    }
+    .sol-item {
+      display: flex;
+      gap: 14px;
+      background: #16213e;
+      border-radius: 8px;
+      padding: 16px 18px;
+      align-items: flex-start;
+    }
+    .sol-item .badge {
+      background: #6bcb77;
+      color: #1a1a2e;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .sol-item h4 { color: #00d4ff; font-size: 14px; margin-bottom: 4px; }
+    .sol-item p { font-size: 13px; color: #888; margin: 0; }
+
+    .cmd-box {
+      background: #0d1b2a;
+      border: 1px solid #1a2a4a;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 12px 0;
+      font-size: 13px;
+      color: #888;
+      font-family: 'Courier New', monospace;
+    }
+
+    .cta-box {
+      margin-top: 36px;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+      border-radius: 12px;
+      border: 1px solid #0f3460;
+    }
+    .cta-box h3 { color: #00d4ff; margin-top: 0; }
+    .cta-box ul { list-style: none; margin-top: 10px; }
+    .cta-box li { padding: 6px 0; font-size: 14px; }
+    .cta-box li::before { content: '→ '; color: #555; }
+
+    .footer {
+      text-align: center;
+      color: #555;
+      font-size: 12px;
+      padding: 24px;
+      margin-top: 40px;
+      border-top: 1px solid #1a2a4a;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <a class="back-btn" href="index.html">← 返回首頁</a>
+
+  <h1>💀 Deadlock 死結</h1>
+  <p class="lead">死結（Deadlock）是多執行緒環境中的一種「僵局」。當兩個或多個執行緒都在等待對方釋放資源，導致所有參與者都無法繼續執行時，就發生了死結。</p>
+
+  <div class="quote">
+    💡 想像：哲學家 A 拿著左手的筷子，等待右手的筷子；哲學家 B 拿著右手的筷子，等待左手的筷子。兩人都不肯放手，結果兩人都餓死。
+  </div>
+
+  <h2>死結發生的四個必要條件</h2>
+  <p>根據 Coffman 準則，死結發生必須同時滿足以下四個條件。<strong style="color:#e94560">只要打破其中一個，就能避免死結：</strong></p>
+
+  <div class="condition-grid">
+    <div class="cond-card">
+      <h4>① 互斥（Mutual Exclusion）</h4>
+      <p>資源一次只能被一個執行緒使用（如 Mutex 本身）</p>
+    </div>
+    <div class="cond-card">
+      <h4>② 持有並等待（Hold and Wait）</h4>
+      <p>執行緒已持有資源，但又在申請其他被佔用的資源</p>
+    </div>
+    <div class="cond-card">
+      <h4>③ 不可搶奪（No Preemption）</h4>
+      <p>資源不能被強制剝奪，只能由持有者主動釋放</p>
+    </div>
+    <div class="cond-card">
+      <h4>④ 循環等待（Circular Wait）</h4>
+      <p>執行緒循環鏈，每個都在等待下一個所持有的資源</p>
+    </div>
+  </div>
+
+  <h2>哲學家問題：循環等待形成</h2>
+  <p>若每位哲學家都先拿右邊、再拿左邊，就會形成循環等待：</p>
+
+  <div class="cycle-diagram">
+<span class="p0">哲學家0</span>：拿到 <span class="p1">筷子1</span>，<span class="wait">等待 筷子0</span>
+    <span class="arrow"> → </span><span class="p1">哲學家1</span>：拿到 <span class="p2">筷子2</span>，<span class="wait">等待 筷子1</span>
+    <span class="arrow"> → </span><span class="p2">哲學家2</span>：拿到 <span class="p3">筷子3</span>，<span class="wait">等待 筷子2</span>
+    <span class="arrow"> → </span><span class="p3">哲學家3</span>：拿到 <span class="p4">筷子4</span>，<span class="wait">等待 筷子3</span>
+    <span class="arrow"> → </span><span class="p4">哲學家4</span>：拿到 <span class="p0">筷子0</span>，<span class="wait">等待 筷子4</span>
+    <span class="arrow"> ↻ </span>循環封閉，所有人都餓死
+  </div>
+
+  <h2>如何避免死結？</h2>
+
+  <div class="solution-list">
+    <div class="sol-item">
+      <div class="badge">最常用</div>
+      <div>
+        <h4>固定加鎖順序（Lock Ordering）</h4>
+        <p>強制規定所有執行緒必須按照相同的順序獲取鎖。例如，不論執行緒是誰，都必須「先鎖 A、再鎖 B」。這樣就打破了循環等待的條件。</p>
+      </div>
+    </div>
+    <div class="sol-item">
+      <div class="badge">無死結</div>
+      <div>
+        <h4>使用 trylock</h4>
+        <p>如果拿不到鎖，就立即返回錯誤而不是死等。這時執行緒可以先釋放手上已有的鎖，過一陣子再重試。</p>
+      </div>
+    </div>
+    <div class="sol-item">
+      <div class="badge">實務</div>
+      <div>
+        <h4>逾時機制（Timeout）</h4>
+        <p>設定等待上限，超時就放棄並報錯，防止永久卡死。</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>如何偵測死結？</h2>
+  <p>如果程式突然「停住」且 CPU 使用率極低，通常就是死結。</p>
+  <div class="cmd-box">
+# Linux：使用 gdb 附加到進程，查看執行緒堆疊追蹤
+$ gdb -p &lt;pid&gt;
+(gdb) thread apply all bt
+
+# 觀察是否所有執行緒都卡在 pthread_mutex_lock
+# 或其他同步原語上，形成循環等待
+  </div>
+
+  <h2>總結</h2>
+  <table>
+    <tr><th>條件</th><th>打破方式</th></tr>
+    <tr><td>互斥</td><td>有時無法避免（如同時只有一人能列印）</td></tr>
+    <tr><td>持有並等待</td><td>一次取得所有需要的鎖，或不持有就等待</td></tr>
+    <tr><td>不可搶奪</td><td>允許資源被強制釋放</td></tr>
+    <tr><td>循環等待</td><td>固定加鎖順序，讓等待圖不會形成環</td></tr>
+  </table>
+
+  <div class="quote">
+    💡 死結就像是程式碼裡的「交通堵塞」，設計時遵守「一致的加鎖順序」是最簡單有效的防範原則。
+  </div>
+
+  <div class="cta-box">
+    <h3>實際體驗</h3>
+    <ul>
+      <li><a href="dining_philosophers/index.html">🍜 哲學家用餐模擬</a> — 觀察 Deadlock 形成與解決</li>
+      <li><a href="thread.html">📚 Thread 概念</a> — 執行緒基本知識</li>
+      <li><a href="mutex.html">🔐 Mutex</a> — 互斥鎖的運作方式</li>
+    </ul>
+  </div>
+
+  <div class="footer">sp_HW_5 — 系統程式作業 | 2026</div>
+</div>
+</body>
+</html>

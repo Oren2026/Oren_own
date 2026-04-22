@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Race Condition 競態條件 — sp_HW_5</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      color: #eee;
+      font-family: 'Courier New', monospace;
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.7;
+    }
+    a { color: #00d4ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 800px; margin: 0 auto; }
+
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 24px;
+      padding: 7px 14px;
+      background: #0f3460;
+      color: #00d4ff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .back-btn:hover { background: #1a4a7a; text-decoration: none; }
+
+    h1 { font-size: 1.8em; color: #00d4ff; margin-bottom: 8px; }
+    h2 {
+      font-size: 1.2em;
+      color: #00d4ff;
+      margin: 32px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #0f3460;
+    }
+    h3 { font-size: 1em; color: #ffd93d; margin: 20px 0 10px; }
+    p { margin-bottom: 12px; color: #ccc; }
+
+    .lead {
+      font-size: 15px;
+      color: #888;
+      margin-bottom: 28px;
+      padding: 14px 18px;
+      background: #16213e;
+      border-radius: 8px;
+      border-left: 3px solid #e94560;
+    }
+
+    .three-steps {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+    .step-card {
+      flex: 1;
+      min-width: 140px;
+      background: #16213e;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .step-card .num {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    .step-card .title { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
+    .step-card.R { border-top: 3px solid #00d4ff; }
+    .step-card.R .title { color: #00d4ff; }
+    .step-card.M { border-top: 3px solid #ffd93d; }
+    .step-card.M .title { color: #ffd93d; }
+    .step-card.W { border-top: 3px solid #6bcb77; }
+    .step-card.W .title { color: #6bcb77; }
+    .step-card .desc { font-size: 12px; color: #888; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 20px;
+      font-size: 13px;
+    }
+    th { background: #0f3460; color: #00d4ff; padding: 9px 12px; text-align: left; }
+    td { padding: 8px 12px; border-bottom: 1px solid #1a2a4a; color: #ccc; }
+    tr:hover td { background: #16213e; }
+    td:first-child { color: #ffd93d; font-family: 'Courier New', monospace; }
+
+    .race-diagram {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin: 16px 0;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+    .race-diagram .tA { color: #e94560; }
+    .race-diagram .tB { color: #00d4ff; }
+    .race-diagram .time { color: #555; }
+    .race-diagram .overwrite { color: #ffd93d; background: #1a1a00; padding: 1px 4px; border-radius: 3px; }
+
+    .danger-box {
+      background: #16213e;
+      border: 1px solid #e94560;
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin: 16px 0;
+    }
+    .danger-box h3 { color: #e94560; margin-top: 0; }
+    .danger-box ul { margin: 10px 0 0 20px; font-size: 14px; color: #ccc; }
+    .danger-box li { margin: 6px 0; }
+
+    .solution-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .solution-item {
+      display: flex;
+      gap: 14px;
+      background: #16213e;
+      border-radius: 8px;
+      padding: 14px 18px;
+      align-items: flex-start;
+    }
+    .solution-item .icon { font-size: 20px; flex-shrink: 0; }
+    .solution-item h4 { color: #00d4ff; font-size: 14px; margin-bottom: 4px; }
+    .solution-item p { font-size: 13px; color: #888; margin: 0; }
+
+    .cta-box {
+      margin-top: 36px;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+      border-radius: 12px;
+      border: 1px solid #0f3460;
+    }
+    .cta-box h3 { color: #00d4ff; margin-top: 0; }
+    .cta-box ul { list-style: none; margin-top: 10px; }
+    .cta-box li { padding: 6px 0; font-size: 14px; }
+    .cta-box li::before { content: '→ '; color: #555; }
+
+    .footer {
+      text-align: center;
+      color: #555;
+      font-size: 12px;
+      padding: 24px;
+      margin-top: 40px;
+      border-top: 1px solid #1a2a4a;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <a class="back-btn" href="index.html">← 返回首頁</a>
+
+  <h1>⚠️ Race Condition 競態條件</h1>
+  <p class="lead">當多個執行緒同時存取並試圖修改共享資料，而最終結果取決於操作執行的先後順序時，就會發生 Race Condition（競態條件）。這種錯誤並非每次都出現，視排程而定，極難偵錯。</p>
+
+  <h2>核心：讀取→修改→寫入</h2>
+  <p>Race Condition 通常發生在以下三個步驟的循環中：</p>
+
+  <div class="three-steps">
+    <div class="step-card R">
+      <div class="num">STEP 1</div>
+      <div class="title">READ</div>
+      <div class="desc">從記憶體讀取目前的數值</div>
+    </div>
+    <div class="step-card M">
+      <div class="num">STEP 2</div>
+      <div class="title">MODIFY</div>
+      <div class="desc">在 CPU 中進行運算（例如 +1）</div>
+    </div>
+    <div class="step-card W">
+      <div class="num">STEP 3</div>
+      <div class="title">WRITE</div>
+      <div class="desc">將結果存回記憶體</div>
+    </div>
+  </div>
+
+  <p>當兩個執行緒同時進行這三個步驟，順序可能會交錯，導致其中一個執行緒的修改被另一個執行緒「覆蓋」。</p>
+
+  <h2>生活化的例子：銀行帳戶</h2>
+  <p>假設帳戶餘額為 $1,000，兩筆交易（A 和 B）同時發生，都要存款 $100：</p>
+
+  <div class="race-diagram">
+<table>
+  <tr><th>時間</th><th>執行緒 A（存款 $100）</th><th>執行緒 B（存款 $100）</th><th>帳戶餘額</th></tr>
+  <tr><td>T1</td><td class="tA">READ：$1,000</td><td>—</td><td>$1,000</td></tr>
+  <tr><td>T2</td><td>—</td><td class="tB">READ：$1,000</td><td>$1,000</td></tr>
+  <tr><td>T3</td><td class="tA">MODIFY：1000+100=1100</td><td>—</td><td>$1,000</td></tr>
+  <tr><td>T4</td><td class="tA">WRITE：$1,100</td><td>—</td><td class="overwrite">$1,100</td></tr>
+  <tr><td>T5</td><td>—</td><td class="tB">MODIFY：1000+100=1100</td><td>$1,100</td></tr>
+  <tr><td>T6</td><td>—</td><td class="tB overwrite">WRITE：$1,100 <span style="color:#e94560">（覆蓋！）</span></td><td class="overwrite">$1,100</td></tr>
+</table>
+  </div>
+
+  <div class="danger-box">
+    <h3>🔴 最終結果：被領走了 $200，但餘額只增加了 $100</h3>
+    <ul>
+      <li>帳戶本應有 $1,200，實際只有 $1,100</li>
+      <li>$100 的存款就這樣消失了，沒有人拿走了它</li>
+      <li>這就是 Race Condition 造成的資料不一致</li>
+    </ul>
+  </div>
+
+  <h2>如何解決 Race Condition？</h2>
+  <p>核心目標是實作<strong style="color:#00d4ff">互斥（Mutual Exclusion）</strong>，確保同一時間只有一個執行緒能進入「臨界區」。</p>
+
+  <div class="solution-list">
+    <div class="solution-item">
+      <div class="icon">🔐</div>
+      <div>
+        <h4>Lock / Mutex（鎖）</h4>
+        <p>執行緒 A 要操作資料時先上鎖，執行緒 B 必須等 A 解鎖後才能進入。</p>
+      </div>
+    </div>
+    <div class="solution-item">
+      <div class="icon">⚡</div>
+      <div>
+        <h4>Atomic Operations（原子操作）</h4>
+        <p>將「讀取→修改→寫入」封裝成一個不可分割的操作，硬體保證執行期間不會被中斷。</p>
+      </div>
+    </div>
+    <div class="solution-item">
+      <div class="icon">🚦</div>
+      <div>
+        <h4>Semaphore（信號量）</h4>
+        <p>用來控制同時存取特定資源的執行緒數量，可靈活支援多執行緒同時讀取的場景。</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>為什麼它很危險？</h2>
+  <div class="danger-box">
+    <h3>🔍 極難 Debug</h3>
+    <ul>
+      <li>Race Condition 並非每次執行都會發生，取決於作業系統的排程和處理器速度</li>
+      <li>可能在開發環境運作正常，但在高負載的正式環境才突然崩潰</li>
+      <li>錯誤行為可能每 1000 次才出現一次，幾乎無法重現</li>
+    </ul>
+  </div>
+  <div class="danger-box" style="border-color:#ffd93d">
+    <h3 style="color:#ffd93d">⚠️ 安全性漏洞</h3>
+    <ul>
+      <li>駭客有時會利用極短的時間差（例如檢查權限與執行指令之間）來繞過系統的安全機制</li>
+      <li>稱為 TOCTOU 攻擊（Time-of-Check to Time-of-Use）</li>
+    </ul>
+  </div>
+
+  <div class="cta-box">
+    <h3>實際體驗</h3>
+    <ul>
+      <li><a href="bank_simulation/index.html">🏦 銀行存提款模擬</a> — 單步觀察 Race Condition，或快速執行 100,000 筆驗證累積誤差</li>
+      <li><a href="mutex.html">🔐 Mutex 說明</a> — Race Condition 的解決方案</li>
+      <li><a href="thread.html">📚 Thread 概念</a> — 執行緒基本知識</li>
+    </ul>
+  </div>
+
+  <div class="footer">sp_HW_5 — 系統程式作業 | 2026</div>
+</div>
+</body>
+</html>

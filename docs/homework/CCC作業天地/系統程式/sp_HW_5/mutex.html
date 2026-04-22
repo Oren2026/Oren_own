@@ -1,106 +1,269 @@
-# 🔐 Mutex 互斥鎖
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Mutex 互斥鎖 — sp_HW_5</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      color: #eee;
+      font-family: 'Courier New', monospace;
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.7;
+    }
+    a { color: #00d4ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 800px; margin: 0 auto; }
 
-## 核心概念
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 24px;
+      padding: 7px 14px;
+      background: #0f3460;
+      color: #00d4ff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .back-btn:hover { background: #1a4a7a; text-decoration: none; }
 
-**Mutex（Mutual Exclusion，互助排除）** 是一種用於解決 Race Condition 的同步機制。它確保同一時間只有一個執行緒能進入「臨界區」（Critical Section）執行共享資料的操作。
+    h1 { font-size: 1.8em; color: #00d4ff; margin-bottom: 8px; }
+    h2 {
+      font-size: 1.2em;
+      color: #00d4ff;
+      margin: 32px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #0f3460;
+    }
+    h3 { font-size: 1em; color: #ffd93d; margin: 20px 0 10px; }
+    p { margin-bottom: 12px; color: #ccc; }
 
-> 想像廁所的門鎖：一人進入後上鎖，其他人必須在外面等。用完後開鎖離開，下一個人才能進去。
+    .lead {
+      font-size: 15px;
+      color: #888;
+      margin-bottom: 28px;
+      padding: 14px 18px;
+      background: #16213e;
+      border-radius: 8px;
+      border-left: 3px solid #0f3460;
+    }
 
----
+    .quote {
+      background: #16213e;
+      border-left: 4px solid #ffd93d;
+      padding: 14px 18px;
+      margin: 16px 0;
+      color: #ffd93d;
+      font-size: 14px;
+      border-radius: 0 8px 8px 0;
+    }
 
-## 為什麼需要 Mutex？
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 20px;
+      font-size: 14px;
+    }
+    th { background: #0f3460; color: #00d4ff; padding: 10px 14px; text-align: left; }
+    td { padding: 9px 14px; border-bottom: 1px solid #1a2a4a; color: #ccc; }
+    tr:hover td { background: #16213e; }
 
-多執行緒的問題往往出在**非原子操作（Non-Atomic Operation）**。一個看起來簡單的 `balance = balance + 1` 在底層是三個獨立的機器指令：
+    .code-block {
+      background: #0d1b2a;
+      border: 1px solid #1a2a4a;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 14px 0;
+      font-size: 13px;
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .code-block .comment { color: #555; }
+    .code-block .keyword { color: #e94560; }
+    .code-block .string { color: #6bcb77; }
+    .code-block .fn { color: #ffd93d; }
+    .code-block .macro { color: #00d4ff; }
 
-```
-1. READ   ：從記憶體讀取 balance 到暫存器
-2. MODIFY ：暫存器 +1
-3. WRITE  ：把暫存器值寫回記憶體
-```
+    .step-list {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 14px 0;
+    }
+    .step-list .step {
+      display: flex;
+      gap: 12px;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+    .step-list .num {
+      color: #ffd93d;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
 
-如果執行緒 A 做完第1步後被踢出 CPU，執行緒 B 進來做了完整的 1→2→3，A 回來後繼續做 2→3，這樣 A 的修改就被覆蓋了。
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    @media (max-width: 600px) { .comparison { grid-template-columns: 1fr; } }
+    .compare-box {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .compare-box.red { border-top: 3px solid #e94560; }
+    .compare-box.green { border-top: 3px solid #6bcb77; }
+    .compare-box h4 { font-size: 14px; margin-bottom: 8px; }
+    .compare-box.red h4 { color: #e94560; }
+    .compare-box.green h4 { color: #6bcb77; }
+    .compare-box p { font-size: 13px; color: #888; margin: 4px 0; }
 
----
+    .summary-box {
+      background: #0d1b2a;
+      border: 1px solid #1a2a4a;
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin: 20px 0;
+      font-size: 13px;
+      line-height: 1.9;
+    }
+    .summary-box .line-red { color: #e94560; }
+    .summary-box .line-green { color: #6bcb77; }
+    .summary-box .line-yellow { color: #ffd93d; }
+    .summary-box .line-gray { color: #555; }
 
-## Mutex 的四個特性
+    .related {
+      margin-top: 36px;
+      padding: 18px 22px;
+      background: #16213e;
+      border-radius: 10px;
+      border: 1px solid #0f3460;
+    }
+    .related h3 { color: #00d4ff; margin-top: 0; }
+    .related ul { list-style: none; margin-top: 10px; }
+    .related li { padding: 5px 0; font-size: 14px; }
+    .related li::before { content: '→ '; color: #555; }
 
-| 特性 | 說明 |
-|------|------|
-| **互斥（Mutual Exclusion）** | 臨界區同一時間只有一個執行緒能進入 |
-| **進展（Progress）** | 如果沒有人在臨界區，申請進入的執行緒一定能進 |
-| **有限等待（Bounded Waiting）** | 每個執行緒最終都能進入，不會永久等待 |
-| **非佔用（No Busy Waiting）** | 等待的執行緒不消耗 CPU（作業系統會將其阻塞） |
+    .footer {
+      text-align: center;
+      color: #555;
+      font-size: 12px;
+      padding: 24px;
+      margin-top: 40px;
+      border-top: 1px solid #1a2a4a;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <a class="back-btn" href="index.html">← 返回首頁</a>
 
----
+  <h1>🔐 Mutex 互斥鎖</h1>
+  <p class="lead">Mutex（Mutual Exclusion，互助排除）是一種用於解決 Race Condition 的同步機制。它確保同一時間只有一個執行緒能進入「臨界區」執行共享資料的操作。</p>
 
-## 語法使用（pthread 為例）
+  <div class="quote">
+    💡 想像廁所的門鎖：一人進入後上鎖，其他人必須在外面等。用完後開鎖離開，下一個人才能進去。
+  </div>
 
-```c
-#include <pthread.h>
+  <h2>為什麼需要 Mutex？</h2>
+  <p>多執行緒的問題往往出在<strong style="color:#ffd93d">非原子操作</strong>。一個看起來簡單的 <code>balance = balance + 1</code> 在底層是三個獨立的機器指令：</p>
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+  <div class="step-list">
+    <div class="step"><span class="num">1.</span><span><strong style="color:#00d4ff">READ</strong> — 從記憶體讀取 balance 到暫存器</span></div>
+    <div class="step"><span class="num">2.</span><span><strong style="color:#ffd93d">MODIFY</strong> — 暫存器 +1</span></div>
+    <div class="step"><span class="num">3.</span><span><strong style="color:#6bcb77">WRITE</strong> — 把暫存器值寫回記憶體</span></div>
+  </div>
 
-// 進入臨界區：加鎖
-pthread_mutex_lock(&mutex);
-// ===== 臨界區（Critical Section）=====
-// 只有這個執行緒能執行這裡的程式碼
+  <p>如果執行緒 A 做完第 1 步後被踢出 CPU，執行緒 B 進來做了完整的 1→2→3，A 回來後繼續做 2→3，這樣 A 的修改就被覆蓋了。</p>
+
+  <h2>Mutex 的四個特性</h2>
+  <table>
+    <tr><th>特性</th><th>說明</th></tr>
+    <tr><td><strong style="color:#e94560">互斥（Mutual Exclusion）</strong></td><td>臨界區同一時間只有一個執行緒能進入</td></tr>
+    <tr><td><strong style="color:#ffd93d">進展（Progress）</strong></td><td>如果沒有人在臨界區，申請進入的執行緒一定能進</td></tr>
+    <tr><td><strong style="color:#6bcb77">有限等待（Bounded Waiting）</strong></td><td>每個執行緒最終都能進入，不會永久等待</td></tr>
+    <tr><td><strong style="color:#00d4ff">非佔用（No Busy Waiting）</strong></td><td>等待的執行緒不消耗 CPU（作業系統會將其阻塞）</td></tr>
+  </table>
+
+  <h2>語法使用（pthread 為例）</h2>
+  <div class="code-block"><span class="macro">#include &lt;pthread.h&gt;</span>
+
+<span class="macro">pthread_mutex_t</span> mutex = <span class="macro">PTHREAD_MUTEX_INITIALIZER</span>;
+
+<span class="comment">// 進入臨界區：加鎖</span>
+<span class="fn">pthread_mutex_lock</span>(&mutex);
+<span class="comment">// ===== 臨界區（Critical Section）=====</span>
+<span class="comment">// 只有這個執行緒能執行這裡的程式碼</span>
 balance = balance + amount;
-// ======================================
-// 離開臨界區：解鎖
-pthread_mutex_unlock(&mutex);
-```
+<span class="comment">// =====================================</span>
+<span class="comment">// 離開臨界區：解鎖</span>
+<span class="fn">pthread_mutex_unlock</span>(&mutex);</div>
 
----
+  <h2>與銀行模擬的對應</h2>
+  <p>在<a href="bank_simulation/index.html">銀行存提款模擬</a>中：</p>
 
-## 與銀行模擬的對應
+  <div class="comparison">
+    <div class="compare-box red">
+      <h4>🔴 無 Mutex</h4>
+      <p>A 和 B 同時讀余額</p>
+      <p>同時計算，同時寫入</p>
+      <p style="color:#e94560">→ 後寫入覆蓋先寫入，存款遺失</p>
+    </div>
+    <div class="compare-box green">
+      <h4>🟢 有 Mutex</h4>
+      <p>A 先取得鎖，完整執行</p>
+      <p>釋放鎖後 B 才能進入</p>
+      <p style="color:#6bcb77">→ 兩筆存款都正確入帳</p>
+    </div>
+  </div>
 
-在[銀行存提款模擬](../bank_simulation/index.html)中：
+  <h2>Mutex 的缺點</h2>
 
-| 模式 | 行為 | 結果 |
-|------|------|------|
-| **無 Mutex** | A 和 B 同時讀余額，同時計算，同時寫入 | 後寫入的覆蓋先寫入的，存款遺失 |
-| **有 Mutex** | A 先取得鎖，完整執行後釋放，B 才能進入 | 兩筆存款都正確入帳 |
+  <h3>1. 效能損耗</h3>
+  <p>鎖的取得/釋放有成本，過度使用會讓程式變慢。</p>
 
----
+  <h3>2. 死結風險（Deadlock）</h3>
+  <p>如果執行緒在持有鎖的狀態下嘗試取得另一個鎖，而那個鎖正被別人持有，就可能形成<strong style="color:#e94560">循環等待</strong>，所有執行緒卡死。</p>
 
-## Mutex 的缺點
+  <h3>3. 優先權反轉（Priority Inversion）</h3>
+  <p>低優先權執行緒持有鎖，高優先權執行緒一直等待。</p>
 
-### 1. 效能損耗
-鎖的取得/釋放有成本，過度使用會讓程式變慢。
+  <h2>常見替代方案</h2>
+  <table>
+    <tr><th>機制</th><th>說明</th></tr>
+    <tr><td><strong>Semaphore</strong></td><td>允許 N 個執行緒同時進入（計數型號誌）</td></tr>
+    <tr><td><strong>Monitor</strong></td><td>更高階的同步結構，自動加鎖（如 Java <code>synchronized</code>）</td></tr>
+    <tr><td><strong>Lock-free</strong></td><td>使用硬體提供的原子指令（CAS）無鎖實現</td></tr>
+    <tr><td><strong>Read-Write Lock</strong></td><td>讀可以並發，寫必須獨占</td></tr>
+  </table>
 
-### 2. 死結風險（Deadlock）
-如果執行緒在持有鎖的狀態下嘗試取得另一個鎖，而那個鎖正被別人持有，就可能形成**循環等待**，所有執行緒卡死。
+  <h2>總結</h2>
+  <div class="summary-box">
+<span class="line-gray">沒有 Mutex：</span>
+<span class="line-red">  A: READ(balance=$0) ──→ 被踢出CPU</span>
+<span class="line-red">  B: READ(balance=$0) → MODIFY($0+$1=$1) → WRITE($1)</span>
+<span class="line-red">  A: → MODIFY($0+$2=$2) → WRITE($2)    ← 覆蓋了 B 的結果！</span>
 
-### 3. 優先權反轉（Priority Inversion）
-低優先權執行緒持有鎖，高優先權執行緒一直等待。
+<span class="line-gray">有 Mutex：</span>
+<span class="line-green">  A: 🔒 Lock → READ($0) → MODIFY($0+$2=$2) → WRITE($2) → 🔓 Unlock</span>
+<span class="line-green">  B: （等待鎖）→ 🔒 Lock → READ($2) → MODIFY($2+$1=$3) → WRITE($3) → 🔓 Unlock</span>
+  </div>
 
----
+  <div class="related">
+    <h3>相關主題</h3>
+    <ul>
+      <li><a href="race_condition.html">Race Condition</a> — Mutex 要解決的問題</li>
+      <li><a href="bank_simulation/index.html">🏦 銀行模擬</a> — 實際體驗 Mutex 的效果</li>
+      <li><a href="deadlock.html">Deadlock</a> — Mutex 可能造成的僵局</li>
+    </ul>
+  </div>
 
-## 常見替代方案
-
-| 機制 | 說明 |
-|------|------|
-| **Semaphore** | 允許 N 個執行緒同時進入（計數型號誌） |
-| **Monitor** | 更高階的同步結構，自動加鎖（如 Java `synchronized`） |
-| **Lock-free** | 使用硬體提供的原子指令（CAS）無鎖實現 |
-| **Read-Write Lock** | 讀可以並發，寫必須獨占 |
-
----
-
-## 總結
-
-```
-沒有 Mutex：
-  A: READ(balance=$0) ──→ 被踢出CPU
-  B: READ(balance=$0) → MODIFY($0+$1=$1) → WRITE($1)
-  A: → MODIFY($0+$2=$2) → WRITE($2)    ← 覆蓋了 B 的結果！
-
-有 Mutex：
-  A: 🔒 Lock → READ($0) → MODIFY($0+$2=$2) → WRITE($2) → 🔓 Unlock
-  B: （等待鎖）→ 🔒 Lock → READ($2) → MODIFY($2+$1=$3) → WRITE($3) → 🔓 Unlock
-```
-
----
-
-*相關主題：[Race Condition](race_condition.html) — Mutex 要解決的問題*
-*[銀行模擬](../bank_simulation/index.html) — 實際體驗 Mutex 的效果*
+  <div class="footer">sp_HW_5 — 系統程式作業 | 2026</div>
+</div>
+</body>
+</html>
