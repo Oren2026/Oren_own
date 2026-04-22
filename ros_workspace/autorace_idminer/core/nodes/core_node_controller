@@ -52,6 +52,11 @@ class CoreNodeController():
 
         rospy.loginfo("[Controller] ===== 啟動中 =====")
 
+        # 比賽一開始就開啟 tf（交通號誌偵測），不等第一個 /mission
+        # detect_traffic_light 偵測到綠燈後會自動發 /mission = Intersection
+        rospy.sleep(1)  # 等 roslaunch 系統完全就緒
+        self.fnLaunch(self.Launcher.tf.value, True)
+
         loop_rate = rospy.Rate(10)  # 10hz
 
         while not rospy.is_shutdown():
