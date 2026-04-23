@@ -36,7 +36,7 @@ class SequenceBlock(tk.Frame):
         lbl_text = f"{type_name}{self.extra_label}"
         lbl = tk.Label(self, text=lbl_text,
                        bg='#4a4a4a', fg='white', font=('Arial', 11, 'bold'),
-                       width=8, relief='raised')
+                       width=16, relief='raised')
         lbl.pack(side=tk.LEFT, padx=5, pady=5)
 
         unit = self.TYPE_UNITS.get(self.block_type, "")
@@ -150,6 +150,12 @@ class MotionEditor:
         self.canvas = tk.Canvas(seq_frame, bg='#252525', highlightthickness=0)
         scrollbar = ttk.Scrollbar(seq_frame, orient='vertical', command=self.canvas.yview)
         self.seq_view = tk.Frame(self.canvas, bg='#252525')
+
+        # ---- fake_lane 計數 summary（位於 seq_view 上方）----
+        self.fl_summary_label = tk.Label(
+            seq_frame, text="",
+            fg='#aaaaaa', bg='#1e1e1e', font=('Arial', 9))
+        self.fl_summary_label.pack(side=tk.TOP, fill='x', padx=4, pady=(2, 0))
 
         self.canvas.configure(yscrollcommand=scrollbar.set)
         self.canvas.pack(side=tk.LEFT, fill='both', expand=True)
@@ -519,6 +525,14 @@ class MotionEditor:
                 )
             block.pack(fill='x', padx=4, pady=3)
             self.block_widgets.append(block)
+
+        # 更新 fake_lane summary
+        counts = {"左": 0, "直": 0, "右": 0}
+        for item in self.sequence:
+            if isinstance(item, tuple) and len(item) == 4 and item[0] == 6:
+                counts[item[2]] = counts.get(item[2], 0) + item[3]
+        parts = [f"{d}={n}次" for d, n in counts.items() if n > 0]
+        self.fl_summary_label.config(text=" | ".join(parts) if parts else "")
 
     # ============================
     # 執行
