@@ -18,22 +18,25 @@ import threading
 class SequenceBlock(tk.Frame):
     """序列中的單一指令區塊"""
 
-    TYPE_NAMES = {3: "旋轉", 4: "前進", 5: "後退", 0: "等待"}
-    TYPE_UNITS = {3: "度", 4: "cm", 5: "cm", 0: "秒"}
+    TYPE_NAMES = {3: "旋轉", 4: "前進", 5: "後退", 0: "等待", 6: "fake_lane"}
+    TYPE_UNITS = {3: "度", 4: "cm", 5: "cm", 0: "秒", 6: ""}
 
-    def __init__(self, parent, block_type, value, on_delete, on_change, index):
+    def __init__(self, parent, block_type, value, on_delete, on_change, index, extra_label=""):
         super().__init__(parent, bg='#2b2b2b', relief='solid', bd=1)
         self.block_type = block_type
         self.value = value
         self.on_delete = on_delete
         self.on_change = on_change
         self.index = index
+        self.extra_label = extra_label
         self._build()
 
     def _build(self):
-        lbl = tk.Label(self, text=self.TYPE_NAMES.get(self.block_type, "?"),
+        type_name = self.TYPE_NAMES.get(self.block_type, "?")
+        lbl_text = f"{type_name}{self.extra_label}"
+        lbl = tk.Label(self, text=lbl_text,
                        bg='#4a4a4a', fg='white', font=('Arial', 11, 'bold'),
-                       width=6, relief='raised')
+                       width=8, relief='raised')
         lbl.pack(side=tk.LEFT, padx=5, pady=5)
 
         unit = self.TYPE_UNITS.get(self.block_type, "")
@@ -242,16 +245,20 @@ class MotionEditor:
         fl_frame.pack(pady=5)
 
         fl_btn_style = {'relief': 'raised', 'bd': 2,
-                        'font': ('Arial', 11, 'bold'),
-                        'width': 10, 'height': 1}
+                        'font': ('Arial', 10, 'bold'),
+                        'width': 8, 'height': 1}
 
         def _send_fake_lane(lane_val, direction):
-            """發送 fake_lane：for x in range(6)，每次間隔 0.1s"""
+            """發送 fake_lane：for x in range(6)，每次間隔 0.1s，並加入序列"""
             self.status_label.config(text=f"fake_lane {direction} ({lane_val}) 執行中...",
                                      fg='#ffaa00')
 
+            # 加入序列（左側區塊顯示）
+            self.sequence.append((6, lane_val, direction))
+            self._rebuild()
+
             def run():
-                for i in range(6):
+                for _ in range(6):
                     cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
                            f"rostopic pub /control/lane std_msgs/Float64 '{{data: {lane_val}}}' --once")
                     subprocess.run(['bash', '-c', cmd],
@@ -262,12 +269,15 @@ class MotionEditor:
 
             threading.Thread(target=run, daemon=True).start()
 
-        tk.Button(fl_frame, text="◀ 左 (380)",
+        tk.Button(fl_frame, text="◀ 左 380",
                  command=lambda: _send_fake_lane(380, "左"),
-                 bg='#3a3a1a', fg='#ffff88', **fl_btn_style).pack(side=tk.LEFT, padx=3)
-        tk.Button(fl_frame, text="▶ 右 (610)",
+                 bg='#3a3a1a', fg='#ffff88', **fl_btn_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(fl_frame, text="▲ 直 500",
+                 command=lambda: _send_fake_lane(500, "直"),
+                 bg='#1a3a3a', fg='#88ffff', **fl_btn_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(fl_frame, text="▶ 右 610",
                  command=lambda: _send_fake_lane(610, "右"),
-                 bg='#3a1a3a', fg='#ff88ff', **fl_btn_style).pack(side=tk.LEFT, padx=3)
+                 bg='#3a1a3a', fg='#ff88ff', **fl_btn_style).pack(side=tk.LEFT, padx=2)
 
         # ---- 分隔線 ----
         tk.Label(right, text="─" * 16, bg='#1e1e1e', fg='#333').pack(pady=4)
@@ -392,13 +402,25 @@ class MotionEditor:
         else:
             self.empty_label.pack_forget()
 
-        for i, (btype, val) in enumerate(self.sequence):
-            block = SequenceBlock(
-                self.seq_view, btype, val,
-                on_delete=lambda idx=i: self.delete_block(idx),
-                on_change=lambda idx, bt, v, d=0: self.change_block(idx, bt, v, d),
-                index=i
-            )
+        for i, item in enumerate(self.sequence):
+            # fake_lane blocks are 3-tuples: (6, lane_val, direction)
+            if isinstance(item, tuple) and len(item) == 3:
+                btype, val, direction = item
+                block = SequenceBlock(
+                    self.seq_view, btype, val,
+                    on_delete=lambda idx=i: self.delete_block(idx),
+                    on_change=lambda idx, bt, v, d=0: self.change_block(idx, bt, v, d),
+                    index=i,
+                    extra_label=f" {direction}"
+                )
+            else:
+                btype, val = item
+                block = SequenceBlock(
+                    self.seq_view, btype, val,
+                    on_delete=lambda idx=i: self.delete_block(idx),
+                    on_change=lambda idx, bt, v, d=0: self.change_block(idx, bt, v, d),
+                    index=i
+                )
             block.pack(fill='x', padx=4, pady=3)
             self.block_widgets.append(block)
 
