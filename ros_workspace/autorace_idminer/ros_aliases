@@ -17,6 +17,7 @@ alias ros6='roslaunch detect detect_level.launch'
 alias ros6cal='roslaunch detect detect_level.launch mode:=calibration'
 alias ros7='roslaunch detect detect_tunnel.launch'
 alias ros7cal='roslaunch detect detect_tunnel.launch mode:=calibration'
+alias ros7new='roslaunch detect detect_tunnel_new.launch'
 
 # -------- 循線控制 --------
 
@@ -92,7 +93,8 @@ ros-help() {
     echo "   ros5cal       M曲線校正"
     echo "   ros6          平交道"
     echo "   ros6cal       平交道校正"
-    echo "   ros7          隧道"
+    echo "   ros7          隧道（舊版）"
+    echo "   ros7new       隧道（新版）"
     echo "   ros7cal       隧道校正"
     echo ""
     echo " 循線控制："

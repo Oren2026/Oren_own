@@ -138,8 +138,9 @@ missions = [
     ("M5 校正",        "m5cal",  "roslaunch detect detect_lane.launch mode:=calibration"),
     ("M6 平交道",      "m6",     "roslaunch detect detect_level.launch"),
     ("M6 校正",        "m6cal",  "roslaunch detect detect_level.launch mode:=calibration"),
-    ("M7 隧道",        "m7",     "roslaunch detect detect_tunnel.launch"),
+    ("M7 隧道(舊)",    "m7",     "roslaunch detect detect_tunnel.launch"),
     ("M7 校正",        "m7cal",  "roslaunch detect detect_tunnel.launch mode:=calibration"),
+    ("M7 隧道(新)",    "m7new",  "roslaunch detect detect_tunnel_new.launch"),
 ]
 
 tools = [
@@ -240,15 +241,29 @@ for i in range(0, len(missions), 2):
         btn.grid(row=row, column=col_offset, padx=5, pady=4)
         btn_refs[name] = btn
 
-# ---- Right Panel: STOP + Tool + D-Pad ----
+# ---- Right Panel: STOP + Controller + Tool + D-Pad ----
 right_panel = tk.Frame(root, bg='#2b2b2b')
 right_panel.pack(side=tk.LEFT, padx=15, pady=10)
 
-# STOP ALL - top of right panel
-stop_btn = ttk.Button(right_panel, text="■  STOP ALL",
+# Top row: STOP ALL | rosn | rosnn
+top_row = tk.Frame(right_panel, bg='#2b2b2b')
+top_row.pack(pady=(0, 12))
+
+stop_btn = ttk.Button(top_row, text="■  STOP ALL",
                       command=on_stop,
-                      style='Stop.TButton', width=22)
-stop_btn.pack(pady=(0, 12))
+                      style='Stop.TButton', width=10)
+stop_btn.pack(side=tk.LEFT, padx=3)
+
+def make_controller_btn(label, name, cmd):
+    runner = lambda: run_terminal(name, cmd)
+    btn = ttk.Button(top_row, text=label,
+                     command=runner,
+                     style='TButton', width=12)
+    btn.pack(side=tk.LEFT, padx=3)
+    btn_refs[name] = btn
+
+make_controller_btn("舊 Controller", "rosn",  "rosrun core core_node_controller")
+make_controller_btn("新 Controller", "rosnn", "rosrun core core_node_controller_new")
 
 # 控制工具
 tk.Label(right_panel, text="控制工具",
@@ -274,9 +289,7 @@ def run_persistent(name, cmd):
 
 def make_tool_btn(label, name, cmd):
     """工廠函式，避免 for 迴圈閉包問題"""
-    if name == "rosn":
-        runner = lambda: run_terminal(name, cmd)
-    elif name in ("rr", "riv"):
+    if name in ("rr", "riv"):
         runner = lambda: run_persistent(name, cmd)
     else:
         runner = lambda: run_bg(name, cmd)
@@ -286,7 +299,12 @@ def make_tool_btn(label, name, cmd):
     btn.pack(pady=3, fill='x')
     btn_refs[name] = btn
 
-for label, name, cmd in tools:
+tool_defs = [
+    ("運動控制",           "cmov",   "roslaunch control control_moving.launch"),
+    ("rqt設定參數",        "rr",     "rosrun rqt_reconfigure rqt_reconfigure"),
+    ("影像檢視",           "riv",    "rosrun rqt rqt"),
+]
+for label, name, cmd in tool_defs:
     make_tool_btn(label, name, cmd)
 
 # 循線按鈕（dl + cl 分別背景執行）
