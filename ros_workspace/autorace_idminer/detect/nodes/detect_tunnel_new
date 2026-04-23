@@ -74,7 +74,13 @@ class DetectSign():
         self.is_moving_complete = False
         self.is_navigation_finished = False
         self.is_tunnel_finished = False
-        self.is_obstacle_detected = False  # 雷達障礙偵測狀態
+
+        # 雷達障礙偵測狀態
+        self.is_obstacle_detected = False
+        self.is_at_tunnel_entry = False   # 左右對稱點抵達
+        self.obstacle_range = 1.0          # 前方障礙物距離（用於速度控制）
+        self.left_range = 1.0              # 左側障礙物距離
+        self.right_range = 1.0             # 右側障礙物距離
 
         self.last_current_theta = 0.0
 
@@ -83,19 +89,57 @@ class DetectSign():
         self.is_moving_complete = True
 
     def cbScanObstacle(self, scan):
-        """雷達障礙偵測 - 參考 detect_construction"""
-        angle_scan = 5
-        scan_start = 0 - angle_scan
-        scan_end = 0 + angle_scan
-        threshold_distance = 0.4  # 40cm
+        """
+        雷達障礙偵測：
+        - 同時監控左側（45-75°）和右側（285-315°）障礙物
+        - 當左右兩側障礙物都 < threshold，代表抵達隧道入口對稱點
+        - 同時持續監控前方障礙物距離，用於動態調速
+        """
+        angle_scan_side = 15   # 左右掃描範圍（度）
+        threshold_symmetry = 0.35   # 對稱點門檻（35cm，兩側都低於此值 = 對稱停車點）
+        threshold_front = 0.4      # 前方障礙物門檻
 
-        is_obstacle_detected = False
-        for i in range(scan_start, scan_end):
-            if scan.ranges[i] < threshold_distance and scan.ranges[i] > 0.2:
-                is_obstacle_detected = True
-                rospy.loginfo("[TUNNEL] OBSTACLE DETECTED! range=%.3f", scan.ranges[i])
+        # 左側：45-75°（前方左側）
+        scan_start_left = 45
+        scan_end_left = 75
+        # 右側：285-315°（前方右側）
+        scan_start_right = 285
+        scan_end_right = 315
 
-        self.is_obstacle_detected = is_obstacle_detected
+        min_left = float('inf')
+        for i in range(scan_start_left, scan_end_left):
+            if scan.ranges[i] > 0.2:
+                min_left = min(min_left, scan.ranges[i])
+
+        min_right = float('inf')
+        for i in range(scan_start_right, scan_end_right):
+            if scan.ranges[i] > 0.2:
+                min_right = min(min_right, scan.ranges[i])
+
+        # 前方障礙物（用於調速）
+        scan_start_front = 355
+        scan_end_front = 5
+        min_front = float('inf')
+        for i in list(range(scan_start_front, 360)) + list(range(0, scan_end_front)):
+            if scan.ranges[i] > 0.2:
+                min_front = min(min_front, scan.ranges[i])
+
+        self.left_range = min_left if min_left != float('inf') else 1.0
+        self.right_range = min_right if min_right != float('inf') else 1.0
+        self.obstacle_range = min_front if min_front != float('inf') else 1.0
+
+        # 對稱點判斷：左右都低於門檻
+        if min_left < threshold_symmetry and min_right < threshold_symmetry:
+            if not self.is_at_tunnel_entry:
+                rospy.loginfo("[TUNNEL] AT TUNNEL ENTRY (symmetry detected: L=%.3f R=%.3f)",
+                              self.left_range, self.right_range)
+            self.is_at_tunnel_entry = True
+
+        # 前方障礙物偵測
+        self.is_obstacle_detected = (min_front < threshold_front)
+
+        if self.is_obstacle_detected:
+            rospy.loginfo("[TUNNEL] OBSTACLE: front=%.3f", self.obstacle_range)
 
     def cbGetNavigationResult(self, msg_nav_result):
         if msg_nav_result.status.status == 3:
@@ -189,35 +233,59 @@ class DetectSign():
 
             self.pub_mission_tunnel.publish(self.TunnelStep.process.value)
 
-            rospy.sleep(2)
+            rospy.loginfo("[TUNNEL] SEARCHING FOR ENTRY SYMMETRY POINT...")
 
-            rospy.loginfo("[Tunnel] MOTION...")
+            # 重置對稱點狀態
+            self.is_at_tunnel_entry = False
 
+            # 前進直到左右對稱點抵達
             self.lastError = 0.0
             self.start_pos_x = self.current_pos_x
             self.start_pos_y = self.current_pos_y
 
             while True:
-                error = self.fnStraight(0.6)
+                error = self.fnStraight(99.0)  # 持續前進直到對稱點偵測到
 
-                if math.fabs(error) < 0.005:
+                # 對稱點抵達：左右牆壁都在 35cm 內
+                if self.is_at_tunnel_entry:
+                    rospy.loginfo("[TUNNEL] SYMMETRY POINT REACHED - STOPPING")
+                    break
+
+                # Safety timeout：走了 2m 还没到就強制停（避免 deadlock）
+                dist = math.sqrt((self.current_pos_x - self.start_pos_x)**2 + (self.current_pos_y - self.start_pos_y)**2)
+                if dist > 2.0:
+                    rospy.logwarn("[TUNNEL] SAFETY STOP - too far without symmetry detection")
                     break
 
             self.fnStop()
+            rospy.sleep(1)
+
+            # 強制設定 AMCL 起點到地圖上的已知隧道入口座標
+            rospy.loginfo("[TUNNEL] RESET AMCL POSE to tunnel entry")
+            initialPose = PoseWithCovarianceStamped()
+            initialPose.header.frame_id = "map"
+            initialPose.header.stamp = rospy.Time.now()
+            initialPose.pose.pose.position.x = -1.7
+            initialPose.pose.pose.position.y = -0.2
+            initialPose.pose.pose.position.z = 0.0
+            initialPose.pose.pose.orientation.x = 0.0
+            initialPose.pose.pose.orientation.y = 0.0
+            initialPose.pose.pose.orientation.z = 0.0
+            initialPose.pose.pose.orientation.w = 1.0
+            initialPose.pose.covariance = [0.05, 0, 0, 0, 0, 0,
+                                           0, 0.05, 0, 0, 0, 0,
+                                           0, 0, 0.05, 0, 0, 0,
+                                           0, 0, 0, 0.05, 0, 0,
+                                           0, 0, 0, 0, 0.05, 0,
+                                           0, 0, 0, 0, 0, 0.05]
+            self.pub_init_pose.publish(initialPose)
 
             self.pub_mission_tunnel.publish(self.TunnelStep.nav.value)
-
             rospy.loginfo("[TUNNEL] NAVIGATION...")
-            # initialPose = PoseWithCovarianceStamped()
-            # initialPose.header.frame_id = "map"
-            # initialPose.header.stamp = rospy.Time.now()
-            # initialPose.pose.pose = self.odom_msg.pose.pose
 
-            # self.pub_init_pose.publish(initialPose)
-            rospy.sleep(3)
+            rospy.sleep(3)  # 等 AMCL 收斂
 
             self.fnPubGoalPose()
-
 
             while True:
                 if self.is_navigation_finished == True:
@@ -229,24 +297,14 @@ class DetectSign():
 
             rospy.loginfo("[TUNNEL] FINISH & GO_OUT...")
 
-            self.lastError = 0.0
-            self.start_pos_x = self.current_pos_x
-            self.start_pos_y = self.current_pos_y
-
-            while True:
-                error = self.fnStraight(0.14)
-
-                if math.fabs(error) < 0.005:
-                    break
-
             self.fnStop()
 
             self.current_step_tunnel = self.TunnelStep.end.value
             self.pub_mission_tunnel.publish(self.current_step_tunnel)
 
-            #self.current_mission = self.Mission.LevelCrossing.value
-            #self.pub_mission.publish(self.current_mission)
             self.counter = 1
+            self.is_saw_tunnel = False
+            self.is_at_tunnel_entry = False
 
 
     def cbOdom(self, odom_msg):
@@ -289,9 +347,6 @@ class DetectSign():
     def fnStraight(self, desired_dist):
         err_pos = math.sqrt((self.current_pos_x - self.start_pos_x) ** 2 + (self.current_pos_y - self.start_pos_y) ** 2) - desired_dist
 
-        rospy.loginfo("Tunnel_Straight")
-        rospy.loginfo("err_pos  desired_dist : %f  %f  %f", err_pos, desired_dist, self.lastError)
-
         Kp = 0.4
         Kd = 0.05
 
@@ -300,15 +355,19 @@ class DetectSign():
 
         twist = Twist()
 
-        # 雷達障礙偵測：有障礙就減速
-        if self.is_obstacle_detected:
-            rospy.loginfo("[TUNNEL] OBSTACLE AHEAD - SLOWING DOWN")
-            twist.linear.x = 0.05   # 慢速前進
-            twist.angular.z = 0.02
+        # 根據前方障礙物距離動態調速
+        dist = self.obstacle_range
+        if dist < 0.15:
+            twist.linear.x = 0.0    # <15cm：停止
+            rospy.loginfo("[TUNNEL] STOP - too close (%.3f)", dist)
+        elif dist < 0.25:
+            twist.linear.x = 0.03   # <25cm：超慢
+        elif dist < 0.35:
+            twist.linear.x = 0.08   # <35cm：慢速
         else:
             twist.linear.x = 0.15   # 正常速度
-            twist.angular.z = 0.03
 
+        twist.angular.z = 0.03
         twist.linear.y = 0
         twist.linear.z = 0
         twist.angular.x = 0
