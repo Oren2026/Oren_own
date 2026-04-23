@@ -249,7 +249,7 @@ class MotionEditor:
                         'width': 8, 'height': 1}
 
         def _send_fake_lane(lane_val, direction):
-            """發送 fake_lane：for x in range(6)，每次間隔 0.1s，並加入序列"""
+            """發送 fake_lane：lane_toggle False → fake_lane ×6 → lane_toggle True"""
             self.status_label.config(text=f"fake_lane {direction} ({lane_val}) 執行中...",
                                      fg='#ffaa00')
 
@@ -258,12 +258,28 @@ class MotionEditor:
             self._rebuild()
 
             def run():
+                # 1. 先關閉循線模式
+                cmd_off = ("cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
+                           "rostopic pub /detect/lane_toggle std_msgs/Bool '{data: false}' --once")
+                subprocess.run(['bash', '-c', cmd_off],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                time.sleep(0.1)
+
+                # 2. 發送 fake_lane × 6
                 for _ in range(6):
-                    cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
-                           f"rostopic pub /control/lane std_msgs/Float64 '{{data: {lane_val}}}' --once")
+                    cmd = ("cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
+                           "rostopic pub /control/lane std_msgs/Float64 '{{data: {lane_val}}}' --once"
+                           .format(lane_val=lane_val))
                     subprocess.run(['bash', '-c', cmd],
                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     time.sleep(0.1)
+
+                # 3. 開啟循線模式，車子開始响应
+                cmd_on = ("cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
+                          "rostopic pub /detect/lane_toggle std_msgs/Bool '{data: true}' --once")
+                subprocess.run(['bash', '-c', cmd_on],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
                 self.root.after(0, lambda: self.status_label.config(
                     text=f"fake_lane {direction} 完成", fg='#88ff88'))
 
