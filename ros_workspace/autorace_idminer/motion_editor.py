@@ -258,7 +258,7 @@ class MotionEditor:
             self._rebuild()
 
             def run():
-                # 按鈕：只發 1 次（車子實際上會自己產生 5 次 sub-action 的 gap）
+                # 按鈕：只發 1 次（無迴圈，測試專用）
                 cmd = ("cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
                        "rostopic pub /control/lane std_msgs/Float64 '{{data: {lane_val}}}' --once"
                        .format(lane_val=lane_val))
@@ -665,12 +665,11 @@ class MotionEditor:
                     lines.append(f"                rospy.sleep({int(val / 10) + 1})")
                     lines.append(f"                self.pub_lane_toggle.publish(False)")
                 elif btype == 6:
-                    # 按鈕 1 次，匯出 expand 為 5 層（補足車子內部的 sub-action gap）
+                    # 按鈕：1次 publish｜匯出：5層×publish+sleep
                     lines.append(f"                rospy.loginfo('[{MISSION}] FAKE {int(val)}')")
-                    lines.append(f"                for y in range(0, 5):")
-                    lines.append(f"                    for x in range(0, 6):")
-                    lines.append(f"                        self.pub_fake_lane.publish({int(val)})")
-                    lines.append(f"                        rospy.sleep(0.1)")
+                    lines.append(f"                for x in range(0, 5):")
+                    lines.append(f"                    self.pub_fake_lane.publish({int(val)})")
+                    lines.append(f"                    rospy.sleep(0.1)")
 
         code = '\n'.join(lines)
         self._show_code(fn, code)
