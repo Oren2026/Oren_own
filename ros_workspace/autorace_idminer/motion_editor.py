@@ -438,18 +438,19 @@ class MotionEditor:
 
         def run():
             type_names = SequenceBlock.TYPE_NAMES
-            for i, (btype, val) in enumerate(self.sequence):
+            for i, item in enumerate(self.sequence):
                 if not self.is_running:
                     break
-                name = type_names.get(btype, "?")
+                # fake_lane blocks are 3-tuple: (6, lane_val, direction)
+                if isinstance(item, tuple) and len(item) == 3:
+                    btype, val, direction = item
+                else:
+                    btype, val = item
                 unit = "cm" if btype in (4, 5) else ("度" if btype == 3 else "秒")
-                disp_val = int(val)  # 使用者輸入的公分/度數直接顯示
-                # 更新狀態列（透過 root.after 回到主執行緒）
-                self.root.after(0, lambda n=name, v=disp_val, u=unit, idx=i:
+                disp_val = int(val)
+                self.root.after(0, lambda n=type_names.get(btype, "?"), v=disp_val, u=unit, idx=i:
                     self.status_label.config(text=f"#{idx+1} {n} {v}{u}..."))
-                # 發送指令（與方向鍵同原理，發完不等）
                 send_moving(btype, val)
-                # 每個指令之間留 0.5 秒緩衝
                 time.sleep(0.5)
 
             self.is_running = False
@@ -477,15 +478,36 @@ class MotionEditor:
         MISSION = fn.split('_')[0].upper() or "PARKING"
         ver = self.export_ver.get()
 
-        # 自動總結：合併同 type 連續指令
+        # ---- 偵測序列模式 ----
+        has_fake = any(isinstance(item, tuple) and len(item) == 3 for item in self.sequence)
+        has_moving = any(not (isinstance(item, tuple) and len(item) == 3) for item in self.sequence)
+
+        if has_fake and has_moving:
+            messagebox.showerror("模式衝突", "序列混合了 moving 指令與 fake_lane，請分開處理")
+            return
+
+        if has_fake and ver == 'A':
+            messagebox.showerror("模式錯誤", "序列包含 fake_lane，請選擇「B (fake_lane)」匯出")
+            return
+
+        if has_moving and ver == 'B':
+            messagebox.showerror("模式錯誤", "序列包含 moving 指令，請選擇「A (moving)」匯出")
+            return
+
+        # ---- 自動總結：合併同 type 連續指令 ----
         consolidated = []
-        for btype, val in self.sequence:
+        for item in self.sequence:
+            if isinstance(item, tuple) and len(item) == 3:
+                btype, val, direction = item
+            else:
+                btype, val = item
+
             if not consolidated:
                 consolidated.append([btype, val])
             else:
                 last = consolidated[-1]
                 if last[0] == btype and btype in (3, 4, 5):
-                    last[1] += val  # 總結：10+10+10 → 30
+                    last[1] += val
                 else:
                     consolidated.append([btype, val])
 
@@ -534,10 +556,10 @@ class MotionEditor:
         else:
             # B 版本：fake_lane 格式（Intersection 風格）
             # fake_lane: 500=正中前進, 380=左偏, 610=右偏
-            # 前進/後退：開啟循線行駛 → 停止
-            # 左/右旋：直接 steering，不需額外 reset 序列
+            # type 6 block: val = lane_val (380/500/610)
             lines = []
-            for btype, val in consolidated:
+            for item in consolidated:
+                btype, val = item
                 if btype == 0:
                     lines.append(f"                rospy.loginfo('[{MISSION}] WAIT {val}s')")
                     lines.append(f"                rospy.sleep({val})")
@@ -568,6 +590,12 @@ class MotionEditor:
                     lines.append(f"                self.pub_lane_toggle.publish(True)")
                     lines.append(f"                rospy.sleep({int(val / 10) + 1})")
                     lines.append(f"                self.pub_lane_toggle.publish(False)")
+                elif btype == 6:
+                    # fake_lane test block: for x in range(6) 每次發送 val (lane_val)
+                    lines.append(f"                rospy.loginfo('[{MISSION}] FAKE {int(val)}')")
+                    lines.append(f"                for x in range(0, 6):")
+                    lines.append(f"                    self.pub_fake_lane.publish({int(val)})")
+                    lines.append(f"                    rospy.sleep(0.1)")
 
         code = '\n'.join(lines)
         self._show_code(fn, code)
