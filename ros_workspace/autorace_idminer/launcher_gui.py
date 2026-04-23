@@ -42,12 +42,14 @@ def kill_all():
 
 def run_bg(name, command):
     """背景執行指令，不彈 terminal"""
+    import os
     kill_process(name)  # 先乾淨 kill
+    env = os.environ.copy()
     proc = subprocess.Popen(
         ['bash', '-c', f'source ~/catkin_ws/devel/setup.bash && {command}'],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
-        start_new_session=True
+        start_new_session=True, env=env
     )
     running_pids[name] = proc.pid
     update_all_buttons()
@@ -240,10 +242,12 @@ def run_lane():
 def run_persistent(name, cmd):
     """rqt / image_view 專用，不被 STOP ALL 殺掉"""
     kill_process(name)  # 先乾淨 kill
+    import os
+    env = os.environ.copy()
     proc = subprocess.Popen(
         ['bash', '-c', f'source ~/catkin_ws/devel/setup.bash && {cmd}'],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-        start_new_session=True
+        start_new_session=True, env=env
     )
     persistent_pids[name] = proc.pid
     update_all_buttons()
@@ -262,7 +266,7 @@ def make_tool_btn(label, name, cmd):
 
 tool_defs = [
     ("運動控制",           "cmov",   "roslaunch control control_moving.launch"),
-    ("影像檢視",           "riv",    "rosrun rqt rqt"),
+    ("影像檢視",           "riv",    "rosrun rqt_image_view rqt_image_view"),
     ("rqt設定參數",        "rr",     "rosrun rqt_reconfigure rqt_reconfigure"),
 ]
 for label, name, cmd in tool_defs:
