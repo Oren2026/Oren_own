@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import rospy, roslaunch, os
@@ -123,11 +123,11 @@ class CoreNodeController():
 
         elif self.current_mode == self.Mission.Parking.value:  # 5
             rospy.loginfo("[Controller] === Parking ===")
-            self.fnLaunch(self.Launcher.dl.value, False)
-            self.fnLaunch(self.Launcher.cl.value, False)
+            self.fnLaunch(self.Launcher.dl.value, True)     # 開啟 dl（循線，white toggle 受 control）
+            self.fnLaunch(self.Launcher.cl.value, True)     # 開啟 cl
             self.fnLaunch(self.Launcher.ct.value, False)
-            rospy.sleep(1)
-            self.fnLaunch(self.Launcher.pk.value, True)
+            self.fnLaunch(self.Launcher.pk.value, True)     # pk 偵測到圖標後會 pub white_toggle=False
+            self.fnLaunch(self.Launcher.mv.value, True)      # mv 由 detect_parking 直接控制
 
         elif self.current_mode == self.Mission.LevelCrossing.value:  # 6
             rospy.loginfo("[Controller] === LevelCrossing ===")
