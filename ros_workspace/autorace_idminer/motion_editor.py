@@ -245,22 +245,28 @@ class MotionEditor:
                         'font': ('Arial', 11, 'bold'),
                         'width': 10, 'height': 1}
 
-        def _send_fake_lane(lane_val):
+        def _send_fake_lane(lane_val, direction):
             """發送 fake_lane：for x in range(6)，每次間隔 0.1s"""
+            self.status_label.config(text=f"fake_lane {direction} ({lane_val}) 執行中...",
+                                     fg='#ffaa00')
+
             def run():
-                for _ in range(6):
+                for i in range(6):
                     cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
                            f"rostopic pub /control/lane std_msgs/Float64 '{{data: {lane_val}}}' --once")
                     subprocess.run(['bash', '-c', cmd],
                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     time.sleep(0.1)
+                self.root.after(0, lambda: self.status_label.config(
+                    text=f"fake_lane {direction} 完成", fg='#88ff88'))
+
             threading.Thread(target=run, daemon=True).start()
 
         tk.Button(fl_frame, text="◀ 左 (380)",
-                 command=lambda: _send_fake_lane(380),
+                 command=lambda: _send_fake_lane(380, "左"),
                  bg='#3a3a1a', fg='#ffff88', **fl_btn_style).pack(side=tk.LEFT, padx=3)
         tk.Button(fl_frame, text="▶ 右 (610)",
-                 command=lambda: _send_fake_lane(610),
+                 command=lambda: _send_fake_lane(610, "右"),
                  bg='#3a1a3a', fg='#ff88ff', **fl_btn_style).pack(side=tk.LEFT, padx=3)
 
         # ---- 分隔線 ----
