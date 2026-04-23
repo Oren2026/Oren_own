@@ -258,17 +258,17 @@ class MotionEditor:
             self._rebuild()
 
             def run():
-                # 發送 fake_lane × 6（lane_toggle 已在 OFF 狀態，由使用者自行控制）
-                for _ in range(6):
+                # 按鈕：少次數、短間隔（快速測試）
+                for _ in range(3):
                     cmd = ("cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
                            "rostopic pub /control/lane std_msgs/Float64 '{{data: {lane_val}}}' --once"
                            .format(lane_val=lane_val))
                     subprocess.run(['bash', '-c', cmd],
                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                    time.sleep(0.1)
+                    time.sleep(0.05)
 
                 self.root.after(0, lambda: self.status_label.config(
-                    text=f"fake_lane {direction} 完成（LT=OFF）", fg='#88ff88'))
+                    text=f"fake_lane {direction} 完成（3次×0.05s）", fg='#88ff88'))
 
             threading.Thread(target=run, daemon=True).start()
 
@@ -667,9 +667,10 @@ class MotionEditor:
                     lines.append(f"                rospy.sleep({int(val / 10) + 1})")
                     lines.append(f"                self.pub_lane_toggle.publish(False)")
                 elif btype == 6:
-                    # fake_lane test block: for x in range(6) 每次發送 val (lane_val)
+                    # fake_lane test block: for x in range(30) 每次發送 val (lane_val)
+                    # 按鈕測試用 3次×0.05s，匯出用 30次×0.1s（5倍彌補傳輸延遲 gap）
                     lines.append(f"                rospy.loginfo('[{MISSION}] FAKE {int(val)}')")
-                    lines.append(f"                for x in range(0, 6):")
+                    lines.append(f"                for x in range(0, 30):")
                     lines.append(f"                    self.pub_fake_lane.publish({int(val)})")
                     lines.append(f"                    rospy.sleep(0.1)")
 
