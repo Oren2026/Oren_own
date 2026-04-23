@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import rospy, roslaunch, os
+import rospy, roslaunch, os, signal, sys
 from enum import Enum
 from std_msgs.msg import UInt8
+
+# 自訂 SIGINT handler：Ctrl+C 不立刻退出，等使用者看完訊息再按 Enter
+def _sigint_handler(signum, frame):
+    print("\n[Controller] 收到 Ctrl+C 已停止。訊息留著慢慢看，按 Enter 離開。")
+    sys.stdout.flush()
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, _sigint_handler)
 
 class CoreNodeController():
     def __init__(self):
@@ -373,4 +381,6 @@ class CoreNodeController():
 if __name__ == '__main__':
     rospy.init_node('core_node_controller')
     node = CoreNodeController()
-    rospy.spin()
+    rospy.loginfo("[Controller] 啟動完成，Ctrl+C 停止（程式不會馬上關閉）")
+    while not rospy.is_shutdown():
+        rospy.sleep(0.1)

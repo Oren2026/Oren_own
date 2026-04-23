@@ -15,18 +15,22 @@ persistent_pids = {}  # {name: pid}  - STOP ALL 不會殺（rqt, image_view）
 _root = None
 
 def kill_process(name):
+    """用 pkill -f 可靠殺掉行程（不只靠 PID）"""
     for d in (running_pids, persistent_pids):
         pid = d.get(name)
         if pid:
+            # 先用 killpg 殺 process group
             try:
                 os.killpg(pid, signal.SIGTERM)
-                time.sleep(0.3)
-                try:
-                    os.killpg(pid, signal.SIGKILL)
-                except:
-                    pass
             except:
                 pass
+            time.sleep(0.2)
+            try:
+                os.killpg(pid, signal.SIGKILL)
+            except:
+                pass
+            # 同時用 pkill 確保殺乾淨（不管 PID 對不對）
+            subprocess.run(['pkill', '-f', name], timeout=3)
             d[name] = None
             return
 
@@ -38,7 +42,7 @@ def kill_all():
 
 def run_bg(name, command):
     """背景執行指令，不彈 terminal"""
-    kill_process(name)
+    kill_process(name)  # 先乾淨 kill
     proc = subprocess.Popen(
         ['bash', '-c', f'source ~/catkin_ws/devel/setup.bash && {command}'],
         stdout=subprocess.DEVNULL,
@@ -70,18 +74,15 @@ def run_terminal(name, command):
              f'tell app \"Terminal\" to do script "{shell_cmd}"'],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
         )
-    else:  # Linux (Ubuntu)
+    else:  # Linux (Ubuntu) - 使用 xterm（訊號傳遞單純）
         shell_cmd = (
-            "trap INT; "
-            "source ~/catkin_ws/devel/setup.bash && " + command + " & "
-            "ROS_PID=$!; "
-            "wait $ROS_PID; "
-            'echo "Process ended. Press Enter to close."; '
-            "read"
+            f'source ~/catkin_ws/devel/setup.bash && {command}; '
+            'echo "[$0] ended - press Enter to close"; read'
         )
         proc = subprocess.Popen(
-            ['gnome-terminal', '--', 'bash', '-c', shell_cmd],
-            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            ['xterm', '-hold', '-e', 'bash', '-c', shell_cmd],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            start_new_session=True
         )
     running_pids[name] = proc.pid
     update_all_buttons()
@@ -238,7 +239,7 @@ def run_lane():
 
 def run_persistent(name, cmd):
     """rqt / image_view 專用，不被 STOP ALL 殺掉"""
-    kill_process(name)
+    kill_process(name)  # 先乾淨 kill
     proc = subprocess.Popen(
         ['bash', '-c', f'source ~/catkin_ws/devel/setup.bash && {cmd}'],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
