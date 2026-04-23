@@ -299,14 +299,17 @@ class MotionEditor:
 
         def _pub_lane_toggle(state, label):
             self.status_label.config(text=f"lane_toggle {label}...", fg='#ffaa00')
-            cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
-                   f"rostopic pub /detect/lane_toggle std_msgs/Bool '{{data: {str(state).lower()}}}' --once")
-            threading.Thread(target=lambda: (
-                subprocess.run(['bash', '-c', cmd],
-                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL),
+
+            def run():
+                cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
+                       f"rostopic pub /detect/lane_toggle std_msgs/Bool '{{data: {str(state).lower()}}}' --once")
+                result = subprocess.run(['bash', '-c', cmd],
+                                        capture_output=True, text=True)
+                output = (result.stdout + result.stderr).strip() or "OK"
                 self.root.after(0, lambda: self.status_label.config(
-                    text=f"lane_toggle {label} 完成", fg='#88ff88'))
-            ), daemon=True).start()
+                    text=f"lane_toggle {label}: {output[:40]}", fg='#88ff88'))
+
+            threading.Thread(target=run, daemon=True).start()
 
         def _launch_pkg(pkg_node, label):
             self.status_label.config(text=f"{label} 啟動中...", fg='#ffaa00')
