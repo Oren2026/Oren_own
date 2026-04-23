@@ -77,14 +77,16 @@ def run_terminal(name, command):
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
         )
     else:  # Linux (Ubuntu) - 使用 xterm（訊號傳遞單純）
+        import os
+        env = os.environ.copy()
         shell_cmd = (
             f'source ~/catkin_ws/devel/setup.bash && {command}; '
-            'echo "[$0] ended - press Enter to close"; read'
+            'echo "[ended] press Enter to close"; read'
         )
         proc = subprocess.Popen(
             ['xterm', '-hold', '-e', 'bash', '-c', shell_cmd],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-            start_new_session=True
+            start_new_session=True, env=env
         )
     running_pids[name] = proc.pid
     update_all_buttons()
@@ -146,11 +148,7 @@ missions = [
     ("M7 隧道(新)",    "m7new",  "roslaunch detect detect_tunnel_new.launch"),
 ]
 
-tools = [
-    ("執行任務",           "rosn",   "rosrun core core_node_controller"),
-    ("運動控制",           "cmov",   "roslaunch control control_moving.launch"),
-    ("rqt設定參數",        "rr",     "rosrun rqt_reconfigure rqt_reconfigure"),
-    ("影像檢視",           "riv",    "rosrun rqt rqt"),
+tools = [  # 未使用，保留給架構參考（實際用 tool_defs）
 ]
 
 # ===== TurtleBot Direct Control (via /cmd_vel) =====
@@ -358,7 +356,7 @@ def make_slam_btn(label, name, mode):
             cmd = "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch"
         else:  # tunnel
             cmd = "roslaunch control control_tunnel.launch"
-        runner = lambda n=name, c=cmd: run_terminal(n, c)
+        runner = lambda n=name, c=cmd: run_terminal(n, c)  # 閉包安全：預設參數綁定當下值
     elif mode == "save":
         runner = run_save_map
     elif mode == "reset":
@@ -370,7 +368,7 @@ def make_slam_btn(label, name, mode):
             cmd = "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch"
         else:
             cmd = "roslaunch control control_tunnel.launch"
-        runner = lambda n=name, c=cmd: run_bg(n, cmd)
+        runner = lambda n=name, c=cmd: run_bg(n, c)  # 閉包安全
     btn = ttk.Button(right_panel, text=label, command=runner,
                      style='TButton', width=20)
     btn.pack(pady=3, fill='x')
