@@ -258,14 +258,7 @@ class MotionEditor:
             self._rebuild()
 
             def run():
-                # 1. 先關閉循線模式（確保 camera 不覆蓋 fake_lane）
-                cmd_off = ("cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
-                           "rostopic pub /detect/lane_toggle std_msgs/Bool '{data: false}' --once")
-                subprocess.run(['bash', '-c', cmd_off],
-                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                time.sleep(0.1)
-
-                # 2. 發送 fake_lane × 6（車子開始偏移，保持 lane_toggle OFF）
+                # 發送 fake_lane × 6（lane_toggle 已在 OFF 狀態，由使用者自行控制）
                 for _ in range(6):
                     cmd = ("cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
                            "rostopic pub /control/lane std_msgs/Float64 '{{data: {lane_val}}}' --once"
@@ -274,7 +267,6 @@ class MotionEditor:
                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     time.sleep(0.1)
 
-                # 3. lane_toggle 保持 OFF，車子只吃 fake_lane
                 self.root.after(0, lambda: self.status_label.config(
                     text=f"fake_lane {direction} 完成（LT=OFF）", fg='#88ff88'))
 
