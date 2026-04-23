@@ -221,14 +221,66 @@ subtitle = tk.Label(root, text="Mission Launcher",
                     fg='#aaaaaa', bg='#2b2b2b')
 subtitle.pack(pady=(0, 12))
 
-# ---- Mission Grid ----
-mission_frame = tk.Frame(root, bg='#2b2b2b')
-mission_frame.pack(side=tk.LEFT, padx=15, pady=10)
+# ---- Left Panel: Control Tools + Missions ----
+left_panel = tk.Frame(root, bg='#2b2b2b')
+left_panel.pack(side=tk.LEFT, padx=15, pady=10)
 
-# Header row
-tk.Label(mission_frame, text="任務節點",
+# 控制工具（疊在任務節點上方）
+tk.Label(left_panel, text="控制工具",
          font=('Arial', 11, 'bold'),
-         fg='#dddddd', bg='#2b2b2b').grid(row=0, column=0, columnspan=2, pady=(0, 8), sticky='w')
+         fg='#dddddd', bg='#2b2b2b').pack(pady=(0, 6))
+
+# 特殊按鈕：lane (dl+cl 分開跑)
+def run_lane():
+    run_bg("lane_dl", "roslaunch detect detect_lane.launch")
+    run_bg("lane_cl", "roslaunch control control_lane.launch")
+    update_all_buttons()
+
+def run_persistent(name, cmd):
+    """rqt / image_view 專用，不被 STOP ALL 殺掉"""
+    kill_process(name)
+    proc = subprocess.Popen(
+        ['bash', '-c', f'source ~/catkin_ws/devel/setup.bash && {cmd}'],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        start_new_session=True
+    )
+    persistent_pids[name] = proc.pid
+    update_all_buttons()
+
+def make_tool_btn(label, name, cmd):
+    """工廠函式，避免 for 迴圈閉包問題"""
+    if name in ("rr", "riv"):
+        runner = lambda: run_persistent(name, cmd)
+    else:
+        runner = lambda: run_bg(name, cmd)
+    btn = ttk.Button(left_panel, text=label,
+                     command=runner,
+                     style='TButton', width=20)
+    btn.pack(pady=3, fill='x')
+    btn_refs[name] = btn
+
+tool_defs = [
+    ("運動控制",           "cmov",   "roslaunch control control_moving.launch"),
+    ("影像檢視",           "riv",    "rosrun rqt rqt"),
+    ("rqt設定參數",        "rr",     "rosrun rqt_reconfigure rqt_reconfigure"),
+]
+for label, name, cmd in tool_defs:
+    make_tool_btn(label, name, cmd)
+
+# 循線按鈕（dl + cl 分別背景執行）
+btn_lane = ttk.Button(left_panel, text="循線 (dl+cl)",
+                      command=run_lane,
+                      style='TButton', width=20)
+btn_lane.pack(pady=3, fill='x')
+btn_refs["lane"] = btn_lane
+
+# 任務節點 grid（疊在控制工具下方）
+tk.Label(left_panel, text="任務節點",
+         font=('Arial', 11, 'bold'),
+         fg='#dddddd', bg='#2b2b2b').pack(pady=(12, 6))
+
+mission_frame = tk.Frame(left_panel, bg='#2b2b2b')
+mission_frame.pack(pady=(0, 0))
 
 # 每兩筆一組（M1+Cal, M2+Cal, ...），排在同一 row
 for i in range(0, len(missions), 2):
@@ -264,55 +316,6 @@ def make_controller_btn(label, name, cmd):
 
 make_controller_btn("舊 Controller", "rosn",  "rosrun core core_node_controller")
 make_controller_btn("新 Controller", "rosnn", "rosrun core core_node_controller_new")
-
-# 控制工具
-tk.Label(right_panel, text="控制工具",
-         font=('Arial', 11, 'bold'),
-         fg='#dddddd', bg='#2b2b2b').pack(pady=(0, 6))
-
-# 特殊按鈕：lane (dl+cl 分開跑)
-def run_lane():
-    run_bg("lane_dl", "roslaunch detect detect_lane.launch")
-    run_bg("lane_cl", "roslaunch control control_lane.launch")
-    update_all_buttons()
-
-def run_persistent(name, cmd):
-    """rqt / image_view 專用，不被 STOP ALL 殺掉"""
-    kill_process(name)
-    proc = subprocess.Popen(
-        ['bash', '-c', f'source ~/catkin_ws/devel/setup.bash && {cmd}'],
-        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-        start_new_session=True
-    )
-    persistent_pids[name] = proc.pid
-    update_all_buttons()
-
-def make_tool_btn(label, name, cmd):
-    """工廠函式，避免 for 迴圈閉包問題"""
-    if name in ("rr", "riv"):
-        runner = lambda: run_persistent(name, cmd)
-    else:
-        runner = lambda: run_bg(name, cmd)
-    btn = ttk.Button(right_panel, text=label,
-                     command=runner,
-                     style='TButton', width=20)
-    btn.pack(pady=3, fill='x')
-    btn_refs[name] = btn
-
-tool_defs = [
-    ("運動控制",           "cmov",   "roslaunch control control_moving.launch"),
-    ("rqt設定參數",        "rr",     "rosrun rqt_reconfigure rqt_reconfigure"),
-    ("影像檢視",           "riv",    "rosrun rqt rqt"),
-]
-for label, name, cmd in tool_defs:
-    make_tool_btn(label, name, cmd)
-
-# 循線按鈕（dl + cl 分別背景執行）
-btn_lane = ttk.Button(right_panel, text="循線 (dl+cl)",
-                      command=run_lane,
-                      style='TButton', width=20)
-btn_lane.pack(pady=3, fill='x')
-btn_refs["lane"] = btn_lane
 
 # SLAM / 導航工具
 tk.Label(right_panel, text="SLAM / 導航",
