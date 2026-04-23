@@ -298,7 +298,55 @@ class MotionEditor:
         # ---- 分隔線 ----
         tk.Label(right, text="─" * 16, bg='#1e1e1e', fg='#333').pack(pady=4)
 
-        # ---- 4. 匯出（緊湊）----
+        # ---- 3.5 Lane 控制（前置作業）----
+        tk.Label(right, text="Lane 控制（前置作業）",
+                font=('Arial', 10, 'bold'),
+                fg='#dddddd', bg='#1e1e1e').pack()
+
+        lane_ctrl_frame = tk.Frame(right, bg='#1e1e1e')
+        lane_ctrl_frame.pack(pady=5)
+
+        lane_btn_style = {'relief': 'raised', 'bd': 2,
+                          'font': ('Arial', 9, 'bold'),
+                          'width': 8, 'height': 1}
+
+        def _pub_lane_toggle(state, label):
+            self.status_label.config(text=f"lane_toggle {label}...", fg='#ffaa00')
+            cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
+                   f"rostopic pub /detect/lane_toggle std_msgs/Bool '{{data: {str(state).lower()}}}' --once")
+            threading.Thread(target=lambda: (
+                subprocess.run(['bash', '-c', cmd],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL),
+                self.root.after(0, lambda: self.status_label.config(
+                    text=f"lane_toggle {label} 完成", fg='#88ff88'))
+            ), daemon=True).start()
+
+        def _launch_pkg(pkg_node, label):
+            self.status_label.config(text=f"{label} 啟動中...", fg='#ffaa00')
+            cmd = f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && roslaunch {pkg_node} &"
+            threading.Thread(target=lambda: (
+                subprocess.run(['bash', '-c', cmd],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL),
+                self.root.after(0, lambda: self.status_label.config(
+                    text=f"{label} 啟動完成", fg='#88ff88'))
+            ), daemon=True).start()
+
+        tk.Button(lane_ctrl_frame, text="dl ON",
+                 command=lambda: _launch_pkg("detect detect_lane.launch", "dl"),
+                 bg='#1a2a1a', fg='#88ff88', **lane_btn_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(lane_ctrl_frame, text="cl ON",
+                 command=lambda: _launch_pkg("camera camera.launch", "cl"),
+                 bg='#1a2a2a', fg='#88ffff', **lane_btn_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(lane_ctrl_frame, text="LT OFF",
+                 command=lambda: _pub_lane_toggle(False, "LT OFF"),
+                 bg='#3a2a2a', fg='#ff8888', **lane_btn_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(lane_ctrl_frame, text="LT ON",
+                 command=lambda: _pub_lane_toggle(True, "LT ON"),
+                 bg='#2a2a3a', fg='#8888ff', **lane_btn_style).pack(side=tk.LEFT, padx=2)
+
+        tk.Label(right, text="提示：先 dl+cl → LT OFF → 按 fake_lane",
+                bg='#1e1e1e', fg='#666',
+                font=('Arial', 8)).pack(pady=(0, 2))
         fn_frame = tk.Frame(right, bg='#1e1e1e')
         fn_frame.pack(pady=2)
         tk.Label(fn_frame, text="fn:", bg='#1e1e1e', fg='#aaa',
