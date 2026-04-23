@@ -258,14 +258,14 @@ class MotionEditor:
             self._rebuild()
 
             def run():
-                # 1. 先關閉循線模式
+                # 1. 先關閉循線模式（確保 camera 不覆蓋 fake_lane）
                 cmd_off = ("cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
                            "rostopic pub /detect/lane_toggle std_msgs/Bool '{data: false}' --once")
                 subprocess.run(['bash', '-c', cmd_off],
                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 time.sleep(0.1)
 
-                # 2. 發送 fake_lane × 6
+                # 2. 發送 fake_lane × 6（車子開始偏移，保持 lane_toggle OFF）
                 for _ in range(6):
                     cmd = ("cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
                            "rostopic pub /control/lane std_msgs/Float64 '{{data: {lane_val}}}' --once"
@@ -274,14 +274,9 @@ class MotionEditor:
                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     time.sleep(0.1)
 
-                # 3. 開啟循線模式，車子開始响应
-                cmd_on = ("cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
-                          "rostopic pub /detect/lane_toggle std_msgs/Bool '{data: true}' --once")
-                subprocess.run(['bash', '-c', cmd_on],
-                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
+                # 3. lane_toggle 保持 OFF，車子只吃 fake_lane
                 self.root.after(0, lambda: self.status_label.config(
-                    text=f"fake_lane {direction} 完成", fg='#88ff88'))
+                    text=f"fake_lane {direction} 完成（LT=OFF）", fg='#88ff88'))
 
             threading.Thread(target=run, daemon=True).start()
 
@@ -344,7 +339,7 @@ class MotionEditor:
                  command=lambda: _pub_lane_toggle(True, "LT ON"),
                  bg='#2a2a3a', fg='#8888ff', **lane_btn_style).pack(side=tk.LEFT, padx=2)
 
-        tk.Label(right, text="提示：先 dl+cl → LT OFF → 按 fake_lane",
+        tk.Label(right, text="提示：先 dl+cl → LT OFF → 按 fake_lane → 隨時可 LT ON 恢復camera循線",
                 bg='#1e1e1e', fg='#666',
                 font=('Arial', 8)).pack(pady=(0, 2))
         fn_frame = tk.Frame(right, bg='#1e1e1e')
