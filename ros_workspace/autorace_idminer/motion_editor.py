@@ -131,6 +131,7 @@ class MotionEditor:
         self.sequence = []
         self.block_widgets = []
         self.is_running = False
+        self.running_procs = {}  # track running roslaunch processes {label: proc}
 
         self._build()
 
@@ -249,12 +250,15 @@ class MotionEditor:
                         'width': 8, 'height': 1}
 
         def _send_fake_lane(lane_val, direction):
-            """發送 fake_lane：lane_toggle False → fake_lane ×6 → lane_toggle True"""
+            """發送 fake_lane：只發 1 次，並累加 count 到同 lane_val 最後一筆"""
             self.status_label.config(text=f"fake_lane {direction} ({lane_val}) 執行中...",
                                      fg='#ffaa00')
 
-            # 加入序列（左側區塊顯示）
-            self.sequence.append((6, lane_val, direction))
+            # 加入序列：同 lane_val 累加 count，否則新增
+            if self.sequence and self.sequence[-1][0] == 6 and self.sequence[-1][1] == lane_val:
+                self.sequence[-1] = (6, lane_val, direction, self.sequence[-1][3] + 1)
+            else:
+                self.sequence.append((6, lane_val, direction, 1))
             self._rebuild()
 
             def run():
@@ -310,14 +314,21 @@ class MotionEditor:
             threading.Thread(target=run, daemon=True).start()
 
         def _launch_pkg(pkg_node, label):
+            # 先 kill 舊的同 label 程序
+            if label in self.running_procs:
+                try:
+                    self.running_procs[label].terminate()
+                except:
+                    pass
+                del self.running_procs[label]
+
             self.status_label.config(text=f"{label} 啟動中...", fg='#ffaa00')
-            cmd = f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && roslaunch {pkg_node} &"
-            threading.Thread(target=lambda: (
-                subprocess.run(['bash', '-c', cmd],
-                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL),
-                self.root.after(0, lambda: self.status_label.config(
-                    text=f"{label} 啟動完成", fg='#88ff88'))
-            ), daemon=True).start()
+            cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
+                   f"roslaunch {pkg_node}")
+            proc = subprocess.Popen(['bash', '-c', cmd],
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            self.running_procs[label] = proc
+            self.status_label.config(text=f"{label} 啟動完成", fg='#88ff88')
 
         tk.Button(lane_ctrl_frame, text="dl ON",
                  command=lambda: _launch_pkg("detect detect_lane.launch", "dl"),
@@ -334,12 +345,14 @@ class MotionEditor:
             self.status_label.config(text=f"{label} 關閉中...", fg='#ffaa00')
             cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
                    f"rosnode list | grep -i {keyword} | xargs -r rosnode kill")
-            threading.Thread(target=lambda: (
-                subprocess.run(['bash', '-c', cmd],
-                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL),
-                self.root.after(0, lambda: self.status_label.config(
-                    text=f"{label} 關閉完成", fg='#88ff88'))
-            ), daemon=True).start()
+            subprocess.run(['bash', '-c', cmd])  # 顯示輸出
+            if label in self.running_procs:
+                try:
+                    self.running_procs[label].terminate()
+                except:
+                    pass
+                del self.running_procs[label]
+            self.status_label.config(text=f"{label} 關閉完成", fg='#88ff88')
 
         tk.Button(lane_ctrl_row2, text="dl OFF",
                  command=lambda: _kill_pkg("detect_lane", "dl"),
@@ -477,8 +490,17 @@ class MotionEditor:
             self.empty_label.pack_forget()
 
         for i, item in enumerate(self.sequence):
-            # fake_lane blocks are 3-tuples: (6, lane_val, direction)
-            if isinstance(item, tuple) and len(item) == 3:
+            # fake_lane blocks are 4-tuples: (6, lane_val, direction, count)
+            if isinstance(item, tuple) and len(item) == 4 and item[0] == 6:
+                btype, val, direction, count = item
+                block = SequenceBlock(
+                    self.seq_view, btype, val,
+                    on_delete=lambda idx=i: self.delete_block(idx),
+                    on_change=lambda idx, bt, v, d=0: self.change_block(idx, bt, v, d),
+                    index=i,
+                    extra_label=f" {direction} x{count}"
+                )
+            elif isinstance(item, tuple) and len(item) == 3:
                 btype, val, direction = item
                 block = SequenceBlock(
                     self.seq_view, btype, val,
@@ -515,8 +537,10 @@ class MotionEditor:
             for i, item in enumerate(self.sequence):
                 if not self.is_running:
                     break
-                # fake_lane blocks are 3-tuple: (6, lane_val, direction)
-                if isinstance(item, tuple) and len(item) == 3:
+                # fake_lane blocks are 4-tuple: (6, lane_val, direction, count)
+                if isinstance(item, tuple) and len(item) == 4:
+                    btype, val, direction, count = item
+                elif isinstance(item, tuple) and len(item) == 3:
                     btype, val, direction = item
                 else:
                     btype, val = item
@@ -553,8 +577,8 @@ class MotionEditor:
         ver = self.export_ver.get()
 
         # ---- 偵測序列模式 ----
-        has_fake = any(isinstance(item, tuple) and len(item) == 3 for item in self.sequence)
-        has_moving = any(not (isinstance(item, tuple) and len(item) == 3) for item in self.sequence)
+        has_fake = any(isinstance(item, tuple) and len(item) in (3, 4) for item in self.sequence)
+        has_moving = any(not (isinstance(item, tuple) and len(item) in (3, 4)) for item in self.sequence)
 
         if has_fake and has_moving:
             messagebox.showerror("模式衝突", "序列混合了 moving 指令與 fake_lane，請分開處理")
@@ -571,19 +595,29 @@ class MotionEditor:
         # ---- 自動總結：合併同 type 連續指令 ----
         consolidated = []
         for item in self.sequence:
-            if isinstance(item, tuple) and len(item) == 3:
+            if isinstance(item, tuple) and len(item) == 4:
+                btype, val, direction, count = item
+            elif isinstance(item, tuple) and len(item) == 3:
                 btype, val, direction = item
             else:
                 btype, val = item
 
             if not consolidated:
-                consolidated.append([btype, val])
+                if btype == 6:
+                    consolidated.append([btype, val, count])
+                else:
+                    consolidated.append([btype, val])
             else:
                 last = consolidated[-1]
                 if last[0] == btype and btype in (3, 4, 5):
                     last[1] += val
+                elif last[0] == btype and btype == 6:
+                    last[2] += count  # 累加 fake_lane count
                 else:
-                    consolidated.append([btype, val])
+                    if btype == 6:
+                        consolidated.append([btype, val, count])
+                    else:
+                        consolidated.append([btype, val])
 
         if ver == 'A':
             lines = []
@@ -633,7 +667,10 @@ class MotionEditor:
             # type 6 block: val = lane_val (380/500/610)
             lines = []
             for item in consolidated:
-                btype, val = item
+                if len(item) == 3:
+                    btype, val, count = item
+                else:
+                    btype, val = item
                 if btype == 0:
                     lines.append(f"                rospy.loginfo('[{MISSION}] WAIT {val}s')")
                     lines.append(f"                rospy.sleep({val})")
@@ -665,9 +702,10 @@ class MotionEditor:
                     lines.append(f"                rospy.sleep({int(val / 10) + 1})")
                     lines.append(f"                self.pub_lane_toggle.publish(False)")
                 elif btype == 6:
-                    # 按鈕：1次 publish｜匯出：5層×publish+sleep
-                    lines.append(f"                rospy.loginfo('[{MISSION}] FAKE {int(val)}')")
-                    lines.append(f"                for x in range(0, 5):")
+                    # 按鈕：1次 publish｜匯出：5*count層×publish+sleep
+                    loops = 5 * count
+                    lines.append(f"                rospy.loginfo('[{MISSION}] FAKE {int(val)} x{count}')")
+                    lines.append(f"                for x in range(0, {loops}):")
                     lines.append(f"                    self.pub_fake_lane.publish({int(val)})")
                     lines.append(f"                    rospy.sleep(0.1)")
 
