@@ -233,7 +233,40 @@ class MotionEditor:
         # ---- 分隔線 ----
         tk.Label(right, text="─" * 16, bg='#1e1e1e', fg='#333').pack(pady=4)
 
-        # ---- 3. 匯出（緊湊）----
+        # ---- 3. fake_lane 測試 ----
+        tk.Label(right, text="fake_lane 測試",
+                font=('Arial', 10, 'bold'),
+                fg='#dddddd', bg='#1e1e1e').pack()
+
+        fl_frame = tk.Frame(right, bg='#1e1e1e')
+        fl_frame.pack(pady=5)
+
+        fl_btn_style = {'relief': 'raised', 'bd': 2,
+                        'font': ('Arial', 11, 'bold'),
+                        'width': 10, 'height': 1}
+
+        def _send_fake_lane(lane_val):
+            """發送 fake_lane：for x in range(6)，每次間隔 0.1s"""
+            def run():
+                for _ in range(6):
+                    cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
+                           f"rostopic pub /control/lane std_msgs/Float64 '{{data: {lane_val}}}' --once")
+                    subprocess.run(['bash', '-c', cmd],
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    time.sleep(0.1)
+            threading.Thread(target=run, daemon=True).start()
+
+        tk.Button(fl_frame, text="◀ 左 (380)",
+                 command=lambda: _send_fake_lane(380),
+                 bg='#3a3a1a', fg='#ffff88', **fl_btn_style).pack(side=tk.LEFT, padx=3)
+        tk.Button(fl_frame, text="▶ 右 (610)",
+                 command=lambda: _send_fake_lane(610),
+                 bg='#3a1a3a', fg='#ff88ff', **fl_btn_style).pack(side=tk.LEFT, padx=3)
+
+        # ---- 分隔線 ----
+        tk.Label(right, text="─" * 16, bg='#1e1e1e', fg='#333').pack(pady=4)
+
+        # ---- 4. 匯出（緊湊）----
         fn_frame = tk.Frame(right, bg='#1e1e1e')
         fn_frame.pack(pady=2)
         tk.Label(fn_frame, text="fn:", bg='#1e1e1e', fg='#aaa',
