@@ -324,10 +324,32 @@ class MotionEditor:
         tk.Button(lane_ctrl_frame, text="cl ON",
                  command=lambda: _launch_pkg("camera camera.launch", "cl"),
                  bg='#1a2a2a', fg='#88ffff', **lane_btn_style).pack(side=tk.LEFT, padx=2)
-        tk.Button(lane_ctrl_frame, text="LT OFF",
+
+        # 第二列：dl OFF, cl OFF, LT OFF, LT ON
+        lane_ctrl_row2 = tk.Frame(right, bg='#1e1e1e')
+        lane_ctrl_row2.pack(pady=(2, 0))
+
+        def _kill_pkg(keyword, label):
+            self.status_label.config(text=f"{label} 關閉中...", fg='#ffaa00')
+            cmd = (f"cd /home/autorace && source ~/catkin_ws/devel/setup.bash && "
+                   f"rosnode list | grep -i {keyword} | xargs -r rosnode kill")
+            threading.Thread(target=lambda: (
+                subprocess.run(['bash', '-c', cmd],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL),
+                self.root.after(0, lambda: self.status_label.config(
+                    text=f"{label} 關閉完成", fg='#88ff88'))
+            ), daemon=True).start()
+
+        tk.Button(lane_ctrl_row2, text="dl OFF",
+                 command=lambda: _kill_pkg("detect_lane", "dl"),
+                 bg='#3a1a1a', fg='#ff8888', **lane_btn_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(lane_ctrl_row2, text="cl OFF",
+                 command=lambda: _kill_pkg("camera", "cl"),
+                 bg='#2a1a1a', fg='#ff8888', **lane_btn_style).pack(side=tk.LEFT, padx=2)
+        tk.Button(lane_ctrl_row2, text="LT OFF",
                  command=lambda: _pub_lane_toggle(False, "LT OFF"),
                  bg='#3a2a2a', fg='#ff8888', **lane_btn_style).pack(side=tk.LEFT, padx=2)
-        tk.Button(lane_ctrl_frame, text="LT ON",
+        tk.Button(lane_ctrl_row2, text="LT ON",
                  command=lambda: _pub_lane_toggle(True, "LT ON"),
                  bg='#2a2a3a', fg='#8888ff', **lane_btn_style).pack(side=tk.LEFT, padx=2)
 
