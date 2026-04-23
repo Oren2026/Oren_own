@@ -331,7 +331,7 @@ class CoreNodeController():
                     self.tun = roslaunch.scriptapi.ROSLaunch()
                     self.tun = roslaunch.parent.ROSLaunchParent(
                         self.uuid,
-                        [self.ros_package_path + "detect/launch/detect_tunnel.launch"]
+                        [self.ros_package_path + "detect/launch/detect_tunnel_new.launch"]
                     )
                     self.launch_tun = True
                     self.tun.start()
