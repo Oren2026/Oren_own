@@ -33,7 +33,7 @@ class CoreNodeController():
         # self.current_setp_turtlesim = self.TurtlesimStep.turtlesim.value
 
         # launcher enum（對應 detect/ 和 control/ 裡的 launch 檔）
-        self.Launcher = Enum('Launcher', 'dl cl tf isc ct pk mv lcro tun')
+        self.Launcher = Enum('Launcher', 'dl cl tf isc ct pk mv lcro tun ctun')
 
         # 追蹤各節點是否已啟動（dictionary 版，乾淨管理）
         self.launchers = {
@@ -46,6 +46,7 @@ class CoreNodeController():
             'mv':    {'active': False, 'handle': None},
             'lcro':  {'active': False, 'handle': None},
             'tun':   {'active': False, 'handle': None},
+            'ctun':  {'active': False, 'handle': None},
         }
 
         self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
@@ -137,6 +138,7 @@ class CoreNodeController():
             # detect_tunnel 會控制車子前進 + 導航，完成後 pub /mission
             # 最後一個 mission，core_node_controller 不需要額外處理
             rospy.sleep(25)
+            self.fnLaunch(self.Launcher.ctun.value, True)  # 啟動 move_base 導航
             self.fnLaunch(self.Launcher.dl.value, False)
             self.fnLaunch(self.Launcher.tun.value, True)
             rospy.sleep(2)
@@ -156,6 +158,7 @@ class CoreNodeController():
             self.Launcher.mv.value:    'mv',
             self.Launcher.lcro.value:  'lcro',
             self.Launcher.tun.value:   'tun',
+            self.Launcher.ctun.value:  'ctun',
         }
         key = key_map.get(launch_num)
         if key is None:
@@ -199,6 +202,7 @@ class CoreNodeController():
             'mv':   'control/launch/control_moving.launch',
             'lcro': 'detect/launch/detect_level.launch',
             'tun':  'detect/launch/detect_tunnel.launch',
+            'ctun': 'control/launch/control_tunnel.launch',
         }
         return mapping.get(key)
 
