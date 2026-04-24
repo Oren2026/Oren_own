@@ -76,7 +76,7 @@ def run_terminal(name, command):
              f'tell app \"Terminal\" to do script "{shell_cmd}"'],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
         )
-    else:  # Linux (Ubuntu) - 使用 xterm（訊號傳遞單純）
+    else:  # Linux (Ubuntu) - 使用 gnome-terminal（預設桌面終端）
         import os
         env = os.environ.copy()
         shell_cmd = (
@@ -84,7 +84,7 @@ def run_terminal(name, command):
             'echo "[ended] press Enter to close"; read'
         )
         proc = subprocess.Popen(
-            ['xterm', '-hold', '-e', 'bash', '-c', shell_cmd],
+            ['gnome-terminal', '--', 'bash', '-c', shell_cmd],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             start_new_session=True, env=env
         )
