@@ -109,16 +109,18 @@ def monitor_processes():
     """每2秒檢查所有程序是否還活著，自動更新按鈕狀態"""
     while True:
         dead = []
-        for name, pid in running_pids.items():
-            if not pid:
-                continue
-            result = subprocess.run(['ps', '-p', str(pid)],
-                                   capture_output=True, timeout=2)
-            if result.returncode != 0:
-                dead.append(name)
+        for d in (running_pids, persistent_pids):
+            for name, pid in d.items():
+                if not pid:
+                    continue
+                result = subprocess.run(['ps', '-p', str(pid)],
+                                       capture_output=True, timeout=2)
+                if result.returncode != 0:
+                    dead.append(name)
         if dead:
             for name in dead:
                 running_pids[name] = None
+                persistent_pids[name] = None
             if _root:
                 _root.after(0, update_all_buttons)
         time.sleep(2)
