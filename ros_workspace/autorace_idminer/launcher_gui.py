@@ -264,7 +264,7 @@ def make_tool_btn(label, name, cmd):
 
 tool_defs = [
     ("運動控制",           "cmov",   "roslaunch control control_moving.launch"),
-    ("影像檢視",           "riv",    "rosrun rqt_image_view rqt_image_view"),
+    ("影像檢視",           "riv",    "rqt"),
     ("rqt設定參數",        "rr",     "rosrun rqt_reconfigure rqt_reconfigure"),
 ]
 for label, name, cmd in tool_defs:
