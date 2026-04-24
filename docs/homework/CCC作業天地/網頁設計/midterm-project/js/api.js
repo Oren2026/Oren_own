@@ -53,6 +53,27 @@ async function apiFetch(path, options = {}) {
   return data;
 }
 
+/**
+ * apiFetchBg — fire-and-forget 版本
+ * 不拋異常，只回 { ok: true } 或 { ok: false, error }
+ * 適用於背景同步，不影響 UI 流程
+ */
+async function apiFetchBg(path, options = {}) {
+  const url = API_BASE + path;
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(options.headers || {}),
+  };
+  if (_csrfToken) headers['X-CSRF-Token'] = _csrfToken;
+  try {
+    const res = await fetch(url, { ...options, headers, credentials: 'include' });
+    const data = await res.json().catch(() => ({}));
+    return { ok: res.ok && !data.error, error: data.error || null, data };
+  } catch (err) {
+    return { ok: false, error: err.message || '網路連線失敗', data: null };
+  }
+}
+
 // ══════════════════════════════════════════════════════════
 //  認證 API
 // ══════════════════════════════════════════════════════════
@@ -188,4 +209,6 @@ window.ChatRankAPI = {
   deleteActivity: apiDeleteActivity,
   activityComment: apiActivityComment,
   deleteActivityComment: apiDeleteActivityComment,
+  // 背景同步（fire-and-forget）
+  fetchBg: apiFetchBg,
 };

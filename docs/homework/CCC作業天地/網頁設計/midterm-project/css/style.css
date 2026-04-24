@@ -287,3 +287,18 @@ a:hover { text-decoration: underline; }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+/* ── 背景同步指示器 ───────────────────────────────────── */
+#sync-indicator {
+  position: fixed; bottom: 16px; right: 80px;
+  background: var(--primary); color: #fff;
+  font-size: 12px; padding: 4px 10px; border-radius: 12px;
+  opacity: 0; transition: opacity 0.3s;
+  pointer-events: none; z-index: 9999;
+}
+
+/* ── 待確認留言標籤 ──────────────────────────────────── */
+.comment-pending-tag {
+  display: inline-block; margin-left: 8px; font-size: .75rem;
+  color: var(--text-muted); font-style: italic;
+}

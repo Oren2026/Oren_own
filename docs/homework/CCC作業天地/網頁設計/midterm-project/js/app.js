@@ -15,6 +15,244 @@ const State = {
 };
 
 // ══════════════════════════════════════════════════════════
+//  SyncQueue — 樂觀更新 + 背景同步系統
+//  按讚：debounce 5s，只送最終狀態一次
+//  留言：立刻 optimistic insert，背景上傳
+//  失敗：Toast 提示，不 rollback
+// ══════════════════════════════════════════════════════════
+const SyncQueue = (() => {
+  const DEBOUNCE_MS = 5000;
+
+  // 每個 postId 維護一個待發送的 like state
+  const pendingLikes = {};   // { [postId]: { finalState: bool, timer: int } }
+
+  // 背景待確認的 comments（還沒得到 server 回覆）
+  const pendingComments = []; // [{ localId, tempId, type, targetId, content }]
+
+  // 同步中的 like（避免重複送出）
+  const syncingLikes = new Set();
+
+  // 同步狀態 indicator element
+  let syncIndicator = null;
+
+  // ── 初始化：建立 sync indicator DOM ────────────────────────
+  function ensureIndicator() {
+    if (syncIndicator) return;
+    syncIndicator = document.createElement('div');
+    syncIndicator.id = 'sync-indicator';
+    syncIndicator.style.cssText = `
+      position: fixed; bottom: 16px; right: 80px;
+      background: var(--primary); color: #fff;
+      font-size: 12px; padding: 4px 10px; border-radius: 12px;
+      opacity: 0; transition: opacity 0.3s;
+      pointer-events: none; z-index: 9999;
+    `;
+    syncIndicator.textContent = '同步中…';
+    document.body.appendChild(syncIndicator);
+  }
+
+  function showIndicator() {
+    ensureIndicator();
+    syncIndicator.style.opacity = '1';
+  }
+  function hideIndicator() {
+    if (syncIndicator) syncIndicator.style.opacity = '0';
+  }
+
+  // ── Toast helper ────────────────────────────────────────
+  function toast(msg, type = 'info') {
+    const el = $('#toast');
+    if (!el) return;
+    el.textContent = msg;
+    el.className = `toast ${type}`;
+    el.classList.remove('hidden');
+    clearTimeout(el._timer);
+    el._timer = setTimeout(() => el.classList.add('hidden'), 3500);
+  }
+
+  // ── 立即更新 UI（optimistic）────────────────────────────
+  function applyLikeUi(postId, liked) {
+    const btn = document.querySelector(`.like-btn[data-post-id="${postId}"]`);
+    if (!btn) return;
+    btn.classList.toggle('liked', liked);
+    const span = btn.querySelector('span');
+    if (span) {
+      const n = parseInt(span.textContent) || 0;
+      span.textContent = liked ? n + 1 : Math.max(0, n - 1);
+    }
+    const icon = btn.firstChild;
+    if (icon) icon.textContent = liked ? '❤️ ' : '🤍 ';
+  }
+
+  function getServerLikeState(postId) {
+    // 從 DOM 讀取當前 server 確認的狀態（data-liked attribute）
+    const btn = document.querySelector(`.like-btn[data-post-id="${postId}"]`);
+    return btn ? btn.dataset.liked === 'true' : false;
+  }
+
+  // ── 排程 post 的 like（debounce 5s）────────────────────
+  function scheduleLike(postId) {
+    // 取消之前的計時
+    if (pendingLikes[postId]?.timer) {
+      clearTimeout(pendingLikes[postId].timer);
+    }
+    // 立刻應用 optimistic UI（toggle 當前顯示的狀態）
+    const current = getServerLikeState(postId);
+    const newState = !current;
+    applyLikeUi(postId, newState);
+    // 更新 DOM 上的 server state 標記（樂觀狀態覆寫）
+    const btn = document.querySelector(`.like-btn[data-post-id="${postId}"]`);
+    if (btn) btn.dataset.liked = String(newState);
+
+    // 5 秒後才真正送 API
+    pendingLikes[postId] = {
+      finalState: newState,
+      timer: setTimeout(() => flushLike(postId), DEBOUNCE_MS),
+    };
+    showIndicator();
+  }
+
+  // ── 實際送 like API ────────────────────────────────────
+  async function flushLike(postId) {
+    const entry = pendingLikes[postId];
+    if (!entry) return;
+    delete pendingLikes[postId];
+
+    if (syncingLikes.has(postId)) return; // 已在處理
+    syncingLikes.add(postId);
+
+    try {
+      const result = await ChatRankAPI.fetchBg(`/posts/${postId}/like`, { method: 'POST' });
+      if (!result.ok) throw new Error(result.error || '按讚失敗');
+      // server 回的 liked 狀態已是 finalState，不需要額外處理
+    } catch (err) {
+      // 失敗：顯示 Toast，但 UI 保持 optimistic 狀態（不 rollback）
+      toast('❤️ 按讚同步失敗（' + err.message + '）', 'error');
+    } finally {
+      syncingLikes.delete(postId);
+      if (Object.keys(pendingLikes).length === 0 && pendingComments.length === 0) {
+        hideIndicator();
+      }
+    }
+  }
+
+  // ── flush 所有排隊中的 likes ────────────────────────────
+  async function flushAllLikes() {
+    const ids = Object.keys(pendingLikes);
+    for (const id of ids) {
+      clearTimeout(pendingLikes[id].timer);
+    }
+    // 同時送出不等待（fire-and-forget）
+    ids.forEach(id => flushLike(id));
+  }
+
+  // ── 留言：optimistic insert ─────────────────────────────
+  function addPendingComment(localId, html, type) {
+    // 立刻插入 comment list 並標記 pending
+    const list = type === 'post'
+      ? document.querySelector(`#post-detail-comments[data-post-id]`)
+      : document.querySelector(`#activity-detail-comments[data-activity-id]`);
+    if (!list) return;
+    const wrapper = document.createElement('div');
+    wrapper.id = `pending-comment-${localId}`;
+    wrapper.innerHTML = html + `<div class="comment-pending-tag">傳送中…</div>`;
+    list.insertBefore(wrapper, list.firstChild);
+    // 自動滾到最上
+    wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function confirmComment(localId) {
+    const el = $(`#pending-comment-${localId}`);
+    if (el) {
+      const tag = el.querySelector('.comment-pending-tag');
+      if (tag) tag.remove();
+      el.dataset.pending = 'false';
+    }
+  }
+
+  function failComment(localId, errorMsg) {
+    const el = $(`#pending-comment-${localId}`);
+    if (el) {
+      const tag = el.querySelector('.comment-pending-tag');
+      if (tag) {
+        tag.textContent = '傳送失敗';
+        tag.style.color = 'var(--danger)';
+      }
+      el.dataset.pending = 'false';
+    }
+    toast('💬 留言傳送失敗（' + (errorMsg || '網路錯誤') + '）', 'error');
+  }
+
+  function removePendingComment(localId) {
+    const el = $(`#pending-comment-${localId}`);
+    if (el) el.remove();
+  }
+
+  // ── 背景送出 comment ───────────────────────────────────
+  async function submitComment(type, targetId, content) {
+    const localId = Date.now() + Math.random();
+
+    // optimistic UI：立刻插入待確認的留言
+    const optimisticHtml = `
+      <div class="comment-item" data-pending="true">
+        <div class="comment-header">
+          <div class="comment-avatar" style="background:var(--primary)">${getInitials(State.user?.displayName || State.user?.username || '?')}</div>
+          <span class="comment-author">${escapeHtml(State.user?.displayName || State.user?.username || '?')}</span>
+          <span class="comment-time">刚刚</span>
+        </div>
+        <div class="comment-body">${escapeHtml(content)}</div>
+      </div>`;
+    addPendingComment(localId, optimisticHtml, type);
+    showIndicator();
+
+    const endpoint = type === 'post'
+      ? `/posts/${targetId}/comment`
+      : `/activities/${targetId}/comment`;
+
+    const result = await ChatRankAPI.fetchBg(endpoint, {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+    });
+
+    if (result.ok) {
+      confirmComment(localId);
+    } else {
+      failComment(localId, result.error);
+    }
+
+    if (Object.keys(pendingLikes).length === 0 && !result.ok) {
+      hideIndicator();
+    } else {
+      setTimeout(() => {
+        if (Object.keys(pendingLikes).length === 0) hideIndicator();
+      }, 500);
+    }
+  }
+
+  // ── Flush 所有排隊中的 actions ─────────────────────────
+  async function flushAll() {
+    await flushAllLikes();
+    // comments 已在背景 fire-and-forget，不需要額外處理
+    hideIndicator();
+  }
+
+  // ── 頁面離開時立刻 flush ───────────────────────────────
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') flushAll();
+  });
+  window.addEventListener('beforeunload', () => flushAll());
+
+  return {
+    // 按讚：排程（debounce + optimistic UI）
+    scheduleLike,
+    // 留言：optimistic submit
+    submitComment,
+    // 全部送出（頁面離開時自動呼叫）
+    flushAll,
+  };
+})();
+
+// ══════════════════════════════════════════════════════════
 //  工具函式
 // ══════════════════════════════════════════════════════════
 function $ (selector) { return document.querySelector(selector); }
@@ -246,7 +484,7 @@ function renderPostCard(post) {
       <div class="post-content">${escapeHtml(post.content)}</div>
       ${tags ? `<div class="post-tags">${tags}</div>` : ''}
       <div class="post-actions">
-        <button class="post-action like-btn ${post.likedByMe ? 'liked' : ''}" data-post-id="${post.id}">
+        <button class="post-action like-btn ${post.likedByMe ? 'liked' : ''}" data-post-id="${post.id}" data-liked="${post.likedByMe}">
           ${post.likedByMe ? '❤️' : '🤍'} <span>${post.likeCount}</span>
         </button>
         <button class="post-action comment-btn" data-post-id="${post.id}">
@@ -283,7 +521,7 @@ function renderPostDetail(postId) {
         <div class="post-detail-content">${escapeHtml(post.content)}</div>
         ${tags ? `<div class="post-tags">${tags}</div>` : ''}
         <div class="post-detail-actions">
-          <button class="post-action like-btn ${post.likedByMe ? 'liked' : ''}" data-post-id="${post.id}">
+          <button class="post-action like-btn ${post.likedByMe ? 'liked' : ''}" data-post-id="${post.id}" data-liked="${post.likedByMe}">
             ${post.likedByMe ? '❤️' : '🤍'} <span>${post.likeCount}</span>
           </button>
           ${isMine ? `<button class="post-action delete-btn" data-post-id="${post.id}">🗑️ 刪除</button>` : ''}
@@ -296,21 +534,18 @@ function renderPostDetail(postId) {
           <input type="text" id="comment-input" placeholder="寫留言..." maxlength="2000" />
           <button id="btn-comment" class="btn-primary btn-sm">送出</button>
         </div>
-        <div class="comment-list" id="comment-list">
+        <div class="comment-list" id="post-detail-comments" data-post-id="${postId}">
           ${(post.comments || []).map(renderComment).join('')}
         </div>
       </div>`;
 
     // 留言事件
-    $('#btn-comment').onclick = async () => {
+    $('#btn-comment').onclick = () => {
       const input = $('#comment-input');
       const content = input.value.trim();
       if (!content) return;
-      try {
-        await ChatRankAPI.comment(postId, content);
-        input.value = '';
-        renderPostDetail(postId); // 重新渲染
-      } catch (err) { showToast(err.message, 'error'); }
+      input.value = '';
+      SyncQueue.submitComment('post', postId, content);
     };
 
     // 輸入框 Enter
@@ -417,7 +652,7 @@ function renderActivityDetail(activityId) {
           <input type="text" id="activity-comment-input" placeholder="留言..." maxlength="2000" />
           <button id="btn-activity-comment" class="btn-primary btn-sm">送出</button>
         </div>
-        <div class="comment-list">
+        <div class="comment-list" id="activity-detail-comments" data-activity-id="${activityId}">
           ${(a.comments || []).map(c => `
             <div class="comment-item">
               <div class="comment-header">
@@ -431,15 +666,12 @@ function renderActivityDetail(activityId) {
         </div>
       </div>`;
 
-    $('#btn-activity-comment').onclick = async () => {
+    $('#btn-activity-comment').onclick = () => {
       const input = $('#activity-comment-input');
       const content = input.value.trim();
       if (!content) return;
-      try {
-        await ChatRankAPI.activityComment(activityId, content);
-        input.value = '';
-        renderActivityDetail(activityId);
-      } catch (err) { showToast(err.message, 'error'); }
+      input.value = '';
+      SyncQueue.submitComment('activity', activityId, content);
     };
 
     $('#activity-comment-input').onkeydown = e => {
@@ -501,21 +733,12 @@ document.addEventListener('click', async e => {
     return;
   }
 
-  // ── 讚 ──────────────────────────────────────────────────
+  // ── 讚（debounce 5s + optimistic UI）────────────────────
   const likeBtn = target.closest('.like-btn');
   if (likeBtn) {
     e.stopPropagation();
     const postId = likeBtn.dataset.postId;
-    likeBtn.disabled = true;
-    try {
-      const result = await ChatRankAPI.toggleLike(postId);
-      likeBtn.classList.toggle('liked', result.liked);
-      const span = likeBtn.querySelector('span');
-      const current = parseInt(span.textContent);
-      span.textContent = result.liked ? current + 1 : current - 1;
-      likeBtn.firstChild.textContent = result.liked ? '❤️ ' : '🤍 ';
-    } catch (err) { showToast(err.message, 'error'); }
-    finally { likeBtn.disabled = false; }
+    SyncQueue.scheduleLike(postId);
     return;
   }
 
