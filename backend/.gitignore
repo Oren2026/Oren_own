@@ -1,0 +1,10 @@
+# 聊天啊!尬殿 - Backend
+
+# 不 push 的本地檔案
+*.db
+*.db-shm
+*.db-wal
+node_modules/
+
+# 環境變數（正式機要另外設定）
+.env

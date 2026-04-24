@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>聊天啊!尬殿</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ══════════════════ 登入/註冊 ══════════════════ -->
+<div id="view-auth" class="view">
+  <div class="auth-container">
+    <div class="auth-logo">💬 聊天啊!尬殿</div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">登入</button>
+      <button class="auth-tab" data-tab="register">註冊</button>
+    </div>
+
+    <!-- 登入表單 -->
+    <form id="form-login" class="auth-form">
+      <div class="form-group">
+        <label>帳號</label>
+        <input type="text" name="username" placeholder="輸入帳號" required />
+      </div>
+      <div class="form-group">
+        <label>密碼</label>
+        <input type="password" name="password" placeholder="輸入密碼" required />
+      </div>
+      <div class="form-error" id="login-error"></div>
+      <button type="submit" class="btn-primary">登入</button>
+    </form>
+
+    <!-- 註冊表單 -->
+    <form id="form-register" class="auth-form hidden">
+      <div class="form-group">
+        <label>帳號</label>
+        <input type="text" name="username" placeholder="3-30字，英文數字底線" required />
+      </div>
+      <div class="form-group">
+        <label>顯示名稱</label>
+        <input type="text" name="displayName" placeholder="自訂顯示名稱（選填）" />
+      </div>
+      <div class="form-group">
+        <label>密碼</label>
+        <input type="password" name="password" placeholder="至少 6 字" required />
+      </div>
+      <div class="form-group">
+        <label>確認密碼</label>
+        <input type="password" name="confirmPassword" placeholder="再輸入一次密碼" required />
+      </div>
+      <div class="form-error" id="register-error"></div>
+      <button type="submit" class="btn-primary">註冊</button>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════ 主體（已登入） ══════════════════ -->
+<div id="view-app" class="view hidden">
+
+  <!-- 導航列 -->
+  <nav class="navbar">
+    <div class="nav-brand">💬 聊天啊!尬殿</div>
+    <div class="nav-links">
+      <a href="#feed" class="nav-link" data-page="feed">動態牆</a>
+      <a href="#activities" class="nav-link" data-page="activities">活動</a>
+    </div>
+    <div class="nav-user">
+      <span id="nav-username"></span>
+      <button id="btn-logout" class="btn-ghost btn-sm">登出</button>
+    </div>
+  </nav>
+
+  <!-- 頁面容器 -->
+  <div class="main-container">
+
+    <!-- ══ 動態牆 ══ -->
+    <div id="page-feed" class="page">
+      <div class="page-header">
+        <h1>動態牆</h1>
+        <button id="btn-new-post" class="btn-primary">✏️ 發文</button>
+      </div>
+      <div id="feed-list" class="post-list"></div>
+      <div id="feed-more" class="load-more hidden">
+        <button id="btn-feed-more" class="btn-ghost">載入更多</button>
+      </div>
+    </div>
+
+    <!-- ══ 發文/編輯 ══ -->
+    <div id="page-post-edit" class="page hidden">
+      <div class="page-header">
+        <h1 id="post-edit-title">發表文章</h1>
+        <button id="btn-cancel-post" class="btn-ghost">取消</button>
+      </div>
+      <form id="form-post" class="post-form">
+        <input type="hidden" name="postId" />
+        <div class="form-group">
+          <label>標題（選填）</label>
+          <input type="text" name="title" placeholder="標題" maxlength="200" />
+        </div>
+        <div class="form-group">
+          <label>內容</label>
+          <textarea name="content" rows="8" placeholder="在想什麼？" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>標籤（用逗號分隔）</label>
+          <input type="text" name="tags" placeholder="例如：日常,分享,問題" />
+        </div>
+        <div class="form-error" id="post-error"></div>
+        <button type="submit" class="btn-primary">送出</button>
+      </form>
+    </div>
+
+    <!-- ══ 文章詳情 ══ -->
+    <div id="page-post-detail" class="page hidden">
+      <div class="page-header">
+        <button id="btn-back-feed" class="btn-ghost">← 返回</button>
+      </div>
+      <div id="post-detail-content"></div>
+    </div>
+
+    <!-- ══ 活動列表 ══ -->
+    <div id="page-activities" class="page hidden">
+      <div class="page-header">
+        <h1>活動</h1>
+        <button id="btn-new-activity" class="btn-primary">＋ 建立活動</button>
+      </div>
+      <div id="activity-list" class="activity-list"></div>
+      <div id="activity-more" class="load-more hidden">
+        <button id="btn-activity-more" class="btn-ghost">載入更多</button>
+      </div>
+    </div>
+
+    <!-- ══ 建立活動 ══ -->
+    <div id="page-activity-edit" class="page hidden">
+      <div class="page-header">
+        <h1>建立活動</h1>
+        <button id="btn-cancel-activity" class="btn-ghost">取消</button>
+      </div>
+      <form id="form-activity" class="post-form">
+        <div class="form-group">
+          <label>活動名稱</label>
+          <input type="text" name="title" placeholder="活動標題" required maxlength="200" />
+        </div>
+        <div class="form-group">
+          <label>地點</label>
+          <input type="text" name="location" placeholder="地點" />
+        </div>
+        <div class="form-group">
+          <label>時間（選填）</label>
+          <input type="datetime-local" name="startDate" />
+        </div>
+        <div class="form-group">
+          <label>說明</label>
+          <textarea name="description" rows="5" placeholder="活動詳細說明"></textarea>
+        </div>
+        <div class="form-error" id="activity-error"></div>
+        <button type="submit" class="btn-primary">建立</button>
+      </form>
+    </div>
+
+    <!-- ══ 活動詳情 ══ -->
+    <div id="page-activity-detail" class="page hidden">
+      <div class="page-header">
+        <button id="btn-back-activities" class="btn-ghost">← 返回</button>
+      </div>
+      <div id="activity-detail-content"></div>
+    </div>
+
+  </div><!-- /main-container -->
+</div><!-- /view-app -->
+
+<!-- ══════════════════ Toast 通知 ══════════════════ -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
