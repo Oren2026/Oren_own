@@ -238,6 +238,9 @@ function getPostById(postId, requesterId = null) {
 
 function deletePost(postId, userId) {
   const database = getDb();
+  // 刪除前先清子資料（likes, comments 有 FK REFERENCES posts(id) ON DELETE RESTRICT）
+  database.prepare('DELETE FROM likes WHERE post_id = ?').run(postId);
+  database.prepare('DELETE FROM comments WHERE post_id = ?').run(postId);
   const result = database.prepare(
     'DELETE FROM posts WHERE id = ? AND user_id = ?'
   ).run(postId, userId);
@@ -340,6 +343,8 @@ function getActivityById(activityId) {
 
 function deleteActivity(activityId, userId) {
   const database = getDb();
+  // 先清子留言（activity_comments 有 FK REFERENCES activities(id)）
+  database.prepare('DELETE FROM activity_comments WHERE activity_id = ?').run(activityId);
   const result = database.prepare(
     'DELETE FROM activities WHERE id = ? AND user_id = ?'
   ).run(activityId, userId);
@@ -399,6 +404,18 @@ function verifyCsrfToken(token, userId) {
 
 // ── 輔助 ─────────────────────────────────────────────────────────
 
+/**
+ * 將 SQLite datetime 字串轉成 ISO 8601 並附加 +08:00 時區
+ * 這樣 JS new Date() 才能正確解析為台灣本地時間
+ */
+function tz(dt) {
+  if (!dt) return null;
+  // 已有時區後綴（Z, +, -）就直接回傳
+  if (/[Z+-]\d{2}:?\d{2}$/.test(dt)) return dt;
+  // 補上 +08:00
+  return dt + '+08:00';
+}
+
 function normalizePost(post) {
   if (!post) return null;
   return {
@@ -411,7 +428,7 @@ function normalizePost(post) {
     tags: (() => { try { return JSON.parse(post.tags || '[]'); } catch { return []; } })(),
     likeCount: post.like_count,
     likedByMe: !!post.liked_by_me,
-    createdAt: post.created_at,
+    createdAt: tz(post.created_at),
   };
 }
 
@@ -423,7 +440,7 @@ function normalizeComment(c) {
     username: c.username,
     displayName: c.display_name,
     content: c.content,
-    createdAt: c.created_at,
+    createdAt: tz(c.created_at),
   };
 }
 
@@ -435,10 +452,10 @@ function normalizeActivity(a) {
     displayName: a.display_name,
     title: a.title,
     description: a.description,
-    startDate: a.start_date,
+    startDate: tz(a.start_date),
     location: a.location,
     commentCount: a.comment_count,
-    createdAt: a.created_at,
+    createdAt: tz(a.created_at),
   };
 }
 
@@ -450,11 +467,12 @@ function normalizeActivityComment(c) {
     username: c.username,
     displayName: c.display_name,
     content: c.content,
-    createdAt: c.created_at,
+    createdAt: tz(c.created_at),
   };
 }
 
 module.exports = {
+  tz,
   initDb,
   createUser,
   getUserByUsername,

@@ -27,7 +27,7 @@ const { initDb,
         createPost, getPosts, getPostById, deletePost, toggleLike,
         createComment, deleteComment,
         createActivity, getActivities, getActivityById, deleteActivity,
-        createActivityComment, deleteActivityComment } = require('./db');
+        createActivityComment, deleteActivityComment, tz } = require('./db');
 
 const { generateToken, requireAuth, optionalAuth, setAuthCookie, clearAuthCookie } = require('./middleware/auth');
 const { rateLimit, strictRateLimit } = require('./middleware/rateLimit');
@@ -71,7 +71,7 @@ function sanitizeUser(user) {
     id: user.id,
     username: user.username,
     displayName: user.display_name || user.displayName,
-    createdAt: user.created_at || user.createdAt,
+    createdAt: tz(user.created_at || user.createdAt),
   };
 }
 
