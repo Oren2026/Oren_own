@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>sp_HW_6 — Fork 與檔案系統</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0e1a;
+      --surface: #111827;
+      --surface2: #1a2332;
+      --border: #1e3050;
+      --text: #c8d8f0;
+      --muted: #5a7090;
+      --accent: #00d4ff;
+      --accent2: #7b61ff;
+      --green: #00e87a;
+      --yellow: #ffd93d;
+      --red: #ff4757;
+      --pipe-color: #ff9f43;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', 'Consolas', monospace;
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container { max-width: 960px; margin: 0 auto; }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(135deg, #0d1525 0%, #111827 100%);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero h1 {
+      font-size: 2.4em;
+      color: var(--accent);
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+      text-shadow: 0 0 30px rgba(0,212,255,0.4);
+    }
+    .hero .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+    .hero-tags { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .tag {
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      border: 1px solid;
+    }
+    .tag-cyan { background: rgba(0,212,255,0.1); color: var(--accent); border-color: var(--accent); }
+    .tag-purple { background: rgba(123,97,255,0.1); color: var(--accent2); border-color: var(--accent2); }
+    .tag-green { background: rgba(0,232,122,0.1); color: var(--green); border-color: var(--green); }
+
+    /* ── Section ── */
+    .section { margin-bottom: 56px; }
+    .section-label {
+      font-size: 0.75em;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+    .section h2 {
+      font-size: 1.3em;
+      color: var(--accent);
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    /* ── Tables ── */
+    .func-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .func-table th {
+      background: var(--surface2);
+      color: var(--accent);
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.85em;
+      letter-spacing: 1px;
+    }
+    .func-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .func-table tr:last-child td { border-bottom: none; }
+    .func-table td:first-child {
+      color: var(--green);
+      font-weight: bold;
+      width: 130px;
+    }
+    .func-table tr:hover td { background: rgba(0,212,255,0.03); }
+    .fn-name { color: var(--green); font-weight: bold; }
+
+    /* ── Intro paragraph ── */
+    .intro-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    /* ── Terminal ── */
+    .terminal-wrap {
+      background: #080c14;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .terminal-header {
+      background: var(--surface2);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dot-red { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+    .dot-yellow { width: 12px; height: 12px; border-radius: 50%; background: #febc2e; }
+    .dot-green { width: 12px; height: 12px; border-radius: 50%; background: #28c840; }
+    .terminal-title { margin-left: 12px; color: var(--muted); font-size: 12px; }
+    .terminal-body {
+      padding: 16px;
+      min-height: 200px;
+      max-height: 340px;
+      overflow-y: auto;
+      font-size: 13px;
+    }
+    .terminal-output { color: #8899aa; margin-bottom: 4px; }
+    .terminal-output.cmd { color: var(--green); }
+    .terminal-output.result { color: var(--text); padding-left: 16px; }
+    .terminal-output.syscall {
+      color: var(--yellow);
+      font-size: 11px;
+      padding-left: 16px;
+      opacity: 0.85;
+    }
+    .terminal-output.error { color: var(--red); }
+    .terminal-prompt {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .prompt-sign { color: var(--accent); font-size: 13px; }
+    #term-input {
+      background: transparent;
+      border: none;
+      color: var(--green);
+      font-family: inherit;
+      font-size: 13px;
+      flex: 1;
+      outline: none;
+      caret-color: var(--accent);
+    }
+    .term-hint { font-size: 11px; color: var(--muted); margin-top: 12px; text-align: center; }
+
+    /* ── Process Tree Viz ── */
+    .process-tree {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 24px 0;
+      position: relative;
+    }
+    .proc-box {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      text-align: center;
+      min-width: 90px;
+      position: relative;
+      z-index: 1;
+    }
+    .proc-box.parent { border-color: var(--accent); }
+    .proc-box.child { border-color: var(--accent2); }
+    .proc-box.grand { border-color: var(--green); }
+    .proc-box .pid { font-size: 10px; color: var(--muted); }
+    .proc-box .label { font-size: 13px; font-weight: bold; margin-top: 2px; }
+    .proc-box.parent .label { color: var(--accent); }
+    .proc-box.child .label { color: var(--accent2); }
+    .proc-box.grand .label { color: var(--green); }
+    .proc-label { font-size: 11px; color: var(--muted); text-align: center; }
+    .fork-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 8px;
+      color: var(--yellow);
+      font-size: 18px;
+    }
+    .fork-connector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      position: relative;
+      margin-top: 8px;
+    }
+    .fork-connector::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      width: 2px;
+      height: 20px;
+      background: var(--yellow);
+    }
+    .fork-connector::after {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--yellow);
+    }
+    .branch-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--yellow);
+      position: absolute;
+      top: -20px;
+    }
+
+    /* ── I/O Redirection Viz ── */
+    .io-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 24px 0;
+      flex-wrap: wrap;
+      row-gap: 12px;
+    }
+    .io-node {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      text-align: center;
+      min-width: 80px;
+    }
+    .io-node.fd { border-color: var(--muted); }
+    .io-node.file { border-color: var(--green); }
+    .io-node.proc { border-color: var(--accent); }
+    .io-node .fd-num { font-size: 11px; color: var(--muted); }
+    .io-node .fd-label { font-size: 14px; font-weight: bold; }
+    .io-node.proc .fd-label { color: var(--accent); }
+    .io-node.file .fd-label { color: var(--green); }
+    .io-arrow {
+      font-size: 22px;
+      color: var(--yellow);
+      padding: 0 6px;
+    }
+    .io-desc { text-align: center; font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    /* ── Pipe Viz ── */
+    .pipe-viz {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+    .pipe-side {
+      background: var(--surface);
+      border: 2px solid var(--accent2);
+      border-radius: 10px;
+      padding: 16px;
+      min-width: 160px;
+      text-align: center;
+    }
+    .pipe-side.parent { border-color: var(--accent); }
+    .pipe-side.child { border-color: var(--accent2); }
+    .pipe-side h4 { font-size: 13px; margin-bottom: 8px; }
+    .pipe-side.parent h4 { color: var(--accent); }
+    .pipe-side.child h4 { color: var(--accent2); }
+    .pipe-box {
+      background: var(--surface2);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+    .pipe-box.write { color: var(--yellow); border-left: 3px solid var(--yellow); }
+    .pipe-box.read { color: var(--green); border-left: 3px solid var(--green); }
+    .pipe-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .pipe-symbol {
+      font-size: 32px;
+      color: var(--pipe-color);
+      filter: drop-shadow(0 0 8px rgba(255,159,67,0.5));
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    .pipe-caption { font-size: 11px; color: var(--muted); text-align: center; }
+    .data-flow {
+      font-size: 12px;
+      color: var(--yellow);
+      animation: flowDown 1.5s ease-in-out infinite;
+    }
+    @keyframes flowDown {
+      0% { opacity: 0; transform: translateY(-8px); }
+      50% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(8px); }
+    }
+
+    /* ── Deep Context ── */
+    .stack-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+    .stack-box {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      text-align: center;
+      min-width: 100px;
+    }
+    .stack-box .layer { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .stack-box .name { font-size: 13px; font-weight: bold; }
+    .stack-box.p { border-color: var(--accent); }
+    .stack-box.p .name { color: var(--accent); }
+    .stack-box.c { border-color: var(--accent2); }
+    .stack-box.c .name { color: var(--accent2); }
+    .stack-box.i { border-color: var(--pipe-color); }
+    .stack-box.i .name { color: var(--pipe-color); }
+    .stack-box.s { border-color: var(--green); }
+    .stack-box.s .name { color: var(--green); }
+    .stack-box.e { border-color: var(--yellow); }
+    .stack-box.e .name { color: var(--yellow); }
+    .stack-arrow { font-size: 22px; color: var(--muted); }
+
+    /* ── Note boxes ── */
+    .note {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .note.warn { border-left: 3px solid var(--yellow); }
+    .note.info { border-left: 3px solid var(--accent); }
+    .note .note-title { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+    .note.warn .note-title { color: var(--yellow); }
+    .note.info .note-title { color: var(--accent); }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>FORK + FS</h1>
+    <p class="subtitle">程序分身 × 檔案系統 × 管道與記憶體映射</p>
+    <div class="hero-tags">
+      <span class="tag tag-cyan">fork()</span>
+      <span class="tag tag-purple">execvp()</span>
+      <span class="tag tag-green">pipe()</span>
+      <span class="tag tag-cyan">mmap()</span>
+      <span class="tag tag-purple">socket</span>
+    </div>
+  </div>
+
+  <!-- ═══ Part 1: Fork ═══ -->
+  <div class="section">
+    <div class="section-label">Part 1 · Process / 程序</div>
+    <h2>fork() — 影分身術</h2>
+
+    <div class="intro-box">
+      <code>fork()</code> 是 Unix 的「影分身」。呼叫一次、返回兩次——父程序拿到的返回值是子 PID，子程序拿到的返回值是 <code>0</code>。作業系統把整個父程序的記憶體空間完整複製一份，從此兩者各走各路。
+    </div>
+
+    <table class="func-table">
+      <thead>
+        <tr>
+          <th>函式</th>
+          <th>功能</th>
+          <th>說明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="fn-name">fork()</span></td>
+          <td>影分身，複製一份行程</td>
+          <td>呼叫一次、返回兩次（父拿子PID = 正整數，子拿 0）</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">execvp()</span></td>
+          <td>換魂，变成另一個程式</td>
+          <td>不開新行程，在現有行程上替換成新程式映像</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">wait()</span></td>
+          <td>父等子，幫子收屍</td>
+          <td>子行程結束後若父沒呼叫 wait，會變成僵尸（Zombie）</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">waitpid()</span></td>
+          <td>指定等某一個子</td>
+          <td>比 wait() 更精確，可設定 WNOHANG 不阻塞</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">system()</span></td>
+          <td>包好的 fork+exec+wait</td>
+          <td>一行執行任意 shell 命令，簡易但有安全風險</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Process tree visualization -->
+    <div class="process-tree">
+      <div class="proc-box parent">
+        <div class="pid">PID 1000</div>
+        <div class="label">Parent</div>
+      </div>
+      <div class="fork-arrow">⇓ fork()</div>
+      <div class="proc-box child">
+        <div class="pid">PID 1001</div>
+        <div class="label">Child</div>
+      </div>
+    </div>
+    <div class="fork-connector" style="position:relative; height:24px; margin-top:-8px;">
+      <div style="position:absolute; left:calc(50% - 45px); top:0; width:10px; height:10px; border-radius:50%; background:var(--yellow);"></div>
+      <div style="position:absolute; right:calc(50% - 45px); top:0; width:10px; height:10px; border-radius:50%; background:var(--yellow);"></div>
+    </div>
+    <div style="text-align:center; font-size:11px; color:var(--muted); margin-top:4px;">fork() 後，父子各有一份獨立的記憶體空間</div>
+
+    <div class="note warn">
+      <div class="note-title">⚠ Zombie 產生條件</div>
+      子行程結束 → 行程表中仍有一筆記錄（PCB）→ 父行程還沒呼叫 <code>wait()</code> → 子行程進入 Zombie 狀態。累積太多 Zombie 會佔滿行程表。
+    </div>
+  </div>
+
+  <!-- ═══ Part 2: FS ═══ -->
+  <div class="section">
+    <div class="section-label">Part 2 · File System / 檔案系統</div>
+    <h2>檔案操作 — 系統層 vs 標準層</h2>
+
+    <div class="intro-box">
+      Unix 把幾乎所有東西都抽象成「檔案」——硬碟檔案、鍵盤輸入、螢幕輸出、網路連線，全部都是檔案描述符（file descriptor）。理解 FD 0/1/2，等於理解 I/O Redirection 的鑰匙。
+    </div>
+
+    <table class="func-table">
+      <thead>
+        <tr>
+          <th>函式</th>
+          <th>層次</th>
+          <th>功能</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="fn-name">open()</span></td>
+          <td>系統層</td>
+          <td>開啟檔案，拿到一個 FD（檔案描述符，整數）</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">read()</span></td>
+          <td>系統層</td>
+          <td>用 FD 讀取資料，一次讀固定位元組</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">write()</span></td>
+          <td>系統層</td>
+          <td>用 FD 寫入資料</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">close()</span></td>
+          <td>系統層</td>
+          <td>關閉 FD，釋放系統資源</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">gets() / puts()</span></td>
+          <td>標準層</td>
+          <td>C 標準庫，讀寫字串指標，無邊界檢查（不安全）</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">fgets() / fputs()</span></td>
+          <td>標準層</td>
+          <td>安全版，指定最大讀取長度（buffer size）</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- FD 0/1/2 -->
+    <h2 style="margin-top:32px;">I/O Redirection — 插進 0 · 1 · 2</h2>
+    <div class="intro-box">
+      檔案描述符 0、1、2 是標準輸入、輸出、錯誤輸出。I/O Redirection 的原理很簡單：用 <code>open()</code> 開啟檔案，把拿到的 FD 複製到 0、1、2 的位置，從此程式的 stdin/stdout/stderr 就自動送到檔案了。
+    </div>
+
+    <div class="io-flow">
+      <div class="io-node proc">
+        <div class="fd-num">proc</div>
+        <div class="fd-label">Process</div>
+        <div class="io-desc">行程本身</div>
+      </div>
+      <div class="io-arrow">←</div>
+      <div class="io-node fd">
+        <div class="fd-num">FD 0</div>
+        <div class="fd-label">stdin</div>
+        <div class="io-desc">鍵盤輸入</div>
+      </div>
+      <div class="io-arrow">←</div>
+      <div class="io-node fd">
+        <div class="fd-num">FD 1</div>
+        <div class="fd-label">stdout</div>
+        <div class="io-desc">正常輸出</div>
+      </div>
+      <div class="io-arrow">←</div>
+      <div class="io-node fd">
+        <div class="fd-num">FD 2</div>
+        <div class="fd-label">stderr</div>
+        <div class="io-desc">錯誤輸出</div>
+      </div>
+      <div class="io-arrow">⇉</div>
+      <div class="io-node file">
+        <div class="fd-num">/dev/</div>
+        <div class="fd-label">Console</div>
+        <div class="io-desc">終端機</div>
+      </div>
+    </div>
+
+    <div class="io-flow" style="margin-top:8px;">
+      <div style="font-size:12px; color:var(--muted); text-align:center; margin-bottom:8px;">Redirection 範例：<code>ls &gt; out.txt</code> 把 stdout（FD 1）重新指向檔案</div>
+    </div>
+
+    <div class="io-flow">
+      <div class="io-node proc">
+        <div class="fd-num">proc</div>
+        <div class="fd-label">Process</div>
+      </div>
+      <div class="io-arrow">←</div>
+      <div class="io-node fd">
+        <div class="fd-num">FD 1</div>
+        <div class="fd-label">stdout</div>
+      </div>
+      <div class="io-arrow" style="color:var(--green); font-size:28px;">→</div>
+      <div class="io-node file">
+        <div class="fd-num">FD 5</div>
+        <div class="fd-label">out.txt</div>
+      </div>
+    </div>
+    <div style="text-align:center; font-size:11px; color:var(--muted);">
+      <code>dup2(fd, 1)</code> — 把檔案描述符 5 複製到位置 1，從此所有 <code>printf()</code> 都寫進檔案
+    </div>
+  </div>
+
+  <!-- ═══ Part 3: Interactive Terminal ═══ -->
+  <div class="section">
+    <div class="section-label">Part 3 · 互動模擬</div>
+    <h2>Mini Shell — 試著輸入指令</h2>
+
+    <div class="intro-box">
+      這是一個迷你 shell 模擬。試著輸入指令，看看背後發生了哪些 System Call。支援 <code>ls</code>、<code>cat</code>、<code>pwd</code>、<code>echo</code>、I/O Redirection（<code>&gt;</code>）以及 Pipe（<code>|</code>）。
+    </div>
+
+    <div class="terminal-wrap">
+      <div class="terminal-header">
+        <div class="dot-red"></div>
+        <div class="dot-yellow"></div>
+        <div class="dot-green"></div>
+        <span class="terminal-title">oren@unix-sim:~$</span>
+      </div>
+      <div class="terminal-body" id="term-body">
+        <div class="terminal-output">System booted. Try: ls, cat, pwd, echo hello, ls > out.txt, ls | cat</div>
+      </div>
+      <div style="padding: 0 16px 14px;">
+        <div class="terminal-prompt">
+          <span class="prompt-sign">$</span>
+          <input type="text" id="term-input" placeholder="輸入指令，按 Enter" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+    </div>
+    <div class="term-hint">支援：ls · cat · pwd · echo · cd · <code>&gt;</code> (redirect) · <code>|</code> (pipe)</div>
+  </div>
+
+  <!-- ═══ Part 4: Pipe ═══ -->
+  <div class="section">
+    <div class="section-label">Part 4 · 延伸：Pipe 與結合</div>
+    <h2>pipe() — Fork + FS 的結合</h2>
+
+    <div class="intro-box">
+      <code>pipe()</code> 是 fork + FS 的結合。想像有一根管子——一端寫入、一端讀取。fork() 後父子各持有一端，父親讀、子寫（或者反向）。Unix 管線 <code>|</code> 的底層原理就是這個。
+    </div>
+
+    <div class="pipe-viz">
+      <div class="pipe-side parent">
+        <h4>Parent Process</h4>
+        <div class="pipe-box read">read(fd[0]) ←</div>
+        <div style="font-size:11px; color:var(--muted);">接收資料</div>
+      </div>
+
+      <div class="pipe-center">
+        <div class="pipe-symbol">⟺</div>
+        <div class="pipe-caption">pipe(fd[0], fd[1])</div>
+        <div style="height:20px; display:flex; align-items:center; justify-content:center;">
+          <div class="data-flow">data →</div>
+        </div>
+      </div>
+
+      <div class="pipe-side child">
+        <h4>Child Process</h4>
+        <div class="pipe-box write">→ write(fd[1])</div>
+        <div style="font-size:11px; color:var(--muted);">發送資料</div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:32px;">mmap() — 檔案映射到記憶體</h2>
+    <div class="intro-box">
+      <code>mmap()</code> 把檔案直接映射到行程的虛擬記憶體空間。從此讀記憶體就是在讀檔案，寫記憶體就是在寫檔案——完全繞過 <code>read()/write()</code>。適合大檔案處理與共享記憶體（shared memory）。
+    </div>
+
+    <div class="note info">
+      <div class="note-title">💡 mmap vs read/write</div>
+      <code>read(fd, buf, n)</code> → kernel 拷貝磁碟資料到 page cache，再拷貝到用戶空間（兩次拷貝）。<br>
+      <code>mmap(fd, ...)</code> → 用戶空間直接映射到 page cache（零拷貝，適合大檔案）。
+    </div>
+
+    <h2 style="margin-top:32px;">socket — 網路版的檔案</h2>
+    <div class="intro-box">
+      <code>socket()</code> 是「網路檔案」。Unix 設計哲學：幾乎所有 I/O 都是「開檔 → 讀/寫 → 關檔」。socket() 打開一個網路端點，之後用 <code>read()/write()</code> 收發網路資料，跟操作一般檔案完全相同。
+    </div>
+
+    <table class="func-table">
+      <tbody>
+        <tr>
+          <td><span class="fn-name">socket()</span></td>
+          <td>開網路檔案</td>
+          <td>建立網路端點，回傳一個 FD</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">bind()</span></td>
+          <td>綁定位址</td>
+          <td>把 socket FD 綁定到 IP + Port（如 80）</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">listen()</span></td>
+          <td>監聽連線</td>
+          <td>開始接受客戶端連線（變成 server socket）</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">accept()</span></td>
+          <td>接受連線</td>
+          <td>取出排隊中的客戶端，建立真正的通訊 socket</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">connect()</span></td>
+          <td>發起連線</td>
+          <td>client 端連到 server</td>
+        </tr>
+        <tr>
+          <td><span class="fn-name">read/write()</span></td>
+          <td>網路傳輸</td>
+          <td>和操作檔案完全相同，讀寫網路資料</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══ Part 5: Deep Context ═══ -->
+  <div class="section">
+    <div class="section-label">Part 5 · 底層脈絡</div>
+    <h2>從程序到網路的技術階梯</h2>
+
+    <div class="intro-box">
+      理解 Unix I/O 的全貌：process/thread 是並發的起點，pipe/mmap 是資料傳遞的工具，socket 把範圍擴展到網路，epoll 則讓这一切在高並發場景下依然高效。
+    </div>
+
+    <div class="stack-flow">
+      <div class="stack-box p">
+        <div class="layer">Layer 1</div>
+        <div class="name">process / thread</div>
+        <div style="font-size:11px; color:var(--muted);">並發基本單位</div>
+      </div>
+      <div class="stack-arrow">↓</div>
+      <div class="stack-box c">
+        <div class="layer">Layer 2</div>
+        <div class="name">pipe / mmap</div>
+        <div style="font-size:11px; color:var(--muted);">資料傳遞</div>
+      </div>
+      <div class="stack-arrow">↓</div>
+      <div class="stack-box i">
+        <div class="layer">Layer 3</div>
+        <div class="name">socket</div>
+        <div style="font-size:11px; color:var(--muted);">網路擴展</div>
+      </div>
+      <div class="stack-arrow">↓</div>
+      <div class="stack-box s">
+        <div class="layer">Layer 4</div>
+        <div class="name">epoll</div>
+        <div style="font-size:11px; color:var(--muted);">非同步高效 I/O</div>
+      </div>
+      <div class="stack-arrow">↓</div>
+      <div class="stack-box e">
+        <div class="layer">Goal</div>
+        <div class="name">高效能伺服器</div>
+        <div style="font-size:11px; color:var(--muted);">千萬併發</div>
+      </div>
+    </div>
+
+    <div class="note info">
+      <div class="note-title">💡 epoll 的價值</div>
+      傳統 <code>select()</code> 需要輪詢所有 FD，FD 多的時候效率低。<code>epoll()</code> 採用事件驅動——作業系統只通知「哪些 FD 有事件」，不用全量掃描。這就是 Nginx、Redis 高效能的祕密之一。
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center; padding: 32px 0 16px; border-top: 1px solid var(--border); margin-top: 40px;">
+    <span style="color: var(--muted); font-size: 12px;">
+      sp_HW_6 · Fork + FS · 由 黑皮團隊維護
+    </span>
+  </div>
+</div>
+
+<script>
+  // ─── Mini Shell Simulator ────────────────────────────────────
+  const body = document.getElementById('term-body');
+  const input = document.getElementById('term-input');
+  const MAX_LINES = 50;
+
+  // Simulated filesystem
+  const fs = {
+    '/': ['home', 'etc', 'usr', 'var'],
+    '/home': ['oren'],
+    '/home/oren': ['readme.txt', 'notes.md', 'out.txt'],
+    '/etc': ['passwd', 'hosts'],
+    '/usr': ['bin', 'lib'],
+    '/var': ['log'],
+  };
+  const files = {
+    '/home/oren/readme.txt': 'Hello from Oren!\nThis is a simulated file.',
+    '/home/oren/notes.md': '# Notes\n- Learn fork()\n- Understand pipe()\n- Master socket',
+    '/home/oren/out.txt': '',
+  };
+  let cwd = '/home/oren';
+
+  function appendLine(text, cls = '') {
+    const div = document.createElement('div');
+    div.className = 'terminal-output' + (cls ? ' ' + cls : '');
+    div.textContent = text;
+    body.appendChild(div);
+    // trim
+    while (body.children.length > MAX_LINES) body.removeChild(body.firstChild);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function syscall(line) {
+    appendLine(line, 'syscall');
+  }
+
+  function evalCmd(raw) {
+    const trimmed = raw.trim();
+    if (!trimmed) return;
+
+    appendLine('$ ' + trimmed, 'cmd');
+
+    // parse pipe
+    if (trimmed.includes('|')) {
+      const parts = trimmed.split('|').map(p => p.trim());
+      for (const part of parts) {
+        evalCmdSingle(part);
+        syscall('pipe() — 建立管道，連接上游 stdout 到下游 stdin');
+      }
+      return;
+    }
+
+    evalCmdSingle(trimmed);
+  }
+
+  function evalCmdSingle(cmd) {
+    const tokens = cmd.trim().split(/\s+/);
+    const [name, ...args] = tokens;
+
+    // I/O redirection
+    const redirIdx = args.indexOf('>');
+    if (redirIdx >= 0) {
+      const outFile = args[redirIdx + 1];
+      const restArgs = args.slice(0, redirIdx);
+      syscall(`open("${outFile}", O_WRONLY|O_CREAT|O_TRUNC)`);
+      syscall('dup2(fd, 1) — 把 stdout 導向檔案');
+      syscall('close(fd)');
+      // execute the command with rest args (simplified)
+      if (restArgs[0] === 'ls') cmdLs({ _: null });
+      else if (restArgs[0] === 'echo') cmdEcho(restArgs.slice(1), outFile);
+      appendLine(`(輸出已重導向到 ${outFile})`, 'result');
+      return;
+    }
+
+    switch (name) {
+      case 'ls': {
+        syscall('fork() → pid_t child = ' + (1000 + Math.floor(Math.random() * 9)));
+        syscall('open(".", O_RDONLY) — 開啟目錄');
+        syscall('getdents() — 讀取目錄項目');
+        const entries = fs[cwd] || [];
+        appendLine(entries.join('  '), 'result');
+        syscall('close(fd)');
+        break;
+      }
+      case 'cat': {
+        const target = args[0] || '';
+        const path = resolvePath(target);
+        syscall('fork()');
+        syscall(`open("${path}", O_RDONLY)`);
+        syscall('read(fd, buf, 4096)');
+        if (files[path]) {
+          appendLine(files[path], 'result');
+        } else {
+          appendLine(`cat: ${target}: No such file`, 'error');
+        }
+        syscall('close(fd)');
+        syscall('wait(NULL) — 父行程等待子行程結束');
+        break;
+      }
+      case 'pwd': {
+        syscall('getcwd(buf, 4096)');
+        appendLine(cwd, 'result');
+        break;
+      }
+      case 'echo': {
+        const text = args.join(' ');
+        syscall('write(1, "' + text + '", ' + text.length + ')');
+        appendLine(text, 'result');
+        break;
+      }
+      case 'cd': {
+        const target = args[0] || '/';
+        const newPath = resolvePath(target);
+        if (fs[newPath]) {
+          cwd = newPath;
+          syscall(`chdir("${newPath}")`);
+        } else {
+          appendLine(`cd: ${target}: No such directory`, 'error');
+        }
+        break;
+      }
+      case 'help': {
+        appendLine('可用指令：ls · cat · pwd · cd · echo · help', 'result');
+        appendLine('Redirection：ls > file.txt', 'result');
+        appendLine('Pipe：ls | cat', 'result');
+        break;
+      }
+      default:
+        appendLine(`${name}: command not found`, 'error');
+    }
+  }
+
+  function resolvePath(p) {
+    if (!p) return cwd;
+    if (p.startsWith('/')) return p;
+    const base = cwd === '/' ? '' : cwd;
+    return base + '/' + p;
+  }
+
+  function cmdLs(args) {
+    appendLine((fs[cwd] || []).join('  '), 'result');
+  }
+
+  function cmdEcho(args, outFile) {
+    const text = args.join(' ');
+    if (outFile) files[outFile] = text;
+    appendLine(text, 'result');
+  }
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const val = input.value;
+      input.value = '';
+      evalCmd(val);
+    }
+  });
+</script>
+</body>
+</html>

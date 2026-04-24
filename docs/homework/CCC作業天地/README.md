@@ -12,14 +12,17 @@ CCC作業天地/
 ├── index.html            ← 入口首頁（所有作業一覽）
 │
 ├── 網頁設計/             ← 網頁設計相關作業
-│   └── HW_firstweb0327/ ← 網頁日誌系統（v1.0 → v3.0 完整演化）
-│       ├── v1.0/ ~ v1.3/ ← 純前端版（SQLite / sql.js）
-│       ├── v2.0/        ← Node.js 後端對照版（bcrypt + JWT）
-│       ├── v2.1/        ← Node.js + Morgan + 統一錯誤處理
-│       └── v3.0/        ← 🌟 最新：追蹤系統 + 亮暗版 + Hash 路由
+│   ├── HW_firstweb0327/ ← 網頁日誌系統（v1.0 → v3.0 完整演化）
+│   │   ├── v1.0/ ~ v1.3/ ← 純前端版（SQLite / sql.js）
+│   │   ├── v2.0/        ← Node.js 後端對照版（bcrypt + JWT）
+│   │   ├── v2.1/        ← Node.js + Morgan + 統一錯誤處理
+│   │   └── v3.0/        ← 🌟 最新：追蹤系統 + 亮暗版 + Hash 路由
+│   ├── wp_HW_6-javascrip練習/ ← JavaScript 練習（quiz + practice）
+│   └── wp_HW_7-blog_js/       ← Blog JS 作業
 │
 └── 系統程式/             ← 系統程式相關作業
-    └── Orenbook0325/    ← 《機器的喃喃》互動式讀書報告
+    ├── Orenbook0325/    ← 《機器的喃喃》互動式讀書報告
+    └── sp_HW_5/         ← 系統程式綜合習題（race_condition、deadlock、dining_philosophers、producer_consumer、mutex、thread、bank_simulation、ai_collab）
 ```
 
 ---
@@ -28,8 +31,44 @@ CCC作業天地/
 
 | 作業 | 授課老師 | 日期 | 類型 | 狀態 |
 |------|---------|------|------|------|
+| [sp_HW_5](./系統程式/sp_HW_5/) | CCC | 2026-03-25 | 系統程式綜合習題 | ✅ 完成 |
+| [wp_HW_7-blog_js](./網頁設計/wp_HW_7-blog_js/) | CCC | — | Blog JS 作業 | ✅ 完成 |
+| [wp_HW_6-javascrip練習](./網頁設計/wp_HW_6-javascrip練習/) | CCC | — | JavaScript 練習 | ✅ 完成 |
 | [HW_firstweb0327](./網頁設計/HW_firstweb0327/) | CCC | 2026-03-27 | 網頁日誌系統 | ✅ 完成 |
 | [Orenbook0325](./系統程式/Orenbook0325/) | CCC | 2026-03-25 | 互動式讀書報告 | ✅ 完成 |
+
+---
+
+## 📋 系統程式 sp_HW_5
+
+涵蓋以下主題：
+
+| 主題 | 說明 |
+|------|------|
+| race_condition | 競爭條件說明 |
+| deadlock | 死結分析 |
+| dining_philosophers | 哲學家就餐問題 |
+| producer_consumer | 生產者消費者問題 |
+| mutex | 互斥鎖實作 |
+| thread | 多線程概念 |
+| bank_simulation | 銀行系統模擬 |
+| ai_collab | AI 協作範例 |
+
+---
+
+## 📋 網頁設計 wp_HW_6-javascrip練習
+
+JavaScript 練習，包含：
+- `quiz.html` — 測驗題系統
+- `practice.html` — 實作練習
+- `data/quiz_questions.js` — 題庫
+- `data/practice_questions.js` — 練習題
+
+---
+
+## 📋 網頁設計 wp_HW_7-blog_js
+
+Blog JS 作業，涵蓋前端 JavaScript 與 DOM 操作練習。
 
 ---
 
