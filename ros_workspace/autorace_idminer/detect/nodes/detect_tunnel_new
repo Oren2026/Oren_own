@@ -24,6 +24,7 @@ import numpy as np
 import os
 import cv2
 import tf
+import subprocess
 from enum import Enum
 from std_msgs.msg import UInt8, Float64, String
 from sensor_msgs.msg import LaserScan
@@ -75,44 +76,28 @@ class DetectSign():
         self.is_navigation_finished = False
         self.is_tunnel_finished = False
 
-        # 雷達障礙偵測狀態
-        self.is_obstacle_detected = False
-        self.is_at_tunnel_entry = False   # 左右對稱點抵達
-        self.obstacle_range = 1.0          # 前方障礙物距離（用於速度控制）
-        self.left_range = 1.0              # 左側障礙物距離
-        self.right_range = 1.0             # 右側障礙物距離
-
         self.last_current_theta = 0.0
 
-        # =====================================================================
-        # [不使用] 原 vision-based 偵測所需的 SIFT/FLANN 物件（保留但不用）
-        # =====================================================================
-        self.sift = None
-        self.flann = None
-        self.img_tunnel = None
-        self.kp_tunnel = None
-        self.des_tunnel = None
+        # 雷達障礙偵測狀態（保留）
+        self.is_obstacle_detected = False
+        self.obstacle_range = 1.0
+        self.left_range = 1.0
+        self.right_range = 1.0
+
 
     def cbMovingComplete(self, data):
         self.is_moving_complete = True
 
     def cbScanObstacle(self, scan):
         """
-        雷達障礙偵測：
-        - 同時監控左側（45-75°）和右側（285-315°）障礙物
-        - 當左右兩側障礙物都 < threshold，代表抵達隧道入口對稱點
-        - 同時持續監控前方障礙物距離，用於動態調速
-
-        [此函式保留但目前不用，純命令模式不需要 LiDAR 偵測]
+        雷達障礙偵測（保留給未來使用，目前不用於 tunnel 導航）。
         """
-        angle_scan_side = 15   # 左右掃描範圍（度）
-        threshold_symmetry = 0.35   # 對稱點門檻（35cm，兩側都低於此值 = 對稱停車點）
-        threshold_front = 0.4      # 前方障礙物門檻
+        angle_scan_side = 15
+        threshold_symmetry = 0.35
+        threshold_front = 0.4
 
-        # 左側：45-75°（前方左側）
         scan_start_left = 45
         scan_end_left = 75
-        # 右側：285-315°（前方右側）
         scan_start_right = 285
         scan_end_right = 315
 
@@ -126,7 +111,6 @@ class DetectSign():
             if scan.ranges[i] > 0.2:
                 min_right = min(min_right, scan.ranges[i])
 
-        # 前方障礙物（用於調速）
         scan_start_front = 355
         scan_end_front = 5
         min_front = float('inf')
@@ -138,116 +122,213 @@ class DetectSign():
         self.right_range = min_right if min_right != float('inf') else 1.0
         self.obstacle_range = min_front if min_front != float('inf') else 1.0
 
-        # 對稱點判斷：左右都低於門檻
-        if min_left < threshold_symmetry and min_right < threshold_symmetry:
-            if not self.is_at_tunnel_entry:
-                rospy.loginfo("[TUNNEL] AT TUNNEL ENTRY (symmetry detected: L=%.3f R=%.3f)",
-                              self.left_range, self.right_range)
-            self.is_at_tunnel_entry = True
-
-        # 前方障礙物偵測
         self.is_obstacle_detected = (min_front < threshold_front)
 
-        if self.is_obstacle_detected:
-            rospy.loginfo("[TUNNEL] OBSTACLE: front=%.3f", self.obstacle_range)
-
     def cbGetNavigationResult(self, msg_nav_result):
-        """
-        [不使用] move_base 導航結果回調，純命令模式不需要導航。
-        """
         if msg_nav_result.status.status == 3:
             rospy.loginfo("\t[TUNNEL] GOAL!!")
             self.is_navigation_finished = True
 
 
     def fnPreproc(self):
-        """
-        [不使用] SIFT 初始化，純命令模式不需要。
-        這裡只做啞巴初始化，避免後續程式呼叫時崩潰。
-        """
-        pass
+        # Initiate SIFT detector
+        self.sift = cv2.SIFT_create()
+
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        dir_path = dir_path.replace('detect/nodes', 'detect/')
+        dir_path += 'image/'
+
+        self.img_tunnel = cv2.imread(dir_path + 'tunnel.png', 0)
+        self.kp_tunnel, self.des_tunnel = self.sift.detectAndCompute(self.img_tunnel, None)
+
+        FLANN_INDEX_KDTREE = 0
+        index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+        search_params = dict(checks = 50)
+
+        self.flann = cv2.FlannBasedMatcher(index_params, search_params)
 
     def fnCalcMSE(self, arr1, arr2):
-        """
-        [不使用] MSE 計算，用於 SIFT 特徵比對，純命令模式不需要。
-        """
-        squared_diff = (arr1 - arr2) ** 2
-        sum = np.sum(squared_diff)
-        num_all = arr1.shape[0] * arr1.shape[1]
-        err = sum / num_all
-        return err
+            squared_diff = (arr1 - arr2) ** 2
+            sum = np.sum(squared_diff)
+            num_all = arr1.shape[0] * arr1.shape[1] #cv_image_input and 2 should have same shape
+            err = sum / num_all
+            return err
 
-    # =========================================================================
-    # [不使用] 原 cbFindTrafficSign 內的 vision-based 邏輯
-    # 整塊註解掉，純命令模式由 main() 直接輪詢 is_moving_complete 驅動
-    # =========================================================================
-    # def cbFindTrafficSign(self, image_msg):
-    #     """原 vision-based 隧道偵測 + 導航（已停用）"""
-    #     if self.counter % 5 != 0:
-    #         self.counter += 1
-    #         return
-    #     else:
-    #         self.counter = 1
-    #
-    #     np_arr = np.frombuffer(image_msg.data, np.uint8)
-    #     cv_image_input = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-    #
-    #     MIN_MATCH_COUNT = 7
-    #     MIN_MSE_DECISION = 30000
-    #
-    #     kp1, des1 = self.sift.detectAndCompute(cv_image_input,None)
-    #     image_out_num = 1
-    #
-    #     if self.is_saw_tunnel == False:
-    #         matches = self.flann.knnMatch(des1,self.des_tunnel,k=2)
-    #         good = []
-    #         for m,n in matches:
-    #             if m.distance < 0.7*n.distance:
-    #                 good.append(m)
-    #         if len(good)>MIN_MATCH_COUNT:
-    #             src_pts = np.float32([kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
-    #             dst_pts = np.float32([self.kp_tunnel[m.trainIdx].pt for m in good]).reshape(-1,1,2)
-    #
-    #             M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
-    #             matches = mask.ravel().tolist()
-    #
-    #             mse = self.fnCalcMSE(src_pts, dst_pts)
-    #             if mse < MIN_MSE_DECISION:
-    #                 rospy.loginfo("detect tunnel")
-    #                 image_out_num = 2
-    #                 self.is_saw_tunnel = True
-    #                 self.counter = 2
-    #
-    #     if image_out_num == 1:
-    #         self.pub_image_traffic_sign.publish(self.cvBridge.cv2_to_compressed_imgmsg(cv_image_input, "jpg"))
-    #
-    #     elif image_out_num == 2:
-    #         draw_params = dict(matchColor = (255,0,0),
-    #                           singlePointColor = None,
-    #                           matchesMask = matches,
-    #                           flags = 2)
-    #
-    #         final_tunnel = cv2.drawMatches(cv_image_input,kp1,self.img_tunnel,self.kp_tunnel,good,None,**draw_params)
-    #         self.pub_image_traffic_sign.publish(self.cvBridge.cv2_to_compressed_imgmsg(final_tunnel, "jpg"))
-    #
-    #     # =====================================================================
-    #     # 以下為偵測到洞口後的導航邏輯（已停用，改用純命令模式）
-    #     # =====================================================================
-    #     # if self.is_saw_tunnel == True and self.counter == 2:
-    #     #     ...
-    #     #     [全部 vision-based 導航程式碼]
-    #     #     ...
-    #     #     self.is_saw_tunnel = False
+    def cbFindTrafficSign(self, image_msg):
+        # drop the frame to 1/5 (6fps) because of the processing speed. This is up to your computer's operating power.
+        if self.counter % 5 != 0:
+            self.counter += 1
+            return
+        else:
+            self.counter = 1
+
+        #converting compressed image to opencv image
+        np_arr = np.frombuffer(image_msg.data, np.uint8)
+        cv_image_input = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+        # converting raw image to opencv image
+        # cv_image_input = CvBridge.imgmsg_to_cv2(image_msg, "bgr8")
+
+        MIN_MATCH_COUNT = 7 #9
+        MIN_MSE_DECISION = 30000
+
+        # find the keypoints and descriptors with SIFT
+        kp1, des1 = self.sift.detectAndCompute(cv_image_input,None)
+        image_out_num = 1
+
+        # tunnel
+        if self.is_saw_tunnel == False:
+            matches = self.flann.knnMatch(des1,self.des_tunnel,k=2)
+            good = []
+            for m,n in matches:
+                if m.distance < 0.7*n.distance:
+                    good.append(m)
+            if len(good)>MIN_MATCH_COUNT:
+                src_pts = np.float32([kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
+                dst_pts = np.float32([self.kp_tunnel[m.trainIdx].pt for m in good]).reshape(-1,1,2)
+
+                M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
+                matches = mask.ravel().tolist()
+
+                mse = self.fnCalcMSE(src_pts, dst_pts)
+                if mse < MIN_MSE_DECISION:
+                    rospy.loginfo("detect tunnel")
+                    image_out_num = 2
+                    self.is_saw_tunnel = True
+                    self.counter = 2
+
+        if image_out_num == 1:
+            # publishes traffic sign image in compressed type
+            self.pub_image_traffic_sign.publish(self.cvBridge.cv2_to_compressed_imgmsg(cv_image_input, "jpg"))
+
+        elif image_out_num == 2:
+            draw_params = dict(matchColor = (255,0,0), # draw matches in green color
+                            singlePointColor = None,
+                            matchesMask = matches, # draw only inliers
+                            flags = 2)
+
+            final_tunnel = cv2.drawMatches(cv_image_input,kp1,self.img_tunnel,self.kp_tunnel,good,None,**draw_params)
+
+            # publishes traffic sign image in compressed type
+            self.pub_image_traffic_sign.publish(self.cvBridge.cv2_to_compressed_imgmsg(final_tunnel, "jpg"))
+
+        if self.is_saw_tunnel == True and self.counter == 2:
+
+            self.pub_mission_tunnel.publish(self.TunnelStep.process.value)
+
+            rospy.sleep(2)
+
+            rospy.loginfo("[Tunnel] MOTION...")
+
+            self.lastError = 0.0
+            self.start_pos_x = self.current_pos_x
+            self.start_pos_y = self.current_pos_y
+
+            # 前進 0.6m 到隧道入口（odometry）
+            while True:
+                error = self.fnStraight(0.6)
+
+                if math.fabs(error) < 0.005:
+                    break
+
+            self.fnStop()
+
+            # =================================================================
+            # 啟動 ctun（AMCL + move_base），並重置 AMCL 位置
+            # =================================================================
+            rospy.loginfo("[TUNNEL] STARTING CTUN (AMCL + move_base)...")
+
+            # 啟動 control_tunnel.launch（map_server + amcl + move_base）
+            env = os.environ.copy()
+            env['ROS_PACKAGE_PATH'] = '/home/autorace/catkin_ws/src:/opt/ros/kinetic/share'
+            subprocess.Popen(
+                ['bash', '-c',
+                 'source ~/catkin_ws/devel/setup.bash && roslaunch control control_tunnel.launch & wait'],
+                env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                start_new_session=True
+            )
+            rospy.sleep(5)  # 等 AMCL 啟動並收斂
+
+            # 重置 AMCL 到隧道入口已知座標
+            rospy.loginfo("[TUNNEL] RESET AMCL POSE to tunnel entry (x=-1.7, y=-0.2)")
+            initialPose = PoseWithCovarianceStamped()
+            initialPose.header.frame_id = "map"
+            initialPose.header.stamp = rospy.Time.now()
+            initialPose.pose.pose.position.x = -1.7
+            initialPose.pose.pose.position.y = -0.2
+            initialPose.pose.pose.position.z = 0.0
+            initialPose.pose.pose.orientation.x = 0.0
+            initialPose.pose.pose.orientation.y = 0.0
+            initialPose.pose.pose.orientation.z = 0.0
+            initialPose.pose.pose.orientation.w = 1.0
+            initialPose.pose.covariance = [0.05, 0, 0, 0, 0, 0,
+                                           0, 0.05, 0, 0, 0, 0,
+                                           0, 0, 0.05, 0, 0, 0,
+                                           0, 0, 0, 0.05, 0, 0,
+                                           0, 0, 0, 0, 0.05, 0,
+                                           0, 0, 0, 0, 0, 0.05]
+            self.pub_init_pose.publish(initialPose)
+            rospy.sleep(2)  # 等 AMCL 收斂
+
+            self.pub_mission_tunnel.publish(self.TunnelStep.nav.value)
+
+            rospy.loginfo("[TUNNEL] NAVIGATION...")
+
+            self.fnPubGoalPose()
+
+            while True:
+                if self.is_navigation_finished == True:
+                    break
+                else:
+                    pass
+
+            rospy.sleep(2)
+
+            rospy.loginfo("[TUNNEL] FINISH & GO_OUT...")
+
+            self.lastError = 0.0
+            self.start_pos_x = self.current_pos_x
+            self.start_pos_y = self.current_pos_y
+
+            # 出隧道後，用 detect_moving 前進 0.14m
+            self.fnStop()
+            rospy.sleep(1)
+
+            rospy.loginfo("[TUNNEL] GO_OUT using detect_moving...")
+            self.fnSendMoving(moving_type=4, linear=0.14, angular=0.0)
+
+            self.current_step_tunnel = self.TunnelStep.end.value
+            self.pub_mission_tunnel.publish(self.current_step_tunnel)
+
+            # =================================================================
+            # 完成後重啟 dl + cl（循線）
+            # =================================================================
+            rospy.loginfo("[TUNNEL] RESTARTING LANE FOLLOWING (dl + cl)...")
+
+            subprocess.Popen(
+                ['bash', '-c',
+                 'source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_lane.launch & wait'],
+                env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                start_new_session=True
+            )
+            rospy.sleep(1)
+            subprocess.Popen(
+                ['bash', '-c',
+                 'source ~/catkin_ws/devel/setup.bash && roslaunch control control_lane.launch & wait'],
+                env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                start_new_session=True
+            )
+            rospy.sleep(2)
+
+            self.pub_mission.publish(UInt8(0))  # 回 idle
+
+            self.counter = 1
+            self.is_saw_tunnel = False
+            self.is_navigation_finished = False
+
 
     def cbOdom(self, odom_msg):
-        """
-        [保留但不用於純命令模式]
-        里程計回調，用於記錄位置（detect_moving 會自己處理里程計，不需要這裡算）。
-        """
-        quaternion = (odom_msg.pose.pose.orientation.x,
-                      odom_msg.pose.pose.orientation.y,
-                      odom_msg.pose.pose.orientation.z,
-                      odom_msg.pose.pose.orientation.w)
+        quaternion = (odom_msg.pose.pose.orientation.x, odom_msg.pose.pose.orientation.y, odom_msg.pose.pose.orientation.z, odom_msg.pose.pose.orientation.w)
         self.current_theta = self.euler_from_quaternion(quaternion)
         self.odom_msg = odom_msg
         if (self.current_theta - self.last_current_theta) < -math.pi:
@@ -267,52 +348,46 @@ class DetectSign():
         return theta
 
     def fnPubGoalPose(self):
-        """
-        [不使用] move_base 目標點發布，純命令模式不需要。
-        """
         goalPoseStamped = PoseStamped()
+
         goalPoseStamped.header.frame_id = "map"
         goalPoseStamped.header.stamp = rospy.Time.now()
+
         goalPoseStamped.pose.position.x = -0.3
         goalPoseStamped.pose.position.y = -1.74
         goalPoseStamped.pose.position.z = 0.0
+
         goalPoseStamped.pose.orientation.x = 0.0
         goalPoseStamped.pose.orientation.y = 0.0
         goalPoseStamped.pose.orientation.z = 0.0
         goalPoseStamped.pose.orientation.w = 1.0
+
         self.pub_goal_pose_stamped.publish(goalPoseStamped)
 
     def fnStraight(self, desired_dist):
-        """
-        [不使用] 原直線前進控制（含障礙物調速），純命令模式使用 detect_moving，不需要這個。
-        """
         err_pos = math.sqrt((self.current_pos_x - self.start_pos_x) ** 2 + (self.current_pos_y - self.start_pos_y) ** 2) - desired_dist
+
+        rospy.loginfo("Tunnel_Straight")
+        rospy.loginfo("err_pos  desired_dist : %f  %f  %f", err_pos, desired_dist, self.lastError)
+
         Kp = 0.4
         Kd = 0.05
+
         angular_z = Kp * err_pos + Kd * (err_pos - self.lastError)
         self.lastError = err_pos
+
         twist = Twist()
-        dist = self.obstacle_range
-        if dist < 0.15:
-            twist.linear.x = 0.0
-        elif dist < 0.25:
-            twist.linear.x = 0.03
-        elif dist < 0.35:
-            twist.linear.x = 0.08
-        else:
-            twist.linear.x = 0.15
-        twist.angular.z = 0.03
+        twist.linear.x = 0.15
         twist.linear.y = 0
         twist.linear.z = 0
         twist.angular.x = 0
         twist.angular.y = 0
+        twist.angular.z = 0.03
         self.pub_cmd_vel.publish(twist)
+
         return err_pos
 
     def fnStop(self):
-        """
-        [不使用] 原停止指令，純命令模式由 detect_moving 的 complete callback 驅動，不需要這個。
-        """
         twist = Twist()
         twist.linear.x = 0
         twist.linear.y = 0
@@ -321,29 +396,6 @@ class DetectSign():
         twist.angular.y = 0
         twist.angular.z = 0
         self.pub_cmd_vel.publish(twist)
-
-    def cbTunnelFinished(self, tunnel_finished_msg):
-        """
-        [不使用] 隧道結束回調。
-        """
-        self.is_tunnel_finished = True
-
-    # =========================================================================
-    # 純命令模式：不靠視覺偵測洞口，直接用 detect_moving 指令序列
-    #
-    # 使用方式：
-    #   1. 開啟 detect_moving（MOVING 按鈕）
-    #   2. 開啟本節點（m7cal / m7隧道（新））
-    #   3. 等待指令序列跑完
-    #
-    # 指令格式（MovingParam）：
-    #   moving_type:
-    #     2 = 原地旋轉（moving_value_angular = 角度 °）
-    #     3 = 原地旋轉（moving_value_angular = 角度 °，同 type=2）
-    #     4 = 直線前進（moving_value_linear = 距離 m）
-    #
-    # 等待完成：每次 publish 後 while is_moving_complete == False，等待 /control/moving/complete 發回 1
-    # =========================================================================
 
     def fnSendMoving(self, moving_type, linear, angular):
         """
@@ -354,77 +406,20 @@ class DetectSign():
         msg.moving_value_linear = linear
         msg.moving_value_angular = angular
         self.pub_moving.publish(msg)
-        rospy.loginfo("[TUNNEL] moving_type=%d linear=%.2f angular=%.2f",
+        rospy.loginfo("[TUNNEL] fnSendMoving: type=%d linear=%.2f angular=%.2f",
                       moving_type, linear, angular)
         while not rospy.is_shutdown() and not self.is_moving_complete:
             rospy.sleep(0.1)
         self.is_moving_complete = False
-        rospy.sleep(2)  # 等待動作完全停止再進行下一步
+        rospy.sleep(2)  # 等待動作完全停止
+
+    def cbTunnelFinished(self, tunnel_finished_msg):
+        self.is_tunnel_finished = True
+
+
 
     def main(self):
-        """
-        純命令驅動模式：
-        開啟後直接執行隧道穿越指令序列，不等待視覺偵測。
-        """
-        rospy.loginfo("[TUNNEL] === PURE COMMAND MODE (detect_moving) ===")
-        rospy.loginfo("[TUNNEL] Waiting for detect_moving to be ready...")
-
-        # 等 detect_moving 啟動完成（延遲 3 秒）
-        rospy.sleep(3)
-
-        # =====================================================================
-        # 隧道穿越指令序列（7 steps）：
-        #   S(0.5) → L(90°) → S(1.7) → R(90°) → S(1.2) → L(90°) → S(0.1)
-        # =====================================================================
-        rospy.loginfo("[TUNNEL] === STEP 1: S 0.5m ===")
-        self.fnSendMoving(moving_type=4, linear=0.5, angular=0.0)
-
-        rospy.loginfo("[TUNNEL] === STEP 2: L 90° ===")
-        self.fnSendMoving(moving_type=2, linear=0.0, angular=90.0)
-
-        rospy.loginfo("[TUNNEL] === STEP 3: S 1.7m ===")
-        self.fnSendMoving(moving_type=4, linear=1.7, angular=0.0)
-
-        rospy.loginfo("[TUNNEL] === STEP 4: R 90° ===")
-        self.fnSendMoving(moving_type=3, linear=0.0, angular=90.0)
-
-        rospy.loginfo("[TUNNEL] === STEP 5: S 1.2m ===")
-        self.fnSendMoving(moving_type=4, linear=1.2, angular=0.0)
-
-        rospy.loginfo("[TUNNEL] === STEP 6: L 90° ===")
-        self.fnSendMoving(moving_type=2, linear=0.0, angular=90.0)
-
-        rospy.loginfo("[TUNNEL] === STEP 7: S 0.1m (final) ===")
-        self.fnSendMoving(moving_type=4, linear=0.1, angular=0.0)
-
-        # =====================================================================
-        # 完成：重啟循線（dl + cl），然後發布結束訊號
-        # =====================================================================
-        rospy.loginfo("[TUNNEL] === ALL STEPS DONE, RESTARTING LANE FOLLOWING ===")
-
-        # 用 subprocess 啟動 dl + cl（detect_lane + control_lane）
-        import subprocess, os
-        env = os.environ.copy()
-        env['ROS_PACKAGE_PATH'] = '/home/autorace/catkin_ws/src:/opt/ros/kinetic/share'
-
-        subprocess.Popen(
-            ['bash', '-c',
-             'source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_lane.launch & wait'],
-            env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-            start_new_session=True
-        )
-        rospy.sleep(1)
-        subprocess.Popen(
-            ['bash', '-c',
-             'source ~/catkin_ws/devel/setup.bash && roslaunch control control_lane.launch & wait'],
-            env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-            start_new_session=True
-        )
-        rospy.sleep(2)  # 等 dl/cl 啟動
-
-        rospy.loginfo("[TUNNEL] === LANE FOLLOWING RESTARTED, PUBLISHING MISSION END ===")
-        self.pub_mission_tunnel.publish(self.TunnelStep.end.value)
-        self.pub_mission.publish(UInt8(0))  # 回 idle
+        rospy.spin()
 
 if __name__ == '__main__':
     rospy.init_node('detect_tunnel')
