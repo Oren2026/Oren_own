@@ -1,7 +1,4 @@
 <launch>
-  <!-- tunnel detection - NEW version with symmetry detection -->
-  <node pkg="detect" type="detect_tunnel_new" name="detect_tunnel_new" output="screen">
-    <remap from="/control/cmd_vel" to="/cmd_vel" />
-    <remap from="/image_input" to="/camera/image/compressed"/>
-  </node>
+    <arg name="mode" default="normal"/>
+    <node pkg="autorace_idminer" type="detect_tunnel_new" name="detect_tunnel_new" output="screen" launch-prefix="$(eval 'bash -c \"source /opt/ros/noetic/setup.bash; echo \"\$(cat /etc/os-release | grep ^ID=)\"\"' if os.environ.get('ROS_DISTRO') == 'noetic' else '')"/>
 </launch>

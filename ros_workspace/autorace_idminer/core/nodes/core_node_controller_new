@@ -33,6 +33,7 @@ class CoreNodeController():
         self.is_triggered = False
         self.current_mode = self.Mission.Idle.value
         self.current_tunnel_step = self.TunnelStep.default.value
+        self.waiting_for_tunnel_nav = False  # 是否在等待 nav 回應
 
         # launcher enum
         # dl=detect_lane, cl=control_lane, tf=traffic_light,
@@ -72,10 +73,10 @@ class CoreNodeController():
     def cbMissionTunnel(self, tunnel_step_msg):
         """監聽 detect_tunnel 的內部狀態，驅動 Tunnel 關卡的子階段"""
         step = tunnel_step_msg.data
-        rospy.loginfo("[Controller] 收到 /mission/tunnel = %d (current step: %d)", step, self.current_tunnel_step)
+        prev_step = self.current_tunnel_step
 
         # 防止重複處理同一個狀態
-        if step == self.current_tunnel_step:
+        if step == prev_step:
             return
 
         self.current_tunnel_step = step
@@ -84,26 +85,40 @@ class CoreNodeController():
         if self.current_mode != self.Mission.Tunnel.value:
             return
 
+        # =========================================================
+        # 核心邏輯：只有「前進中的狀態跳躍」才觸發 fnControlNode
+        # =========================================================
+        should_trigger = False
+
         if step == self.TunnelStep.process.value:
-            # detect_tunnel 看到 tunnel.png，前進 0.3m 完成
+            # detect_tunnel 看到洞口，準備進入導航
             # → 準備進入導航階段：開 ctun，關 dl/cl
             rospy.loginfo("[Controller] Tunnel: process → 開 ctun 導航，關 dl/cl")
             self.fnLaunch(self.Launcher.dl.value, False)
             self.fnLaunch(self.Launcher.cl.value, False)
             self.fnLaunch(self.Launcher.ctun.value, True)
+            should_trigger = True
 
         elif step == self.TunnelStep.nav.value:
             # ctun 導航中（move_base 正在移動），無需額外操作
             rospy.loginfo("[Controller] Tunnel: nav 導航中...")
+            should_trigger = True
 
         elif step == self.TunnelStep.end.value:
-            # 到達出口，直線前進後 → 開 dl/cl/mv 恢復循線
+            # 到達出口，重啟 dl/cl/mv 恢復循線
             rospy.loginfo("[Controller] Tunnel: end → 開 dl/cl/mv 恢復循線")
             self.fnLaunch(self.Launcher.tun.value, False)
             self.fnLaunch(self.Launcher.ctun.value, False)
             self.fnLaunch(self.Launcher.dl.value, True)
             self.fnLaunch(self.Launcher.cl.value, True)
             self.fnLaunch(self.Launcher.mv.value, True)
+            self.is_triggered = False  # 完成，確保不重複觸發
+            should_trigger = False      # end 不需要再進 fnControlNode
+
+        # 只有在需要等待 nav 時才設 is_triggered
+        if should_trigger:
+            self.is_triggered = True
+            self.waiting_for_tunnel_nav = True
 
     # ========== 各關卡控制邏輯 ==========
     def fnControlNode(self):
@@ -117,7 +132,7 @@ class CoreNodeController():
             self.fnLaunch(self.Launcher.dl.value, True)
             self.fnLaunch(self.Launcher.cl.value, True)
             self.fnLaunch(self.Launcher.tf.value, False)
-            rospy.sleep(6)
+            rospy.sleep(2)
             self.fnLaunch(self.Launcher.isc.value, True)
 
         elif self.current_mode == self.Mission.Construction.value:  # 4
@@ -143,13 +158,14 @@ class CoreNodeController():
             self.fnLaunch(self.Launcher.pk.value, False)
             self.fnLaunch(self.Launcher.dl.value, True)
             self.fnLaunch(self.Launcher.cl.value, True)
-            rospy.sleep(12)
+            rospy.sleep(2)
             self.fnLaunch(self.Launcher.lcro.value, True)
 
         elif self.current_mode == self.Mission.Tunnel.value:  # 7
             rospy.loginfo("[Controller] === Tunnel ===")
             # 重置 tunnel 子階段狀態
             self.current_tunnel_step = self.TunnelStep.default.value
+            self.waiting_for_tunnel_nav = False
             # Level 結束，開始 Tunnel：開 dl/cl + tun，關 lcro
             self.fnLaunch(self.Launcher.lcro.value, False)
             self.fnLaunch(self.Launcher.dl.value, True)
@@ -159,6 +175,15 @@ class CoreNodeController():
             # → cbMissionTunnel 收到後自動開 ctun、關 dl/cl
             # detect_tunnel 導航完成 → 發 /mission/tunnel = end
             # → cbMissionTunnel 收到後開 dl/cl/mv
+
+            # ===================================================
+            # 等待 cbMissionTunnel 的 nav / end 信號
+            # ===================================================
+            self.is_triggered = False  # 先重設，callback 會再設為 True
+            while self.waiting_for_tunnel_nav:
+                rospy.sleep(0.1)  # 讓 callback 有機會打斷
+            # waiting_for_tunnel_nav 變 False → nav 已收到並處理完
+            # 或 end 已收到並處理完（is_triggered 已在 callback 設為 False）
 
         self.is_triggered = False
 
@@ -339,7 +364,7 @@ class CoreNodeController():
                     self.tun = roslaunch.scriptapi.ROSLaunch()
                     self.tun = roslaunch.parent.ROSLaunchParent(
                         self.uuid,
-                        [self.ros_package_path + "detect/launch/detect_tunnel_new.launch"]
+                        [self.ros_package_path + "detect/launch/detect_tunnel.launch"]
                     )
                     self.launch_tun = True
                     self.tun.start()
