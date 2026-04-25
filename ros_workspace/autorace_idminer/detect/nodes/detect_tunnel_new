@@ -398,9 +398,31 @@ class DetectSign():
         self.fnSendMoving(moving_type=4, linear=0.1, angular=0.0)
 
         # =====================================================================
-        # 完成：發布 tunnel 結束 mission
+        # 完成：重啟循線（dl + cl），然後發布結束訊號
         # =====================================================================
-        rospy.loginfo("[TUNNEL] === ALL STEPS DONE, PUBLISHING MISSION END ===")
+        rospy.loginfo("[TUNNEL] === ALL STEPS DONE, RESTARTING LANE FOLLOWING ===")
+
+        # 用 subprocess 啟動 dl + cl（detect_lane + control_lane）
+        import subprocess, os
+        env = os.environ.copy()
+        env['ROS_PACKAGE_PATH'] = '/home/autorace/catkin_ws/src:/opt/ros/kinetic/share'
+
+        subprocess.Popen(
+            ['bash', '-c',
+             'source ~/catkin_ws/devel/setup.bash && roslaunch detect detect_lane.launch & wait'],
+            env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            start_new_session=True
+        )
+        rospy.sleep(1)
+        subprocess.Popen(
+            ['bash', '-c',
+             'source ~/catkin_ws/devel/setup.bash && roslaunch control control_lane.launch & wait'],
+            env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            start_new_session=True
+        )
+        rospy.sleep(2)  # 等 dl/cl 啟動
+
+        rospy.loginfo("[TUNNEL] === LANE FOLLOWING RESTARTED, PUBLISHING MISSION END ===")
         self.pub_mission_tunnel.publish(self.TunnelStep.end.value)
         self.pub_mission.publish(UInt8(0))  # 回 idle
 
