@@ -359,7 +359,7 @@ class DetectSign():
         while not rospy.is_shutdown() and not self.is_moving_complete:
             rospy.sleep(0.1)
         self.is_moving_complete = False
-        rospy.sleep(0.5)  # 緩衝
+        rospy.sleep(2)  # 等待動作完全停止再進行下一步
 
     def main(self):
         """
