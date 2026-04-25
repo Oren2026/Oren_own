@@ -1,31 +1,32 @@
 .DS_Store
 
-# Hermes Chat sensitive files
-hermes-chat/
-subagents.json
-agent_skills.json
-auth.json
-
-# External workspaces
-/Desktop/funnytest/
-
 # ──────────────────────────────────────────
-# Backend — NEVER push these
+# Sensitive / local-only — NEVER push
 # ──────────────────────────────────────────
-backend/              ← current running backend
-backend_v1/          ← v1 backup
-*.db                 ← SQLite database files
+backend/              ← running backend (port 3001)
+backend_v1/          ← old backend backup
+hermes-chat-app/     ← Hermes Chat App (local only)
+subagents.json       ← agent config with API keys
+agent_skills.json    ← skill definitions
+auth.json            ← auth tokens
+*.db                 ← SQLite databases
 *.db-shm
 *.db-wal
-node_modules/        ← npm packages
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 .env                 ← environment variables
 .env.local
 .env.*.local
 
 # ──────────────────────────────────────────
-# EduPlatform v2 docs (reference only)
+# Dependencies — never push
 # ──────────────────────────────────────────
-# docs/EduPlatform_v2/  ← can be pushed (no secrets)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ──────────────────────────────────────────
+# macOS
+# ──────────────────────────────────────────
+.DS_Store
+*.swp
+*.swo
