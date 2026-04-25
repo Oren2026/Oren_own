@@ -234,68 +234,38 @@ class DetectSign():
             self.fnStop()
 
             # =================================================================
-            # 啟動 ctun（AMCL + move_base），並重置 AMCL 位置
+            # 使用 detect_moving 完成隧道穿越（不使用 ctun/AMCL/move_base）
             # =================================================================
-            rospy.loginfo("[TUNNEL] STARTING CTUN (AMCL + move_base)...")
-
-            # 啟動 control_tunnel.launch（map_server + amcl + move_base）
-            env = os.environ.copy()
-            env['ROS_PACKAGE_PATH'] = '/home/autorace/catkin_ws/src:/opt/ros/kinetic/share'
-            subprocess.Popen(
-                ['bash', '-c',
-                 'source ~/catkin_ws/devel/setup.bash && roslaunch control control_tunnel.launch & wait'],
-                env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                start_new_session=True
-            )
-            rospy.sleep(5)  # 等 AMCL 啟動並收斂
-
-            # 重置 AMCL 到隧道入口已知座標
-            rospy.loginfo("[TUNNEL] RESET AMCL POSE to tunnel entry (x=-1.7, y=-0.2)")
-            initialPose = PoseWithCovarianceStamped()
-            initialPose.header.frame_id = "map"
-            initialPose.header.stamp = rospy.Time.now()
-            initialPose.pose.pose.position.x = -1.7
-            initialPose.pose.pose.position.y = -0.2
-            initialPose.pose.pose.position.z = 0.0
-            initialPose.pose.pose.orientation.x = 0.0
-            initialPose.pose.pose.orientation.y = 0.0
-            initialPose.pose.pose.orientation.z = 0.0
-            initialPose.pose.pose.orientation.w = 1.0
-            initialPose.pose.covariance = [0.05, 0, 0, 0, 0, 0,
-                                           0, 0.05, 0, 0, 0, 0,
-                                           0, 0, 0.05, 0, 0, 0,
-                                           0, 0, 0, 0.05, 0, 0,
-                                           0, 0, 0, 0, 0.05, 0,
-                                           0, 0, 0, 0, 0, 0.05]
-            self.pub_init_pose.publish(initialPose)
-            rospy.sleep(2)  # 等 AMCL 收斂
-
-            self.pub_mission_tunnel.publish(self.TunnelStep.nav.value)
-
-            rospy.loginfo("[TUNNEL] NAVIGATION...")
-
-            self.fnPubGoalPose()
-
-            while True:
-                if self.is_navigation_finished == True:
-                    break
-                else:
-                    pass
-
-            rospy.sleep(2)
-
-            rospy.loginfo("[TUNNEL] FINISH & GO_OUT...")
-
-            self.lastError = 0.0
-            self.start_pos_x = self.current_pos_x
-            self.start_pos_y = self.current_pos_y
-
-            # 出隧道後，用 detect_moving 前進 0.14m
             self.fnStop()
             rospy.sleep(1)
 
-            rospy.loginfo("[TUNNEL] GO_OUT using detect_moving...")
-            self.fnSendMoving(moving_type=4, linear=0.14, angular=0.0)
+            rospy.loginfo("[TUNNEL] STARTING detect_moving sequence...")
+
+            # 隧道穿越指令序列（8 steps）：
+            #   S(0.2) → S(0.5) → L(90°) → S(1.7) → R(90°) → S(1.2) → L(90°) → S(0.1)
+            rospy.loginfo("[TUNNEL] STEP 1: S 0.2m (approach tunnel)")
+            self.fnSendMoving(moving_type=4, linear=0.2, angular=0.0)
+
+            rospy.loginfo("[TUNNEL] STEP 2: S 0.5m")
+            self.fnSendMoving(moving_type=4, linear=0.5, angular=0.0)
+
+            rospy.loginfo("[TUNNEL] STEP 3: L 90°")
+            self.fnSendMoving(moving_type=2, linear=0.0, angular=90.0)
+
+            rospy.loginfo("[TUNNEL] STEP 4: S 1.7m")
+            self.fnSendMoving(moving_type=4, linear=1.7, angular=0.0)
+
+            rospy.loginfo("[TUNNEL] STEP 5: R 90°")
+            self.fnSendMoving(moving_type=3, linear=0.0, angular=90.0)
+
+            rospy.loginfo("[TUNNEL] STEP 6: S 1.2m")
+            self.fnSendMoving(moving_type=4, linear=1.2, angular=0.0)
+
+            rospy.loginfo("[TUNNEL] STEP 7: L 90°")
+            self.fnSendMoving(moving_type=2, linear=0.0, angular=90.0)
+
+            rospy.loginfo("[TUNNEL] STEP 8: S 0.1m (final)")
+            self.fnSendMoving(moving_type=4, linear=0.1, angular=0.0)
 
             self.current_step_tunnel = self.TunnelStep.end.value
             self.pub_mission_tunnel.publish(self.current_step_tunnel)
