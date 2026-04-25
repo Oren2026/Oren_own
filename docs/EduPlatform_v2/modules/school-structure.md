@@ -40,24 +40,77 @@ departments
 classes
 ├── id
 ├── department_id      FK → departments
-├── name               班級名（例：「大一不分系」）
-├── year               學年（1, 2, 3... 或 112, 113 for K12）
+├── name               班級名（例：「大一不分系」、「高三A」）
 ├── semester           '1' | '2' | 'summer'
 ├── class_code         行政代碼（例：「1A」）
-├── settings           JSON
+├── academic_year      學年度（112, 113...）
+├── enrollment_year    這屆學生入學年（用來動態算年級）
+├── settings            JSON
 └── is_active
+
+users
+├── status             'active' | 'graduated' | 'transferred' | 'suspended'
+├── enrolled_year      入學年（手動或 bulk import 填入）
+├── graduated_at       nullable
+└── left_reason        'graduated' | 'transferred' | 'dropped'
 ```
 
 ---
 
-## 常見學制與 Year 欄位
+## 學年與年級計算（動態）
 
-| 學制 | system_type | Year 意義 |
-|------|-------------|-----------|
-| 台灣 K12 | `taiwan_k12` | 年級（1-6 國小，7-9 國中，10-12 高中） |
-| 台灣大學 | `taiwan_university` | 年級（1-4 學士班，碩博 1-N） |
-| 美國 K12 | `us_k12` | Grade（K, 1-12） |
-| IB | `ib` | PYP(1-5) / MYP(6-10) / DP(11-12) |
+不再用靜態 `year` 欄位。`enrollment_year` 決定學生何時入學，`current_grade` 由 SQL 公式自動算出。
+
+### SQL 視圖：計算目前年級
+
+```sql
+CREATE VIEW v_user_grades AS
+SELECT
+  u.id AS user_id,
+  u.class_id,
+  c.enrollment_year,
+  c.academic_year,
+  s.system_type,
+  -- 大學：YEAR(NOW()) - enrollment_year + 1
+  -- K12 小一入學年齡約 7 歲
+  CASE
+    WHEN s.system_type = 'taiwan_university'
+      THEN YEAR(CURDATE()) - c.enrollment_year + 1
+    WHEN s.system_type = 'taiwan_k12'
+      THEN YEAR(CURDATE()) - c.enrollment_year + 7  -- 小一入學年 = 今年 - (現在年級-1)
+    WHEN s.system_type = 'us_k12'
+      THEN YEAR(CURDATE()) - c.enrollment_year + 5   -- Kindergarten = 5歲
+    ELSE NULL
+  END AS current_grade
+FROM users u
+JOIN classes c ON u.class_id = c.id
+JOIN schools s ON u.school_id = s.id
+WHERE u.status = 'active';
+```
+
+### 每年自動畢業（Cron Job）
+
+```javascript
+// 每學年 6/30 執行：把狀態改為 graduated
+// 這次之後使用者不再是 active，但所有歷史 record 都保留
+cron('0 0 30 6 *', async () => {
+  await db.query(`
+    UPDATE users
+    SET status = 'graduated', graduated_at = NOW()
+    WHERE class_id IN (
+      SELECT id FROM classes WHERE academic_year = ?
+    )
+    AND status = 'active'
+  `, [currentAcademicYear]);
+});
+```
+
+### 新生入學流程
+
+1. School_Admin 在後台 bulk import CSV（學號、姓名、班級）
+2. `enrolled_year = 當年學年度`（自動帶入）
+3. `current_grade = 1`（由公式計算）
+4. 不用任何 script
 
 ---
 
