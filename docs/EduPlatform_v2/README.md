@@ -56,7 +56,18 @@
 | `notifications` | 通知系統 |
 | `devices` | 推播 token（Web / iOS / Android） |
 | `ai_alerts` | AI 標記（霸凌/自傷/騷擾） |
-| `audit_log` | 法規遵循審計日誌 |
+| `audit_log` | 法規遵循審計日誌、可控的歷史調閱例外通道 |
+
+---
+
+## 🔑 核心設計決策（已確認）
+
+| 決策 | 選擇 |
+|------|------|
+| 跨校身份 | **不做全局 ID**，升學後 Fresh Start |
+| 歷史記錄例外調閱 | Counselor 發起→學生+家長雙同意→只給摘要→audit_log 全程記錄 |
+| 年級計算 | 動態（`enrollment_year` + SQL 公式，不每年跑 script） |
+| 畢業處理 | Cron Job 自動改 `status='graduated'`，歷史記錄全保留 |
 
 ---
 
