@@ -138,15 +138,15 @@ missions = [
     ("M2 S彎道",       "m2",     "roslaunch detect detect_intersection.launch"),
     ("M2 校正",        "m2cal",  "roslaunch detect detect_lane.launch mode:=calibration"),
     ("M3 施工區",      "m3",     "roslaunch detect detect_construction.launch"),
-    ("M3 校正",        "m3cal",  "rosmotion"),
+    # ("M3 校正",      "m3cal",  "rosmotion"),
     ("M4 停車",        "m4",     "roslaunch detect detect_parking.launch"),
-    ("M4 校正",        "m4cal",  "rosmotion"),
+    # ("M4 校正",      "m4cal",  "rosmotion"),
     ("M5 M彎道",       "m5",     "roslaunch control control_lane.launch"),
     ("M5 校正",        "m5cal",  "roslaunch detect detect_lane.launch mode:=calibration"),
     ("M6 平交道",      "m6",     "roslaunch detect detect_level.launch"),
     ("M6 校正",        "m6cal",  "roslaunch detect detect_level.launch mode:=calibration"),
     ("M7 隧道(舊)",    "m7",     "roslaunch detect detect_tunnel.launch"),
-    ("M7 隧道",        "m7cal",  "roslaunch detect detect_tunnel_new.launch"),
+    ("M7 隧道(新)",    "m7cal",  "roslaunch detect detect_tunnel_new.launch"),
 ]
 
 tools = [  # 未使用，保留給架構參考（實際用 tool_defs）
