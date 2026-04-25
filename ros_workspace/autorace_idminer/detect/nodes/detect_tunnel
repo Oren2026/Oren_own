@@ -170,6 +170,8 @@ class DetectSign():
 
         if self.is_saw_tunnel == True and self.counter == 2:
 
+            #self.pub_lane_toggle.publish(False)
+
             self.pub_mission_tunnel.publish(self.TunnelStep.process.value)
 
             rospy.sleep(2)
@@ -181,11 +183,11 @@ class DetectSign():
             self.start_pos_y = self.current_pos_y
 
             while True:
-                error = self.fnStraight(0.6)
+                error = self.fnStraight(0.3)
 
                 if math.fabs(error) < 0.005:
                     break
-
+            rospy.sleep(5)
             self.fnStop()
 
             self.pub_mission_tunnel.publish(self.TunnelStep.nav.value)
@@ -258,14 +260,14 @@ class DetectSign():
         goalPoseStamped.header.frame_id = "map"
         goalPoseStamped.header.stamp = rospy.Time.now()
 
-        goalPoseStamped.pose.position.x = -0.3
-        goalPoseStamped.pose.position.y = -1.74
+        goalPoseStamped.pose.position.x = 1.615
+        goalPoseStamped.pose.position.y = 1.15
         goalPoseStamped.pose.position.z = 0.0
 
         goalPoseStamped.pose.orientation.x = 0.0
         goalPoseStamped.pose.orientation.y = 0.0
-        goalPoseStamped.pose.orientation.z = 0.0
-        goalPoseStamped.pose.orientation.w = 1.0
+        goalPoseStamped.pose.orientation.z = 0.6863
+        goalPoseStamped.pose.orientation.w = 0.7272
 
         self.pub_goal_pose_stamped.publish(goalPoseStamped)
 

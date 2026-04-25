@@ -3,14 +3,14 @@
   "subtitle": "TurtleBot 3 Burger × ROS × OpenCV",
   "category": "fira",
   "status": "in-progress",
-  "nextMilestone": "完成隧道偵測實測，整合全關卡串接",
+  "nextMilestone": "任務串接最後調整，準備全關卡實測",
   "progress": {
     "圓環/交叉路口": "done",
     "循線置中": "done",
     "交通號誌": "done",
     "障礙/減速區": "done",
     "平交道柵欄": "done",
-    "隧道/暗區": "todo",
+    "隧道/暗區": "done",
     "停車": "done",
     "S 型彎道": "done",
     "任務串接": "todo"
@@ -64,10 +64,11 @@
     {
       "id": "tunnel",
       "name": "隧道/暗區",
-      "status": "todo",
+      "status": "done",
       "files": [
         "detect_tunnel.py"
-      ]
+      ],
+      "testStatus": "passed"
     },
     {
       "id": "parking",
@@ -144,6 +145,6 @@
       "category": "進度"
     }
   ],
-  "doneCount": 6,
+  "doneCount": 7,
   "totalMissions": 9
 }

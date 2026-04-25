@@ -394,14 +394,42 @@
   }
 
   // ─── Session 管理 ────────────────────────────────────────
+  function showLoading(msg = "處理中...") {
+    let el = document.getElementById("loading-overlay");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "loading-overlay";
+      el.style.cssText = "position:fixed;inset:0;background:rgba(15,17,23,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px";
+      el.innerHTML = `<div style="font-size:32px;animation:spin 1s linear infinite">⏳</div><div class="loading-msg" style="color:var(--text);font-size:14px">${msg}</div>`;
+      document.body.appendChild(el);
+    } else {
+      el.querySelector(".loading-msg").textContent = msg;
+      el.style.display = "flex";
+    }
+  }
+  function hideLoading() {
+    const el = document.getElementById("loading-overlay");
+    if (el) el.style.display = "none";
+  }
+  // inject spin keyframe if not present
+  if (!document.getElementById("spin-style")) {
+    const s = document.createElement("style");
+    s.id = "spin-style";
+    s.textContent = "@keyframes spin { to { transform: rotate(360deg); } }";
+    document.head.appendChild(s);
+  }
+
   async function loadSessions() {
+    showLoading("載入對話列表...");
     try {
       const res = await fetch("/api/sessions");
       const data = await res.json();
       for (const s of data.sessions) {
         sessionMeta[s.id] = { agent: s.agent, mode: s.mode, hermes_sid: s.hermes_sid, created_at: s.created_at };
       }
-    } catch {}
+      renderSessionList();
+    } catch(e) { console.error(e); }
+    finally { hideLoading(); }
   }
 
   function renderSessionList() {
@@ -427,7 +455,8 @@
       }).join("");
   }
 
-  function loadSession(sid) {
+  async function loadSession(sid) {
+    showLoading("載入對話...");
     saveCurrentConversation();
     currentSessionId = sid;
     const meta = sessionMeta[sid] || { agent: currentAgent, mode: "accumulating", hermes_sid: null };
@@ -448,6 +477,23 @@
     updateRememberBtn();
 
     const key = currentAgent + "|" + sid;
+
+    // fetch from server if not in memory
+    if (!conversations[key] || conversations[key].length === 0) {
+      try {
+        const res = await fetch(`/api/conversations/${encodeURIComponent(currentAgent)}/${encodeURIComponent(sid)}`);
+        if (res.ok) {
+          const data = await res.json();
+          conversations[key] = data.messages || [];
+          // also update sessionMeta from server data
+          if (data.hermes_sid) {
+            sessionMeta[sid].hermes_sid = data.hermes_sid;
+            document.getElementById("hermes-sid").textContent = data.hermes_sid;
+          }
+        }
+      } catch {}
+    }
+
     if (conversations[key] && conversations[key].length > 0) {
       const msgs = document.getElementById("messages");
       msgs.innerHTML = conversations[key].map(m => {
@@ -464,10 +510,14 @@
     scrollToBottom();
     renderSessionList();
     clearOutput();
+    hideLoading();
   }
 
   async function deleteSession(sid) {
-    await fetch(`/api/sessions/${sid}`, { method: "DELETE" });
+    showLoading("刪除中...");
+    try {
+      await fetch(`/api/sessions/${sid}`, { method: "DELETE" });
+    } catch(e) { console.error("delete failed", e); }
     delete sessionMeta[sid];
     const key = currentAgent + "|" + sid;
     delete conversations[key];
@@ -482,6 +532,7 @@
       document.getElementById("hermes-sid").textContent = "";
     }
     renderSessionList();
+    hideLoading();
   }
 
   function saveCurrentConversation() {

@@ -1,1 +1,11 @@
 .DS_Store
+
+# Hermes Chat sensitive files
+hermes-chat/
+subagents.json
+agent_skills.json
+auth.json
+
+# External workspaces
+/Desktop/funnytest/
+

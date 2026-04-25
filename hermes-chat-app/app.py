@@ -195,6 +195,8 @@ def chat():
         sess["hermes_sid"] = new_sid
         sess["history"].append({"role": "user", "content": message})
         sess["history"].append({"role": "assistant", "content": response})
+        # 持久化到 conversations.json
+        _upsert_conversation_file(sess_id, agent_key, mode, new_sid, sess["history"], sess["created_at"])
 
         return jsonify({
             "response": response,
@@ -207,25 +209,124 @@ def chat():
 
 @app.route("/api/sessions", methods=["GET"])
 def list_sessions():
-    return jsonify({
-        "sessions": [
-            {
+    # 合併 ACTIVE_SESSIONS + conversations.json
+    active_ids = set(ACTIVE_SESSIONS.keys())
+    sessions = [
+        {
+            "id": sid,
+            "agent": s["agent"],
+            "mode": s["mode"],
+            "hermes_sid": s.get("hermes_sid"),
+            "history_len": len(s.get("history", [])),
+            "created_at": s["created_at"],
+            "source": "active",
+        }
+        for sid, s in ACTIVE_SESSIONS.items()
+    ]
+    # 加上 conversations.json 裡有但不在 ACTIVE_SESSIONS 的
+    file_sessions = _load_all_conversations()
+    for c in file_sessions:
+        sid = c.get("session_id")
+        if sid and sid not in active_ids:
+            sessions.append({
                 "id": sid,
-                "agent": s["agent"],
-                "mode": s["mode"],
-                "hermes_sid": s["hermes_sid"],
-                "history_len": len(s["history"]),
-                "created_at": s["created_at"],
-            }
-            for sid, s in ACTIVE_SESSIONS.items()
-        ]
-    })
+                "agent": c.get("agent", ""),
+                "mode": c.get("mode", "accumulating"),
+                "hermes_sid": c.get("hermes_sid"),
+                "history_len": len(c.get("messages", [])),
+                "created_at": c.get("created_at", ""),
+                "source": "file",
+            })
+    return jsonify({"sessions": sessions})
 
 @app.route("/api/sessions/<sess_id>", methods=["DELETE"])
 def delete_session(sess_id):
     if sess_id in ACTIVE_SESSIONS:
         del ACTIVE_SESSIONS[sess_id]
+    # also remove from conversations.json
+    _remove_conversation_file(sess_id)
     return jsonify({"ok": True})
+
+def _get_conv_file():
+    return Path.home() / "Desktop" / "funnytest" / "conversations.json"
+
+def _load_all_conversations():
+    """相容新舊格式：
+    新格式：list of {session_id, agent, mode, hermes_sid, messages, created_at}
+    舊格式：dict of {agent|sess_id: [messages]}
+    """
+    try:
+        raw = json.loads(_get_conv_file().read_text())
+    except Exception:
+        return []
+    if isinstance(raw, list):
+        return raw
+    # 舊格式：dict of "Agent|sess_id" -> [messages]
+    result = []
+    for key, messages in raw.items():
+        if isinstance(messages, list) and "|" in key:
+            agent, sess_id = key.split("|", 1)
+            result.append({
+                "session_id": sess_id,
+                "agent": agent,
+                "mode": "accumulating",
+                "hermes_sid": None,
+                "messages": messages,
+                "created_at": messages[0].get("ts", "") if messages else "",
+            })
+    return result
+
+def _save_all_conversations(data):
+    _get_conv_file().write_text(json.dumps(data, ensure_ascii=False, indent=2))
+
+def _remove_conversation_file(sess_id):
+    data = _load_all_conversations()
+    data = [c for c in data if c.get("session_id") != sess_id]
+    _save_all_conversations(data)
+
+def _upsert_conversation_file(sess_id, agent, mode, hermes_sid, messages, created_at):
+    data = _load_all_conversations()
+    # remove existing entry for this sess_id
+    data = [c for c in data if c.get("session_id") != sess_id]
+    data.append({
+        "session_id": sess_id,
+        "agent": agent,
+        "mode": mode,
+        "hermes_sid": hermes_sid,
+        "messages": messages,
+        "created_at": created_at,
+    })
+    _save_all_conversations(data)
+
+@app.route("/api/conversations/<agent>/<sess_id>", methods=["GET"])
+def get_conversation(agent, sess_id):
+    """取得指定 session 的完整對話歷史"""
+    # 先看 ACTIVE_SESSIONS 裡有沒有
+    if sess_id in ACTIVE_SESSIONS:
+        s = ACTIVE_SESSIONS[sess_id]
+        return jsonify({
+            "session_id": sess_id,
+            "agent": s["agent"],
+            "mode": s["mode"],
+            "hermes_sid": s.get("hermes_sid"),
+            "messages": s.get("history", []),
+            "created_at": s["created_at"],
+            "source": "active",
+        })
+    # 再看 conversations.json
+    all_data = _load_all_conversations()
+    for c in all_data:
+        if c.get("session_id") == sess_id and c.get("agent") == agent:
+            return jsonify({
+                "session_id": sess_id,
+                "agent": c.get("agent", agent),
+                "mode": c.get("mode", "accumulating"),
+                "hermes_sid": c.get("hermes_sid"),
+                "messages": c.get("messages", []),
+                "created_at": c.get("created_at", ""),
+                "source": "file",
+            })
+    return jsonify({"error": "找不到對話"}), 404
 
 @app.route("/api/sessions/<sess_id>", methods=["PATCH"])
 def update_session(sess_id):

@@ -8,9 +8,9 @@ alias ros1cal='roslaunch detect detect_traffic_light.launch mode:=calibration'
 alias ros2='roslaunch detect detect_intersection.launch'
 alias ros2cal='roslaunch detect detect_lane.launch mode:=calibration'
 alias ros3='roslaunch detect detect_construction.launch'
-alias ros3cal='roslaunch detect detect_construction.launch mode:=calibration'
+alias ros3cal='rosmotion'
 alias ros4='roslaunch detect detect_parking.launch'
-alias ros4cal='roslaunch detect detect_parking.launch mode:=calibration'
+alias ros4cal='rosmotion'
 alias ros5='roslaunch control control_lane.launch'
 alias ros5cal='roslaunch detect detect_lane.launch mode:=calibration'
 alias ros6='roslaunch detect detect_level.launch'
@@ -86,9 +86,9 @@ ros-help() {
     echo "   ros2          S曲線"
     echo "   ros2cal       S曲線校正"
     echo "   ros3          施工區"
-    echo "   ros3cal       施工區校正"
+    echo "   ros3cal       施工區校正（motion_editor）"
     echo "   ros4          停車場"
-    echo "   ros4cal       停車場校正"
+    echo "   ros4cal       停車場校正（motion_editor）"
     echo "   ros5          M曲線"
     echo "   ros5cal       M曲線校正"
     echo "   ros6          平交道"

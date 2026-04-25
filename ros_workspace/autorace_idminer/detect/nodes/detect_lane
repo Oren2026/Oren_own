@@ -103,11 +103,11 @@ class DetectLane():
 
     def cbImageProjection(self, msg_img):
         # drop the frame to 1/5 (6fps) because of the processing speed. This is up to your computer's operating power.
-        if self.counter % 4 != 0:
-            self.counter += 1
-            return
-        else:
-            self.counter = 1
+        # if self.counter % 2 != 0:
+        #     self.counter += 1
+        #     return
+        # else:
+        #     self.counter = 1
 
         # compressed image
         np_image_original = np.frombuffer(msg_img.data, np.uint8)

@@ -104,11 +104,11 @@ class DetectTrafficLight():
 
     def cbGetImage(self, image_msg):
         # drop the frame to 1/5 (6fps) because of the processing speed. This is up to your computer's operating power.
-        if self.counter % 4 != 0:
-            self.counter += 1
-            return
-        else:
-            self.counter = 1
+        # if self.counter % 3 != 0:
+        #     self.counter += 1
+        #     return
+        # else:
+        #     self.counter = 1
 
         # converting compressed image to opencv image
         np_arr = np.frombuffer(image_msg.data, np.uint8)
@@ -154,7 +154,7 @@ class DetectTrafficLight():
                     self.red_count = 0
                     self.stop_count = 0
 
-        if self.green_count >= 6:
+        if self.green_count >= 5:
             if self.calibration_mode == False:
                 self.is_traffic_light_finished = True
 
@@ -179,14 +179,10 @@ class DetectTrafficLight():
             rospy.loginfo("YELLOW")
             cv2.putText(self.cv_image,"YELLOW", (self.point_col, self.point_low), cv2.FONT_HERSHEY_DUPLEX, 0.5, (0, 255, 255))
 
-        if self.red_count >= 4:
+        if self.red_count >= 8:
             rospy.loginfo("RED")
             cv2.putText(self.cv_image,"RED", (self.point_col, self.point_low), cv2.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 255))
-            if self.calibration_mode == False:
-                twist = Twist()
-                twist.linear.x = 0
-                twist.angular.z = 0
-                self.pub_cmd_vel.publish(twist)
+
         self.pub_img.publish(self.cvBridge.cv2_to_compressed_imgmsg(self.cv_image, "jpg"))
 
 

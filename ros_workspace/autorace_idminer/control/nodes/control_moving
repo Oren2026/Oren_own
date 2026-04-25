@@ -68,7 +68,7 @@ class ControlMoving():
         self.test = math.radians(90)
      
         msg_pub_max_vel = Float64()
-        msg_pub_max_vel.data = 0.2
+        msg_pub_max_vel.data = 0.05
         self.pub_max_vel.publish(msg_pub_max_vel)
 
         loop_rate = rospy.Rate(100) # 10hz
@@ -242,9 +242,9 @@ class ControlMoving():
         twist = Twist()
 
         if err_pos < 0:
-            twist.linear.x = 0.2
+            twist.linear.x = 0.1 #0.07
         else:
-            twist.linear.x = -0.2
+            twist.linear.x = -0.1
 
         twist.linear.y = 0
         twist.linear.z = 0
@@ -270,9 +270,9 @@ class ControlMoving():
         twist = Twist()
       
         if err_pos < 0:
-            twist.linear.x = -0.2
+            twist.linear.x = -0.1 #0.07
         else:
-            twist.linear.x = 0.2
+            twist.linear.x = 0.1
 
         twist.linear.y = 0
         twist.linear.z = 0

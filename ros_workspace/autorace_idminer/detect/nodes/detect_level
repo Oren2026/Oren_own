@@ -84,7 +84,7 @@ class DetectSign():
             srv_image = Server(DetectLevelParamsConfig, self.cbGetDetectLevelParam)
         
         # subscribes compressed image
-        # self.sub_img = rospy.Subscriber('/image_input', CompressedImage, self.cbFindTrafficSign, queue_size = 1)
+        self.sub_img = rospy.Subscriber('/image_input', CompressedImage, self.cbFindTrafficSign, queue_size = 1)
         self.sub_level_img = rospy.Subscriber('/image_input', CompressedImage, self.cbGetImage, queue_size=1)
 
         # publishes 
@@ -116,7 +116,8 @@ class DetectSign():
         loop_rate = rospy.Rate(15)
 
         while not rospy.is_shutdown():
-            self.fnFindLevel()
+            if self.is_saw_stop:
+                self.fnFindLevel()
 
             loop_rate.sleep()
 
@@ -168,11 +169,11 @@ class DetectSign():
 
     def cbFindTrafficSign(self, image_msg):
         # drop the frame to 1/5 (6fps) because of the processing speed. This is up to your computer's operating power.
-        if self.counter % 4 != 0:
-            self.counter += 1
-            return
-        else:
-            self.counter = 1
+        # if self.counter % 3 != 0:
+        #     self.counter += 1
+        #     return
+        # else:
+        #     self.counter = 1
 
         #converting compressed image to opencv image
         np_arr = np.frombuffer(image_msg.data, np.uint8)
