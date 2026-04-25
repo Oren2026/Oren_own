@@ -9,3 +9,23 @@ auth.json
 # External workspaces
 /Desktop/funnytest/
 
+# ──────────────────────────────────────────
+# Backend — NEVER push these
+# ──────────────────────────────────────────
+backend/              ← current running backend
+backend_v1/          ← v1 backup
+*.db                 ← SQLite database files
+*.db-shm
+*.db-wal
+node_modules/        ← npm packages
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env                 ← environment variables
+.env.local
+.env.*.local
+
+# ──────────────────────────────────────────
+# EduPlatform v2 docs (reference only)
+# ──────────────────────────────────────────
+# docs/EduPlatform_v2/  ← can be pushed (no secrets)
