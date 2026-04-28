@@ -468,16 +468,16 @@
             <div class="accordion-body">
               <ul class="task-list">
                 <li class="task-item">
-                  <span class="check pending" id="task-mech-1"></span>
-                  <span class="task-text" id="task-mech-1-text">🔍 確認 HIWIN 機械手臂規格</span>
+                  <span class="check done" id="task-mech-1"></span>
+                  <span class="task-text done" id="task-mech-1-text">✅ 確認 HIWIN 機械手臂規格（法蘭Ø40/M5/PCD31.5）</span>
                 </li>
                 <li class="task-item">
-                  <span class="check pending" id="task-mech-2"></span>
-                  <span class="task-text" id="task-mech-2-text">🎱 撞球桿夾持機構設計（3D列印）</span>
+                  <span class="check done" id="task-mech-2"></span>
+                  <span class="task-text done" id="task-mech-2-text">✅ 轉接板設計方向確認</span>
                 </li>
                 <li class="task-item">
                   <span class="check pending" id="task-mech-3"></span>
-                  <span class="task-text" id="task-mech-3-text">⚖️ 桿頭角度調整機構</span>
+                  <span class="task-text" id="task-mech-3-text">🚧 撞球桿夾持機構設計（半齒齒輪 + 伺服用馬達）</span>
                 </li>
                 <li class="task-item">
                   <span class="check pending" id="task-mech-4"></span>
@@ -491,34 +491,26 @@
             </div>
           </div>
 
-          <!-- ⚡ 控制系統 -->
-          <div class="accordion-item">
+          <!-- ⚡ 三大主軸 -->
+          <div class="accordion-item open">
             <div class="accordion-header" onclick="toggleAccordion(this.parentElement)">
               <span class="accordion-icon">⚡</span>
-              <span class="accordion-title">控制系統</span>
+              <span class="accordion-title">⚡ 三大主軸</span>
               <span class="accordion-arrow">▼</span>
             </div>
             <div class="accordion-body">
               <ul class="task-list">
                 <li class="task-item">
                   <span class="check pending" id="task-ctrl-1"></span>
-                  <span class="task-text" id="task-ctrl-1-text">🦾 手臂運動學分析</span>
+                  <span class="task-text" id="task-ctrl-1-text">🦾 手臂移動 — HIWIN 路徑規劃 + TCP/IP 通訊</span>
                 </li>
                 <li class="task-item">
                   <span class="check pending" id="task-ctrl-2"></span>
-                  <span class="task-text" id="task-ctrl-2-text">📐 桿面角度控制策略</span>
+                  <span class="task-text" id="task-ctrl-2-text">🎱 桿弟規劃 — 半齒齒輪機構 + 伺服用馬達選型</span>
                 </li>
                 <li class="task-item">
                   <span class="check pending" id="task-ctrl-3"></span>
-                  <span class="task-text" id="task-ctrl-3-text">💪 桿力控制（擊球力道）</span>
-                </li>
-                <li class="task-item">
-                  <span class="check pending" id="task-ctrl-4"></span>
-                  <span class="task-text" id="task-ctrl-4-text">👁️ 視覺定位（球、洞口偵測）</span>
-                </li>
-                <li class="task-item">
-                  <span class="check pending" id="task-ctrl-5"></span>
-                  <span class="task-text" id="task-ctrl-5-text">🔗 控制系統整合</span>
+                  <span class="task-text" id="task-ctrl-3-text">⚡ 電路板 + 伺服馬達控制 — Arduino + 驅動電路</span>
                 </li>
               </ul>
             </div>
@@ -528,26 +520,26 @@
           <div class="accordion-item">
             <div class="accordion-header" onclick="toggleAccordion(this.parentElement)">
               <span class="accordion-icon">💻</span>
-              <span class="accordion-title">軟體系統</span>
+              <span class="accordion-title">💻 軟體系統</span>
               <span class="accordion-arrow">▼</span>
             </div>
             <div class="accordion-body">
               <ul class="task-list">
                 <li class="task-item">
-                  <span class="check pending" id="task-sw-1"></span>
-                  <span class="task-text" id="task-sw-1-text">📷 影像辨識系統（OpenCV）</span>
+                  <span class="check done" id="task-sw-1"></span>
+                  <span class="task-text done" id="task-sw-1-text">✅ Python 骨架（vision/comm/motion/analysis/ui/config 30檔案）</span>
                 </li>
                 <li class="task-item">
                   <span class="check pending" id="task-sw-2"></span>
-                  <span class="task-text" id="task-sw-2-text">🎯 球桿姿態估算</span>
+                  <span class="task-text" id="task-sw-2-text">📷 Webcam 校正</span>
                 </li>
                 <li class="task-item">
                   <span class="check pending" id="task-sw-3"></span>
-                  <span class="task-text" id="task-sw-3-text">📐 擊球路徑規劃</span>
+                  <span class="task-text" id="task-sw-3-text">🔗 HIWIN TCP/IP 整合</span>
                 </li>
                 <li class="task-item">
                   <span class="check pending" id="task-sw-4"></span>
-                  <span class="task-text" id="task-sw-4-text">🚧 障礙物偵測</span>
+                  <span class="task-text" id="task-sw-4-text">💾 Arduino 韌體燒錄</span>
                 </li>
                 <li class="task-item">
                   <span class="check pending" id="task-sw-5"></span>
@@ -692,7 +684,7 @@
   </main>
 
   <footer class="footer">
-    <p>上銀撞球 2026 | 最後更新：<span id="footer-updated">2026-03-27</span></p>
+    <p>上銀撞球 2026 | 最後更新：<span id="footer-updated">2026-04-28</span></p>
     <p style="margin-top: 0.5rem;">由 <a href="https://github.com/Oren2026" style="color: var(--accent-text);">Oren</a> 維護</p>
   </footer>
 
