@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH3 — 傳輸媒介與配備 | 柯的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    :root {
+      --accent: #ea580c;
+      --accent-hover: rgba(234, 88, 12, 0.15);
+      --accent-text: #c2410c;
+    }
+
+    .ch-hero {
+      background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+      border-top: 4px solid var(--accent);
+      padding: 2.5rem 2rem 2rem;
+      margin-bottom: 2rem;
+    }
+    .ch-hero h1 {
+      font-size: 2rem;
+      color: var(--accent-text);
+      margin: 0 0 0.25rem;
+    }
+    .ch-hero .subtitle {
+      color: #78716c;
+      font-size: 0.9rem;
+    }
+
+    .section-header {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      border-left: 4px solid var(--accent);
+      padding: 0.5rem 0.75rem;
+      margin: 2rem 0 1rem;
+      background: var(--accent-hover);
+    }
+
+    .highlight-box {
+      background: #fff7ed;
+      border: 1.5px solid #fed7aa;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+    .comparison-table th {
+      background: var(--accent);
+      color: white;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .comparison-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid #e7e5e4;
+    }
+    .comparison-table tr:nth-child(even) td {
+      background: #fff7ed;
+    }
+
+    .device-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 700px) {
+      .device-grid { grid-template-columns: 1fr; }
+    }
+
+    .end-card {
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, #fff7ed, #fed7aa);
+      border-radius: 12px;
+      margin: 2rem 0;
+    }
+    .end-card h2 { color: var(--accent-text); font-size: 1.5rem; margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-course">柯的筆記天地</div>
+  <div class="sidebar-title">資訊網路</div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section-label">所有筆記</div>
+  <a href="index.html" class="sidebar-link">📋 課程總覽</a>
+  <a href="ch1-introduction.html" class="sidebar-link">CH1 — 網路初探</a>
+  <a href="ch2-communication.html" class="sidebar-link">CH2 — 通訊傳輸</a>
+  <a href="ch3-media-equipment.html" class="sidebar-link active">CH3 — 傳輸媒介</a>
+  <a href="ch4-protocol.html" class="sidebar-link">CH4 — 網路協定</a>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section-label">本頁章節</div>
+  <a href="#media-intro" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">傳輸媒介總覽</a>
+  <a href="#twisted-pair" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">雙絞線</a>
+  <a href="#coaxial" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">同軸電纜</a>
+  <a href="#fiber" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">光纖</a>
+  <a href="#wireless" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">無線電傳輸</a>
+  <a href="#connectors" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">連接器</a>
+  <a href="#devices" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">網路傳輸設備</a>
+</nav>
+
+<!-- Main -->
+<main class="content">
+  <!-- Hero -->
+  <div class="ch-hero">
+    <h1>CH3 — 傳輸媒介與配備</h1>
+    <div class="subtitle">傳輸媒介（雙絞線・同軸電纜・光纖・無線）｜網路傳輸設備（中繼器・Hub・橋接器・路由器・Switch・Gateway）</div>
+  </div>
+
+  <!-- 大綱 -->
+  <div class="section-header">📋 大綱</div>
+  <div class="device-grid">
+    <div class="concept-card">
+      <div class="concept-card-title">🔌 傳輸媒介</div>
+      <div class="concept-desc">有線傳輸 vs 無線傳輸</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-card-title">🔗 連接器</div>
+      <div class="concept-desc">RJ-45 / RJ-11、LC / ST / SC 光纖接頭</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-card-title">⚙️ 網路傳輸設備</div>
+      <div class="concept-desc">數據機、網路卡、中繼器、Hub、橋接器、交換器、路由器、Gateway</div>
+    </div>
+  </div>
+
+  <!-- Section 1: 傳輸媒介總覽 -->
+  <div class="section-header">🔌 1｜網路傳輸媒介</div>
+
+  <div class="highlight-box">
+    <strong>傳輸媒體（Transmission Media）</strong><br>
+    ▶ 有線傳輸：藉電纜線、光纖等傳輸<br>
+    ▶ 無線傳輸（Wireless）：運用廣闊天際，無空間限制，支援移動性（Mobility）<br>
+    ▶ 目標：以最低成本降低傳輸衰減（Attenuation）率<br>
+    ▶ 一般網路傳輸仍以有線傳輸為主
+  </div>
+
+  <!-- Section 2: 雙絞線 -->
+  <div class="section-header">🔀 2｜雙絞線（Twisted Pair）</div>
+
+  <div class="highlight-box">
+    <strong>為何要相互絞在一起？</strong><br>
+    減少電磁干擾（EMI）與串音（Crosstalk），提升訊號品質。
+  </div>
+
+  <div class="highlight-box">
+    <strong>UTP — Unshielded Twisted Pair（無遮蔽雙絞線）</strong><br>
+    ▶ 最常見、價格便宜、使用廣泛<br>
+    ▶ 僅有絞線本身，無額外金屬遮蔽層
+  </div>
+
+  <div class="highlight-box">
+    <strong>STP — Shielded Twisted Pair（遮蔽雙絞線）</strong><br>
+    ▶ 每對絞線有金屬遮蔽層，抗干擾能力更強<br>
+    ▶ 成本較高，適合工業環境
+  </div>
+
+  <div class="section-header">EIA/TIA UTP 分類表</div>
+  <table class="comparison-table">
+    <tr><th>類別</th><th>每英尺絞次</th><th>傳輸頻寬</th><th>常見用途</th></tr>
+    <tr><td>Cat 1</td><td>—</td><td>1–2 MHz</td><td>基本語音通訊</td></tr>
+    <tr><td>Cat 2</td><td>1</td><td>4 MHz</td><td>4 Mbps 記號環網路</td></tr>
+    <tr><td>Cat 3</td><td>每英尺絞3次</td><td>16 MHz</td><td>10BaseT、16 Mbps 記號環網路</td></tr>
+    <tr><td>Cat 4</td><td>1</td><td>20 MHz</td><td>100BaseT4、16 Mbps 記號環網路</td></tr>
+    <tr><td>Cat 5</td><td>每英尺絞4次</td><td>100 MHz</td><td>100BaseT、100CDDI</td></tr>
+    <tr><td>Cat 5e</td><td>—</td><td>100 MHz</td><td>100BaseT、1000BaseT（超乙太網路）</td></tr>
+    <tr><td>Cat 6</td><td>—</td><td>250 MHz</td><td>10GBaseT</td></tr>
+    <tr><td>Cat 7</td><td>—</td><td>600 MHz</td><td>10G Ethernet</td></tr>
+    <tr><td>Cat 7a</td><td>—</td><td>1000 MHz</td><td>100G Ethernet</td></tr>
+  </table>
+
+  <div class="highlight-box">
+    <strong>📌 選購注意事項：</strong><br>
+    ▶ 外皮標註分類與尺寸序號（如 Cat 5e、Cat 6）<br>
+    ▶ 品管不佳廠商魚目混珠，優先選擇品管口碑較好的公司產品
+  </div>
+
+  <!-- Section 3: 同軸電纜 -->
+  <div class="section-header">📡 3｜同軸電纜線（Coaxial Cable）</div>
+
+  <div class="highlight-box">
+    <strong>結構：</strong>中心導線（內層銅芯）+ 絕緣層 + 金屬遮蔽網 + 外皮<br>
+    ▶ 早年有線電視（Cable TV）和乙太網路（10Base2/10Base5）廣泛使用<br>
+    ▶ 抗干擾能力佳，傳輸距離比雙絞線更遠
+  </div>
+
+  <!-- Section 4: 光纖 -->
+  <div class="section-header">🌈 4｜光纖（Fiber Optic Cable）</div>
+
+  <div class="highlight-box">
+    <strong>光纖優點：</strong><br>
+    ▶ 重量輕、體積小、使用年限更久<br>
+    ▶ 無幅射、無電磁干擾（EMI）<br>
+    ▶ 低衰減、傳輸頻寬大<br>
+    ▶ 不受雷擊影響
+  </div>
+
+  <div class="highlight-box">
+    <strong>結構：</strong><br>
+    ▶ 中心纖維（Core）<br>
+    ▶ 周邊材料（Cladding）<br>
+    ▶ 保護層（Protective Sheath）
+  </div>
+
+  <div class="highlight-box">
+    <strong>光纜（Cable）：</strong>將許多細細光纖包裹在一起，方便佈線架設
+  </div>
+
+  <div class="section-header">光纖類型比較</div>
+  <table class="comparison-table">
+    <tr><th>類型</th><th>英文</th><th>中心直徑</th><th>外圍直徑</th><th>特性</th></tr>
+    <tr><td>步級式多模光纖</td><td>Step-index Multimode</td><td>50–100 μm</td><td>約 125–140 μm</td><td>成本低，適合短距離</td></tr>
+    <tr><td>漸進式多模光纖</td><td>Graded-index Multimode</td><td>50–100 μm</td><td>約 125–140 μm</td><td>頻寬較高，取代步級式</td></tr>
+    <tr><td>單模光纖</td><td>Single Mode</td><td>5–10 μm</td><td>約 125 μm</td><td>傳輸距離最遠，長途骨幹</td></tr>
+  </table>
+
+  <!-- Section 5: 無線電傳輸 -->
+  <div class="section-header">📡 5｜無線電傳輸</div>
+
+  <div class="device-grid">
+    <div class="concept-card">
+      <div class="concept-card-title">🌊 地波（Ground Wave）</div>
+      <div class="concept-desc">
+        <strong>頻率：</strong>3 KHz ～ 3 MHz（極低頻，波長甚長）<br>
+        <strong>傳輸距離：</strong>可達 150 公里<br>
+        <strong>應用：</strong>航海通訊、AM 廣播
+      </div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-card-title">☁️ 天波（Sky Wave）</div>
+      <div class="concept-desc">
+        <strong>頻率：</strong>3 MHz ～ 30 MHz<br>
+        <strong>機制：</strong>電離層導波通道<br>
+        <strong>傳輸距離：</strong>150 ～ 400 公里
+      </div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-card-title">📏 直線傳送（LOS）</div>
+      <div class="concept-desc">
+        <strong>頻率：</strong>30 MHz 以上<br>
+        <strong>特性：</strong>直線行進，無法繞射<br>
+        <strong>應用：</strong>無線電視、大哥大、衛星通訊、外太空<br>
+        <strong>注意：</strong>基地台必須架設在至高點或高塔
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: 連接器 -->
+  <div class="section-header">🔗 6｜連接器（Connector）</div>
+
+  <div class="highlight-box">
+    <strong>RJ-45 與 RJ-11 連接頭</strong><br>
+    ▶ RJ-45：用於乙太網路（8蕊）<br>
+    ▶ RJ-11：用於電話線（4～6蕊）
+  </div>
+
+  <div class="highlight-box">
+    <strong>光纜連接頭</strong><br>
+    ▶ <strong>LC 接頭：</strong>接頭較小，目前使用最普遍<br>
+    ▶ <strong>ST 接頭：</strong>採用於配線箱<br>
+    ▶ <strong>SC 接頭：</strong>集線器、網路元件器具採用
+  </div>
+
+  <!-- Section 7: 網路傳輸設備 -->
+  <div class="section-header">⚙️ 7｜網路傳輸設備</div>
+
+  <div class="device-grid">
+    <div class="concept-card">
+      <div class="concept-card-title">📡 數據機（Modem）</div>
+      <div class="concept-desc">
+        <strong>Modem = MOdulation + DEModulation</strong><br>
+        數位訊號 ↔ 類比訊號 相互轉換
+      </div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-card-title">🖥️ 網路卡（NIC）</div>
+      <div class="concept-desc">
+        <strong>Network Interface Card</strong><br>
+        不同網路類型有不同網路卡<br>
+        有線網卡、USB 網卡、USB 無線網卡
+      </div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-card-title">🔄 中繼器（Repeater）</div>
+      <div class="concept-desc">
+        接收衰減訊號 → 重整（放大）訊號 → 轉發<br>
+        屬第一層（實體層）裝置
+      </div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-card-title">🔀 集線器（Hub）</div>
+      <div class="concept-desc">
+        <strong>多埠中繼器（Multi-port Repeater）</strong><br>
+        所有連接埠共享頻寬，屬第一層裝置<br>
+        可與網管軟體搭配管理
+      </div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-card-title">🌉 橋接器（Bridge）</div>
+      <div class="concept-desc">
+        連接兩個相同類型的網路區段<br>
+        依 MAC 位址轉送資料，減少碰撞<br>
+        屬第二層（資料連結層）裝置
+      </div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-card-title">🔀 交換式集線器（Switched Hub）</div>
+      <div class="concept-desc">
+        又稱<strong>多埠橋接器（Multi-port Bridge）</strong><br>
+        各連接埠有獨立專屬的傳輸頻寬<br>
+        屬第二層（資料連結層）裝置
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">Hub vs 交換式集線器 比較</div>
+  <table class="comparison-table">
+    <tr><th>項目</th><th>集線器（Hub）</th><th>交換式集線器（Switch）</th></tr>
+    <tr><td>層級</td><td>第一層（實體層）</td><td>第二層（資料連結層）</td></tr>
+    <tr><td>頻寬</td><td>所有埠共享同一頻寬</td><td>每個埠獨立專屬頻寬</td></tr>
+    <tr><td>傳輸方式</td><td>廣播（所有埠都收到）</td><td>點對點（依 MAC 位址轉送）</td></tr>
+    <tr><td>碰撞</td><td>易碰撞，效率低</td><td>碰撞減少，效率高</td></tr>
+    <tr><td>價格</td><td>便宜</td><td>較貴</td></tr>
+  </table>
+
+  <div class="section-header">路由器、Layer 3 交換器、Gateway</div>
+  <div class="device-grid">
+    <div class="concept-card">
+      <div class="concept-card-title">🧭 路由器（Router）</div>
+      <div class="concept-desc">
+        <strong>Route（路徑）+ Routing（尋徑）的功能</strong><br>
+        連接多個網路，執行封包的路徑選擇（尋徑）<br>
+        屬第三層（網路層）裝置<br>
+        運用<strong>軟體</strong>方式進行處理
+      </div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-card-title">🔀 第三層交換器（Layer 3 Switch）</div>
+      <div class="concept-desc">
+        以<strong>硬體方式</strong>執行封包的尋徑工作<br>
+        執行效能比軟體路由器更好<br>
+        主要著重在封包路徑交換，架構單純簡單<br>
+        價格反而比路由器便宜<br>
+        支援 QoS、網路安全防護管理
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <strong>🔀 Layer 3 Switch vs 路由器：</strong><br>
+    ▶ Layer 3 Switch = 硬體尋徑 → 效能好、價格低<br>
+    ▶ 路由器 = 軟體尋徑 → 功能較多、相容性更廣
+  </div>
+
+  <div class="highlight-box">
+    <strong>🚪 閘道器（Gateway）</strong><br>
+    ▶ 具有比一般路由器更強的<strong>相容與轉換能力</strong><br>
+    ▶ 只要 Gateway 有支援的架構，都可執行轉換<br>
+    ▶ 可連接不同通訊協定的網路<br>
+    ▶ 功能最強，相對價格也最高
+  </div>
+
+  <!-- 廣域網路連接 -->
+  <div class="highlight-box">
+    <strong>🌐 廣域網路連接方式：</strong><br>
+    企業網路 ←→ 專線交換機 ←→ 廣域網路<br>
+    常見廣域網路技術：專線、xDSL、光纖、 MPLS
+  </div>
+
+  <!-- 設備層級對照 -->
+  <div class="section-header">📐 設備與 OSI 層級對照</div>
+  <table class="comparison-table">
+    <tr><th>OSI 層</th><th>設備</th><th>說明</th></tr>
+    <tr><td>第一層｜實體層</td><td>中繼器、集線器</td><td>放大訊號、廣播</td></tr>
+    <tr><td>第二層｜資料連結層</td><td>橋接器、交換式集線器、第二層交換器</td><td>依 MAC 位址轉送</td></tr>
+    <tr><td>第三層｜網路層</td><td>路由器、第三層交換器</td><td>依 IP 位址尋徑</td></tr>
+    <tr><td>應用層</td><td>閘道器（Gateway）</td><td>協定轉換、相容性最高</td></tr>
+  </table>
+
+  <!-- End -->
+  <div class="end-card">
+    <h2>📝 問題與討論</h2>
+    <p>關鍵字｜填充題｜選擇題｜問答題</p>
+  </div>
+
+</main>
+
+<footer class="note-footer">
+  <span>📡 資訊網路 · 柯安祥</span>
+  <span>傳輸媒介與配備 · 2026/04/28</span>
+</footer>
+
+</body>
+</html>
