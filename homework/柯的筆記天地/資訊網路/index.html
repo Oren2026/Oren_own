@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>資訊網路 | 柯的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    .index-header {
+      padding: 2.5rem 0 1.5rem;
+      border-bottom: 1.5px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .index-header .course-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .index-header h1 {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .index-header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    .note-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .note-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      text-decoration: none;
+      color: var(--text);
+      display: block;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .note-card:hover {
+      border-color: var(--accent);
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-2px);
+    }
+    .note-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+    .note-card-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--accent-text);
+    }
+    .note-card-date {
+      font-size: 0.78rem;
+      color: var(--muted-2);
+      font-weight: 500;
+    }
+    .note-card-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin: 0;
+    }
+    .note-card-tags {
+      display: flex;
+      gap: 0.3rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .note-tag {
+      font-size: 0.68rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 20px;
+      background: var(--accent-dim);
+      color: var(--accent-text);
+      font-weight: 600;
+    }
+    .note-card:hover .note-tag {
+      background: var(--accent);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的筆記天地</div>
+    <div class="sidebar-title">資訊網路</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有筆記</div>
+    <a href="index.html" class="sidebar-link active">📋 課程總覽</a>
+    <a href="0428.html" class="sidebar-link">0428 — OSI 基礎</a>
+  </nav>
+
+  <!-- Main -->
+  <main class="content">
+    <div class="index-header">
+      <div class="course-tag">📡 資訊網路</div>
+      <h1>課程筆記總覽</h1>
+      <p>金門大學資工系 · 授課教師：柯安祥</p>
+    </div>
+
+    <div class="note-list">
+      <a href="0428.html" class="note-card">
+        <div class="note-card-top">
+          <span class="note-card-title">OSI 通訊七層與封裝概念</span>
+          <span class="note-card-date">2026/04/28</span>
+        </div>
+        <p class="note-card-desc">OSI 7 Layer、Frame／封包／Datagram 差異、Header 與 Trailer 結構、TCP vs UDP 比較</p>
+        <div class="note-card-tags">
+          <span class="note-tag">OSI</span>
+          <span class="note-tag">封裝</span>
+          <span class="note-tag">TCP</span>
+          <span class="note-tag">UDP</span>
+          <span class="note-tag">Header</span>
+        </div>
+      </a>
+    </div>
+
+    <div style="margin-top:2rem; padding:1rem; background:#f0f4ff; border-radius:8px; border-left:4px solid #316cf4; font-size:0.88rem; color:var(--muted);">
+      💡 筆記陸續新增中。老師內容有疑問或想補充的地方，隨時跟我說。
+    </div>
+  </main>
+</body>
+</html>
