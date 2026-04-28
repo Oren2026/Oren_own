@@ -3,7 +3,7 @@
   "name": { "zh": "隧道/暗區", "en": "Tunnel / Dark Zone" },
   "category": "mission",
   "description": "低光源區域，camera 曝光補償失效，切換 LiDAR 里程計純追蹤。",
-  "status": "todo",
+  "status": "in-progress",
   "subConcepts": [
     {
       "id": "dark_zone_detection",

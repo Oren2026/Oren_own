@@ -21,6 +21,7 @@
       --card-shadow-hover:  0 12px 40px rgba(110,231,247,0.18);
       --success: #10b981;
       --danger: #ef4444;
+      --warning: #f97316;
       --accent-rgb: 110, 231, 247;
     }
 
@@ -37,6 +38,22 @@
     }
     .folder-item a[download] { color: var(--accent-text); font-weight: 600; }
     .folder-item a[download]:hover { color: var(--accent); }
+
+    .award-banner {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0.5rem 1.25rem;
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-radius: 999px;
+      box-shadow: 0 4px 16px rgba(249,115,22,0.35);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    .award-banner.in-view { opacity: 1; transform: translateY(0); }
 
     /* ── Mission Card（保持原有視覺，但廢除 IntersectionObserver 依賴）── */
     .mission-grid {
@@ -69,11 +86,16 @@
       border-color: rgba(16,185,129,0.30);
       background: rgba(16,185,129,0.04);
     }
+    .mission-card.needs-improvement {
+      border-color: rgba(249,115,22,0.35);
+      background: rgba(249,115,22,0.06);
+    }
     .mission-icon { font-size: 2rem; margin-bottom: 6px; }
     .mission-name { font-weight: 700; font-size: 0.9rem; color: var(--text); }
     .mission-status { font-size: 0.78rem; margin-top: 4px; }
     .mission-card.completed .mission-status { color: var(--success); }
-    .mission-card:not(.completed) .mission-status { color: var(--muted); }
+    .mission-card.needs-improvement .mission-status { color: var(--warning); }
+    .mission-card:not(.completed):not(.needs-improvement) .mission-status { color: var(--muted); }
   </style>
 </head>
 <body>
@@ -83,6 +105,7 @@
       <h1 data-delay="1">TB3 2026</h1>
       <p class="subtitle" data-delay="2">TurtleBot 3 Burger × ROS × OpenCV</p>
       <span class="badge" data-delay="3">🎯 任務狀態機系統</span>
+      <div class="award-banner" data-delay="4">🏆 佳作</div>
     </div>
   </header>
 
@@ -237,7 +260,7 @@
       });
     }, { threshold: 0.08 });
 
-    document.querySelectorAll('.header-eyebrow, .header h1, .header .subtitle, .header .badge').forEach(function(el) { io.observe(el); });
+    document.querySelectorAll('.header-eyebrow, .header h1, .header .subtitle, .header .badge, .award-banner').forEach(function(el) { io.observe(el); });
     document.querySelectorAll('.info-card, .section, .folder-item').forEach(function(el) { io.observe(el); });
 
     /* ── 修正 lastUpdated（修復 day:2digit 錯誤）── */
@@ -304,8 +327,12 @@
         }
 
         document.getElementById('modal-title').textContent = icon + ' ' + name;
+        var modalStatusLabel;
+        if (s === 'done') modalStatusLabel = '✅ 已完成';
+        else if (s === 'in-progress') modalStatusLabel = '🔶 待精進';
+        else modalStatusLabel = '🚧 施工中';
         document.getElementById('modal-body').innerHTML =
-          '<p><span class="modal-status ' + s + '">' + (s === 'done' ? '✅ 已完成' : '🚧 施工中') + '</span></p>' +
+          '<p><span class="modal-status ' + s + '">' + modalStatusLabel + '</span></p>' +
           (desc ? '<p style="margin-top:0.75rem;">' + desc + '</p>' : '') +
           videoHtml + imagesHtml + subHtml + filesHtml;
         document.getElementById('mission-modal').classList.add('open');
@@ -333,8 +360,18 @@
           var s = computeMissionStatus(m);
           var icon = MISSION_ICONS[m.id] || '❓';
           var name = m.name && m.name.zh ? m.name.zh : m.id;
-          var label = s === 'done' ? '✅ 已完成' : '🚧 施工中';
-          return '<div class="mission-card ' + (s === 'done' ? 'completed' : 'active') + '" ' +
+          var label, cardClass;
+          if (s === 'done') {
+            label = '✅ 已完成';
+            cardClass = 'completed';
+          } else if (s === 'in-progress') {
+            label = '🔶 待精進';
+            cardClass = 'needs-improvement';
+          } else {
+            label = '🚧 施工中';
+            cardClass = 'active';
+          }
+          return '<div class="mission-card ' + cardClass + '" ' +
                  'data-id="' + m.id + '" onclick="openModal(\'' + m.id + '\')">' +
                  '<div class="mission-icon">' + icon + '</div>' +
                  '<div class="mission-name">' + name + '</div>' +

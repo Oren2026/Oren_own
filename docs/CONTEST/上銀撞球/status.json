@@ -10,6 +10,9 @@
     "安全講習": "pending",
     "機構設計": "in-progress",
     "Python骨架": "done",
+    "手臂移動（路徑/通訊）": "in-progress",
+    "桿弟規劃（機構+馬達）": "in-progress",
+    "電路板+伺服馬達控制": "in-progress",
     "影片製作": "pending"
   },
   "procurement": {
@@ -42,7 +45,24 @@
   },
   "software": {
     "repository": "hiwin_pool/",
-    "模組": ["vision", "comm", "motion", "analysis", "ui", "config"],
+    "三大主軸": {
+      "手臂移動": {
+        "description": "HIWIN 手臂路徑規劃 + TCP/IP 通訊介面",
+        "modules": ["motion", "comm"],
+        "status": "in-progress"
+      },
+      "桿弟規劃": {
+        "description": "半齒齒輪機構 + 直流/伺服馬達選型 + 齒輪傳動",
+        "modules": ["analysis"],
+        "status": "in-progress"
+      },
+      "電路板+伺服馬達": {
+        "description": "Arduino 控制板 + 伺服馬達驅動電路設計",
+        "modules": ["config"],
+        "status": "in-progress"
+      }
+    },
+    "共同模組": ["vision", "ui"],
     "待完成": ["webcam校正", "Arduino韌體", "HIWIN TCP/IP整合"]
   },
   "timeline": [

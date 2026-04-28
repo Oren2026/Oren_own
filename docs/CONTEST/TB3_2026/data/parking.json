@@ -3,7 +3,7 @@
   "name": { "zh": "停車", "en": "Parking" },
   "category": "mission",
   "description": "辨識白色虛線車格與 P 標誌，執行精準停車入格。",
-  "status": "done",
+  "status": "in-progress",
   "subConcepts": [
     {
       "id": "p_sign_detection",

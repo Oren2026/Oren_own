@@ -3,6 +3,7 @@
   "subtitle": "TurtleBot 3 Burger × ROS × OpenCV",
   "category": "fira",
   "status": "in-progress",
+  "result": "佳作",
   "nextMilestone": "任務串接最後調整，準備全關卡實測",
   "progress": {
     "圓環/交叉路口": "done",
@@ -10,10 +11,10 @@
     "交通號誌": "done",
     "障礙/減速區": "done",
     "平交道柵欄": "done",
-    "隧道/暗區": "done",
-    "停車": "done",
+    "隧道/暗區": "in-progress",
+    "停車": "in-progress",
     "S 型彎道": "done",
-    "任務串接": "todo"
+    "任務串接": "done"
   },
   "missions": [
     {
@@ -64,7 +65,7 @@
     {
       "id": "tunnel",
       "name": "隧道/暗區",
-      "status": "done",
+      "status": "in-progress",
       "files": [
         "detect_tunnel.py"
       ],
@@ -73,7 +74,7 @@
     {
       "id": "parking",
       "name": "停車",
-      "status": "done",
+      "status": "in-progress",
       "files": [
         "detect_parking.py"
       ],
@@ -90,8 +91,8 @@
     },
     {
       "id": "integration",
-      "name": "任務串接",
-      "status": "todo",
+      "name": "任務串接（順序執行）",
+      "status": "done",
       "files": [
         "core_node_controller"
       ]
@@ -146,5 +147,6 @@
     }
   ],
   "doneCount": 7,
-  "totalMissions": 9
+  "totalMissions": 9,
+  "note": "隧道與停車改為 in-progress（待精進）；串接已完成但為順序執行"
 }
