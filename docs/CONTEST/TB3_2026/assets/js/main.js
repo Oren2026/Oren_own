@@ -205,7 +205,7 @@ function renderTimeline(missions, containerId) {
       return `<div class="node-card ${s}" style="margin-bottom:1rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
           <h3>${icon} ${m.name?.zh || m.id}</h3>
-          <span class="status ${s}">${s === 'done' ? '✅ 已完成' : '🚧 施工中'}</span>
+          <span class="status ${s}">${s === 'done' ? '✅ 已完成' : s === 'in-progress' ? '🔶 待精進' : '🚧 施工中'}</span>
         </div>
         <p style="font-size:0.9rem;color:var(--text-light);margin-bottom:0.5rem;">${m.description || ''}</p>
         <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:0.5rem;">子項目：${subDone}/${subTotal}</p>
@@ -221,22 +221,26 @@ async function openModal(id) {
   const m = window._tb3[id];
   if (!m) return;
   const s = computeMissionStatus(m);
-  document.getElementById('modal-title').textContent = `${MISSION_ICONS[id] || ''} ${m.name?.zh || id}`;
-  const subs = (m.subConcepts || []).map(sub =>
-    `<li>${sub.status === 'done' ? '✅' : '⬜'} <strong>${sub.name?.zh || sub.id}</strong>：${sub.description || '—'}</li>`
-  ).join('');
-  const outputs = (m.outputs || []).map(o =>
-    `<li><code>${o.topic}</code>（${o.type}）— ${o.note || '—'}</li>`
-  ).join('');
-  const files = (m.files || []).map(f => `<li><code>${f}</code></li>`).join('');
-  document.getElementById('modal-body').innerHTML = `
-    <p><span class="modal-status ${s}">${s === 'done' ? '✅ 已完成' : '🚧 施工中'}</span></p>
-    ${m.description ? `<p style="margin-top:0.75rem;">${m.description}</p>` : ''}
-    ${m.video ? `<div class="modal-section"><h3>🎬 測試影片</h3><video src="${m.video}" controls style="width:100%;max-height:65vh;border-radius:8px;margin-top:0.5rem;object-fit:contain;"></video></div>` : ''}
-    ${m.images ? `<div class="modal-section"><h3>📸 參考圖片</h3><div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">${m.images.map(img => `<a href="${img}" target="_blank" style="display:contents;"><img src="${img}" style="width:120px;height:auto;border-radius:6px;object-fit:cover;"></a>`).join('')}</div></div>` : ''}
-    ${subs ? `<div class="modal-section"><h3>實作細節</h3><ul>${subs}</ul></div>` : ''}
-    ${outputs ? `<div class="modal-section"><h3>輸出 Topic</h3><ul>${outputs}</ul></div>` : ''}
-    ${files ? `<div class="modal-section"><h3>對應檔案</h3><ul>${files}</ul></div>` : ''}`;
+  const modalStatusLabel = s === 'done' ? '✅ 已完成' : s === 'in-progress' ? '🔶 待精進' : '🚧 施工中';
+  document.getElementById('modal-title').textContent = (MISSION_ICONS[id] || '❓') + ' ' + (m.name && m.name.zh ? m.name.zh : id);
+  const subs = (m.subConcepts || []).map(function(sub) {
+    return '<li>' + (sub.status === 'done' ? '✅' : '⬜') + ' <strong>' + (sub.name && sub.name.zh ? sub.name.zh : sub.id) + '</strong>：' + (sub.description || '—') + '</li>';
+  }).join('');
+  const outputs = (m.outputs || []).map(function(o) {
+    return '<li><code>' + o.topic + '</code>（' + o.type + '）— ' + (o.note || '—') + '</li>';
+  }).join('');
+  const files = (m.files || []).map(function(f) { return '<li><code>' + f + '</code></li>'; }).join('');
+  var body = '<p><span class="modal-status ' + s + '">' + modalStatusLabel + '</span></p>';
+  if (m.description) body += '<p style="margin-top:0.75rem;">' + m.description + '</p>';
+  if (m.video) body += '<div class="modal-section"><h3>🎬 測試影片</h3><video src="' + m.video + '" controls style="width:100%;max-height:65vh;border-radius:8px;margin-top:0.5rem;object-fit:contain;"></video></div>';
+  if (m.images && m.images.length) {
+    var imgs = m.images.map(function(img) { return '<a href="' + img + '" target="_blank" style="display:contents;"><img src="' + img + '" style="width:120px;height:auto;border-radius:6px;object-fit:cover;"></a>'; }).join('');
+    body += '<div class="modal-section"><h3>📸 參考圖片</h3><div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">' + imgs + '</div></div>';
+  }
+  if (subs) body += '<div class="modal-section"><h3>實作細節</h3><ul>' + subs + '</ul></div>';
+  if (outputs) body += '<div class="modal-section"><h3>輸出 Topic</h3><ul>' + outputs + '</ul></div>';
+  if (files) body += '<div class="modal-section"><h3>對應檔案</h3><ul>' + files + '</ul></div>';
+  document.getElementById('modal-body').innerHTML = body;
   document.getElementById('mission-modal').classList.add('open');
 }
 
