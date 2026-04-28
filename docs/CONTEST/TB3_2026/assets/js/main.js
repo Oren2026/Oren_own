@@ -54,6 +54,8 @@ async function fetchStatus(prefix = '../') {
 
 function computeMissionStatus(m) {
   if (!m.subConcepts || !m.subConcepts.length) return m.status || 'todo';
+  // 如果 top-level status 明確是 in-progress，優先尊重這個設定
+  if (m.status === 'in-progress') return 'in-progress';
   return m.subConcepts.every(s => s.status === 'done') ? 'done' : 'todo';
 }
 
