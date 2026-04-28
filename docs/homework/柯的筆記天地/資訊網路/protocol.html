@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protocol 網路協定 | 資訊網路</title>
+  <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的筆記天地</div>
+    <div class="sidebar-title">資訊網路</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有筆記</div>
+    <a href="index.html" class="sidebar-link">📋 課程總覽</a>
+    <a href="0428.html" class="sidebar-link">0428 — OSI 基礎</a>
+    <a href="protocol.html" class="sidebar-link active">Protocol — 網路協定</a>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">本頁章節</div>
+    <a href="#why-protocol" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">為什麼需要協定</a>
+    <a href="#standards-org" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">國際標準機構</a>
+    <a href="#osi-review" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">OSI 七層總覽</a>
+    <a href="#physical" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">實體層</a>
+    <a href="#datalink" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">資料連結層</a>
+    <a href="#network" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">網路層</a>
+    <a href="#transport" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">傳輸層</a>
+    <a href="#session" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">會議層</a>
+    <a href="#application" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">應用層</a>
+    <a href="#device-layer" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">設備與層級對應</a>
+    <a href="#tcpip" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">TCP/IP 協定組</a>
+    <a href="#ietf" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">IETF 與 IRTF</a>
+    <a href="#rfc" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">RFC 文件</a>
+    <a href="#common-protocols" class="sidebar-link" style="padding-left:1rem;font-size:0.82rem;">常見協定對照表</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+
+    <header class="note-header">
+      <div class="note-date">2026 年 04 月 28 日</div>
+      <h1 class="note-title">網路協定的制定與標準</h1>
+      <div class="note-tags">
+        <span class="note-tag">Protocol</span>
+        <span class="note-tag">OSI</span>
+        <span class="note-tag">IETF</span>
+        <span class="note-tag">RFC</span>
+        <span class="note-tag">TCP/IP</span>
+      </div>
+    </header>
+
+    <!-- 為什麼需要協定 -->
+    <section id="why-protocol">
+      <h2>為什麼需要網路協定</h2>
+      <p>線材、設備與系統種類繁多，製造廠商數量也相當可觀。為讓產品彼此間達到<strong>相容相通</strong>，必須制定大家可以接受的共通標準——這些標準稱之為<strong>通訊協定（Protocol）</strong>。</p>
+
+      <div class="highlight-box">
+        標準規範一般由具公信的機構經過多次會議討論所制定，目的是讓不同標準間的設備能夠相互通訊。
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">Gateway（閘道器）</div>
+        <div class="layer-card-name">不同標準間的轉譯設備</div>
+        <div class="layer-card-desc">當兩端使用不同協定無法直接溝通時，Gateway 負責在兩種不同標準間進行轉譯，讓端點 A 和端點 B 可以順利通訊。</div>
+      </div>
+    </section>
+
+    <!-- 國際標準機構 -->
+    <section id="standards-org">
+      <h2>常見的國際性標準機構</h2>
+
+      <div class="concept-card">
+        <div class="concept-card-title">📋 標準制定機構</div>
+        <ul>
+          <li><strong>IEEE</strong> — Institute of Electrical and Electronics Engineers<br>電機電子工程師學會</li>
+          <li><strong>ANSI</strong> — American National Standards Institute<br>美國國家標準組織</li>
+          <li><strong>ITU / ITU-T</strong> — International Telecommunications Union<br>國際電信聯盟（前身 CCITT，1865~1993）</li>
+          <li><strong>ISO</strong> — International Organization for Standardization<br>國際標準組織（制定 OSI 參考模式）</li>
+          <li><strong>EIA / TIA</strong> — Electronic Industries Association / Telecommunication Industry Association<br>電子工業協會 / 電信工業協會</li>
+          <li><strong>IAB</strong> — Internet Architecture Board<br>網際網路架構委員會（隸屬 IETF/IRTF）</li>
+          <li><strong>Cisco</strong> — 思科（設備廠商）</li>
+          <li><strong>AT&T</strong> — American Telephone and Telegraph Company<br>美國電話電報公司</li>
+        </ul>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">🔑 常見標準對照</div>
+        <ul>
+          <li><strong>RS232-C</strong> — EIA 制定的序列通訊標準</li>
+          <li><strong>OSI 參考模式</strong> — ISO 於 1984 年制定</li>
+          <li><strong>TCP/IP</strong> — IAB 制定的網路架構</li>
+          <li><strong>T1 (1.544 Mbps)</strong> — AT&T 制定的廣域線路標準</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- OSI 總覽 -->
+    <section id="osi-review">
+      <h2>OSI 參考模式總覽</h2>
+      <p>OSI（Open Systems Interconnection）於 1984 年由 ISO 制定，是個<strong>參考模式（Reference Model）</strong>，提供網路架構完整的參考標準。</p>
+
+      <div class="highlight-box">
+        OSI 有利於後續網路相容整合設計開發與突破，對網路初學者也提供良好的導引骨幹。
+      </div>
+
+      <div class="stack-diagram">
+        <div class="stack-layer app" style="background:#7c3aed">應用層 <span class="stack-layer-label">Application (L7)</span></div>
+        <div class="stack-layer app" style="background:#6366f1">展示層 <span class="stack-layer-label">Presentation (L6)</span></div>
+        <div class="stack-layer app" style="background:#4f46e5">會議層 <span class="stack-layer-label">Session (L5)</span></div>
+        <div class="stack-layer trans">傳輸層 <span class="stack-layer-label">Transport (L4)</span></div>
+        <div class="stack-layer net">網路層 <span class="stack-layer-label">Network (L3)</span></div>
+        <div class="stack-layer data">資料鏈結層 <span class="stack-layer-label">Data Link (L2)</span></div>
+        <div class="stack-layer phys">實體層 <span class="stack-layer-label">Physical (L1)</span></div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">📦 資料封包的組成（封裝過程）</div>
+        <p>大的資料在傳輸層進行<strong>拆組裝（Segmentation & Reassembly）</strong>的工作。每一層都會加上一層 Header：</p>
+        <ul>
+          <li>應用層：Data（資料）</li>
+          <li>傳輸層：TCP/UDP Header + Data = <strong>Segment</strong></li>
+          <li>網路層：IP Header + Segment = <strong>Packet（封包）</strong></li>
+          <li>資料鏈結層：MAC Header + Packet + Trailer = <strong>Frame</strong></li>
+          <li>實體層：轉換為 Bit（位元）訊號</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 各層詳細說明 -->
+    <section id="physical">
+      <h2>實體層（Physical Layer, L1）</h2>
+      <p>協定最底層，處理<strong>硬體規格與訊號轉換</strong>。</p>
+      <ul>
+        <li>傳輸線材、中繼器（Repeater）與一般型集線器（Hub）</li>
+        <li>訊號類型：光訊號、電訊號、無線電波</li>
+      </ul>
+    </section>
+
+    <section id="datalink">
+      <h2>資料連結層（Data Link Layer, L2）</h2>
+      <p>處理相同區域網路（未透過路由器）內的通訊。IEEE 將資料連結層分為兩個子層：</p>
+      <ul>
+        <li><strong>LLC</strong>（Logical Link Control）— 邏輯連結控制子層</li>
+        <li><strong>MAC</strong>（Medium Access Control）— 媒體存取控制子層</li>
+      </ul>
+      <div class="highlight-box">典型產品：網路卡（NIC）、橋接器（Bridge）、交換式集線器（Switch）</div>
+    </section>
+
+    <section id="network">
+      <h2>網路層（Network Layer, L3）</h2>
+      <p>負責<strong>定址（Addressing）</strong>以及<strong>尋找路徑（Routing）</strong>。</p>
+
+      <div class="layer-card">
+        <div class="layer-card-num">路由器（Router）</div>
+        <div class="layer-card-name">依據多項資訊建立尋徑表，進行路徑選擇</div>
+        <div class="layer-card-desc">透過尋徑協定（Routing Protocol），依據連線路由器數量、傳輸頻寬、傳輸距離、傳輸負載、可靠度等訊息，建立尋徑表（Routing Table）進行路徑選擇。</div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">📡 常見尋徑協定</div>
+        <ul>
+          <li><strong>RIP</strong>（Routing Information Protocol）— 尋徑資訊協定</li>
+          <li><strong>OSPF</strong>（Open Shortest Path First）— 開放最短路徑優先</li>
+        </ul>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">🔗 常見網路層協定</div>
+        <ul>
+          <li><strong>IP</strong>（Internet Protocol）— 網際網路協定</li>
+          <li><strong>IPX</strong>（Internet Packet eXchange）</li>
+          <li><strong>ARP</strong>（Address Resolution Protocol）— IP 位址查 MAC 位址</li>
+          <li><strong>RARP</strong>（Reverse ARP）— MAC 位址查 IP 位址</li>
+          <li><strong>ICMP</strong>（Internet Control Message Protocol）— 網路控制訊息協定</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="transport">
+      <h2>傳輸層（Transport Layer, L4）</h2>
+      <p>提供<strong>可靠性服務</strong>。</p>
+      <ul>
+        <li><strong>密封包編訂序列碼（Sequence Number）</strong> — 確認資料順序</li>
+        <li>常見協定：TCP、UDP、SPX</li>
+      </ul>
+    </section>
+
+    <section id="session">
+      <h2>會議層（Session Layer, L5）</h2>
+      <p>負責<strong>連線管理</strong>：</p>
+      <ul>
+        <li>連線建立（Connection Establishment）</li>
+        <li>連線主控（Connection Control）</li>
+        <li>連線重建（Connection Rebuild）</li>
+        <li>連線結束（Connection Termination）</li>
+      </ul>
+    </section>
+
+    <section id="application">
+      <h2>應用層（Application Layer, L7）</h2>
+      <p>實際與使用者面對面，負責操作按鈕與使用的指令等。</p>
+      <div class="concept-card">
+        <div class="concept-card-title">🌐 常見應用層服務</div>
+        <ul>
+          <li><strong>Telnet</strong> — 遠端登入</li>
+          <li><strong>FTP</strong>（File Transfer Protocol）— 檔案傳輸</li>
+          <li><strong>WWW</strong> — 全球資訊網</li>
+          <li><strong>DNS</strong>（Domain Name System）— 網域名稱系統</li>
+          <li><strong>SNMP</strong>（Simple Network Management Protocol）— 網路管理</li>
+          <li><strong>NFS</strong>（Network File System）— 網路檔案系統</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 設備與層級對應 -->
+    <section id="device-layer">
+      <h2>網路設備與 OSI 層級的對應關係</h2>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>設備</th>
+            <th>運作層級</th>
+            <th>說明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>中繼器（Repeater）</strong></td>
+            <td>L1 實體層</td>
+            <td>放大訊號、延伸傳輸距離</td>
+          </tr>
+          <tr>
+            <td><strong>集線器（Hub）</strong></td>
+            <td>L1 實體層</td>
+            <td>廣播訊號到所有連接埠</td>
+          </tr>
+          <tr>
+            <td><strong>橋接器（Bridge）</strong></td>
+            <td>L2 資料連結層</td>
+            <td>連接不同類型網路（如乙太網路↔無線網路）</td>
+          </tr>
+          <tr>
+            <td><strong>交換式集線器（Switch）</strong></td>
+            <td>L2 資料連結層</td>
+            <td>依 MAC 位址轉送 Frame</td>
+          </tr>
+          <tr>
+            <td><strong>路由器（Router）</strong></td>
+            <td>L3 網路層</td>
+            <td>依 IP 位址轉送 Packet，執行路由選擇</td>
+          </tr>
+          <tr>
+            <td><strong>閘道器（Gateway）</strong></td>
+            <td>L4~L7（多層）</td>
+            <td>不同協定的轉換（如 Ethernet ↔ 記號環網路）</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- TCP/IP 協定組 -->
+    <section id="tcpip">
+      <h2>TCP/IP 協定組與 OSI 的對應</h2>
+      <p>TCP/IP 是目前網路最主流的協定組，1983 年正式納入 Internet 架構。</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>OSI 層</th>
+            <th>TCP/IP 層</th>
+            <th>代表協定</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>L7 應用層</td>
+            <td rowspan="3">應用層（Application）</td>
+            <td>HTTP, FTP, Telnet, DNS, SMTP</td>
+          </tr>
+          <tr>
+            <td>L6 展示層</td>
+            <td rowspan="2">（整合在應用層）</td>
+          </tr>
+          <tr>
+            <td>L5 會議層</td>
+          </tr>
+          <tr>
+            <td>L4 傳輸層</td>
+            <td>傳輸層（Transport）</td>
+            <td>TCP, UDP</td>
+          </tr>
+          <tr>
+            <td>L3 網路層</td>
+            <td>網路層（Internet）</td>
+            <td>IP, ICMP, ARP</td>
+          </tr>
+          <tr>
+            <td>L2 資料連結層</td>
+            <td rowspan="2">網路存取層（Network Access）</td>
+            <td> Ethernet, PPP</td>
+          </tr>
+          <tr>
+            <td>L1 實體層</td>
+            <td>（實體介面）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>Microsoft 網路協定</strong>則在 OSI 架構下對應到：應用層→應用層、LLC→TCP/IP 傳輸層、MAC→TCP/IP 網路存取層。
+      </div>
+    </section>
+
+    <!-- IETF 與 IRTF -->
+    <section id="ietf">
+      <h2>IETF 與 IRTF</h2>
+      <p>IAB（網際網路架構委員會）下分兩個機構：</p>
+
+      <div class="layer-card">
+        <div class="layer-card-num">IETF</div>
+        <div class="layer-card-name">Internet Engineering Task Force — 網際網路工程業務策進會</div>
+        <div class="layer-card-desc">負責<strong>短中期課題</strong>的解決。協定透過 RFC（Request for Comment）文件提交到 IETF 進行發表制定。</div>
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">IRTF</div>
+        <div class="layer-card-name">Internet Research Task Force — 網際網路工程研究策進會</div>
+        <div class="layer-card-desc">負責<strong>長期、理論或前瞻性</strong>發展的研究。</div>
+      </div>
+    </section>
+
+    <!-- RFC -->
+    <section id="rfc">
+      <h2>RFC 文件</h2>
+      <p>RFC（Request for Comments）是一系列與 Internet 相關的文件，內容包括網路協定、演算法與機制的建置概念、編碼記錄與意見。</p>
+
+      <div class="highlight-box">
+        對網路工作者而言：RFC 絕對是必須參考的文件。<br>
+        下載格式：<code>http://www.ietf.org/rfc/rfcXXXX.txt</code>（XXXX 為 RFC 編號）
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">📄 RFC 文件類型</div>
+        <ul>
+          <li><strong>Standards Track（標準制訂過程）</strong>：
+            <ul>
+              <li>Proposed Standard（提案標準）→ Draft Standard（草案標準）→ Standard（標準）</li>
+            </ul>
+          </li>
+          <li><strong>Best Current Practice</strong> — 不是網路的標準，但是 IETF 建議要遵守的規範</li>
+          <li><strong>Information</strong> — 一些資訊或實驗中的規範，可能來自 IETF 或其他單位</li>
+          <li><strong>Experimental</strong> — 實驗性規範</li>
+          <li><strong>Historic</strong> — 過時的標準</li>
+        </ul>
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">RFC 歷史</div>
+        <div class="layer-card-desc">1983 年 ARPA 正式將 TCP/IP 架構納入 Internet，並對 ICCB（網際網路組態控制委員會）進行重整，成立 IAB。</div>
+      </div>
+    </section>
+
+    <!-- 常見協定對照表 -->
+    <section id="common-protocols">
+      <h2>常見網路協定對照表</h2>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>協定</th>
+            <th>全名</th>
+            <th>RFC 編號</th>
+            <th>層級</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>IP</td><td>Internet Protocol</td><td>RFC 791</td><td>L3 網路層</td></tr>
+          <tr><td>TCP</td><td>Transmission Control Protocol</td><td>RFC 793</td><td>L4 傳輸層</td></tr>
+          <tr><td>UDP</td><td>User Datagram Protocol</td><td>RFC 768</td><td>L4 傳輸層</td></tr>
+          <tr><td>ICMP</td><td>Internet Control Message Protocol</td><td>RFC 792, 2463</td><td>L3 網路層</td></tr>
+          <tr><td>ARP</td><td>Address Resolution Protocol</td><td>—</td><td>L3→L2</td></tr>
+          <tr><td>RARP</td><td>Reverse ARP</td><td>—</td><td>L2→L3</td></tr>
+          <tr><td>FTP</td><td>File Transfer Protocol</td><td>RFC 959</td><td>L7 應用層</td></tr>
+          <tr><td>Telnet</td><td>Telnet Protocol</td><td>RFC 854, 855</td><td>L7 應用層</td></tr>
+          <tr><td>DNS</td><td>Domain Name System</td><td>RFC 1034, 1035</td><td>L7 應用層</td></tr>
+          <tr><td>SNMP</td><td>Simple Network Management Protocol</td><td>RFC 1157</td><td>L7 應用層</td></tr>
+          <tr><td>PPP</td><td>Point-to-Point Protocol</td><td>RFC 1661</td><td>L2 資料連結層</td></tr>
+          <tr><td>RIP</td><td>Routing Information Protocol</td><td>RFC 1723, 2453</td><td>L3 網路層</td></tr>
+          <tr><td>OSPF</td><td>Open Shortest Path First</td><td>RFC 2328</td><td>L3 網路層</td></tr>
+          <tr><td>DHCP</td><td>Dynamic Host Configuration Protocol</td><td>RFC 2131</td><td>L3 網路層</td></tr>
+          <tr><td>IPv6</td><td>Internet Protocol Version 6</td><td>RFC 2460</td><td>L3 網路層</td></tr>
+          <tr><td>IPX</td><td>Internet Packet eXchange</td><td>—</td><td>L3 網路層</td></tr>
+          <tr><td>SPX</td><td>Sequenced Packet eXchange</td><td>—</td><td>L4 傳輸層</td></tr>
+          <tr><td>NFS</td><td>Network File System</td><td>—</td><td>L7 應用層</td></tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        💡 想查詢更多 RFC 文件，可至 <a href="http://www.rfc-editor.org/rfcsearch.html" style="color:var(--accent);">http://www.rfc-editor.org/rfcsearch.html</a> 搜尋。
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📡 資訊網路 · 柯安祥</span>
+      <span>Protocol · 2026/04/28</span>
+    </footer>
+  </main>
+</body>
+</html>
