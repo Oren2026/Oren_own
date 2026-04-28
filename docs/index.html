@@ -137,12 +137,16 @@
     }
 
     /* 比赛專區 + 作業呈現：深橘色系 */
+    .link-card.contest,
+    .link-card.homework {
+      background: rgba(234, 88, 12, 0.12);
+    }
     .link-card.contest::before,
     .link-card.homework::before {
       background: #ea580c;
     }
-    .link-card.contest:hover { border-color: rgba(234,88,12,0.4); }
-    .link-card.homework:hover { border-color: rgba(234,88,12,0.4); }
+    .link-card.contest:hover { border-color: rgba(234,88,12,0.5); background: rgba(234,88,12,0.18); }
+    .link-card.homework:hover { border-color: rgba(234,88,12,0.5); background: rgba(234,88,12,0.18); }
 
     /* 小黑們：紫色 */
     .link-card.agent::before { background: var(--neon2); }
