@@ -133,21 +133,30 @@
       content: "";
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 2px;
+      height: 3px;
     }
-    .link-card:nth-child(1)::before { background: var(--neon); }
-    .link-card:nth-child(2)::before { background: var(--neon2); }
-    .link-card:nth-child(3)::before { background: var(--neon3); }
-    .link-card:nth-child(4)::before { background: var(--neon4); }
 
+    /* 比赛專區 + 作業呈現：深橘色系 */
+    .link-card.contest::before,
+    .link-card.homework::before {
+      background: #ea580c;
+    }
+    .link-card.contest:hover { border-color: rgba(234,88,12,0.4); }
+    .link-card.homework:hover { border-color: rgba(234,88,12,0.4); }
+
+    /* 小黑們：紫色 */
+    .link-card.agent::before { background: var(--neon2); }
+    .link-card.agent:hover { border-color: rgba(167,139,250,0.3); }
+
+    /* 黑金：綠色 */
+    .link-card.knowledge::before { background: var(--neon4); }
+    .link-card.knowledge:hover { border-color: rgba(134,239,172,0.3); }
+
+    /* 通用 hover */
     .link-card:hover {
       background: var(--surface-hover);
       transform: translateY(-4px);
     }
-    .link-card:nth-child(1):hover { border-color: rgba(110,231,247,0.3); }
-    .link-card:nth-child(2):hover { border-color: rgba(167,139,250,0.3); }
-    .link-card:nth-child(3):hover { border-color: rgba(251,146,60,0.3); }
-    .link-card:nth-child(4):hover { border-color: rgba(134,239,172,0.3); }
 
     .link-card-icon { font-size: 1.8rem; margin-bottom: 0.25rem; }
     .link-card-title {
@@ -185,25 +194,25 @@
   </div>
 
   <div class="links">
-    <a href="CONTEST/index.html" class="link-card">
+    <a href="CONTEST/index.html" class="link-card contest">
       <div class="link-card-icon">🏁</div>
       <div class="link-card-title">比賽專區</div>
       <div class="link-card-desc">TDK、TB3、上銀撞球</div>
     </a>
-    <a href="agent_use/index.html" class="link-card">
+    <a href="homework/index.html" class="link-card homework">
+      <div class="link-card-icon">📚</div>
+      <div class="link-card-title">作業呈現</div>
+      <div class="link-card-desc">CCC · 未來其他課程</div>
+    </a>
+    <a href="agent_use/index.html" class="link-card agent">
       <div class="link-card-icon">🤖</div>
       <div class="link-card-title">小黑們</div>
       <div class="link-card-desc">agent_idea · agent_idle</div>
     </a>
-    <a href="BlackCortex/index.html" class="link-card">
+    <a href="BlackCortex/index.html" class="link-card knowledge">
       <div class="link-card-icon">🧠</div>
       <div class="link-card-title">黑金</div>
       <div class="link-card-desc">知識庫 · 股票研究分析</div>
-    </a>
-    <a href="homework/index.html" class="link-card">
-      <div class="link-card-icon">📚</div>
-      <div class="link-card-title">作業呈現</div>
-      <div class="link-card-desc">CCC · 未來其他課程</div>
     </a>
   </div>
 
