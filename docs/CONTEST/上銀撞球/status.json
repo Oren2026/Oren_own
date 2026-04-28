@@ -4,15 +4,19 @@
   "category": "hiwin",
   "status": "review",
   "deadline": "2026-05-22",
-  "nextMilestone": "繳交複審影片（截止 2026/05/22）",
+  "nextMilestone": "確認手臂 IP、Arduino COM port、馬達選型",
   "progress": {
     "初審": "passed",
     "安全講習": "pending",
     "機構設計": "in-progress",
+    "Python骨架": "done",
     "影片製作": "pending"
   },
   "procurement": {
-    "已完成": [],
+    "已完成": [
+      "法蘭規格確認（Ø40/M5/PCD31.5）",
+      "轉接板設計方向確認"
+    ],
     "待購買": [
       {
         "name": "HIWIN 智慧機器手臂",
@@ -20,11 +24,26 @@
         "note": "主辦單位提供"
       },
       {
+        "name": "桿弟馬達（伺服用）",
+        "qty": 1,
+        "note": "待選型"
+      },
+      {
         "name": "3D列印機構零件",
         "qty": "若干",
         "note": "優先3D列印"
       }
     ]
+  },
+  "mechanism": {
+    "方向": "半齒齒輪 + 直流/伺服馬達 + 齒輪傳動",
+    "桿弟機構": "半齒齒輪脫離設計，撞擊瞬間動力中斷，靠慣性前進",
+    "復位方式": "馬達反轉自動復位"
+  },
+  "software": {
+    "repository": "hiwin_pool/",
+    "模組": ["vision", "comm", "motion", "analysis", "ui", "config"],
+    "待完成": ["webcam校正", "Arduino韌體", "HIWIN TCP/IP整合"]
   },
   "timeline": [
     {
@@ -40,14 +59,12 @@
     {
       "phase": "複審影片繳交截止",
       "date": "2026-05-22",
-      "status": "pending",
-      "daysLeft": 39
+      "status": "pending"
     },
     {
       "phase": "決賽",
       "date": "2026-08-19~20",
-      "status": "pending",
-      "daysLeft": 128
+      "status": "pending"
     }
   ],
   "awards": {
@@ -59,8 +76,18 @@
   "subsidy": "外島優障：撞球組補助 NT$15,000（全台最高）",
   "updates": [
     {
+      "date": "2026-04-28",
+      "text": "Python 骨架完成：vision/comm/motion/analysis/ui/config 共 30 個檔案，已推送 GitHub",
+      "category": "進度"
+    },
+    {
+      "date": "2026-04-28",
+      "text": "桿弟機構方向確認：半齒齒輪 + 直流/伺服馬達 + 齒輪傳動",
+      "category": "進度"
+    },
+    {
       "date": "2026-04-18",
-      "text": "Python 模擬程式完成：手臂懸停位置計算 + 擊球序列規劃",
+      "text": "法蘭規格確認：Ø40/M5/PCD31.5，轉接板設計方向確認",
       "category": "進度"
     },
     {
