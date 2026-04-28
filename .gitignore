@@ -30,3 +30,17 @@ yarn-error.log*
 .DS_Store
 *.swp
 *.swo
+
+# ──────────────────────────────────────────
+# Python
+# ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyc
+*.egg-info/
+dist/
+build/
+*.egg
+venv/
+.venv/
+*.log
