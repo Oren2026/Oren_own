@@ -1,0 +1,25 @@
+# Local config (user-specific)
+config/local_config.py
+
+# Shot logs
+shot_log/
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+venv/
+env/
+.env

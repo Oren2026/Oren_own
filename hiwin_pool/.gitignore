@@ -1,0 +1,53 @@
+# .gitignore for hiwin_pool
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 系統
+.DS_Store
+Thumbs.db
+
+# Config — local_config.py 是使用者自定義（不進版控）
+config/local_config.py
+config/version
+
+# 擊球記錄（feedback learning）
+shot_log/*.csv
+shot_log/*.json
+shot_log/*.log
+
+# 測試輸出
+tests/output/
+.pytest_cache/
