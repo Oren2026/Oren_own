@@ -21,6 +21,124 @@ cd ~/Desktop/Oren_own/hiwin_pool
 
 ---
 
+## 架構概覽
+
+### 目錄結構
+
+```
+hiwin_pool/
+├── interfaces/       # I/O 介面標準（固定不動）
+├── vision/           # 影像辨識（可自定義 YOUR_VERSION/）
+│   └── YOUR_VERSION/ # 同學自行替換的實作
+├── strategy/         # 擊球策略（可自定義 YOUR_VERSION/）
+│   └── YOUR_VERSION/ # 同學自行替換的實作
+├── motion/           # 運動執行（框架層）
+├── comm/             # 通訊（框架層）
+├── config/           # 設定檔
+├── ui/               # GUI
+├── shot_log/         # 擊球記錄
+└── tests/            # 測試
+```
+
+### 各層說明
+
+| 目錄 | 說明 | 是否需修改 |
+|------|------|-----------|
+| `interfaces/` | 定義 vision_output / strategy_output / motion_command / shot_record 等標準介面 | 否（固定標準） |
+| `vision/` | 球偵測、Homography 校正 | 可替換 `YOUR_VERSION/` |
+| `strategy/` | 根據 vision 輸出規劃擊球目標與力道 | 可替換 `YOUR_VERSION/` |
+| `motion/` | 接收 strategy 指令，控制手臂移動與機構擊球 | 否（框架層） |
+| `comm/` | TCP/IP 手臂通訊、Arduino 序列通訊 | 否（框架層） |
+| `config/` | 所有設定參數 | 依需求調整 |
+| `ui/` | GUI 面板 | 依需求調整 |
+| `shot_log/` | 擊球記錄存放 | 自動生成 |
+| `tests/` | 測試工具 | 依需求擴充 |
+
+框架層（`motion/`、`comm/`、`interfaces/`）**不須修改**，同學只需替換 `vision/YOUR_VERSION/` 和 `strategy/YOUR_VERSION/` 裡的實作，確保輸出格式符合 `interfaces/` 定義即可。
+
+---
+
+## 訊號流向圖
+
+```
+webcam → vision（球偵測，輸出球位置）
+vision → strategy（規劃擊球目標和力道）
+strategy → motion（發送手臂指令 + 機構指令）
+motion → hiwin_arm / arduino（執行）
+```
+
+### 各環節職責
+
+1. **webcam → vision**：從俯瞰 webcam 讀取影像，偵測白球與目標球位置，輸出球檯座標（mm）
+2. **vision → strategy**：根據球位置規劃擊球目標（預測進袋點）和力道（1-12段）
+3. **strategy → motion**：motion 接收手臂目標座標 + 機構擊球指令，轉譯為 HRL 指令
+4. **motion → hiwin_arm / arduino**：TCP 發送手臂指令；序列發送擊球指令給 Arduino 控制桿弟機構
+
+每次完整擊球流程都會走完這條鏈。如某環節失敗，可透過 Phase 測試各自獨立驗證。
+
+---
+
+## Installer 使用說明
+
+### 指令
+
+```bash
+# 第一次安裝
+python setup.py
+
+# 日後更新
+python update.py
+```
+
+### 使用情境
+
+| 情境 | 指令 |
+|------|------|
+| 第一次環境架設 | `python setup.py` |
+| 拉取最新程式碼後 | `python update.py` |
+| 更動了 `requirements.txt` 或結構 | `python setup.py`（重新初始化） |
+
+`setup.py` 是一次性初始化指令，會安裝所有依賴、創建必要資料夾、確認環境。`update.py` 用於日後更新，會拉取最新程式碼、重新安裝有異動的依賴，不會刪除使用者資料。
+
+---
+
+## 自動復位時序
+
+每次擊球前/後都會執行復位，避免桿弟機構移動時掃到球檯上的球或障礙物。
+
+```
+[Reset] → [Move] → [Strike] → [Reset]
+```
+
+| 步驟 | 說明 |
+|------|------|
+| **Reset（擊球前）** | Arduino 機構復位到初始狀態，確保每次擊球姿態一致 |
+| **Move（移動手臂）** | 手臂 PTP 上升到安全高度 → LIN 到目標位置（Z=200mm 懸停） |
+| **Strike（擊球）** | Arduino 執行擊球命令（馬達推桿），完成後紀錄到 `shot_log/` |
+| **Reset（擊球後）** | 機構再次復位，回到初始狀態，準備下一桿 |
+
+Z軸先升（300mm）後降（200mm）是為了避免竿子攜帶桿弟機構擦到球檯。
+
+---
+
+## YOUR_VERSION 預留空間
+
+`vision/` 和 `strategy/` 目錄下皆有 `YOUR_VERSION/` 資料夾，供同學自行替換實作。
+
+### 使用方式
+
+1. 在 `vision/YOUR_VERSION/` 或 `strategy/YOUR_VERSION/` 裡放入自己改寫的模組
+2. 確保輸出格式符合 `interfaces/` 定義的標準（`vision_output`、`strategy_output` 等）
+3. 在主要模組中引用時，框架會自動找到符合介面規格的自訂版本
+
+### 優點
+
+- **不破壞原始實作**：框架版本完整保留，隨時可復原
+- **格式有保障**：只要符合 `interfaces/` 定義，就能與其他模組無縫接軌
+- **易於比較**：可以同時保留多個版本（如 `YOUR_VERSION_v1/`、`YOUR_VERSION_v2/`）
+
+---
+
 ## Phase 0 — 系統環境確認
 
 ### 0.1 Python 環境

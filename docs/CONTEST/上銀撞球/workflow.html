@@ -427,6 +427,283 @@
 
     <div class="section-label">測試流程</div>
 
+    <!-- Architecture Overview -->
+    <div class="phase-card" id="arch-overview">
+      <div class="phase-header" onclick="togglePhase('arch-overview')">
+        <div class="phase-num">A</div>
+        <div class="phase-info">
+          <div class="phase-title">專案架構概覽</div>
+          <div class="phase-meta">
+            <span>hiwin_pool/</span>
+            <span>目錄結構</span>
+          </div>
+        </div>
+        <div class="phase-toggle">▼</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+
+          <ul class="step-list">
+            <li class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <div class="step-text"><code>interfaces/</code> — I/O 介面標準（固定不動）</div>
+                <div class="step-sub">定義 vision_output / strategy_output / motion_command / shot_record 等標準介面，所有模組都依此格式溝通</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <div class="step-text"><code>vision/</code> — 影像辨識（可自定義 YOUR_VERSION/）</div>
+                <div class="step-sub">球偵測、Homography 校正。預留 YOUR_VERSION/ 資料夾，同學可替換實作，只要符合 interfaces/ 定義的輸出格式即可</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <div class="step-text"><code>strategy/</code> — 擊球策略（可自定義 YOUR_VERSION/）</div>
+                <div class="step-sub">根據 vision 輸出規劃擊球目標與力道。YOUR_VERSION/ 讓同學置換自己的實作，介面格式固定</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">4</div>
+              <div class="step-content">
+                <div class="step-text"><code>motion/</code> — 運動執行（框架層）</div>
+                <div class="step-sub">接收 strategy 指令，控制手臂移動和機構擊球。一般不需修改</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">5</div>
+              <div class="step-content">
+                <div class="step-text"><code>comm/</code> — 通訊（框架層）</div>
+                <div class="step-sub">TCP/IP 手臂通訊、Arduino 序列通訊。一般不需修改</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">6</div>
+              <div class="step-content">
+                <div class="step-text"><code>config/</code> / <code>ui/</code> / <code>shot_log/</code> / <code>tests/</code></div>
+                <div class="step-sub">設定檔、GUI、擊球記錄、測試工具</div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="cmd-block">
+            <div class="cmd-label">目錄結構</div>
+            <code>hiwin_pool/
+├── interfaces/       # I/O 介面標準（固定不動）
+├── vision/           # 影像辨識（可自定義 YOUR_VERSION/）
+│   └── YOUR_VERSION/ # 同學自行替換的實作
+├── strategy/         # 擊球策略（可自定義 YOUR_VERSION/）
+│   └── YOUR_VERSION/ # 同學自行替換的實作
+├── motion/           # 運動執行（框架層）
+├── comm/             # 通訊（框架層）
+├── config/           # 設定檔
+├── ui/               # GUI
+├── shot_log/         # 擊球記錄
+└── tests/            # 測試</code>
+          </div>
+
+          <div class="phase-note info" style="margin-top:14px;">
+            <span class="phase-note-icon">💡</span>
+            <div>框架層（motion/、comm/、interfaces/）<strong>不須修改</strong>，同學只需替換 <code>vision/YOUR_VERSION/</code> 和 <code>strategy/YOUR_VERSION/</code> 裡的實作，確保輸出格式符合 <code>interfaces/</code> 定義即可。</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Signal Flow -->
+    <div class="phase-card" id="signal-flow">
+      <div class="phase-header" onclick="togglePhase('signal-flow')">
+        <div class="phase-num">B</div>
+        <div class="phase-info">
+          <div class="phase-title">訊號流向圖</div>
+          <div class="phase-meta">
+            <span>資料流</span>
+            <span>視覺→策略→運動→執行</span>
+          </div>
+        </div>
+        <div class="phase-toggle">▼</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+
+          <ul class="step-list">
+            <li class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <div class="step-text"> webcam → vision（球偵測）</div>
+                <div class="step-sub">從俯瞰 webcam 讀取影像，偵測白球與目標球位置，輸出球檯座標（mm）</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <div class="step-text"> vision → strategy（策略規劃）</div>
+                <div class="step-sub">根據球位置規劃擊球目標（預測進袋點）和力道（1-12段）</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <div class="step-text"> strategy → motion（發送指令）</div>
+                <div class="step-sub">motion 接收手臂目標座標 + 機構擊球指令，轉譯為 HRL 指令</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">4</div>
+              <div class="step-content">
+                <div class="step-text"> motion → hiwin_arm / arduino（執行）</div>
+                <div class="step-sub">TCP 發送手臂指令給 HIWIN 手臂；序列發送擊球指令給 Arduino 控制桿弟機構</div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="phase-note" style="background:#1a1a1a; border:1px solid rgba(251,191,36,0.15); margin-top:14px; padding:16px 20px; border-radius:10px;">
+            <div style="font-family:monospace; font-size:0.82rem; line-height:2; color:#e2e8f0;">
+              <div style="color:#fbbf24;">webcam</span> → <span style="color:#6ee7b7;">vision</span>（球偵測，輸出球位置）</div>
+              <div><span style="color:#6ee7b7;">vision</span> → <span style="color:#93c5fd;">strategy</span>（規劃擊球目標和力道）</div>
+              <div><span style="color:#93c5fd;">strategy</span> → <span style="color:#f472b6;">motion</span>（發送手臂指令 + 機構指令）</div>
+              <div><span style="color:#f472b6;">motion</span> → <span style="color:#fbbf24;">hiwin_arm / arduino</span>（執行）</div>
+            </div>
+          </div>
+
+          <div class="phase-note info" style="margin-top:14px;">
+            <span class="phase-note-icon">💡</span>
+            <div>每次完整擊球流程都會走完這條鏈。如某環節失敗，可透過 Phase 測試各自獨立驗證。</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Installer -->
+    <div class="phase-card" id="installer">
+      <div class="phase-header" onclick="togglePhase('installer')">
+        <div class="phase-num">C</div>
+        <div class="phase-info">
+          <div class="phase-title">Installer 使用說明</div>
+          <div class="phase-meta">
+            <span>setup.py / update.py</span>
+            <span>首次安裝 &amp; 更新</span>
+          </div>
+        </div>
+        <div class="phase-toggle">▼</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+
+          <ul class="step-list">
+            <li class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <div class="step-text">第一次安裝：<code>python setup.py</code></div>
+                <div class="step-sub">一次性初始化，安裝所有依賴、創建必要資料夾、確認環境</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <div class="step-text">日後更新：<code>python update.py</code></div>
+                <div class="step-sub">拉取最新程式碼、重新安裝有異動的依賴、不會刪除使用者資料</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <div class="step-text">確認版本</div>
+                <div class="step-sub">執行後檢查終端機輸出，確認所有模組正常初始化</div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="cmd-block">
+            <div class="cmd-label">指令</div>
+            <code># 第一次安裝
+python setup.py
+
+# 日後更新
+python update.py</code>
+          </div>
+
+          <div class="phase-note warn" style="margin-top:14px;">
+            <span class="phase-note-icon">⚠️</span>
+            <div>如更動了 <code>requirements.txt</code> 或結構，請重新跑 <code>python setup.py</code> 確保環境一致。</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Auto Reset Sequence -->
+    <div class="phase-card" id="auto-reset">
+      <div class="phase-header" onclick="togglePhase('auto-reset')">
+        <div class="phase-num">D</div>
+        <div class="phase-info">
+          <div class="phase-title">自動復位時序</div>
+          <div class="phase-meta">
+            <span>擊球前/後復位</span>
+            <span>安全時序</span>
+          </div>
+        </div>
+        <div class="phase-toggle">▼</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-inner">
+
+          <ul class="step-list">
+            <li class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <div class="step-text">Reset（擊球前）</div>
+                <div class="step-sub">Arduino 機構復位到初始狀態，確保每次擊球姿態一致</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <div class="step-text">Move（移動手臂）</div>
+                <div class="step-sub">手臂從当前位置 PTP 上升到安全高度 → LIN 到目標位置（Z=200mm 懸停）</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <div class="step-text">Strike（擊球）</div>
+                <div class="step-sub">Arduino 執行擊球命令（馬達推桿），完成後紀錄到 shot_log/</div>
+              </div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">4</div>
+              <div class="step-content">
+                <div class="step-text">Reset（擊球後）</div>
+                <div class="step-sub">機構再次復位，回到初始狀態，準備下一桿</div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="phase-note" style="background:#f8fafc; border:1px solid var(--border); margin-top:14px; padding:14px 18px; border-radius:10px;">
+            <div style="font-family:monospace; font-size:0.82rem; line-height:2; color:var(--text);">
+              <span style="background:rgba(251,191,36,0.12); color:var(--accent-text); padding:2px 8px; border-radius:4px;">[Reset]</span>
+              &nbsp;→&nbsp;
+              <span style="background:rgba(110,231,247,0.08); color:#0899b2; padding:2px 8px; border-radius:4px;">[Move]</span>
+              &nbsp;→&nbsp;
+              <span style="background:rgba(239,68,68,0.08); color:#dc2626; padding:2px 8px; border-radius:4px;">[Strike]</span>
+              &nbsp;→&nbsp;
+              <span style="background:rgba(251,191,36,0.12); color:var(--accent-text); padding:2px 8px; border-radius:4px;">[Reset]</span>
+            </div>
+          </div>
+
+          <div class="phase-note warn" style="margin-top:14px;">
+            <span class="phase-note-icon">⚠️</span>
+            <div>擊球前/後都復位是為了<strong>避免桿弟機構移動時掃到球檯上的球或障礙物</strong>。Z軸先升後降的設計也是同樣原因（竿子攜帶機構，移動時不可低於安全高度）。</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <!-- Phase 0 -->
     <div class="phase-card" id="phase-0">
       <div class="phase-header" onclick="togglePhase('phase-0')">

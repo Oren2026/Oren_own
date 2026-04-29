@@ -13,18 +13,18 @@ class TunePanel:
 
     def select_force_level(self):
         """互動式力道段選擇"""
-        print("\n選擇力道段 (1-6):")
-        for i in range(1, 7):
+        print("\n選擇力道段 (1-12):")
+        for i in range(1, 13):
             params = FORCE_LEVELS[i]
-            print(f"  {i}: velocity={params['velocity']} m/s, pullback={params['pullback']} mm")
-        
+            print(f"  {i:2d}: velocity={params['velocity']} m/s, pullback={params['pullback']} mm")
+
         try:
             choice = int(input("選擇: "))
-            if 1 <= choice <= 6:
+            if 1 <= choice <= 12:
                 self.current_force = choice
                 print(f"已選擇力道段 {choice}")
             else:
-                print("無效選擇")
+                print("無效選擇（需為 1-12）")
         except ValueError:
             print("請輸入數字")
 

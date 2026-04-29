@@ -3,7 +3,7 @@
 
 import cv2
 import numpy as np
-from config.camera_config import BALL_COLOR_LOWER, BALL_COLOR_UPPER
+from config.camera_config import BALL_COLOR_LOWER, BALL_COLOR_UPPER, BALL_MIN_AREA
 
 
 class BallDetector:
@@ -23,6 +23,11 @@ class BallDetector:
 
     def detect(self, frame):
         """
+        從俯瞰 webcam frame 找出白球位置。
+
+        策略：白球是檯面上唯一大面積白色的物件（9號球競賽）。
+              取最大輪廓當作白球，過濾數字周圍的小面積白點。
+
         Args:
             frame: numpy.ndarray (BGR 格式，OpenCV 讀取)
 
@@ -37,7 +42,7 @@ class BallDetector:
         # 轉 HSV
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        # 顏色遮罩
+        # 顏色遮罩（白球：低彩度、高亮度）
         mask = cv2.inRange(hsv, self.lower_hsv, self.upper_hsv)
 
         # 侵蝕 + 膨脹（去噪）
@@ -51,13 +56,19 @@ class BallDetector:
         if not contours:
             return {"ball_x": 0, "ball_y": 0, "ball_r": 0, "found": False}
 
-        # 取最大輪廓
+        # 取最大輪廓（面積最大 = 白球候選）
         largest = max(contours, key=cv2.contourArea)
+        contour_area = cv2.contourArea(largest)
+
+        # 面積閾值：太小的當作雜訊（數字周圍的白斑）
+        if contour_area < BALL_MIN_AREA:
+            return {"ball_x": 0, "ball_y": 0, "ball_r": 0, "found": False}
+
         (x, y), radius = cv2.minEnclosingCircle(largest)
 
         return {
             "ball_x": float(x),
             "ball_y": float(y),
             "ball_r": float(radius),
-            "found": radius > 5  # 半徑太小當作沒找到
+            "found": True
         }

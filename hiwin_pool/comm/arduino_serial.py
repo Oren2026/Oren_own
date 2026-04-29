@@ -63,12 +63,12 @@ class ArduinoController:
         """
         發送擊球指令
         Args:
-            force_level: int  # 1-6
+            force_level: int  # 1-12
         Returns:
             dict: {"sent": bool, "complete": bool, "error": str}
         """
-        if not (1 <= force_level <= 6):
-            return {"sent": False, "complete": False, "error": "Invalid force level"}
+        if not (1 <= force_level <= 12):
+            return {"sent": False, "complete": False, "error": "Invalid force level (need 1-12)"}
 
         response = self._send(f"S{force_level}")
         return {
@@ -77,17 +77,40 @@ class ArduinoController:
             "error": "" if "OK" in response else response
         }
 
-    def reset(self):
+    def reset(self, timeout=5.0):
         """
-        復位桿弟機構
+        復位桿弟機構（等待確認完成）
+
+        發送 R 指令後，持續查詢狀態直到 READY 或超時
+        確保每次復位都一致完成
+
+        Args:
+            timeout: float  # 最大等待秒數
         Returns:
             dict: {"sent": bool, "complete": bool, "error": str}
         """
+        if not self.connected:
+            return {"sent": False, "complete": False, "error": "Not connected"}
+
+        # 1. 發送復位指令
         response = self._send("R")
+        if "ERROR" in response:
+            return {"sent": True, "complete": False, "error": response}
+
+        # 2. 持續查詢直到 READY 或超時
+        start = time.time()
+        while (time.time() - start) < timeout:
+            status = self.read_status()
+            if status["ready"]:
+                return {"sent": True, "complete": True, "error": ""}
+            time.sleep(0.1)
+
+        # 超時，嘗試最後一次狀態查詢
+        status = self.read_status()
         return {
             "sent": True,
-            "complete": "OK" in response or response == "OK",
-            "error": "" if "OK" in response else response
+            "complete": status["ready"],
+            "error": "RESET_TIMEOUT" if not status["ready"] else ""
         }
 
     def read_status(self):

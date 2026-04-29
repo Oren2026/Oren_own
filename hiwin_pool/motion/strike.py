@@ -70,7 +70,7 @@ class StrikeController:
             "x": ball_x - 50,
             "y": ball_y,
             "z": 50,
-            "rx": 0,
-            "ry": 0,
-            "rz": 0
+            "a": 0,
+            "b": 0,
+            "c": 0
         }

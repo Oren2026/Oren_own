@@ -21,6 +21,10 @@ FORBIDDEN_ZONES = [
 SAFE_Z_HEIGHT = 200        # 移動時的懸停高度
 STRIKE_Z_HEIGHT = 50       # 擊球時下降到的，高度（視機構調整）
 
+# Z軸軟限制（防撞球檯/防撞機構）
+Z_MIN = 50                 # 禁止低於 50mm（撞球檯）
+Z_MAX = 300                # 安全上限 300mm
+
 # 最大速度（mm/s）
 MAX_VELOCITY = 1000
 SAFE_VELOCITY = 500        # 安全速度
