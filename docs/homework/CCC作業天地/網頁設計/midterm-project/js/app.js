@@ -303,6 +303,14 @@ function escapeHtml(str) {
     .replace(/'/g, '&#x27;');
 }
 
+function renderContent(text) {
+  // 1. 先 HTML escape（防止 XSS）
+  let escaped = escapeHtml(text);
+  // 2. 把 #tag 置換成 clickable span（不能用 escapeHtml 否則 # 變成 &num;）
+  escaped = escaped.replace(/#([\w\u4e00-\u9fff]+)/g, '<span class="tag" data-tag="$1">#$1</span>');
+  return escaped;
+}
+
 function getInitials(name) {
   return (name || '?').slice(0, 2).toUpperCase();
 }
@@ -352,6 +360,7 @@ function router() {
 
   switch (page) {
     case 'feed':
+      State.feedTag = null;
       State.feedAuthor = null;
       State.feedAuthorDisplay = null;
       State.feedPage = 1;
@@ -567,8 +576,7 @@ function renderPostCard(post) {
         <span class="post-time">${formatDate(post.createdAt)}</span>
       </div>
       ${post.title ? `<div class="post-title">${escapeHtml(post.title)}</div>` : ''}
-      <div class="post-content">${escapeHtml(post.content)}</div>
-      ${tags ? `<div class="post-tags">${tags}</div>` : ''}
+      <div class="post-content">${renderContent(post.content)}</div>
       <div class="post-actions">
         <button class="post-action like-btn ${post.likedByMe ? 'liked' : ''}" data-post-id="${post.id}" data-liked="${post.likedByMe}">
           ${post.likedByMe ? '❤️' : '🤍'} <span>${post.likeCount}</span>
@@ -595,7 +603,6 @@ function renderPostDetail(postId) {
     const post = data.post;
     if (!post) { container.innerHTML = '<div class="empty-state">文章不存在</div>'; return; }
 
-    const tags = (post.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
     const isMine = State.user && post.userId === State.user.id;
     const isAdmin = State.user && (State.user.role === 'admin' || State.user.username === 'admin');
     const canDelete = isMine || isAdmin;
@@ -610,8 +617,7 @@ function renderPostDetail(postId) {
           </div>
         </div>
         ${post.title ? `<div class="post-detail-title">${escapeHtml(post.title)}</div>` : ''}
-        <div class="post-detail-content">${escapeHtml(post.content)}</div>
-        ${tags ? `<div class="post-tags">${tags}</div>` : ''}
+        <div class="post-detail-content">${renderContent(post.content)}</div>
         <div class="post-detail-actions">
           <button class="post-action like-btn ${post.likedByMe ? 'liked' : ''}" data-post-id="${post.id}" data-liked="${post.likedByMe}">
             ${post.likedByMe ? '❤️' : '🤍'} <span>${post.likeCount}</span>
@@ -903,6 +909,18 @@ document.addEventListener('click', async e => {
   if (commentBtn) {
     e.stopPropagation();
     navigate(`post/${commentBtn.dataset.postId}`);
+    return;
+  }
+
+  // ── 標籤 ──────────────────────────────────────────────
+  const tagEl = target.closest('.tag[data-tag]');
+  if (tagEl) {
+    e.stopPropagation();
+    State.feedTag = tagEl.dataset.tag;
+    State.feedPage = 1;
+    showPage('feed');
+    updateFeedAuthorBanner();
+    renderFeed(1);
     return;
   }
 
