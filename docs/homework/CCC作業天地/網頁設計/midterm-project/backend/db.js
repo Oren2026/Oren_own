@@ -6,7 +6,7 @@ const Database = require('better-sqlite3');
 const path = require('path');
 const bcrypt = require('bcrypt');
 
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'chatrank.db');
+const DB_PATH = path.join(__dirname, 'chatrank.db');
 
 let db;
 
@@ -249,7 +249,7 @@ function getPosts({ page = 1, limit = 20, userId = null, filterUserId = null, ta
 
   const userIdParam = hasUserId ? [userId] : [];
   const filterParam = hasFilter ? [filterUserId] : [];
-  const tagParam = hasTag ? [`%\\"${tag.trim()}\\%`] : [];
+  const tagParam = hasTag ? [`%"${tag.trim()}%"`] : [];
   const usernameParam = hasUsername ? [username.trim()] : [];
   const countParams = [...filterParam, ...tagParam, ...usernameParam];
   params = [...userIdParam, ...filterParam, ...tagParam, ...usernameParam, limit, offset];
