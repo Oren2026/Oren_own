@@ -1172,7 +1172,7 @@ $('#form-post').onsubmit = async e => {
   try {
     const fd = new FormData(e.target);
     const postId = fd.get('postId');
-    const tags = fd.get('tags').split(',').map(t => t.trim()).filter(Boolean);
+    const tags = fd.get('tags') ? fd.get('tags').split(',').map(t => t.trim()).filter(Boolean) : [];
 
     if (postId) {
       // 編輯模式（目前只有新增）
