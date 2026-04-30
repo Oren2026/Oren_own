@@ -7,12 +7,19 @@
 //  全域狀態
 // ══════════════════════════════════════════════════════════
 const State = {
-  user: null,       // { id, username, displayName }
-  stats: null,      // { postCount, commentCount, activityCount }
+  user: null,
+  stats: null,
   currentPage: 'feed',
   feedPage: 1,
+  feedTag: null,
+  feedSort: null,
+  feedAuthor: null,
+  feedAuthorDisplay: null,
   activityPage: 1,
+  activityTab: 'upcoming',
 };
+// 用於 renderPostDetail race condition 防護
+let _activePostId = null;
 
 // ══════════════════════════════════════════════════════════
 //  SyncQueue — 樂觀更新 + 背景同步系統
@@ -72,7 +79,12 @@ const SyncQueue = (() => {
 
   // ── 立即更新 UI（optimistic）────────────────────────────
   function applyLikeUi(postId, liked) {
-    const btn = document.querySelector(`.like-btn[data-post-id="${postId}"]`);
+    // 用 State.currentPage 判斷目前在哪個 page，避免多 page SPA DOM 殘留問題
+    const inDetail = State.currentPage === 'post-detail';
+    const scope = inDetail
+      ? document.querySelector('#post-detail-content')
+      : document.querySelector('#feed-list');
+    const btn = scope?.querySelector(`.like-btn[data-post-id="${postId}"]`);
     if (!btn) return;
     btn.classList.toggle('liked', liked);
     const span = btn.querySelector('span');
@@ -85,7 +97,9 @@ const SyncQueue = (() => {
   }
 
   function getServerLikeState(postId) {
-    // 從 DOM 讀取當前 server 確認的狀態（data-liked attribute）
+    // 如果還在 debounce 中，用 pendingLikes 記住的最終狀態，不讀 DOM（避免被 optimistic UI 汙染）
+    if (pendingLikes[postId]) return pendingLikes[postId].finalState;
+    // 否則讀 DOM（server 確認過的狀態）
     const btn = document.querySelector(`.like-btn[data-post-id="${postId}"]`);
     return btn ? btn.dataset.liked === 'true' : false;
   }
@@ -338,7 +352,11 @@ function router() {
 
   switch (page) {
     case 'feed':
+      State.feedAuthor = null;
+      State.feedAuthorDisplay = null;
+      State.feedPage = 1;
       showPage('feed');
+      updateFeedAuthorBanner();
       renderFeed();
       break;
     case 'post':
@@ -361,6 +379,24 @@ function router() {
       showPage('activity-edit');
       resetActivityForm();
       break;
+    case 'user':
+      State.feedAuthor = id || null;
+      State.feedAuthorDisplay = id || null;
+      State.feedPage = 1;
+      showPage('feed');
+      updateFeedAuthorBanner();
+      renderFeed(1);
+      break;
+    case 'blocked-words':
+      if (!State.user || (State.user.role !== 'admin' && State.user.username !== 'admin')) {
+        showToast('無權訪問', 'error');
+        navigate('feed');
+        return;
+      }
+      showPage('blocked-words');
+      renderBlockedWords();
+      renderHotSettings();
+      break;
     default:
       navigate('feed');
   }
@@ -374,6 +410,11 @@ function navigate(hash) {
 //  認證
 // ══════════════════════════════════════════════════════════
 async function checkAuth() {
+  // 優先用 server-side 注入的 auth data（同步，無閃爍）
+  if (window.__AUTH__) {
+    State.user = window.__AUTH__;
+    return true;
+  }
   try {
     const data = await ChatRankAPI.me();
     State.user = data.user;
@@ -407,6 +448,35 @@ async function logout() {
 function updateNav() {
   if (!State.user) return;
   $('#nav-username').textContent = State.user.displayName || State.user.username;
+  // Admin 專屬連結顯示
+  const isAdmin = State.user && (State.user.role === 'admin' || State.user.username === 'admin');
+  document.querySelectorAll('.nav-admin-only').forEach(el => {
+    el.classList.toggle('visible', isAdmin);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+//  黑名單詞彙
+// ══════════════════════════════════════════════════════════
+async function renderBlockedWords() {
+  const container = $('#blocked-words-list');
+  container.innerHTML = '<div class="empty-state">載入中...</div>';
+  try {
+    const data = await ChatRankAPI.getBlockedWords();
+    const words = data.words || [];
+    if (words.length === 0) {
+      container.innerHTML = '<div class="empty-state">目前沒有封鎖任何詞語</div>';
+      return;
+    }
+    container.innerHTML = words.map(w => `
+      <div class="blocked-word-tag">
+        <span>${escapeHtml(w.word)}</span>
+        <button class="remove-btn" data-word-id="${w.id}">✕</button>
+      </div>
+    `).join('');
+  } catch (err) {
+    container.innerHTML = `<div class="empty-state" style="color:var(--danger)">載入失敗：${escapeHtml(err.message)}</div>`;
+  }
 }
 
 // ══════════════════════════════════════════════════════════
@@ -432,6 +502,19 @@ function openPostForm(postId = null, postData = null) {
   }
 }
 
+// ── 作者篩選 Banner ───────────────────────────────────
+function updateFeedAuthorBanner() {
+  const banner = $('#feed-author-banner');
+  const text = $('#feed-author-text');
+  if (!banner || !text) return;
+  if (State.feedAuthor) {
+    text.textContent = `👤 看 ${State.feedAuthorDisplay} 的文章`;
+    banner.classList.remove('hidden');
+  } else {
+    banner.classList.add('hidden');
+  }
+}
+
 // ══════════════════════════════════════════════════════════
 //  動態牆渲染
 // ══════════════════════════════════════════════════════════
@@ -443,7 +526,7 @@ function renderFeed(page = 1) {
 
   if (page === 1) container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div>載入中...</div>';
 
-  ChatRankAPI.getPosts(page).then(data => {
+  ChatRankAPI.getPosts(page, State.feedTag, State.feedSort, State.feedAuthor).then(data => {
     const posts = data.posts || [];
 
     if (page === 1 && posts.length === 0) {
@@ -463,6 +546,7 @@ function renderFeed(page = 1) {
     else container.insertAdjacentHTML('beforeend', html);
 
     moreContainer.classList.toggle('hidden', page >= data.totalPages);
+    updateFeedAuthorBanner();
   }).catch(err => {
     container.innerHTML = `<div class="empty-state" style="color:var(--danger)">載入失敗：${err.message}</div>`;
     moreContainer.classList.add('hidden');
@@ -472,12 +556,14 @@ function renderFeed(page = 1) {
 function renderPostCard(post) {
   const tags = (post.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
   const isMine = State.user && post.userId === State.user.id;
+  const isAdmin = State.user && (State.user.role === 'admin' || State.user.username === 'admin');
+  const canDelete = isMine || isAdmin;
 
   return `
     <div class="post-card" data-post-id="${post.id}">
       <div class="post-meta">
-        <div class="avatar" style="background:${avatarColor(post.displayName)}">${getInitials(post.displayName)}</div>
-        <span class="post-author">${escapeHtml(post.displayName || post.username)}</span>
+        <div class="avatar" data-username="${post.username}" data-displayname="${post.displayName}" style="background:${avatarColor(post.displayName)}">${getInitials(post.displayName)}</div>
+        <span class="post-author" data-username="${post.username}">${escapeHtml(post.displayName || post.username)}</span>
         <span class="post-time">${formatDate(post.createdAt)}</span>
       </div>
       ${post.title ? `<div class="post-title">${escapeHtml(post.title)}</div>` : ''}
@@ -490,7 +576,7 @@ function renderPostCard(post) {
         <button class="post-action comment-btn" data-post-id="${post.id}">
           💬 留言
         </button>
-        ${isMine ? `<button class="post-action delete-btn" data-post-id="${post.id}">🗑️ 刪除</button>` : ''}
+        ${canDelete ? `<button class="post-action delete-btn" data-post-id="${post.id}">🗑️ 刪除</button>` : ''}
       </div>
     </div>`;
 }
@@ -499,21 +585,27 @@ function renderPostCard(post) {
 //  文章詳情
 // ══════════════════════════════════════════════════════════
 function renderPostDetail(postId) {
+  _activePostId = postId; // race condition 防護
   const container = $('#post-detail-content');
+  container.innerHTML = '<div class="empty-state">載入中...</div>';
 
   ChatRankAPI.getPost(postId).then(data => {
+    if (_activePostId !== postId) return; // 已被新請求取代
+
     const post = data.post;
     if (!post) { container.innerHTML = '<div class="empty-state">文章不存在</div>'; return; }
 
     const tags = (post.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
     const isMine = State.user && post.userId === State.user.id;
+    const isAdmin = State.user && (State.user.role === 'admin' || State.user.username === 'admin');
+    const canDelete = isMine || isAdmin;
 
     container.innerHTML = `
       <div class="post-detail-card">
         <div class="post-meta" style="margin-bottom:8px">
-          <div class="avatar" style="background:${avatarColor(post.displayName)};width:40px;height:40px;font-size:1rem">${getInitials(post.displayName)}</div>
+          <div class="avatar" data-username="${post.username}" style="background:${avatarColor(post.displayName)};width:40px;height:40px;font-size:1rem">${getInitials(post.displayName)}</div>
           <div>
-            <div class="post-author">${escapeHtml(post.displayName || post.username)}</div>
+            <div class="post-author" data-username="${post.username}">${escapeHtml(post.displayName || post.username)}</div>
             <div class="post-time">${formatDate(post.createdAt)}</div>
           </div>
         </div>
@@ -524,7 +616,7 @@ function renderPostDetail(postId) {
           <button class="post-action like-btn ${post.likedByMe ? 'liked' : ''}" data-post-id="${post.id}" data-liked="${post.likedByMe}">
             ${post.likedByMe ? '❤️' : '🤍'} <span>${post.likeCount}</span>
           </button>
-          ${isMine ? `<button class="post-action delete-btn" data-post-id="${post.id}">🗑️ 刪除</button>` : ''}
+          ${canDelete ? `<button class="post-action delete-btn" data-post-id="${post.id}">🗑️ 刪除</button>` : ''}
         </div>
       </div>
 
@@ -560,13 +652,15 @@ function renderPostDetail(postId) {
 
 function renderComment(c) {
   const isMine = State.user && c.userId === State.user.id;
+  const isAdmin = State.user && (State.user.role === 'admin' || State.user.username === 'admin');
+  const canDelete = isMine || isAdmin;
   return `
     <div class="comment-item">
       <div class="comment-header">
         <div class="comment-avatar" style="background:${avatarColor(c.displayName)}">${getInitials(c.displayName)}</div>
         <span class="comment-author">${escapeHtml(c.displayName || c.username)}</span>
         <span class="comment-time">${formatDate(c.createdAt)}</span>
-        ${isMine ? `<button class="comment-delete" data-comment-id="${c.id}">刪除</button>` : ''}
+        ${canDelete ? `<button class="comment-delete" data-comment-id="${c.id}">刪除</button>` : ''}
       </div>
       <div class="comment-body">${escapeHtml(c.content)}</div>
     </div>`;
@@ -580,9 +674,11 @@ function renderActivities(page = 1) {
   const container = $('#activity-list');
   const moreContainer = $('#activity-more');
 
+  const tab = State.activityTab || 'upcoming';
+
   if (page === 1) container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div>載入中...</div>';
 
-  ChatRankAPI.getActivities(page).then(data => {
+  ChatRankAPI.getActivities(page, tab).then(data => {
     const activities = data.activities || [];
 
     if (page === 1 && activities.length === 0) {
@@ -596,9 +692,14 @@ function renderActivities(page = 1) {
       return;
     }
 
-    const html = activities.map(renderActivityCard).join('');
+    const html = activities.map(a => renderActivityCard(a, tab)).join('');
     if (page === 1) container.innerHTML = html;
     else container.insertAdjacentHTML('beforeend', html);
+
+    // Sync tab button active state
+    $$('.activity-tab').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
 
     moreContainer.classList.toggle('hidden', page >= data.totalPages);
   }).catch(err => {
@@ -606,13 +707,18 @@ function renderActivities(page = 1) {
   });
 }
 
-function renderActivityCard(a) {
+function renderActivityCard(a, tab = 'upcoming') {
   const isMine = State.user && a.userId === State.user.id;
+  const isAdmin = State.user && (State.user.role === 'admin' || State.user.username === 'admin');
+  const canDelete = isMine || isAdmin;
+  const startDate = a.startDate ? new Date(a.startDate) : null;
+  const now = new Date();
+  const isPast = tab === 'past' || (startDate && startDate < now);
   return `
-    <div class="activity-card" data-activity-id="${a.id}">
+    <div class="activity-card${isPast ? ' past' : ''}" data-activity-id="${a.id}">
       <div class="activity-header">
-        <div class="activity-title">${escapeHtml(a.title)}</div>
-        ${isMine ? `<button class="post-action delete-btn" data-activity-id="${a.id}">🗑️</button>` : ''}
+        <div class="activity-title">${isPast && tab !== 'past' ? '<span class="badge-expired">已過期</span> ' : ''}${escapeHtml(a.title)}</div>
+        ${canDelete ? `<button class="post-action delete-btn" data-activity-id="${a.id}">🗑️</button>` : ''}
       </div>
       <div class="activity-info">
         ${a.location ? `<div class="activity-info-row">📍 ${escapeHtml(a.location)}</div>` : ''}
@@ -628,11 +734,18 @@ function renderActivityCard(a) {
 
 function renderActivityDetail(activityId) {
   const container = $('#activity-detail-content');
+  container.innerHTML = '<div class="empty-state">載入中...</div>';
+
+  // Race guard：快速切換時忽略舊回覆
+  const _activeActivityId = activityId;
 
   ChatRankAPI.getActivity(activityId).then(data => {
+    if (_activeActivityId !== activityId) return; // 已被取代，忽略
     const a = data.activity;
     if (!a) { container.innerHTML = '<div class="empty-state">活動不存在</div>'; return; }
     const isMine = State.user && a.userId === State.user.id;
+    const isAdmin = State.user && (State.user.role === 'admin' || State.user.username === 'admin');
+    const canDelete = isMine || isAdmin;
 
     container.innerHTML = `
       <div class="activity-detail-card">
@@ -643,7 +756,7 @@ function renderActivityDetail(activityId) {
           <div>👤 ${escapeHtml(a.displayName || a.username)}</div>
         </div>
         ${a.description ? `<div class="activity-detail-desc">${escapeHtml(a.description)}</div>` : ''}
-        ${isMine ? `<button class="post-action delete-btn" data-activity-id="${a.id}">🗑️ 刪除活動</button>` : ''}
+        ${canDelete ? `<button class="post-action delete-btn" data-activity-id="${a.id}">🗑️ 刪除活動</button>` : ''}
       </div>
 
       <div class="comments-section">
@@ -659,7 +772,7 @@ function renderActivityDetail(activityId) {
                 <div class="comment-avatar" style="background:${avatarColor(c.displayName)}">${getInitials(c.displayName)}</div>
                 <span class="comment-author">${escapeHtml(c.displayName || c.username)}</span>
                 <span class="comment-time">${formatDate(c.createdAt)}</span>
-                ${State.user && c.userId === State.user.id ? `<button class="comment-delete" data-activity-comment-id="${c.id}">刪除</button>` : ''}
+                ${(State.user && (c.userId === State.user.id || State.user.role === 'admin' || State.user.username === 'admin')) ? `<button class="comment-delete" data-activity-comment-id="${c.id}">刪除</button>` : ''}
               </div>
               <div class="comment-body">${escapeHtml(c.content)}</div>
             </div>`).join('')}
@@ -726,6 +839,49 @@ document.addEventListener('click', async e => {
     return;
   }
 
+  // ── 活動 Tab 切換 ─────────────────────────────────────
+  if (target.matches('.activity-tab')) {
+    $$('.activity-tab').forEach(t => t.classList.remove('active'));
+    target.classList.add('active');
+    State.activityTab = target.dataset.tab;
+    renderActivities(1);
+    return;
+  }
+
+  // ── 頭像點擊 → 只看該用戶文章 ────────────────────────
+  if (target.matches('.avatar')) {
+    const username = target.dataset.username;
+    State.feedAuthor = username;
+    State.feedAuthorDisplay = target.dataset.displayname || username;
+    State.feedPage = 1;
+    renderFeed(1);
+    return;
+  }
+
+  // ── 清除作者篩選 ────────────────────────────────────
+  if (target.matches('#btn-clear-feed-author')) {
+    State.feedAuthor = null;
+    State.feedAuthorDisplay = null;
+    State.feedPage = 1;
+    renderFeed(1);
+    return;
+  }
+
+  // ── 頭像 / 作者名稱點擊（該使用者文章）────────────────────
+  const avatar = target.closest('.avatar[data-username]');
+  if (avatar) {
+    e.stopPropagation();
+    navigate(`user/${avatar.dataset.username}`);
+    return;
+  }
+
+  const authorName = target.closest('.post-author');
+  if (authorName) {
+    e.stopPropagation();
+    navigate(`user/${authorName.dataset.username}`);
+    return;
+  }
+
   // ── 文章卡片點擊（跳轉詳情）───────────────────────────────
   const postCard = target.closest('.post-card');
   if (postCard && !target.closest('button')) {
@@ -742,6 +898,14 @@ document.addEventListener('click', async e => {
     return;
   }
 
+  // ── 留言 ──────────────────────────────────────────────
+  const commentBtn = target.closest('.comment-btn');
+  if (commentBtn) {
+    e.stopPropagation();
+    navigate(`post/${commentBtn.dataset.postId}`);
+    return;
+  }
+
   // ── 刪除文章 ─────────────────────────────────────────────
   const deletePostBtn = target.closest('.post-card .delete-btn');
   if (deletePostBtn) {
@@ -752,7 +916,7 @@ document.addEventListener('click', async e => {
     try {
       await ChatRankAPI.deletePost(postId);
       showToast('已刪除', 'success');
-      navigate('feed');
+      router(); // 重新渲染當前頁面（navigate 遇到相同 hash 不會觸發）
     } catch (err) { showToast(err.message, 'error'); }
     finally { deletePostBtn.disabled = false; }
     return;
@@ -832,6 +996,89 @@ document.addEventListener('click', async e => {
   if (target.closest('#btn-activity-more')) {
     renderActivities(State.activityPage + 1);
     return;
+  }
+
+  // ── 動態牆排序 ───────────────────────────────────────────
+  if (target.matches('.feed-sort-btn')) {
+    const sort = target.dataset.sort;
+    State.feedSort = sort;
+    document.querySelectorAll('.feed-sort-btn').forEach(b => b.classList.remove('active'));
+    target.classList.add('active');
+    renderFeed(1);
+  }
+
+  // ── 新增黑名單詞彙 ─────────────────────────────────────
+  if (target.closest('#btn-add-blocked-word')) {
+    const input = $('#blocked-word-input');
+    const word = input.value.trim();
+    if (!word) { showToast('請輸入詞語', 'error'); return; }
+    try {
+      await ChatRankAPI.createBlockedWord(word);
+      input.value = '';
+      showToast('已新增', 'success');
+      renderBlockedWords();
+    } catch (err) { showToast(err.message, 'error'); }
+    return;
+  }
+
+  // ── 刪除黑名單詞彙 ────────────────────────────────────
+  const removeBtn = target.closest('.remove-btn[data-word-id]');
+  if (removeBtn) {
+    if (!confirm('移除這個詞語？')) return;
+    const id = parseInt(removeBtn.dataset.wordId);
+    try {
+      await ChatRankAPI.deleteBlockedWord(id);
+      removeBtn.closest('.blocked-word-tag').remove();
+      showToast('已移除', 'success');
+    } catch (err) { showToast(err.message, 'error'); }
+    return;
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+//  熱門排序設定
+// ══════════════════════════════════════════════════════════
+async function renderHotSettings() {
+  const container = $('#hot-settings-container');
+  if (!container) return;
+  try {
+    const data = await ChatRankAPI.getSettings();
+    const gravity = data.hot_gravity;
+    container.innerHTML = `
+      <div class="hot-settings">
+        <h3>🔥 熱門排序 Gravity</h3>
+        <p class="hot-settings-desc">
+          公式：<code>score = likes / (小時 + 2)<sup>gravity</sup></code><br>
+          gravity ↑ = 新文崛起快；gravity ↓ = 舊文累積時間長
+        </p>
+        <div class="hot-settings-control">
+          <input type="range" id="hot-gravity-slider"
+            min="0.5" max="3.0" step="0.1" value="${gravity}" />
+          <span id="hot-gravity-value">${gravity}</span>
+        </div>
+        <div class="hot-settings-range-labels">
+          <span>0.5（慢衰減）</span>
+          <span>3.0（快衰減）</span>
+        </div>
+        <div class="hot-settings-hint">拖動後直接套用</div>
+      </div>
+    `;
+    // 同步 input 初始值
+    container.querySelector('#hot-gravity-slider').dataset.value = gravity;
+  } catch (err) {
+    container.innerHTML = '<div class="empty-state">載入設定失敗</div>';
+  }
+}
+
+// 即時套用 gravity（slider 拖動時直接 PUT，不需按鈕）
+$('body').addEventListener('input', async e => {
+  if (e.target.id !== 'hot-gravity-slider') return;
+  const val = parseFloat(e.target.value);
+  $('#hot-gravity-value').textContent = val;
+  try {
+    await ChatRankAPI.updateSettings({ hot_gravity: val });
+  } catch (err) {
+    showToast('儲存失敗：' + (err.message || err.error), 'error');
   }
 });
 
@@ -961,6 +1208,8 @@ async function init() {
   const loggedIn = await checkAuth();
 
   if (loggedIn) {
+    // 確保 CSRF token 已刷新（即使從 server-side inject 的 __AUTH__ 也需要）
+    ChatRankAPI.refreshCsrf().catch(() => {});
     updateNav();
     showView('app');
     router(); // 根據 hash 決定頁面

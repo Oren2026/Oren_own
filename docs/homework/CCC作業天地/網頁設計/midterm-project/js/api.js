@@ -114,8 +114,12 @@ async function apiRefreshCsrf() {
 //  文章 API
 // ══════════════════════════════════════════════════════════
 
-async function apiGetPosts(page = 1) {
-  return apiFetch(`/posts?page=${page}`);
+async function apiGetPosts(page = 1, tag, sort, username) {
+  const params = new URLSearchParams({ page });
+  if (tag) params.set('tag', tag);
+  if (sort) params.set('sort', sort);
+  if (username) params.set('username', username);
+  return apiFetch(`/posts?${params}`);
 }
 
 async function apiGetPost(id) {
@@ -152,8 +156,10 @@ async function apiDeleteComment(commentId) {
 //  活動 API
 // ══════════════════════════════════════════════════════════
 
-async function apiGetActivities(page = 1) {
-  return apiFetch(`/activities?page=${page}`);
+async function apiGetActivities(page = 1, filter) {
+  const params = new URLSearchParams({ page });
+  if (filter) params.set('filter', filter);
+  return apiFetch(`/activities?${params}`);
 }
 
 async function apiGetActivity(id) {
@@ -183,6 +189,38 @@ async function apiDeleteActivityComment(commentId) {
 }
 
 // ══════════════════════════════════════════════════════════
+//  Blocked Words API
+// ══════════════════════════════════════════════════════════
+async function apiGetBlockedWords() {
+  return apiFetch('/blocked-words');
+}
+
+async function apiCreateBlockedWord(word) {
+  return apiFetch('/blocked-words', {
+    method: 'POST',
+    body: JSON.stringify({ word }),
+  });
+}
+
+async function apiDeleteBlockedWord(id) {
+  return apiFetch(`/blocked-words/${id}`, { method: 'DELETE' });
+}
+
+// ══════════════════════════════════════════════════════════
+//  Settings API
+// ══════════════════════════════════════════════════════════
+async function apiGetSettings() {
+  return apiFetch('/settings');
+}
+
+async function apiUpdateSettings({ hot_gravity }) {
+  return apiFetch('/settings', {
+    method: 'PUT',
+    body: JSON.stringify({ hot_gravity }),
+  });
+}
+
+// ══════════════════════════════════════════════════════════
 //  匯出
 // ══════════════════════════════════════════════════════════
 window.ChatRankAPI = {
@@ -209,6 +247,13 @@ window.ChatRankAPI = {
   deleteActivity: apiDeleteActivity,
   activityComment: apiActivityComment,
   deleteActivityComment: apiDeleteActivityComment,
+  // Blocked Words
+  getBlockedWords: apiGetBlockedWords,
+  createBlockedWord: apiCreateBlockedWord,
+  deleteBlockedWord: apiDeleteBlockedWord,
+  // Settings
+  getSettings: apiGetSettings,
+  updateSettings: apiUpdateSettings,
   // 背景同步（fire-and-forget）
   fetchBg: apiFetchBg,
 };

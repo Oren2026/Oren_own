@@ -1,0 +1,19 @@
+# 依賴
+node_modules/
+
+# 環境變數（含有密鑰）
+.env
+
+# 資料庫（含有使用者資料，禁止上傳）
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# 系統
+.DS_Store
+Thumbs.db
+
+# OS
+._*

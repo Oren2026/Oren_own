@@ -154,11 +154,26 @@ a:hover { text-decoration: underline; }
   display: flex; align-items: center; gap: 8px;
   font-size: .82rem; color: var(--text-muted); margin-bottom: 10px;
 }
+.feed-author-banner {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px; margin-bottom: 10px;
+  background: #eff6ff; border: 1px solid #bfdbfe;
+  border-radius: var(--radius); font-size: .88rem; color: #1d4ed8;
+}
+.feed-author-banner.hidden { display: none; }
+#btn-clear-feed-author {
+  margin-left: auto; background: none; border: none;
+  cursor: pointer; color: #1d4ed8; font-size: 1rem; padding: 0 4px;
+}
+#btn-clear-feed-author:hover { color: #1e40af; }
+
 .post-meta .avatar {
   width: 32px; height: 32px; border-radius: 50%;
   background: var(--primary); color: #fff; display: flex;
   align-items: center; justify-content: center; font-weight: 700; font-size: .85rem;
+  cursor: pointer;
 }
+.post-meta .avatar:hover { opacity: .85; }
 .post-author { font-weight: 600; color: var(--text); }
 .post-time { }
 
@@ -256,6 +271,37 @@ a:hover { text-decoration: underline; }
   font-size: .82rem; color: var(--text-muted); padding-top: 10px; border-top: 1px solid #f0f0f0;
 }
 
+/* ── 活動 Tab ─────────────────────────────────────────── */
+.activity-tabs {
+  display: flex; gap: 4px; margin: 14px 0;
+}
+.activity-tab {
+  padding: 7px 18px; border-radius: 20px; border: 1.5px solid var(--border);
+  background: transparent; color: var(--text-muted); font-size: .88rem;
+  cursor: pointer; transition: all .2s;
+}
+.activity-tab.active {
+  background: var(--primary); border-color: var(--primary); color: #fff;
+}
+.activity-tab:not(.active):hover {
+  background: var(--hover-bg);
+}
+
+/* ── 活動狀態樣式 ─────────────────────────────────────── */
+.activity-card.recent {
+  border-left: 4px solid var(--primary);
+  background: linear-gradient(135deg, rgba(99,102,241,.06) 0%, var(--card-bg) 60%);
+}
+.activity-card.past {
+  opacity: .62;
+}
+
+/* ── 活動徽章 ─────────────────────────────────────────── */
+.badge-expired {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  background: #fee2e2; color: #dc2626; font-size: .72rem; font-weight: 600;
+}
+
 /* ── 活動詳情 ─────────────────────────────────────────── */
 .activity-detail-card {
   background: var(--card-bg); border-radius: var(--radius);
@@ -301,4 +347,87 @@ a:hover { text-decoration: underline; }
 .comment-pending-tag {
   display: inline-block; margin-left: 8px; font-size: .75rem;
   color: var(--text-muted); font-style: italic;
+}
+
+/* ── 動態牆排序按鈕 ─────────────────────────────────── */
+.feed-sort-group {
+  display: flex; gap: 6px;
+}
+.feed-sort-btn {
+  background: none; border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 12px;
+  font-size: .85rem; cursor: pointer; color: var(--text-muted);
+  transition: all .2s;
+}
+.feed-sort-btn:hover { border-color: var(--primary); color: var(--primary); }
+.feed-sort-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* ── 黑名單詞彙 ───────────────────────────────────── */
+.blocked-words-add {
+  display: flex; gap: 8px; margin-bottom: 20px;
+}
+.blocked-words-add input {
+  flex: 1; padding: 8px 12px;
+  border: 1px solid var(--border); border-radius: 8px;
+  font-size: .95rem; background: var(--bg-secondary); color: var(--text);
+}
+.blocked-words-list {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.blocked-word-tag {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--danger); color: #fff;
+  padding: 5px 10px; border-radius: 20px; font-size: .88rem;
+}
+.blocked-word-tag .remove-btn {
+  background: none; border: none; color: #fff;
+  cursor: pointer; font-size: .9rem; padding: 0; line-height: 1;
+}
+.blocked-word-tag .remove-btn:hover { opacity: .7; }
+.nav-admin-only { display: none; }
+.nav-admin-only.visible { display: inline-block; }
+
+/* ── 熱門排序設定 ── */
+#hot-settings-container {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.hot-settings h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+.hot-settings-desc {
+  font-size: .88rem;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+.hot-settings-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#hot-gravity-slider {
+  flex: 1;
+  accent-color: #f97316;
+}
+#hot-gravity-value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #f97316;
+  min-width: 36px;
+  text-align: right;
+}
+.hot-settings-range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: .78rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.hot-settings-hint {
+  font-size: .78rem;
+  color: var(--text-secondary);
+  margin-top: 8px;
 }

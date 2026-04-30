@@ -65,6 +65,7 @@
     <div class="nav-links">
       <a href="#feed" class="nav-link" data-page="feed">動態牆</a>
       <a href="#activities" class="nav-link" data-page="activities">活動</a>
+      <a href="#blocked-words" class="nav-link nav-admin-only" data-page="blocked-words">🚫 黑名單</a>
     </div>
     <div class="nav-user">
       <span id="nav-username"></span>
@@ -79,7 +80,15 @@
     <div id="page-feed" class="page">
       <div class="page-header">
         <h1>動態牆</h1>
+        <div class="feed-sort-group">
+          <button class="feed-sort-btn active" data-sort="new">🔃 最新</button>
+          <button class="feed-sort-btn" data-sort="hot">🔥 熱度</button>
+        </div>
         <button id="btn-new-post" class="btn-primary">✏️ 發文</button>
+      </div>
+      <div id="feed-author-banner" class="feed-author-banner hidden">
+        <span id="feed-author-text"></span>
+        <button id="btn-clear-feed-author">✕</button>
       </div>
       <div id="feed-list" class="post-list"></div>
       <div id="feed-more" class="load-more hidden">
@@ -126,6 +135,10 @@
         <h1>活動</h1>
         <button id="btn-new-activity" class="btn-primary">＋ 建立活動</button>
       </div>
+      <div class="activity-tabs">
+        <button class="activity-tab active" data-tab="upcoming">即將到來</button>
+        <button class="activity-tab" data-tab="past">過期活動</button>
+      </div>
       <div id="activity-list" class="activity-list"></div>
       <div id="activity-more" class="load-more hidden">
         <button id="btn-activity-more" class="btn-ghost">載入更多</button>
@@ -166,6 +179,18 @@
         <button id="btn-back-activities" class="btn-ghost">← 返回</button>
       </div>
       <div id="activity-detail-content"></div>
+    </div>
+
+    <div id="page-blocked-words" class="page hidden">
+      <div class="page-header">
+        <h1>🚫 黑名單詞彙</h1>
+      </div>
+      <div class="blocked-words-add">
+        <input type="text" id="blocked-word-input" placeholder="輸入要封鎖的詞語..." maxlength="50" />
+        <button id="btn-add-blocked-word" class="btn-primary">新增</button>
+      </div>
+      <div id="blocked-words-list" class="blocked-words-list"></div>
+      <div id="hot-settings-container"></div>
     </div>
 
   </div><!-- /main-container -->
