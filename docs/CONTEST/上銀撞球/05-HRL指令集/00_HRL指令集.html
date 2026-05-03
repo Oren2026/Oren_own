@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HRL 指令集 | 上銀撞球 2026</title>
   <link rel="stylesheet" href="../../assets/css/shared.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-editor@11.9.0/styles/github-dark.min.css">
   <style>
     :root {
       --bg: #fefce8;
@@ -770,24 +769,40 @@ LIN P2 FINE Vel=100% Acc=50% TOOL[0] BASE[0]</code></pre>
 </div>
 
 <script>
+  // IntersectionObserver — 滾進視窗時加入 in-view 觸發動畫
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !entry.target.classList.contains('hidden')) {
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.section').forEach(function(el) { io.observe(el); });
+
   function showCat(cat) {
     document.querySelectorAll('.cat-nav button').forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
-    document.querySelectorAll('.section').forEach(s => {
-      s.classList.toggle('hidden', cat !== 'all' && s.dataset.cat !== cat);
+    document.querySelectorAll('.section').forEach(function(s) {
+      var visible = cat === 'all' || s.dataset.cat === cat;
+      s.classList.toggle('hidden', !visible);
+      s.classList.toggle('in-view', visible);
     });
   }
 
   function filterAll() {
     var q = document.getElementById('searchInput').value.toLowerCase().trim();
-    document.querySelectorAll('.section').forEach(s => {
+    document.querySelectorAll('.section').forEach(function(s) {
       if (!q) {
         s.classList.remove('hidden');
+        s.classList.add('in-view');
         return;
       }
       var kw = (s.dataset.keywords || '').toLowerCase();
       var text = s.textContent.toLowerCase();
-      s.classList.toggle('hidden', !kw.includes(q) && !text.includes(q));
+      var match = kw.includes(q) || text.includes(q);
+      s.classList.toggle('hidden', !match);
+      s.classList.toggle('in-view', match);
     });
   }
 </script>
