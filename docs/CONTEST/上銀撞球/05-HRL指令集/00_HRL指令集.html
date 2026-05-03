@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HRL 指令集 | 上銀撞球 2026</title>
+  <link rel="stylesheet" href="../../assets/css/shared.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-editor@11.9.0/styles/github-dark.min.css">
+  <style>
+    :root {
+      --bg: #fefce8;
+      --surface: #ffffff;
+      --border: rgba(251,191,36,0.20);
+      --accent: #f59e0b;
+      --accent-dim: rgba(251,191,36,0.10);
+      --accent-text: #92400e;
+      --accent-mid: rgba(251,191,36,0.15);
+      --text: #1a1a1a;
+      --muted: #4a4a4a;
+      --muted-2: #888;
+      --card-shadow: 0 4px 16px rgba(251,191,36,0.08);
+      --card-shadow-hover: 0 12px 40px rgba(251,191,36,0.18);
+      --success: #10b981;
+      --danger: #ef4444;
+      --accent-rgb: 251, 191, 36;
+    }
+
+    .header {
+      background: var(--bg);
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% -10%, rgba(251,191,36,0.15) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 80% 90%, rgba(251,191,36,0.10) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    /* ── Back nav ── */
+    .back-nav {
+      padding: 0.75rem 5%;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .back-nav a {
+      color: var(--accent-text);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .back-nav a:hover { text-decoration: underline; }
+
+    /* ── Search ── */
+    .search-bar {
+      max-width: 1150px;
+      margin: 1.5rem auto 0;
+      padding: 0 5%;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-bar input:focus {
+      border-color: var(--accent);
+    }
+
+    /* ── Category Nav ── */
+    .cat-nav {
+      max-width: 1150px;
+      margin: 1rem auto 0;
+      padding: 0 5%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .cat-nav button {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cat-nav button:hover,
+    .cat-nav button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* ── Container ── */
+    .container { max-width: 1150px; margin: 0 auto; padding: 1.5rem 5% 3rem; }
+
+    /* ── Section ── */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 1.5rem;
+      box-shadow: var(--card-shadow);
+    }
+    .section h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-dim);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section h2 .icon { font-size: 1.3rem; }
+    .section h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      margin: 1rem 0 0.5rem;
+    }
+
+    /* ── Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin-top: 0.5rem;
+    }
+    th {
+      background: var(--accent-dim);
+      color: var(--accent-text);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 0.45rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--accent-dim); }
+    .cmd { font-family: 'Courier New', monospace; font-weight: 700; color: var(--accent-text); white-space: nowrap; }
+    .type { font-family: 'Courier New', monospace; font-size: 0.82rem; color: var(--muted); }
+    .desc { color: var(--muted); font-size: 0.85rem; }
+    code {
+      background: var(--accent-dim);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      color: var(--accent-text);
+    }
+
+    /* ── Code block ── */
+    pre {
+      background: #1e1e1e;
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin-top: 0.5rem;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: #d4d4d4;
+      font-size: 0.88rem;
+    }
+
+    /* ── Note box ── */
+    .note {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.88rem;
+      color: #92400e;
+      margin-top: 0.75rem;
+    }
+    .note strong { color: #b45309; }
+
+    /* ── Hidden ── */
+    .hidden { display: none; }
+
+    /* ── Params ── */
+    .param-tag {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1e40af;
+      border-radius: 4px;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.78rem;
+      font-family: 'Courier New', monospace;
+      margin: 0.1rem;
+    }
+
+    @media (max-width: 600px) {
+      table { font-size: 0.8rem; }
+      th, td { padding: 0.35rem 0.4rem; }
+      pre { font-size: 0.78rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="back-nav">
+  <a href="../index.html">← 上銀撞球首頁</a>
+</div>
+
+<header class="header">
+  <div class="header-content">
+    <div class="header-eyebrow in-view">上銀撞球 2026 · 技術文件</div>
+    <h1 class="in-view">HRL 指令集蔘考</h1>
+    <div class="subtitle in-view">HRSS V3.1.2 · Robot Software Manual 3.3（C版）章節 9 附錄</div>
+    <div class="badge in-view" style="--badge-bg: var(--accent-mid); --badge-border: rgba(251,191,36,0.3);">🔗 資料來源：Robot_Software_Manual_3.3_(C).pdf</div>
+  </div>
+</header>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="搜尋指令、關鍵字...（如 PTP、CREAD、$PR）" oninput="filterAll()">
+</div>
+
+<div class="cat-nav">
+  <button class="active" onclick="showCat('all')">全部</button>
+  <button onclick="showCat('motion')">運動</button>
+  <button onclick="showCat('comm')">通訊</button>
+  <button onclick="showCat('register')">暫存器</button>
+  <button onclick="showCat('variable')">變數型態</button>
+  <button onclick="showCat('control')">控制流程</button>
+  <button onclick="showCat('math')">數學</button>
+  <button onclick="showCat('io')">I/O</button>
+  <button onclick="showCat('special')">其他</button>
+</div>
+
+<div class="container">
+
+  <!-- ══ 運動指令 ══ -->
+  <div class="section" data-cat="motion" data-keywords="PTP LIN CIRC SPLINE PTP_REL LIN_REL CIRC_REL motion 運動 點對點 直線 圓弧 樣條">
+    <h2><span class="icon">🏃</span>運動指令</h2>
+
+    <h3>PTP — 點對點移動</h3>
+    <table>
+      <tr><th>格式</th><th>說明</th></tr>
+      <tr>
+        <td class="cmd">PTP <code>{X 100, Y 0, Z 200}</code> <code>CONT=100%</code> <code>Vel=100%</code> <code>Acc=50%</code> <code>TOOL[0]</code> <code>BASE[0]</code></td>
+        <td class="desc">笛卡爾座標絕對移動。A1~A6 或 X,Y,Z,A,B,C 皆可。</td>
+      </tr>
+      <tr>
+        <td class="cmd">PTP <code>{A1 45}</code> <code>CONT=100%</code> <code>Vel=100%</code> <code>Acc=50%</code></td>
+        <td class="desc">關節角度絕對移動（單軸或多軸）。</td>
+      </tr>
+      <tr>
+        <td class="cmd">PTP $PR[1] <code>CONT=100%</code> <code>Vel=100%</code></td>
+        <td class="desc">使用位置暫存器移動。</td>
+      </tr>
+    </table>
+    <div class="note"><strong>⚠️ 注意：</strong><code>Vel</code> 對於 PTP 是百分比（0~100%），對於 LIN/CIRC 是 mm/s。</div>
+
+    <h3>PTP_REL — 點對點相對移動</h3>
+    <table>
+      <tr><th>格式</th><th>說明</th></tr>
+      <tr>
+        <td class="cmd">PTP_REL <code>{X 100}</code> <code>CONT=100%</code> <code>Vel=100%</code> <code>Acc=50%</code></td>
+        <td class="desc">相對於目前位置的增量移動（笛卡爾或關節）。</td>
+      </tr>
+    </table>
+
+    <h3>LIN — 直線移動</h3>
+    <table>
+      <tr><th>格式</th><th>說明</th></tr>
+      <tr>
+        <td class="cmd">LIN <code>{X 100, Y 0, Z 200}</code> <code>CONT=100%</code> <code>Vel=2000mm/s</code> <code>Acc=50%</code> <code>TOOL[0]</code> <code>BASE[0]</code></td>
+        <td class="desc">TCP 沿直線移動到目標點。<code>Vel</code> 單位為 mm/s。</td>
+      </tr>
+      <tr>
+        <td class="cmd">LIN $PR[1] <code>CONT=100%</code> <code>Vel=2000mm/s</code></td>
+        <td class="desc">使用位置暫存器直線移動。</td>
+      </tr>
+    </table>
+
+    <h3>LIN_REL — 直線相對移動</h3>
+    <table>
+      <tr><th>格式</th><th>說明</th></tr>
+      <tr>
+        <td class="cmd">LIN_REL <code>{X 100}</code> <code>CONT=100%</code> <code>Vel=2000mm/s</code> <code>Acc=50%</code></td>
+        <td class="desc">直線增量移動（笛卡爾）。</td>
+      </tr>
+    </table>
+
+    <h3>LIN_REL_TOOL — 工具座標直線相對移動</h3>
+    <table>
+      <tr><th>格式</th><th>說明</th></tr>
+      <tr>
+        <td class="cmd">LIN_REL_TOOL <code>{X 100}</code> <code>CONT=100%</code> <code>Vel=2000mm/s</code> <code>Acc=50%</code></td>
+        <td class="desc">沿工具座標系方向做直線相對移動。一次只能對一個軸操作。</td>
+      </tr>
+    </table>
+
+    <h3>CIRC / CIRC_REL — 圓弧移動</h3>
+    <table>
+      <tr><th>格式</th><th>說明</th></tr>
+      <tr>
+        <td class="cmd">CIRC <code>POINT1</code> <code>POINT2</code> <code>CONT=100%</code> <code>Vel=2000mm/s</code> <code>Acc=50%</code></td>
+        <td class="desc">POINT1=輔助點（圓弧經過點），POINT2=目標點。兩者同為 POS 或同為 DEG。</td>
+      </tr>
+      <tr>
+        <td class="cmd">CIRC <code>{X 0, Y 450}</code> <code>{X -150, Y 300}</code> <code>CONT=100%</code></td>
+        <td class="desc">直接用笛卡爾座標指定圓弧。</td>
+      </tr>
+    </table>
+
+    <h3>SPLINE — B-Spline 樣條運動</h3>
+    <table>
+      <tr><th>格式</th><th>說明</th></tr>
+      <tr>
+        <td class="cmd">SPLINE<br>SPL P1<br>SPL P2<br>SPL P3<br>ENDSPLINE</td>
+        <td class="desc">多點擬合 B-Spline 曲線運動。P1~P73 可用 E6POINT 型態。</td>
+      </tr>
+    </table>
+
+    <h3>運動參數說明</h3>
+    <table>
+      <tr><th>參數</th><th>說明</th><th>預設值</th></tr>
+      <tr><td class="cmd">CONT</td><td class="desc">過渡模式：0=FINE（精確到點），1~99=平滑過渡百分比</td><td>FINE</td></tr>
+      <tr><td class="cmd">Vel</td><td class="desc">速度：PTP 為百分比(%)，LIN/CIRC 為 mm/s</td><td>100% / 200mm/s</td></tr>
+      <tr><td class="cmd">Acc</td><td class="desc">加速度百分比（0~100%）</td><td>50%</td></tr>
+      <tr><td class="cmd">TOOL[n]</td><td class="desc">工具座標系編號（0=無法規）</td><td>TOOL[0]</td></tr>
+      <tr><td class="cmd">BASE[n]</td><td class="desc">基座座標系編號（0=世界座標）</td><td>BASE[0]</td></tr>
+    </table>
+    <div class="note"><strong>FINE vs CONT：</strong>FINE 會完全停止在該點再執行下一行指令。CONT（1~99）則在抵達前就開始過渡到下一個運動，可能節省時間但軌跡不平滑。</div>
+  </div>
+
+  <!-- ══ 通訊指令 ══ -->
+  <div class="section" data-cat="comm" data-keywords="COPEN CREAD CWRITE CCLEAR CCLOSE CINQUIRE TCP IP Ethernet RS232 通訊 網路 序列">
+    <h2><span class="icon">📡</span>通訊指令（TCP/IP · RS232）</h2>
+
+    <h3>Ethernet TCP/IP</h3>
+    <table>
+      <tr><th>指令</th><th>說明</th></tr>
+      <tr>
+        <td class="cmd">COPEN(ETH, HANDLE)</td>
+        <td class="desc">以 Client 模式連線（單一連線）。需先在 HRSS 設定好 IP/Port。</td>
+      </tr>
+      <tr>
+        <td class="cmd">HANDLE = COPEN(ETH, 192, 168, 0, 5, 5000)</td>
+        <td class="desc">以 Client 模式直接指定 IP (192.168.0.5) 和 Port (5000)。回傳 HANDLE。</td>
+      </tr>
+      <tr>
+        <td class="cmd">CREAD(HANDLE, val1, val2, ...)</td>
+        <td class="desc">讀取網路資料（最多 400 筆），封包格式 <code>{val1,val2,...}</code>。讀取數量不足時，未對應的變數為 0。</td>
+      </tr>
+      <tr>
+        <td class="cmd">CWRITE(HANDLE, val1, val2)</td>
+        <td class="desc">傳送資料（最多 400 筆）。每個 CWRITE 都是一組封包。val 只能是 REAL 或 STRING。</td>
+      </tr>
+      <tr>
+        <td class="cmd">CCLEAR(HANDLE)</td>
+        <td class="desc">清除接收緩衝區。封包數量 > CREAD 指令數量時，需 CCLEAR 避免讀到舊資料。</td>
+      </tr>
+      <tr>
+        <td class="cmd">CINQUIRE(HANDLE, NUM)</td>
+        <td class="desc">查詢緩衝區中目前的封包數量。</td>
+      </tr>
+      <tr>
+        <td class="cmd">CCLOSE(HANDLE)</td>
+        <td class="desc">關閉通訊連線。</td>
+      </tr>
+    </table>
+
+    <h3>RS232 序列</h3>
+    <table>
+      <tr><th>指令</th><th>說明</th></tr>
+      <tr><td class="cmd">COPEN(SER, HANDLE)</td><td class="desc">開啟 RS232 通訊。</td></tr>
+      <tr><td class="cmd">CREAD / CWRITE / CCLEAR / CINQUIRE / CCLOSE</td><td class="desc">用法與 Ethernet 版本相同。</td></tr>
+    </table>
+
+    <h3>典型 Python ↔ KRL 通訊流程</h3>
+<pre><code>;; KRL 端 — TCP/IP Client 接收座標
+INT HANDLE
+REAL X, Y, Z, A, B, C
+HANDLE = COPEN(ETH, 192, 168, 1, 100, 5000)  ; 手臂為 Client，連向 Python
+
+LOOP
+  CINQUIRE(HANDLE, NUM)
+  IF NUM > 0 THEN
+    CREAD(HANDLE, X, Y, Z, A, B, C)
+    $PR[1] = {X X, Y Y, Z Z, A A, B B, C C}
+    LIN $PR[1] Vel=500mm/s Acc=50%
+    CWRITE(HANDLE, 1)   ; 回傳「到位完成」
+  ENDIF
+  CCLEAR(HANDLE)
+  WAIT SEC 0.1
+ENDLOOP</code></pre>
+
+    <div class="note"><strong>封包格式：</strong>預設用 <code>{}</code> 包覆，<code>,</code> 分隔。例如 <code>{100,200,45}</code> 會被解讀為 3 個數值。可在 HRSS 設定中改為 Non-Format（純 ASCII）。</div>
+  </div>
+
+  <!-- ══ 暫存器 ══ -->
+  <div class="section" data-cat="register" data-keywords="PR DI DO RI RO C counter timer 暫存器 計數 計時 位置 輸入 輸出">
+    <h2><span class="icon">📦</span>暫存器指令</h2>
+
+    <table>
+      <tr><th>暫存器</th><th>型態</th><th>說明</th><th>範例</th></tr>
+      <tr>
+        <td class="cmd">$PR[#]</td>
+        <td class="type">E6POS / E6AXIS / E6POINT</td>
+        <td class="desc">位置暫存器。儲存 X,Y,Z,A,B,C（笛卡爾）或 A1~A6（關節）。</td>
+        <td><code>$PR[1] = {X 100, Y 0, Z 200}</code></td>
+      </tr>
+      <tr>
+        <td class="cmd">$C[#]</td>
+        <td class="type">INT</td>
+        <td class="desc">Counter 計數暫存器。可自由讀寫，用於計數、旗標。</td>
+        <td><code>$C[1] = $C[1] + 1</code></td>
+      </tr>
+      <tr>
+        <td class="cmd">$DI[#]</td>
+        <td class="type">BOOL</td>
+        <td class="desc">Digital Input。讀取數位輸入訊號（外部感測器、極限開關等）。</td>
+        <td><code>IF $DI[1] == TRUE THEN ...</code></td>
+      </tr>
+      <tr>
+        <td class="cmd">$DO[#]</td>
+        <td class="type">BOOL</td>
+        <td class="desc">Digital Output。控制數位輸出訊號（電磁閥、燈號等）。</td>
+        <td><code>$DO[1] = TRUE</code></td>
+      </tr>
+      <tr>
+        <td class="cmd">$RI[#]</td>
+        <td class="type">BOOL</td>
+        <td class="desc">Robot Input。機器手臂專用輸入。</td>
+        <td><code>WAIT FOR $RI[1] == TRUE</code></td>
+      </tr>
+      <tr>
+        <td class="cmd">$RO[#]</td>
+        <td class="type">BOOL</td>
+        <td class="desc">Robot Output。機器手臂專用輸出。</td>
+        <td><code>$RO[1] = TRUE</code></td>
+      </tr>
+      <tr>
+        <td class="cmd">$T[#]</td>
+        <td class="type">REAL</td>
+        <td class="desc">Timer 計時暫存器（秒）。需搭配 $T_STOP 啟動。</td>
+        <td><code>$T[1] = 0 · $T_STOP[1] = TRUE</code></td>
+      </tr>
+      <tr>
+        <td class="cmd">$VO[#]</td>
+        <td class="type">BOOL</td>
+        <td class="desc">Valve 電磁閥輸出。</td>
+        <td><code>$VO[1] = TRUE</code></td>
+      </tr>
+    </table>
+
+    <h3>$PR 賦值方式</h3>
+    <pre><code>;; 關節角度賦值
+$PR[1] = {A1 1, A2 2, A3 3, A4 4, A5 5, A6 6}
+
+;; 笛卡爾座標賦值
+$PR[2] = {X 7, Y 8, Z 9, A 10, B 11, C 12}
+
+;; 用 E6POS / E6AXIS / E6POINT 間接賦值
+E6POS A = {X 10, Y 10, Z 10, A 10, B 10, C 10}
+$PR[1] = A
+
+;; 用 GETPOINT 取得目前位置
+$PR[1] = GETPOINT</code></pre>
+
+    <h3>特殊：PAL_PR 的 $C 用法</h3>
+    <p class="desc">手冊中 <code>PAL_PR</code> 函式使用 <code>$C[INDEX+15]</code> 儲存格點數量、<code>$C[16]~$C[30]</code> 為各 block 的 offset。這是 HIWIN Library 自訂函式（非標準 HRL）的內部用法，與一般計數用途分開。</p>
+  </div>
+
+  <!-- ══ 變數型態 ══ -->
+  <div class="section" data-cat="variable" data-keywords="REAL INT BOOL CHAR STRING E6POS E6AXIS E6POINT FRAME 變數 型態">
+    <h2><span class="icon">🔤</span>變數型態指令</h2>
+
+    <table>
+      <tr><th>型態</th><th>說明</th><th>範例</th></tr>
+      <tr><td class="cmd">BOOL</td><td class="desc">布林（TRUE / FALSE）</td><td><code>BOOL K = TRUE</code></td></tr>
+      <tr><td class="cmd">INT</td><td class="desc">帶正負號整數</td><td><code>INT I = 0</code></td></tr>
+      <tr><td class="cmd">UINT</td><td class="desc">無符號整數</td><td><code>UINT N = 100</code></td></tr>
+      <tr><td class="cmd">REAL</td><td class="desc">浮點數</td><td><code>REAL R = 3.14</code></td></tr>
+      <tr><td class="cmd">CHAR</td><td class="desc">單一字元</td><td><code>CHAR C = 'A'</code></td></tr>
+      <tr><td class="cmd">STRING</td><td class="desc">字串</td><td><code>STRING S = "HIWIN"</code></td></tr>
+      <tr>
+        <td class="cmd">E6POS</td>
+        <td class="desc">直角座標系位置（X, Y, Z, A, B, C）</td>
+        <td><code>E6POS P = {X 0, Y 300, Z 200}</code></td>
+      </tr>
+      <tr>
+        <td class="cmd">E6AXIS</td>
+        <td class="desc">關節座標系角度（A1~A6, E1~E3）</td>
+        <td><code>E6AXIS A = {A1 0, A2 0, A3 0}</code></td>
+      </tr>
+      <tr>
+        <td class="cmd">E6POINT</td>
+        <td class="desc">可存座標或角度（混用時缺失欄位為 0）</td>
+        <td><code>E6POINT HOME = {Y 200, Z -1000, A 90}</code></td>
+      </tr>
+      <tr>
+        <td class="cmd">FRAME</td>
+        <td class="desc">座標框架（含原點+姿態）</td>
+        <td><code>FRAME F = {X 100, Y 200, A 90}</code></td>
+      </tr>
+    </table>
+
+    <h3>E6POS / E6AXIS 差異</h3>
+    <pre><code>;; E6POS = 笛卡爾座標（姿態）
+E6POS P1 = {X 0, Y 300, Z 200, A 0, B 0, C 0}
+
+;; E6AXIS = 關節角度
+E6AXIS J1 = {A1 0, A2 -30, A3 50, A4 0, A5 90, A6 0}
+
+;; E6POINT = 兩者皆可，缺失欄位自動填 0
+E6POINT P2 = {Y 200, Z -1000, A 90}   ; X=0, B=0, C=0
+
+;; 兩者可相互賦值
+$PR[1] = P1   ; E6POS → $PR
+$PR[2] = J1   ; E6AXIS → $PR</code></pre>
+  </div>
+
+  <!-- ══ 控制流程 ══ -->
+  <div class="section" data-cat="control" data-keywords="IF FOR WHILE LOOP REPEAT SWITCH GOTO ENDIF ENDFOR ENDWHILE 控制 流程 判斷 迴圈">
+    <h2><span class="icon">🔀</span>控制流程指令</h2>
+
+    <table>
+      <tr><th>指令</th><th>說明</th><th>範例</th></tr>
+      <tr><td class="cmd">IF / THEN / ENDIF</td><td class="desc">單一條件判斷</td><td><code>IF n > 0 THEN PTP P1 ENDIF</code></td></tr>
+      <tr><td class="cmd">FOR / ENDFOR</td><td class="desc">計次迴圈</td><td><code>FOR i = 1 TO 10 STEP 2 ... ENDFOR</code></td></tr>
+      <tr><td class="cmd">LOOP / ENDLOOP</td><td class="desc">無限迴圈（需搭配 EXIT 離開）</td><td><code>LOOP ... IF X THEN EXIT ENDIF ... ENDLOOP</code></td></tr>
+      <tr><td class="cmd">WHILE / ENDWHILE</td><td class="desc">前測試迴圈（條件成立才執行）</td><td><code>WHILE $DI[1] == TRUE ... ENDWHILE</code></td></tr>
+      <tr><td class="cmd">REPEAT / UNTIL</td><td class="desc">後測試迴圈（至少執行一次）</td><td><code>REPEAT ... UNTIL n > 2</code></td></tr>
+      <tr><td class="cmd">SWITCH / CASE / ENDSWITCH</td><td class="desc">多條件分支</td><td><code>SWITCH n CASE 0: ... CASE 1: ... ENDSWITCH</code></td></tr>
+      <tr><td class="cmd">GOTO</td><td class="desc">跳至標記位置</td><td><code>GOTO FOUND</code>（需先有 <code>FOUND:</code> 標記）</td></tr>
+      <tr><td class="cmd">WAIT FOR</td><td class="desc">等待條件成立</td><td><code>WAIT FOR $DI[1] == TRUE</code></td></tr>
+      <tr><td class="cmd">WAIT SEC</td><td class="desc">等待秒數</td><td><code>WAIT SEC 0.5</code></td></tr>
+      <tr><td class="cmd">QUIT</td><td class="desc">結束程式執行</td><td><code>IF error THEN QUIT ENDIF</code></td></tr>
+      <tr><td class="cmd">DEF / END</td><td class="desc">定義副程式</td><td><code>DEF MOVE_LOOP() ... END</code></td></tr>
+      <tr><td class="cmd">DEFFCT / ENDFCT</td><td class="desc">定義函式（可回傳值）</td><td><code>DEFFCT INT MY() ... RETURN 100 ... ENDFCT</code></td></tr>
+    </table>
+
+    <h3>典型運動+等待迴圈</h3>
+<pre><code>DEF MOVE_LOOP()
+  WHILE TRUE
+    CREAD(HANDLE, X, Y, Z, A, B, C)
+    $PR[1] = {X X, Y Y, Z Z, A A, B B, C C}
+    LIN $PR[1] Vel=500mm/s Acc=50%
+    $DO[1] = TRUE    ; 通知 Python 已到位
+    WAIT SEC 0.3
+    $DO[1] = FALSE
+  ENDWHILE
+END</code></pre>
+  </div>
+
+  <!-- ══ 數學運算 ══ -->
+  <div class="section" data-cat="math" data-keywords="SIN COS TAN ACOS ASIN ATAN ATAN2 ABS SQRT MOD 數學 三角函數">
+    <h2><span class="icon">🔢</span>數學運算指令</h2>
+
+    <table>
+      <tr><th>指令</th><th>說明</th></tr>
+      <tr><td class="cmd">SIN(x)</td><td class="desc">正弦（角度）</td></tr>
+      <tr><td class="cmd">COS(x)</td><td class="desc">餘弦</td></tr>
+      <tr><td class="cmd">TAN(x)</td><td class="desc">正切</td></tr>
+      <tr><td class="cmd">ASIN(x)</td><td class="desc">反正弦</td></tr>
+      <tr><td class="cmd">ACOS(x)</td><td class="desc">反餘弦</td></tr>
+      <tr><td class="cmd">ATAN(x)</td><td class="desc">反正切（單參數）</td></tr>
+      <tr><td class="cmd">ATAN2(y, x)</td><td class="desc">反正切（雙參數，完整象限）</td></tr>
+      <tr><td class="cmd">ABS(x)</td><td class="desc">絕對值</td></tr>
+      <tr><td class="cmd">SQRT(x)</td><td class="desc">平方根</td></tr>
+      <tr><td class="cmd">MOD(x, y)</td><td class="desc">取餘數</td></tr>
+      <tr><td class="cmd">ROUND(x)</td><td class="desc">四捨五入</td></tr>
+    </table>
+
+    <h3>字串函式</h3>
+    <table>
+      <tr><th>指令</th><th>說明</th></tr>
+      <tr><td class="cmd">STRCMP(s1, s2)</td><td class="desc">比較兩字串</td></tr>
+      <tr><td class="cmd">STRPOS(s, sub)</td><td class="desc">搜尋子字串位置</td></tr>
+      <tr><td class="cmd">STRCPY(dest, src, start, len)</td><td class="desc">複製字串</td></tr>
+      <tr><td class="cmd">STRLEN(s)</td><td class="desc">取得字串長度</td></tr>
+      <tr><td class="cmd">INTTOSTR(n)</td><td class="desc">INT → STRING</td></tr>
+      <tr><td class="cmd">REALTOSTR(r)</td><td class="desc">REAL → STRING</td></tr>
+      <tr><td class="cmd">STRTOINT(s)</td><td class="desc">STRING → INT</td></tr>
+      <tr><td class="cmd">STRTOREAL(s)</td><td class="desc">STRING → REAL</td></tr>
+    </table>
+  </div>
+
+  <!-- ══ I/O 與運動輔助 ══ -->
+  <div class="section" data-cat="io" data-keywords="PULSE TIMEOUT WAIT DI DO digital input output 數位 輸入 輸出 脈衝 逾時">
+    <h2><span class="icon">🔌</span>I/O 與運動輔助指令</h2>
+
+    <h3>I/O 控制</h3>
+    <table>
+      <tr><th>指令</th><th>說明</th></tr>
+      <tr><td class="cmd">$DO[n] = TRUE / FALSE</td><td class="desc">設定數位輸出</td></tr>
+      <tr><td class="cmd">WAIT FOR $DI[n] == TRUE</td><td class="desc">等待數位輸入觸發</td></tr>
+      <tr><td class="cmd">$DO[n] = PULSE(ms)</td><td class="desc">輸出脈衝訊號（ms 為脈寬）</td></tr>
+      <tr><td class="cmd">PULSE($DO[1], 10)</td><td class="desc">對輸出 1 產生 10ms 脈衝</td></tr>
+      <tr><td class="cmd">WAIT FOR $DI[n] == TRUE TIMEOUT(sec, ERROR)</td><td class="desc">逾時控制（逾時時跳至 ERROR 標記）</td></tr>
+    </table>
+
+    <h3>運動輔助</h3>
+    <table>
+      <tr><th>指令</th><th>說明</th></tr>
+      <tr><td class="cmd">SET_OVERRIDE_SPEED(100)</td><td class="desc">設定總速度倍率（%）</td></tr>
+      <tr><td class="cmd">SET_SPEED(2000)</td><td class="desc">設定進給速度（mm/s）</td></tr>
+      <tr><td class="cmd">SET_ACC(250)</td><td class="desc">設定加速度</td></tr>
+      <tr><td class="cmd">GETPOINT</td><td class="desc">取得目前 TCP 座標（存入 E6POINT）</td></tr>
+      <tr><td class="cmd">GET_MOTION_STATUS</td><td class="desc">取得運動狀態（0=閒置）</td></tr>
+      <tr><td class="cmd">BRAKE</td><td class="desc">停止並清除制動中</td></tr>
+      <tr><td class="cmd">CHECK_LIN(P1, P2)</td><td class="desc">檢查兩點間是否有奇異點</td></tr>
+      <tr><td class="cmd">FWD(axis_pos)</td><td class="desc">順向運動學（關節→笛卡爾）</td></tr>
+      <tr><td class="cmd">STOP_MOTION $DI[n]</td><td class="desc">DI 觸發時停止並反向退避</td></tr>
+      <tr><td class="cmd">CD_START(80) / CD_END</td><td class="desc">碰撞偵測開啟（靈敏度 0~100）/關閉</td></tr>
+      <tr><td class="cmd">SET_PAYLOAD[n]</td><td class="desc">設定負載資料組</td></tr>
+    </table>
+
+    <h3>SYN — 運動中同步開關</h3>
+    <pre><code>LIN P1 FINE Vel=100% Acc=50% TOOL[0] BASE[0]
+SYN $DO[1] = TRUE START DELAY = 50ms   ; 開始移動時輸出
+SYN $DO[2] = TRUE END DELAY = -50ms     ; 結束移動前輸出
+LIN P2 FINE Vel=100% Acc=50% TOOL[0] BASE[0]</code></pre>
+  </div>
+
+  <!-- ══ 其他指令 ══ -->
+  <div class="section" data-cat="special" data-keywords="USER_ALARM INTERRUPT AXIS RESUME STRUC 警報 中斷 座標 工具 基座">
+    <h2><span class="icon">⚙️</span>其他重要指令</h2>
+
+    <h3>工具 / 基座座標</h3>
+    <table>
+      <tr><th>指令</th><th>說明</th></tr>
+      <tr><td class="cmd">SET_TOOL(n)</td><td class="desc">設定工具座標系</td></tr>
+      <tr><td class="cmd">SET_BASE(n)</td><td class="desc">設定基座座標系</td></tr>
+      <tr><td class="cmd">ADDTOOL name</td><td class="desc">模擬環境新增工具</td></tr>
+      <tr><td class="cmd">ADDOBJECT name P:x,y C:x,y</td><td class="desc">模擬環境新增工件</td></tr>
+      <tr><td class="cmd">MOVEFLOOR(n)</td><td class="desc">模擬環境移動地板</td></tr>
+      <tr><td class="cmd">AXISON / AXISOFF</td><td class="desc">顯示/隱藏座標系</td></tr>
+    </table>
+
+    <h3>警報與中斷</h3>
+    <table>
+      <tr><th>指令</th><th>說明</th></tr>
+      <tr><td class="cmd">USER_ALARM[n]</td><td class="desc">發送使用者自訂警報</td></tr>
+      <tr><td class="cmd">INTERRUPT 1 WHEN $DI[1] == TRUE DO PROG1()</td><td class="desc">宣告中斷條件</td></tr>
+      <tr><td class="cmd">INTERRUPT ON / OFF / OFF ALL</td><td class="desc">啟用/停用中斷</td></tr>
+      <tr><td class="cmd">RESUME_PROG</td><td class="desc">設定焊接中斷復歸範圍起點</td></tr>
+    </table>
+
+    <h3>結構與型別</h3>
+    <table>
+      <tr><th>指令</th><th>說明</th></tr>
+      <tr><td class="cmd">STRUC TypeName INT x REAL y</td><td class="desc">自訂結構型別</td></tr>
+      <tr><td class="cmd">P#(n)</td><td class="desc">點位變數替換（依序執行 P1~Pn）</td></tr>
+      <tr><td class="cmd">P#_EXIST(n)</td><td class="desc">檢查點位 n 是否存在</td></tr>
+    </table>
+
+    <h3>外部軸</h3>
+    <table>
+      <tr><th>指令</th><th>說明</th></tr>
+      <tr><td class="cmd">EX_AX[1] = TRUE / FALSE</td><td class="desc">開啟/關閉外部軸</td></tr>
+      <tr><td class="cmd">EX_AX_ASYNC[1] = TRUE</td><td class="desc">設定為非同步外部軸</td></tr>
+      <tr><td class="cmd">ASYPTP{E1 60, E2 100}</td><td class="desc">對非同步外部軸執行 PTP</td></tr>
+      <tr><td class="cmd">EX_AX_SET_SPEED[1] 1000</td><td class="desc">設定外部軸速度</td></tr>
+    </table>
+
+    <h3>電動夾爪（XEG 系列）</h3>
+    <table>
+      <tr><th>指令</th><th>說明</th></tr>
+      <tr><td class="cmd">EG_OPEN(X32)</td><td class="desc">開啟夾爪連線</td></tr>
+      <tr><td class="cmd">EG_CLOSE</td><td class="desc">關閉連線</td></tr>
+      <tr><td class="cmd">EG_RESET</td><td class="desc">重置原點</td></tr>
+      <tr><td class="cmd">EG_RUN_MOVE(pos, speed)</td><td class="desc">移動到位置</td></tr>
+      <tr><td class="cmd">EG_RUN_GRIP(...)</td><td class="desc">執行夾持動作</td></tr>
+      <tr><td class="cmd">EG_GET_POS</td><td class="desc">取得目前位置</td></tr>
+      <tr><td class="cmd">EG_GET_STATUS</td><td class="desc">取得狀態（2=夾持中）</td></tr>
+    </table>
+  </div>
+
+  <!-- ══ HIWIN Library 補充 ══ -->
+  <div class="section" data-cat="special" data-keywords="JUMP ATPOS BOX INSIDEBOX PAL CIRCLE OVAL GETPOINT BIT HIWIN Library hrb 函式">
+    <h2><span class="icon">📚</span>HIWIN Library 函式（.hrb 預編譯模組）</h2>
+
+    <div class="note"><strong>⚠️ 重要：</strong>以下函式屬於 HIWIN Library 自訂模組（.hrb 檔），非標準 HRL 指令集一部分。需將 .hrb 檔案匯入手臂系統後才能使用。詳細用法請見 HIWIN_Library.zip 說明文件。</div>
+
+    <table>
+      <tr><th>函式</th><th>說明</th><th>筆記</th></tr>
+      <tr>
+        <td class="cmd">JUMP(PPE, H)</td>
+        <td class="desc">安全移動：先上升到 H 高度，再水平移動到 PPE，最後下壓。</td>
+        <td class="desc">適合拿來做「球旁安全接近」</td>
+      </tr>
+      <tr>
+        <td class="cmd">ATPOS(PPE, N)</td>
+        <td class="desc">確認手臂是否移動到目標位置（誤差範圍內）。到位後設定 <code>$DO[N]=TRUE</code>。</td>
+        <td class="desc">可用於 Python 讀取 $DO 確認到位</td>
+      </tr>
+      <tr>
+        <td class="cmd">BOX / INSIDEBOX</td>
+        <td class="desc">BOX 設定擊球範圍邊界；INSIDEBOX 檢查 PR 位置是否在範圍內。</td>
+        <td class="desc">可用於確認球是否在手臂可及範圍</td>
+      </tr>
+      <tr>
+        <td class="cmd">PAL_PR(INDEX, ROW, COL, PP1, PP2, PP3)</td>
+        <td class="desc">雙線性內插產生格點，存入 <code>$PR[3501+N]</code>。使用 <code>$C[INDEX+15]</code> 存格點數。</td>
+        <td class="desc">用於預先產生球桌格點資料庫</td>
+      </tr>
+      <tr>
+        <td class="cmd">CIRCLE / OVAL</td>
+        <td class="desc">圓弧/橢圓軌跡（與 SPLINE 不同，這是封閉曲線）</td>
+        <td class="desc">撞球路徑規劃可能用不到</td>
+      </tr>
+      <tr>
+        <td class="cmd">ABS / SQRT / MOD / ROUND</td>
+        <td class="desc">數學運算（與標準 HRL 指令重疊）</td>
+        <td class="desc">與標準指令功能類似</td>
+      </tr>
+      <tr>
+        <td class="cmd">BIT(DI, n)</td>
+        <td class="desc">讀取第 n 個數位輸入的狀態</td>
+        <td class="desc">相當於 <code>$DI[n]</code></td>
+      </tr>
+      <tr>
+        <td class="cmd">GETPOINT</td>
+        <td class="desc">存入目前 TCP 位置（與標準 HRL GETPOINT 相同）</td>
+        <td class="desc">標準 HRL 已有，Library 版無差異</td>
+      </tr>
+    </table>
+
+    <h3>PAL_PR 詳細邏輯（給有興趣的人）</h3>
+    <pre><code>; 輸入：INDEX=block編號, ROW×COL=格點大小, PP1/PP2/PP3=三個角點
+; 輸出：$PR[3501 + offset + K] = 格點位置（K=1~N）
+;
+; 三個角點定義格點範圍：
+;   PP2 ─── PP3
+;    │ I 軸 │
+;    │ ↓   │
+;   PP1
+;
+; 公式（雙線性內插）：
+;   PAL.X = PP1.X + (PP2.X-PP1.X)/(ROW-1)*I + (PP3.X-PP1.X)/(COL-1)*J
+;   PAL.Y = PP1.Y + (PP2.Y-PP1.Y)/(ROW-1)*I + (PP3.Y-PP1.Y)/(COL-1)*J
+;   PAL.Z = PP1.Z + (PP2.Z-PP1.Z)/(ROW-1)*I + (PP3.Z-PP1.Z)/(COL-1)*J</code></pre>
+
+    <h3>與撞球相關的使用建議</h3>
+    <ul style="font-size: 0.9rem; color: var(--muted); margin-top: 0.5rem; padding-left: 1.2rem;">
+      <li><strong>JUMP</strong>：手臂從待機位置移動到球旁的安全路徑</li>
+      <li><strong>ATPOS</strong>：Python 輪詢 $DO[1] 確認到位，再發送擊球指令</li>
+      <li><strong>INSIDEBOX</strong>：擊球前確認球在手臂範圍內，避免白白浪費動作</li>
+      <li><strong>PAL_PR</strong>：若要在手臂端預先建立球桌格點庫（教球），可用此函式</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+  function showCat(cat) {
+    document.querySelectorAll('.cat-nav button').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    document.querySelectorAll('.section').forEach(s => {
+      s.classList.toggle('hidden', cat !== 'all' && s.dataset.cat !== cat);
+    });
+  }
+
+  function filterAll() {
+    var q = document.getElementById('searchInput').value.toLowerCase().trim();
+    document.querySelectorAll('.section').forEach(s => {
+      if (!q) {
+        s.classList.remove('hidden');
+        return;
+      }
+      var kw = (s.dataset.keywords || '').toLowerCase();
+      var text = s.textContent.toLowerCase();
+      s.classList.toggle('hidden', !kw.includes(q) && !text.includes(q));
+    });
+  }
+</script>
+
+</body>
+</html>
