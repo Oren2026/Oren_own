@@ -468,8 +468,8 @@
             <li class="step-item">
               <div class="step-num">4</div>
               <div class="step-content">
-                <div class="step-text"><code>motion/</code> — 運動執行（框架層）</div>
-                <div class="step-sub">接收 strategy 指令，控制手臂移動和機構擊球。一般不需修改</div>
+                <div class="step-text"><code>motion/</code> — 運動執行（Python）</div>
+                <div class="step-sub">接收 strategy 指令，轉譯為 TCP/IP 封包發送給 KRL；控制 Arduino 擊球。<code>strike.py</code> 和 <code>trajectory.py</code> 需配合機構參數調整</div>
               </div>
             </li>
             <li class="step-item">
@@ -506,7 +506,7 @@
 
           <div class="phase-note info" style="margin-top:14px;">
             <span class="phase-note-icon">💡</span>
-            <div>框架層（motion/、comm/、interfaces/）<strong>不須修改</strong>，同學只需替換 <code>vision/YOUR_VERSION/</code> 和 <code>strategy/YOUR_VERSION/</code> 裡的實作，確保輸出格式符合 <code>interfaces/</code> 定義即可。</div>
+            <div><code>interfaces/</code> 是真正固定不動的標準。同學只需替換 <code>vision/YOUR_VERSION/</code> 和 <code>strategy/YOUR_VERSION/</code>，<code>motion/</code> 裡的 <code>strike.py</code> 和 <code>trajectory.py</code> 需配合機構參數調整。</div>
           </div>
 
         </div>
@@ -547,25 +547,26 @@
             <li class="step-item">
               <div class="step-num">3</div>
               <div class="step-content">
-                <div class="step-text"> strategy → motion（發送指令）</div>
-                <div class="step-sub">motion 接收手臂目標座標 + 機構擊球指令，轉譯為 HRL 指令</div>
+                <div class="step-text"> strategy → motion（Python 發送 TCP/IP 封包）</div>
+                <div class="step-sub">motion 接收手臂目標座標 + 機構擊球指令，轉譯為 TCP/IP 封包 <code>{x,y,z,a,b,c}</code> 發送到 KRL</div>
               </div>
             </li>
             <li class="step-item">
               <div class="step-num">4</div>
               <div class="step-content">
-                <div class="step-text"> motion → hiwin_arm / arduino（執行）</div>
-                <div class="step-sub">TCP 發送手臂指令給 HIWIN 手臂；序列發送擊球指令給 Arduino 控制桿弟機構</div>
+                <div class="step-text"> KRL（CREAD blocking）→ 手臂執行 + Arduino 擊球</div>
+                <div class="step-sub">KRL 的 <code>CREAD</code> 收到封包後寫入 <code>$PR[1]</code>，執行 <code>JUMP</code> 移動；到位後 <code>Arduino</code> 執行擊球</div>
               </div>
             </li>
           </ul>
 
           <div class="phase-note" style="background:#1a1a1a; border:1px solid rgba(251,191,36,0.15); margin-top:14px; padding:16px 20px; border-radius:10px;">
             <div style="font-family:monospace; font-size:0.82rem; line-height:2; color:#e2e8f0;">
-              <div style="color:#fbbf24;">webcam</span> → <span style="color:#6ee7b7;">vision</span>（球偵測，輸出球位置）</div>
+              <div><span style="color:#fbbf24;">webcam</span> → <span style="color:#6ee7b7;">vision</span>（球偵測，輸出球位置）</div>
               <div><span style="color:#6ee7b7;">vision</span> → <span style="color:#93c5fd;">strategy</span>（規劃擊球目標和力道）</div>
-              <div><span style="color:#93c5fd;">strategy</span> → <span style="color:#f472b6;">motion</span>（發送手臂指令 + 機構指令）</div>
-              <div><span style="color:#f472b6;">motion</span> → <span style="color:#fbbf24;">hiwin_arm / arduino</span>（執行）</div>
+              <div><span style="color:#93c5fd;">strategy</span> → <span style="color:#f472b6;">motion</span>（Python TCP/IP <code>{x,y,z,a,b,c}</code>）</div>
+              <div><span style="color:#f472b6;">motion</span> → <span style="color:#fbbf24;">KRL CREAD</span>（blocking，等封包）→ <code>$PR[1]</code> → <code>JUMP</code></div>
+              <div><code>ATPOS</code>到位 → <span style="color:#fbbf24;">Arduino</span> 擊球</div>
             </div>
           </div>
 
@@ -664,14 +665,14 @@ python update.py</code>
               <div class="step-num">2</div>
               <div class="step-content">
                 <div class="step-text">Move（移動手臂）</div>
-                <div class="step-sub">手臂從当前位置 PTP 上升到安全高度 → LIN 到目標位置（Z=200mm 懸停）</div>
+                <div class="step-sub">手臂先 PTP 上升到安全高度（Z=200mm），再 LIN 到目標位置。<code>JUMP</code> 是安全路徑（PTP+LIN 合併），<code>$PR[1]</code> 存球旁座標，<code>$PR[2]</code> 存第6軸旋轉角度（只改 A/B/C）</div>
               </div>
             </li>
             <li class="step-item">
               <div class="step-num">3</div>
               <div class="step-content">
                 <div class="step-text">Strike（擊球）</div>
-                <div class="step-sub">Arduino 執行擊球命令（馬達推桿），完成後紀錄到 shot_log/</div>
+                <div class="step-sub">Arduino 執行擊球命令（伺服的推桿機構），完成後紀錄到 shot_log/</div>
               </div>
             </li>
             <li class="step-item">
@@ -681,13 +682,14 @@ python update.py</code>
                 <div class="step-sub">機構再次復位，回到初始狀態，準備下一桿</div>
               </div>
             </li>
+
           </ul>
 
           <div class="phase-note" style="background:#f8fafc; border:1px solid var(--border); margin-top:14px; padding:14px 18px; border-radius:10px;">
             <div style="font-family:monospace; font-size:0.82rem; line-height:2; color:var(--text);">
               <span style="background:rgba(251,191,36,0.12); color:var(--accent-text); padding:2px 8px; border-radius:4px;">[Reset]</span>
               &nbsp;→&nbsp;
-              <span style="background:rgba(110,231,247,0.08); color:#0899b2; padding:2px 8px; border-radius:4px;">[Move]</span>
+              <span style="background:rgba(110,231,247,0.08); color:#0899b2; padding:2px 8px; border-radius:4px;">[Move: PTP → LIN]</span>
               &nbsp;→&nbsp;
               <span style="background:rgba(239,68,68,0.08); color:#dc2626; padding:2px 8px; border-radius:4px;">[Strike]</span>
               &nbsp;→&nbsp;
@@ -1077,6 +1079,11 @@ arm.disconnect()
             <div class="check-item"><div class="check-dot"></div> get_position() 回傳合理數值</div>
             <div class="check-item"><div class="check-dot"></div> Z軸 > 50mm（在安全範圍）</div>
             <div class="check-item"><div class="check-dot"></div> 無緊急停止燈號</div>
+          </div>
+
+          <div class="phase-note info" style="margin-top:14px;">
+            <span class="phase-note-icon">💡</span>
+            <div><strong>TCP/IP 封包格式：</strong>Python 送出的指令是 <code>{x, y, z, a, b, c}</code>（大括號包，逗號分隔，六個浮點數）。KRL 端用 <code>CREAD</code> blocking 等這個封包，收到後寫入 <code>$PR[1]</code> 再執行 <code>JUMP</code>。<code>$PR[1]</code> 存球旁位置，<code>$PR[2]</code> 只存第6軸旋轉角度（改 A/B/C）用於微調瞄準。</div>
           </div>
 
           <div class="phase-note warn" style="margin-top:14px;">
