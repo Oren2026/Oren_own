@@ -10,9 +10,13 @@
     "安全講習": "pending",
     "機構設計": "in-progress",
     "Python骨架": "done",
+    "I/O介面標準化": "done",
     "手臂移動（路徑/通訊）": "in-progress",
     "桿弟規劃（機構+馬達）": "in-progress",
     "電路板+伺服馬達控制": "in-progress",
+    "軌跡模型": "done",
+    "擊球記錄系統": "done",
+    "GUI": "in-progress",
     "影片製作": "pending"
   },
   "procurement": {
@@ -45,47 +49,45 @@
   },
   "software": {
     "repository": "hiwin_pool/",
-    "三大主軸": {
-      "手臂移動": {
-        "description": "HIWIN 手臂路徑規劃 + TCP/IP 通訊介面",
-        "modules": ["motion", "comm"],
-        "status": "in-progress"
-      },
-      "桿弟規劃": {
-        "description": "半齒齒輪機構 + 直流/伺服馬達選型 + 齒輪傳動",
-        "modules": ["analysis"],
-        "status": "in-progress"
-      },
-      "電路板+伺服馬達": {
-        "description": "Arduino 控制板 + 伺服馬達驅動電路設計",
-        "modules": ["config"],
-        "status": "in-progress"
-      }
+    "version": "0.1.0",
+    "modules": {
+      "interfaces": { "status": "done", "note": "I/O 介面標準化（dataclass）" },
+      "comm/hiwin_arm": { "status": "in-progress", "note": "TCP/IP 骨架，IP 待確認" },
+      "comm/arduino_serial": { "status": "in-progress", "note": "USB 序列骨架，COM port 待確認" },
+      "motion/executor": { "status": "in-progress", "note": "自動復位時序" },
+      "motion/strike": { "status": "in-progress", "note": "擊球序列框架" },
+      "motion/trajectory": { "status": "in-progress", "note": "路徑點計算" },
+      "motion/safety": { "status": "in-progress", "note": "碰撞檢測框架" },
+      "vision/ball_detector": { "status": "in-progress", "note": "球偵測框架，演算法未實作" },
+      "vision/table_transform": { "status": "in-progress", "note": "透視座標轉換" },
+      "vision/homography_calibrator": { "status": "in-progress", "note": "校正工具" },
+      "analysis/trajectory_model": { "status": "done", "note": "物理軌跡模型" },
+      "analysis/shot_logger": { "status": "done", "note": "JSON 擊球記錄" },
+      "analysis/calibrator": { "status": "in-progress", "note": "校正邏輯框架" },
+      "ui/dashboard": { "status": "in-progress", "note": "儀表板" },
+      "ui/tune_panel": { "status": "in-progress", "note": "參數調整面板" },
+      "ui/config_wizard": { "status": "in-progress", "note": "安裝精靈，待黑皮測試" },
+      "strategy/YOUR_VERSION": { "status": "pending", "note": "預留同學實作" },
+      "vision/YOUR_VERSION": { "status": "pending", "note": "預留同學實作" }
     },
     "共同模組": ["vision", "ui"],
-    "待完成": ["webcam校正", "Arduino韌體", "HIWIN TCP/IP整合"]
+    "待完成": ["webcam校正", "Arduino韌體", "HIWIN TCP/IP整合", "視覺系統實作"]
+  },
+  "config": {
+    "HIWIN_IP": "192.168.1.100",
+    "HIWIN_PORT": 5000,
+    "SAFE_Z_HEIGHT": 200,
+    "STRIKE_Z_HEIGHT": 50,
+    "Z_RANGE": "50~300",
+    "TABLE": "1200×630mm",
+    "FORCE_LEVELS": "12段（0.25~3.0 m/s）",
+    "ARDUINO_COM": "待確認"
   },
   "timeline": [
-    {
-      "phase": "初審結果公告",
-      "date": "2026-03-27",
-      "status": "done"
-    },
-    {
-      "phase": "安全講習與測驗",
-      "date": "2026-03~04",
-      "status": "pending"
-    },
-    {
-      "phase": "複審影片繳交截止",
-      "date": "2026-05-22",
-      "status": "pending"
-    },
-    {
-      "phase": "決賽",
-      "date": "2026-08-19~20",
-      "status": "pending"
-    }
+    { "phase": "初審結果公告", "date": "2026-03-27", "status": "done" },
+    { "phase": "安全講習與測驗", "date": "2026-05-17", "status": "pending" },
+    { "phase": "複審影片繳交截止", "date": "2026-05-22", "status": "pending" },
+    { "phase": "決賽", "date": "2026-08-19~20", "status": "pending" }
   ],
   "awards": {
     "冠軍": "新台幣 10 萬元",
@@ -95,6 +97,11 @@
   },
   "subsidy": "外島優障：撞球組補助 NT$15,000（全台最高）",
   "updates": [
+    {
+      "date": "2026-04-30",
+      "text": "黑輪同步：I/O介面標準化、軌跡模型、擊球記錄系統確認 done；GUI 模組進度更新；模組完成度對齊黑輪_OVERVIEW.md",
+      "category": "進度"
+    },
     {
       "date": "2026-04-28",
       "text": "Python 骨架完成：vision/comm/motion/analysis/ui/config 共 30 個檔案，已推送 GitHub",
