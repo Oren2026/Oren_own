@@ -5,7 +5,7 @@
 每章節頁面（`ch{n}-{slug}.html` / `ch{n}.html`）皆為靜態 HTML，使用 `shared.css` 統一樣式。
 
 ```
-docs/homework/柯的筆記天地/資訊網路/
+docs/homework/柯志亨的筆記天地/資訊網路/
 ├── shared.css          # 唯一樣式表，所有章節共享
 ├── index.html          # 課程總覽頁（章節卡 + sidebar）
 ├── chapters.json       # 12章設定檔（標題/檔名/標籤/描述）
@@ -26,14 +26,14 @@ docs/homework/柯的筆記天地/資訊網路/
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CH{N} — {標題} | 柯的筆記天地</title>
+  <title>CH{N} — {標題} | 柯志亨的筆記天地</title>
   <link rel="stylesheet" href="shared.css">
 </head>
 <body>
 
   <!-- Sidebar — 注意：無 <ul>/<li>，直接 bare <a> 標籤 -->
   <nav class="sidebar">
-    <div class="sidebar-course">柯的筆記天地</div>
+    <div class="sidebar-course">柯志亨的筆記天地</div>
     <div class="sidebar-title">資訊網路</div>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section-label">所有筆記</div>
@@ -82,7 +82,7 @@ docs/homework/柯的筆記天地/資訊網路/
 
     <!-- 頁尾 -->
     <footer class="note-footer">
-      <span>📖 柯的筆記天地 — 資訊網路</span>
+      <span>📖 柯志亨的筆記天地 — 資訊網路</span>
       <a href="index.html" style="color:var(--accent);">← 返回總覽</a>
     </footer>
 

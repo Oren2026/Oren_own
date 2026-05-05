@@ -278,22 +278,22 @@
     <ul>
       <li>▶ 以 <span class="formula">140.134.0.0/19</span> 為例（向 B 類借 3 位元）：</li>
     </ul>
-    <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
-      <tr style="background:#4299e1; color:white;">
-        <th style="padding:6px; border:1px solid #ccc;">子網路</th>
-        <th style="padding:6px; border:1px solid #ccc;">子網路位元</th>
-        <th style="padding:6px; border:1px solid #ccc;">子網域位址</th>
-        <th style="padding:6px; border:1px solid #ccc;">子網路廣播位址</th>
-        <th style="padding:6px; border:1px solid #ccc;">可用 IP 範圍</th>
+    <table class="compare-table">
+        <thead><tr>
+        <th>子網路</th>
+        <th>子網路位元</th>
+        <th>子網域位址</th>
+        <th>子網路廣播位址</th>
+        <th>可用 IP 範圍</th>
       </tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">#1</td><td style="padding:6px; border:1px solid #ccc;">000</td><td style="padding:6px; border:1px solid #ccc;">140.134.0.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.31.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.0.1 ~ 31.254</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">#2</td><td style="padding:6px; border:1px solid #ccc;">001</td><td style="padding:6px; border:1px solid #ccc;">140.134.32.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.63.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.32.1 ~ 63.254</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">#3</td><td style="padding:6px; border:1px solid #ccc;">010</td><td style="padding:6px; border:1px solid #ccc;">140.134.64.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.95.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.64.1 ~ 95.254</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">#4</td><td style="padding:6px; border:1px solid #ccc;">011</td><td style="padding:6px; border:1px solid #ccc;">140.134.96.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.127.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.96.1 ~ 127.254</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">#5</td><td style="padding:6px; border:1px solid #ccc;">100</td><td style="padding:6px; border:1px solid #ccc;">140.134.128.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.159.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.128.1 ~ 159.254</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">#6</td><td style="padding:6px; border:1px solid #ccc;">101</td><td style="padding:6px; border:1px solid #ccc;">140.134.160.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.191.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.160.1 ~ 191.254</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">#7</td><td style="padding:6px; border:1px solid #ccc;">110</td><td style="padding:6px; border:1px solid #ccc;">140.134.192.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.223.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.192.1 ~ 223.254</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">#8</td><td style="padding:6px; border:1px solid #ccc;">111</td><td style="padding:6px; border:1px solid #ccc;">140.134.224.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.255.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.224.1 ~ 255.254</td></tr>
+      </thead><tbody><tr><td>#1</td><td>000</td><td>140.134.0.0</td><td>140.134.31.255</td><td>140.134.0.1 ~ 31.254</td></tr>
+      <tr><td>#2</td><td>001</td><td>140.134.32.0</td><td>140.134.63.255</td><td>140.134.32.1 ~ 63.254</td></tr>
+      <tr><td>#3</td><td>010</td><td>140.134.64.0</td><td>140.134.95.255</td><td>140.134.64.1 ~ 95.254</td></tr>
+      <tr><td>#4</td><td>011</td><td>140.134.96.0</td><td>140.134.127.255</td><td>140.134.96.1 ~ 127.254</td></tr>
+      <tr><td>#5</td><td>100</td><td>140.134.128.0</td><td>140.134.159.255</td><td>140.134.128.1 ~ 159.254</td></tr>
+      <tr><td>#6</td><td>101</td><td>140.134.160.0</td><td>140.134.191.255</td><td>140.134.160.1 ~ 191.254</td></tr>
+      <tr><td>#7</td><td>110</td><td>140.134.192.0</td><td>140.134.223.255</td><td>140.134.192.1 ~ 223.254</td></tr>
+      <tr><td>#8</td><td>111</td><td>140.134.224.0</td><td>140.134.255.255</td><td>140.134.224.1 ~ 255.254</td></tr>
     </table>
   </div>
 
@@ -303,30 +303,30 @@
       <li>▶ 子網路位元數增加 → 網路遮罩從 <span class="formula">255.255.128.0（/17）</span> 遞增到 <span class="formula">255.255.255.255（/32）</span></li>
       <li>▶ 每增加 1 位元：主機位元少 1，可分配子網路數 × 2，主機數 ÷ 2</li>
     </ul>
-    <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
-      <tr style="background:#4299e1; color:white;">
-        <th style="padding:6px; border:1px solid #ccc;">借位元數</th>
-        <th style="padding:6px; border:1px solid #ccc;">子網路遮罩</th>
-        <th style="padding:6px; border:1px solid #ccc;">/n</th>
-        <th style="padding:6px; border:1px solid #ccc;">子網路數</th>
-        <th style="padding:6px; border:1px solid #ccc;">每網路主機數</th>
+    <table class="compare-table">
+        <thead><tr>
+        <th>借位元數</th>
+        <th>子網路遮罩</th>
+        <th>/n</th>
+        <th>子網路數</th>
+        <th>每網路主機數</th>
       </tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">1</td><td style="padding:6px; border:1px solid #ccc;">255.255.128.0</td><td style="padding:6px; border:1px solid #ccc;">/17</td><td style="padding:6px; border:1px solid #ccc;">2</td><td style="padding:6px; border:1px solid #ccc;">32,766</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">2</td><td style="padding:6px; border:1px solid #ccc;">255.255.192.0</td><td style="padding:6px; border:1px solid #ccc;">/18</td><td style="padding:6px; border:1px solid #ccc;">4</td><td style="padding:6px; border:1px solid #ccc;">16,382</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">3</td><td style="padding:6px; border:1px solid #ccc;">255.255.224.0</td><td style="padding:6px; border:1px solid #ccc;">/19</td><td style="padding:6px; border:1px solid #ccc;">8</td><td style="padding:6px; border:1px solid #ccc;">8,190</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">4</td><td style="padding:6px; border:1px solid #ccc;">255.255.240.0</td><td style="padding:6px; border:1px solid #ccc;">/20</td><td style="padding:6px; border:1px solid #ccc;">16</td><td style="padding:6px; border:1px solid #ccc;">4,094</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">5</td><td style="padding:6px; border:1px solid #ccc;">255.255.248.0</td><td style="padding:6px; border:1px solid #ccc;">/21</td><td style="padding:6px; border:1px solid #ccc;">32</td><td style="padding:6px; border:1px solid #ccc;">2,046</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">6</td><td style="padding:6px; border:1px solid #ccc;">255.255.252.0</td><td style="padding:6px; border:1px solid #ccc;">/22</td><td style="padding:6px; border:1px solid #ccc;">64</td><td style="padding:6px; border:1px solid #ccc;">1,022</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">7</td><td style="padding:6px; border:1px solid #ccc;">255.255.254.0</td><td style="padding:6px; border:1px solid #ccc;">/23</td><td style="padding:6px; border:1px solid #ccc;">128</td><td style="padding:6px; border:1px solid #ccc;">510</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">8</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.0</td><td style="padding:6px; border:1px solid #ccc;">/24</td><td style="padding:6px; border:1px solid #ccc;">256</td><td style="padding:6px; border:1px solid #ccc;">254</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">9</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.128</td><td style="padding:6px; border:1px solid #ccc;">/25</td><td style="padding:6px; border:1px solid #ccc;">512</td><td style="padding:6px; border:1px solid #ccc;">126</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">10</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.192</td><td style="padding:6px; border:1px solid #ccc;">/26</td><td style="padding:6px; border:1px solid #ccc;">1,024</td><td style="padding:6px; border:1px solid #ccc;">62</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">11</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.224</td><td style="padding:6px; border:1px solid #ccc;">/27</td><td style="padding:6px; border:1px solid #ccc;">2,048</td><td style="padding:6px; border:1px solid #ccc;">30</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">12</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.240</td><td style="padding:6px; border:1px solid #ccc;">/28</td><td style="padding:6px; border:1px solid #ccc;">4,096</td><td style="padding:6px; border:1px solid #ccc;">14</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">13</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.248</td><td style="padding:6px; border:1px solid #ccc;">/29</td><td style="padding:6px; border:1px solid #ccc;">8,192</td><td style="padding:6px; border:1px solid #ccc;">6</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">14</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.252</td><td style="padding:6px; border:1px solid #ccc;">/30</td><td style="padding:6px; border:1px solid #ccc;">16,384</td><td style="padding:6px; border:1px solid #ccc;">2</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">15</td><td style="padding:6px; border:1px solid #ccc;">不使用</td><td style="padding:6px; border:1px solid #ccc;">—</td><td style="padding:6px; border:1px solid #ccc;">不使用</td><td style="padding:6px; border:1px solid #ccc;">不使用</td></tr>
-      <tr><td style="padding:6px; border:1px solid #ccc;">16</td><td style="padding:6px; border:1px solid #ccc;">不使用</td><td style="padding:6px; border:1px solid #ccc;">—</td><td style="padding:6px; border:1px solid #ccc;">不合用</td><td style="padding:6px; border:1px solid #ccc;">不使用</td></tr>
+      <tr><td>1</td><td>255.255.128.0</td><td>/17</td><td>2</td><td>32,766</td></tr>
+      <tr><td>2</td><td>255.255.192.0</td><td>/18</td><td>4</td><td>16,382</td></tr>
+      <tr><td>3</td><td>255.255.224.0</td><td>/19</td><td>8</td><td>8,190</td></tr>
+      <tr><td>4</td><td>255.255.240.0</td><td>/20</td><td>16</td><td>4,094</td></tr>
+      <tr><td>5</td><td>255.255.248.0</td><td>/21</td><td>32</td><td>2,046</td></tr>
+      <tr><td>6</td><td>255.255.252.0</td><td>/22</td><td>64</td><td>1,022</td></tr>
+      <tr><td>7</td><td>255.255.254.0</td><td>/23</td><td>128</td><td>510</td></tr>
+      <tr><td>8</td><td>255.255.255.0</td><td>/24</td><td>256</td><td>254</td></tr>
+      <tr><td>9</td><td>255.255.255.128</td><td>/25</td><td>512</td><td>126</td></tr>
+      <tr><td>10</td><td>255.255.255.192</td><td>/26</td><td>1,024</td><td>62</td></tr>
+      <tr><td>11</td><td>255.255.255.224</td><td>/27</td><td>2,048</td><td>30</td></tr>
+      <tr><td>12</td><td>255.255.255.240</td><td>/28</td><td>4,096</td><td>14</td></tr>
+      <tr><td>13</td><td>255.255.255.248</td><td>/29</td><td>8,192</td><td>6</td></tr>
+      <tr><td>14</td><td>255.255.255.252</td><td>/30</td><td>16,384</td><td>2</td></tr>
+      <tr><td>15</td><td>不使用</td><td>—</td><td>不使用</td><td>不使用</td></tr>
+      <tr><td>16</td><td>不使用</td><td>—</td><td>不合用</td><td>不使用</td></tr>
     </table>
   </div>
 
@@ -478,28 +478,28 @@
     <h2>📌 7｜保留位址</h2>
 
 <div class="highlight-box">
-  <p>保留位址表</p>
+  <p>保▶ 常見的保留位址
+</p>
 </div>
-
+<table class="compare-table">
+  <thead><tr><th>IP 網域</th><th>保留目的</th></tr></thead>
+  <tbody>
+    <tr><td>0.0.0.0/8</td><td>本網域（"This" Network）</td></tr>
+    <tr><td>10.0.0.0/8</td><td>A 類私人使用網域（Private-Use Networks）</td></tr>
+    <tr><td>14.0.0.0/8</td><td>公眾數據網路（Public-Data Networks；PDN）</td></tr>
+    <tr><td>24.0.0.0/8</td><td>有線電視網路（Cable Television Networks）</td></tr>
+    <tr><td>127.0.0.0/8</td><td>迴路回測（Loopback Test）</td></tr>
+    <tr><td>169.254.0.0/16</td><td>鏈結區域（Link Local）</td></tr>
+    <tr><td>172.16.0.0/12</td><td>B 類私人使用網域（Private-Use Networks）</td></tr>
+    <tr><td>192.0.2.0/24</td><td>測試網路（Test-Net）</td></tr>
+    <tr><td>192.88.99.0/24</td><td>6to4 中繼任點傳播（Relay Anycast）</td></tr>
+    <tr><td>192.168.0.0/16</td><td>C 類私人使用網域（Private-Use Networks）</td></tr>
+    <tr><td>—</td><td>HESIOD（Network Interconnect Device Benchmark）</td></tr>
+    <tr><td>255.255.255.255</td><td>區域（Local）廣播位址</td></tr>
+  </tbody>
+</table>
 <div class="highlight-box">
-  <p>▶ 常見的保留位址</p>
-  <p>IP 網域                   │  IP 位址保留目的</p>
-  <p>0.0.0.0/8         │  本網域（"This" Network）</p>
-  <p>10.0.0.0/8        │  A 類私人使用網域（Private-Use Networks）</p>
-  <p>14.0.0.0/8        │  公眾數據網路（Public-Data Networks；PDN）</p>
-  <p>24.0.0.0/8        │  有線電視網路（Cable Television Networks）</p>
-  <p>127.0.0.0/8       │  迴路回測（Loopback Test）</p>
-  <p>169.254.0.0/16    │  鏈結區域（Link Local）</p>
-  <p>172.16.0.0/12     │  B 類私人使用網域（Private-Use Networks）</p>
-  <p>192.0.2.0/24      │  測試網路（Test-Net）</p>
-  <p>192.88.99.0/24    │  6to4 中繼任點傳播（Relay Anycast）</p>
-  <p>192.168.0.0/16    │  C 類私人使用網域（Private-Use Networks）</p>
-  <p>—                 │  HESIOD（Network Interconnect Device Benchmark）</p>
-  <p>255.255.255.255  │  區域（Local）廣播位址</p>
-</div>
-
-<div class="highlight-box">
-  <p>▶ 重要的保留位址</p>
+<p>▶ 重要的保留位址▶ 重要的保留位址</p>
   <p>▶ 1. 本網域（"This" Network）</p>
   <p>▶ 2. 企業網路內部保留位址（Intranet IP Address）</p>
   <p>▶ 3. 迴路回測（Loopback Test）</p>
@@ -693,24 +693,34 @@
 <div class="highlight-box">
   <p>▶ gTLD（一般頂層網域）</p>
   <p>▶ 原來有七種單位定義，後續有 museum、travel、tel、asia 等十幾類正式 gTLD 的設立</p>
-  <p>　edu    │  教育機構</p>
-  <p>　gov    │  政府機構</p>
-  <p>　com    │  公司企業行號</p>
-  <p>　net    │  網路事業機構</p>
-  <p>　org    │  非營利事業財團法人、基金會</p>
-  <p>　int    │  國際組織</p>
-  <p>　mil    │  軍事單位</p>
 </div>
+<table class="compare-table">
+  <thead><tr><th>代碼</th><th>用途</th></tr></thead>
+  <tbody>
+    <tr><td>edu</td><td>教育機構</td></tr>
+    <tr><td>gov</td><td>政府機構</td></tr>
+    <tr><td>com</td><td>公司企業行號</td></tr>
+    <tr><td>net</td><td>網路事業機構</td></tr>
+    <tr><td>org</td><td>非營利事業財團法人、基金會</td></tr>
+    <tr><td>int</td><td>國際組織</td></tr>
+    <tr><td>mil</td><td>軍事單位</td></tr>
+  </tbody>
+</table>
 
 <div class="highlight-box">
   <p>▶ ccTLD（Country Code TLD；國家頂層網域）</p>
   <p>▶ 各國語言也可以設立，台灣 ccTLD 增加了中文網域</p>
-  <p>　cn  │  中國大陸          us  │  美國</p>
-  <p>　hk  │  香港              uk  │  英國</p>
-  <p>　jp  │  日本              eu  │  歐盟</p>
-  <p>　kr  │  韓國              au  │  澳洲</p>
-  <p>　tw  │  台灣</p>
 </div>
+<table class="compare-table">
+  <thead><tr><th>代碼</th><th>國家/地區</th><th>代碼</th><th>國家/地區</th></tr></thead>
+  <tbody>
+    <tr><td>cn</td><td>中國大陸</td><td>us</td><td>美國</td></tr>
+    <tr><td>hk</td><td>香港</td><td>uk</td><td>英國</td></tr>
+    <tr><td>jp</td><td>日本</td><td>eu</td><td>歐盟</td></tr>
+    <tr><td>kr</td><td>韓國</td><td>au</td><td>澳洲</td></tr>
+    <tr><td>tw</td><td>台灣</td><td></td><td></td></tr>
+  </tbody>
+</table>
 
 <div class="highlight-box">
   <p>▶ TLD 之後</p>
@@ -757,19 +767,24 @@
 
 <div class="highlight-box">
   <p>▶ 網域名稱範例</p>
-  <p>　www.flag.com.tw        │  旗標出版公司</p>
-  <p>　www.cisco.com         │  思科公司</p>
-  <p>　www.twnic.net         │  台灣網路資訊中心</p>
-  <p>　www.toyota.co.jp      │  日本豐田汽車公司</p>
-  <p>　www.thebritishmuseum.ac.uk │  英國大英博物館</p>
-  <p>　www.tsmc.com.tw       │  台灣積體電路公司</p>
-  <p>　www.redcross.org.tw   │  中華民國紅十字會</p>
-  <p>　goo.gl/maps/08W96     │  短網址範例</p>
-  <p>　www.twnic.tw          │  泛用型英文網址範例</p>
-  <p>　台灣盆栽世界.tw        │  中文網址範例</p>
-  <p>　中文.台灣              │  「.台灣」網域範例</p>
-  <p>　www.travel.taipei     │  台北旅遊網</p>
 </div>
+<table class="compare-table">
+  <thead><tr><th>網域</th><th>組織/範例說明</th></tr></thead>
+  <tbody>
+    <tr><td>www.flag.com.tw</td><td>旗標出版公司</td></tr>
+    <tr><td>www.cisco.com</td><td>思科公司</td></tr>
+    <tr><td>www.twnic.net</td><td>台灣網路資訊中心</td></tr>
+    <tr><td>www.toyota.co.jp</td><td>日本豐田汽車公司</td></tr>
+    <tr><td>www.thebritishmuseum.ac.uk</td><td>英國大英博物館</td></tr>
+    <tr><td>www.tsmc.com.tw</td><td>台灣積體電路公司</td></tr>
+    <tr><td>www.redcross.org.tw</td><td>中華民國紅十字會</td></tr>
+    <tr><td>goo.gl/maps/08W96</td><td>短網址範例</td></tr>
+    <tr><td>www.twnic.tw</td><td>泛用型英文網址範例</td></tr>
+    <tr><td>台灣盆栽世界.tw</td><td>中文網址範例</td></tr>
+    <tr><td>中文.台灣</td><td>「.台灣」網域範例</td></tr>
+    <tr><td>www.travel.taipei</td><td>台北旅遊網</td></tr>
+  </tbody>
+</table>
 
 <div class="highlight-box">
   <p>網域名稱伺服器</p>
@@ -927,20 +942,9 @@
 
 <div class="highlight-box">
 <h3>PROT（Protocol；網路協定）— 8 位元</h3>
-<table>
-<tr><td>1</td><td>ICMP</td><td>Internet Control Message Protocol</td></tr>
-<tr><td>2</td><td>IGMP</td><td>Internet Group Management Protocol</td></tr>
-<tr><td>3</td><td>GGP</td><td>Gateway-Gateway Protocol</td></tr>
-<tr><td>6</td><td>TCP</td><td>Transmission Control Protocol</td></tr>
-<tr><td>8</td><td>EGP</td><td>Exterior Gateway Protocol</td></tr>
-<tr><td>9</td><td>IGP</td><td>Interior Gateway Protocol</td></tr>
-<tr><td>17</td><td>UDP</td><td>User Datagram Protocol</td></tr>
-<tr><td>41</td><td>IPv6</td><td>Internet Protocol version 6</td></tr>
-<tr><td>47</td><td>GRE</td><td>Generic Routing Encapsulation</td></tr>
-<tr><td>50</td><td>ESP</td><td>Encapsulating Security Payload</td></tr>
-<tr><td>51</td><td>AH</td><td>Authentication Header</td></tr>
-<tr><td>88</td><td>EIGRP</td><td>Enhanced Interior Gateway Routing Protocol</td></tr>
-<tr><td>89</td><td>OSPF</td><td>Open Shortest Path First</td></tr>
+<table class="compare-table">
+<thead><tr><th>號碼</th><th>協定</th><th>全名</th></tr></thead>
+<tbody><tr><td>1</td><td>ICMP</td><td>Internet Control Message Protocol</td></tr><tr><td>2</td><td>IGMP</td><td>Internet Group Management Protocol</td></tr><tr><td>3</td><td>GGP</td><td>Gateway-Gateway Protocol</td></tr><tr><td>6</td><td>TCP</td><td>Transmission Control Protocol</td></tr><tr><td>8</td><td>EGP</td><td>Exterior Gateway Protocol</td></tr><tr><td>9</td><td>IGP</td><td>Interior Gateway Protocol</td></tr><tr><td>17</td><td>UDP</td><td>User Datagram Protocol</td></tr><tr><td>41</td><td>IPv6</td><td>Internet Protocol version 6</td></tr><tr><td>47</td><td>GRE</td><td>Generic Routing Encapsulation</td></tr><tr><td>50</td><td>ESP</td><td>Encapsulating Security Payload</td></tr><tr><td>51</td><td>AH</td><td>Authentication Header</td></tr><tr><td>88</td><td>EIGRP</td><td>Enhanced Interior Gateway Routing Protocol</td></tr><tr><td>89</td><td>OSPF</td><td>Open Shortest Path First</td></tr></tbody>
 </table>
 </div>
 
@@ -1212,26 +1216,9 @@
 
 <div class="highlight-box">
 <h3>格式首碼（Format Prefix）</h3>
-<table>
-<tr><td>0000 0000</td><td>保留作 IPv4 配置</td><td>1/256</td></tr>
-<tr><td>0000 0001</td><td>未配置</td><td>1/256</td></tr>
-<tr><td>0000 0010</td><td>保留作 NSAP 配置</td><td>1/128</td></tr>
-<tr><td>0000 0100</td><td>保留作 IPX 配置</td><td>1/128</td></tr>
-<tr><td>0000 0110</td><td>未配置</td><td>1/256</td></tr>
-<tr><td>0000 1</td><td>未配置</td><td>1/32</td></tr>
-<tr><td>0001</td><td>未配置</td><td>1/16</td></tr>
-<tr><td>001</td><td>可聚集全球性單點傳播位址</td><td>1/8</td></tr>
-<tr><td>010</td><td>未配置</td><td>1/8</td></tr>
-<tr><td>100</td><td>未配置</td><td>1/8</td></tr>
-<tr><td>101</td><td>未配置</td><td>1/8</td></tr>
-<tr><td>110</td><td>未配置</td><td>1/8</td></tr>
-<tr><td>1110</td><td>未配置</td><td>1/16</td></tr>
-<tr><td>1111 0</td><td>未配置</td><td>1/32</td></tr>
-<tr><td>1111 10</td><td>未配置</td><td>1/64</td></tr>
-<tr><td>1111 110</td><td>未配置</td><td>1/128</td></tr>
-<tr><td>1111 1110 0</td><td>區域連結單點傳播位址</td><td>1/1024</td></tr>
-<tr><td>1111 1110 11</td><td>區域站台單點傳播位址</td><td>1/1024</td></tr>
-<tr><td>1111 1111</td><td>多點群播位址</td><td>1/256</td></tr>
+<table class="compare-table">
+<thead><tr><th>前綴</th><th>用途</th><th>比例</th></tr></thead>
+<tbody><tr><td>0000 0000</td><td>保留作 IPv4 配置</td><td>1/256</td></tr><tr><td>0000 0001</td><td>未配置</td><td>1/256</td></tr><tr><td>0000 0010</td><td>保留作 NSAP 配置</td><td>1/128</td></tr><tr><td>0000 0100</td><td>保留作 IPX 配置</td><td>1/128</td></tr><tr><td>0000 0110</td><td>未配置</td><td>1/256</td></tr><tr><td>0000 1</td><td>未配置</td><td>1/32</td></tr><tr><td>0001</td><td>未配置</td><td>1/16</td></tr><tr><td>001</td><td>可聚集全球性單點傳播位址</td><td>1/8</td></tr><tr><td>010</td><td>未配置</td><td>1/8</td></tr><tr><td>100</td><td>未配置</td><td>1/8</td></tr><tr><td>101</td><td>未配置</td><td>1/8</td></tr><tr><td>110</td><td>未配置</td><td>1/8</td></tr><tr><td>1110</td><td>未配置</td><td>1/16</td></tr><tr><td>1111 0</td><td>未配置</td><td>1/32</td></tr><tr><td>1111 10</td><td>未配置</td><td>1/64</td></tr><tr><td>1111 110</td><td>未配置</td><td>1/128</td></tr><tr><td>1111 1110 0</td><td>區域連結單點傳播位址</td><td>1/1024</td></tr><tr><td>1111 1110 11</td><td>區域站台單點傳播位址</td><td>1/1024</td></tr><tr><td>1111 1111</td><td>多點群播位址</td><td>1/256</td></tr></tbody>
 </table>
 </div>
 
@@ -1310,35 +1297,17 @@
 
 <div class="highlight-box">
 <h3>IPv4「PROT」標示的協定項目</h3>
-<table>
-<tr><td>1</td><td>ICMP</td><td>Internet Control Message Protocol</td></tr>
-<tr><td>2</td><td>IGMP</td><td>Internet Group Management Protocol</td></tr>
-<tr><td>3</td><td>GGP</td><td>Gateway-Gateway Protocol</td></tr>
-<tr><td>6</td><td>TCP</td><td>Transmission Control Protocol</td></tr>
-<tr><td>8</td><td>EGP</td><td>Exterior Gateway Protocol</td></tr>
-<tr><td>9</td><td>IGP</td><td>Interior Gateway Protocol</td></tr>
-<tr><td>17</td><td>UDP</td><td>User Datagram Protocol</td></tr>
-<tr><td>41</td><td>IPv6</td><td>Internet Protocol version 6</td></tr>
-<tr><td>47</td><td>GRE</td><td>Generic Routing Encapsulation</td></tr>
-<tr><td>50</td><td>ESP</td><td>Encapsulating Security Payload</td></tr>
-<tr><td>51</td><td>AH</td><td>Authentication Header</td></tr>
-<tr><td>88</td><td>EIGRP</td><td>Enhanced Interior Gateway Routing Protocol</td></tr>
-<tr><td>89</td><td>OSPF</td><td>Open Shortest Path First</td></tr>
+<table class="compare-table">
+<thead><tr><th>號碼</th><th>協定</th><th>全名</th></tr></thead>
+<tbody><tr><td>1</td><td>ICMP</td><td>Internet Control Message Protocol</td></tr><tr><td>2</td><td>IGMP</td><td>Internet Group Management Protocol</td></tr><tr><td>3</td><td>GGP</td><td>Gateway-Gateway Protocol</td></tr><tr><td>6</td><td>TCP</td><td>Transmission Control Protocol</td></tr><tr><td>8</td><td>EGP</td><td>Exterior Gateway Protocol</td></tr><tr><td>9</td><td>IGP</td><td>Interior Gateway Protocol</td></tr><tr><td>17</td><td>UDP</td><td>User Datagram Protocol</td></tr><tr><td>41</td><td>IPv6</td><td>Internet Protocol version 6</td></tr><tr><td>47</td><td>GRE</td><td>Generic Routing Encapsulation</td></tr><tr><td>50</td><td>ESP</td><td>Encapsulating Security Payload</td></tr><tr><td>51</td><td>AH</td><td>Authentication Header</td></tr><tr><td>88</td><td>EIGRP</td><td>Enhanced Interior Gateway Routing Protocol</td></tr><tr><td>89</td><td>OSPF</td><td>Open Shortest Path First</td></tr></tbody>
 </table>
 </div>
 
 <div class="highlight-box">
 <h3>IPv6 新增延伸標頭項目</h3>
-<table>
-<tr><td>0</td><td>逐點（Hop-by-Hop）選擇項標頭</td><td>經過每個節點檢查其封包</td></tr>
-<tr><td>43</td><td>路由（Routing）標頭</td><td>指定需經過的節點</td></tr>
-<tr><td>44</td><td>封包分片（Fragmentation）標頭</td><td>分割封包</td></tr>
-<tr><td>50</td><td>封裝安全性承載資料（ESP）標頭</td><td>安全性加密機制</td></tr>
-<tr><td>51</td><td>認證（Authentication）標頭</td><td>身份認證</td></tr>
-<tr><td>58</td><td>ICMPv6</td><td>在 IPv6 使用的 ICMP 協定</td></tr>
-<tr><td>59</td><td>無下一個標頭（No Next Header）</td><td>後面沒有下一個標頭</td></tr>
-<tr><td>60</td><td>目的地選擇項（Destination Options）標頭</td><td>在目的地執行的選擇項</td></tr>
-<tr><td>135</td><td>IPv6 移動節點（Mobile IPv6）標頭</td><td>提供移動節點使用的選擇項</td></tr>
+<table class="compare-table">
+<thead><tr><th>號碼</th><th>標頭名稱</th><th>用途</th></tr></thead>
+<tbody><tr><td>0</td><td>逐點（Hop-by-Hop）選擇項標頭</td><td>經過每個節點檢查其封包</td></tr><tr><td>43</td><td>路由（Routing）標頭</td><td>指定需經過的節點</td></tr><tr><td>44</td><td>封包分片（Fragmentation）標頭</td><td>分割封包</td></tr><tr><td>50</td><td>封裝安全性承載資料（ESP）標頭</td><td>安全性加密機制</td></tr><tr><td>51</td><td>認證（Authentication）標頭</td><td>身份認證</td></tr><tr><td>58</td><td>ICMPv6</td><td>在 IPv6 使用的 ICMP 協定</td></tr><tr><td>59</td><td>無下一個標頭（No Next Header）</td><td>後面沒有下一個標頭</td></tr><tr><td>60</td><td>目的地選擇項（Destination Options）標頭</td><td>在目的地執行的選擇項</td></tr><tr><td>135</td><td>IPv6 移動節點（Mobile IPv6）標頭</td><td>提供移動節點使用的選擇項</td></tr></tbody>
 </table>
 </div>
 
