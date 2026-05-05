@@ -92,12 +92,19 @@
   {
     "id": 7,
     "slug": "ch7",
-    "title": "第七章（待確認）",
+    "title": "LAN 區域網路",
     "filename": "ch7.html",
     "tags": [
-      "CH7"
+      "CH7",
+      "IEEE802",
+      "CSMA/CD",
+      "MAC",
+      "訊框格式",
+      "交換式",
+      "802.11",
+      "CSMA/CA"
     ],
-    "desc": "待確認"
+    "desc": "IEEE802 委員會、各工作群組、乙太網路協定（CSMA/CD）、訊框格式（Preamble/MAC/Etype/FCS）、交換式乙太網路（碰撞網域/廣播網域）、5-4 法則、100M/1G/10G 乙太網路探討、802.11 無線網路（DCF/PCF/CSMA/CA/RTS-CTS/NAV）"
   },
   {
     "id": 8,
