@@ -32,7 +32,7 @@
   <main class="content">
 
     <header class="note-header">
-      <div class="note-date">待確認</div>
+      <div class="note-date">2026 年 05 月 05 日</div>
       <h1 class="note-title">CH8 — IP 協定</h1>
       <div class="note-tags">
         <span class="note-tag">CH8</span>
@@ -50,256 +50,1382 @@
     <!-- 大綱 -->
     <h2>📋 大綱</h2>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
-      <div class="concept-card"><div class="concept-card-title">📋 大綱</div><div class="concept-card-desc">第 2～3 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">🌐 IPv4 簡介</div><div class="concept-card-desc">第 4～7 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">🔢 IP 位址分類（A / B / C / D / E 類）</div><div class="concept-card-desc">第 8～15 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">🎭 網路遮罩</div><div class="concept-card-desc">第 16～20 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">🔗 子網路規劃</div><div class="concept-card-desc">第 21～29 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">🔀 CIDR 無分類網際尋徑</div><div class="concept-card-desc">第 30～43 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">🔒 保留位址</div><div class="concept-card-desc">第 44～54 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">⚙️ DHCP 動態主機設定協定</div><div class="concept-card-desc">第 55～57 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">🌍 DNS 網域名稱系統</div><div class="concept-card-desc">第 58～82 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">📦 IP 協定標頭</div><div class="concept-card-desc">第 83～104 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">⚡ IP 選擇項</div><div class="concept-card-desc">第 105～121 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">🚀 IPv6 簡介</div><div class="concept-card-desc">第 122～129 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">🚀 IPv6 傳播方式</div><div class="concept-card-desc">第 130～132 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">🚀 IPv6 位址結構</div><div class="concept-card-desc">第 133～142 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">🚀 IPv6 標頭與延伸標頭</div><div class="concept-card-desc">第 143～156 頁</div></div>
-      <div class="concept-card"><div class="concept-card-title">✅ 結語</div><div class="concept-card-desc">第 157～161 頁</div></div>
+      <div class="concept-card"><div class="concept-card-title">🌐 IPv4 簡介</div><div class="concept-card-desc">IP 位址結構、多版本、位址數量</div></div>
+      <div class="concept-card"><div class="concept-card-title">🔢 IP 位址分類</div><div class="concept-card-desc">A / B / C / D / E 類</div></div>
+      <div class="concept-card"><div class="concept-card-title">🎭 網路遮罩</div><div class="concept-card-desc">Network Mask、/n 表示法</div></div>
+      <div class="concept-card"><div class="concept-card-title">🔗 子網路規劃</div><div class="concept-card-desc">借位元、子網路遮罩、子網路切割</div></div>
+      <div class="concept-card"><div class="concept-card-title">🔀 CIDR</div><div class="concept-card-desc">無分類網際尋徑、超網整合</div></div>
+      <div class="concept-card"><div class="concept-card-title">🔒 保留位址</div><div class="concept-card-desc">私有 IP、NAT、Loopback</div></div>
+      <div class="concept-card"><div class="concept-card-title">⚙️ DHCP</div><div class="concept-card-desc">動態主機設定協定</div></div>
+      <div class="concept-card"><div class="concept-card-title">🌍 DNS</div><div class="concept-card-desc">網域名稱系統、階層式架構</div></div>
+      <div class="concept-card"><div class="concept-card-title">📦 IP 標頭</div><div class="concept-card-desc">各欄位詳解</div></div>
+      <div class="concept-card"><div class="concept-card-title">⚡ IP 選擇項</div><div class="concept-card-desc">Record Route、Source Routing、Timestamp</div></div>
+      <div class="concept-card"><div class="concept-card-title">🚀 IPv6 簡介</div><div class="concept-card-desc">128 位元、物聯網、QoS</div></div>
+      <div class="concept-card"><div class="concept-card-title">🚀 IPv6 傳播方式</div><div class="concept-card-desc">Unicast / Multicast / Anycast</div></div>
+      <div class="concept-card"><div class="concept-card-title">🚀 IPv6 位址結構</div><div class="concept-card-desc">表示法、Format Prefix、特殊位址</div></div>
+      <div class="concept-card"><div class="concept-card-title">🚀 IPv6 標頭</div><div class="concept-card-desc">主標頭 8 欄位、延伸標頭</div></div>
     </div>
 
+    <!-- 內容章節 -->
     <!-- IPv4 簡介 -->
     <section id="s2">
       <h2>📌 2｜IPv4 簡介</h2>
-      <div class="highlight-box">IP 位址<br>an                            © 僅授權用書單位使用</div>
-      <div class="highlight-box">多版本IP位址<br>字了位址:薄茫Internet大海中相互辨識<br>字第四版IP位址 =&gt; 目前使用<br>&gt;盡力將封包傳送出去<br>&gt;非連接導向 (Connectionless-Oriented)<br>寢第五版IP位址<br>&gt;&gt;連接導向 (Connection-Oriented)<br>&gt;資料流協定 (Stream Protocol) 實驗協定<br>&gt;沒有針對龐大的位址需求進行規劃<br>信下一版IP位址 =&gt; IPv6位址<br>&gt;— {R38 AlPng (next generation) 位址        -</div>
-      <div class="highlight-box">位址數量<br>寢IPv4位址:32位元 (bits) 所構成<br>&gt;可組成約四十三億 (232 = 4,294,967,296) 個位址<br>&gt;以8位元為單位,分四個部分,以十進位數表示<br>&gt;140.134.10.1<br>010001100 . 10000110 . 00001010 . 00000001<br>© IPv6 {7 tit 12847 PSA<br>&gt; He 2128 ht (~3.4x1038)<br>&gt;340,282,366,920,938,463,463,374,607,431,768,211,456<br>bnt” eg網路概論與真務,轉!</div>
-      <div class="highlight-box">位址分配<br>= {Ut Dac ICANN<br>&gt;Internet Corporation for Assigned Names<br>wie Numbers ; 網際網路名稱與數字地址分配<br>&gt;分配網路位元(Network bits)<br>im  qua  BARR<br>Ce a te ef</div>
+
+      <div class="highlight-box">
+        <strong>多版本 IP 位址</strong>
+        <ul>
+          <li>第四版 IP 位址 (IPv4) ⇒ 目前使用的主要版本</li>
+          <li>▶ <strong>盡力傳送</strong> (Best Effort)：將封包傳送出去，不保證可靠送達</li>
+          <li>▶ <strong>非連接導向</strong> (Connectionless-Oriented)</li>
+          <li>第五版 IP 位址 (IPv5)</li>
+          <li>▶ <strong>連接導向</strong> (Connection-Oriented)</li>
+          <li>▶ 資料流協定 (Stream Protocol) — 實驗協定，未廣泛部署</li>
+          <li>▶ 沒有針對龐大的位址需求進行規劃</li>
+          <li>下一版 IP 位址 ⇒ <strong>IPv6</strong> 位址 (IPng ; IP Next Generation)</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box">
+        <strong>位址數量</strong>
+        <ul>
+          <li><strong>IPv4 位址</strong>：32 位元 (bits) 所構成</li>
+          <li>▶ 可組成約 <strong>43 億</strong> 個位址 (2<sup>32</sup> = 4,294,967,296)</li>
+          <li>▶ 以 8 位元為單位，分四個部分，以十進位數表示</li>
+          <li>▶ Example: <code>140.134.10.1</code></li>
+          <li>二進位表示：<code>01000110 . 10000110 . 00001010 . 00000001</code></li>
+        </ul>
+        <ul>
+          <li><strong>IPv6 位址</strong>：128 位元</li>
+          <li>▶ 約 2<sup>128</sup> 個位址 (~3.4 × 10<sup>38</sup>)</li>
+          <li>▶ 340,282,366,920,938,463,463,374,607,431,768,211,456</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box">
+        <strong>位址分配</strong>
+        <ul>
+          <li><strong>ICANN</strong> (Internet Corporation for Assigned Names and Numbers)</li>
+          <li>▶ 網際網路名稱與數字地址分配機構</li>
+          <li>▶ 負責分配網路位元 (Network bits) 給全球各區域</li>
+        </ul>
+      </div>
     </section>
 
     <!-- IP 位址分類（A / B / C / D / E 類） -->
     <section id="s3">
       <h2>📌 3｜IP 位址分類（A / B / C / D / E 類）</h2>
-      <div class="highlight-box">IP 位址的分類<br>(0~127)<br>網路位元                                主機位元<br>B 類位址         10<br>(128~191)<br>網路位元                               主機位元<br>C 類位址          110<br>(192~223)<br>網路位元                                 主機位元<br>D 類位址          1110<br>(224~239)<br>群播位元<br>E 類位址          4114<br>(240~255)<br>預留位元                               pent<br>Te Tr ee i</div>
-      <div class="highlight-box">網域位址&amp;廣播位址<br>人 3  0. 0. 0<br>B, . 6B, 0 . 0<br>G , G&amp; as &amp; # 二<br>A, «255s 255 . [255<br>B, . By.) 255 . 255<br>TT.  rs<br>Ce a te ef</div>
-      <div class="highlight-box">A (Class A) 位址<br>字將最左邊位元值設為0<br>字7個網路位元 , 24個主機位元<br>&gt;128 (27) 種組合,也就是有128個A類網路系統<br>oQ第一個位元組的十進位數介於0~127之間<br>&gt;一個A類網路能提供224-2個主機位址<br>oQ減2是扣除網域位址與廣播位址<br>寢大都早已提供給一些Internet創始之初便參<br>與運作的組織機構使用<br>a ce ok pe |</div>
-      <div class="highlight-box">B類(Class B) 位址<br>寢最左邊兩個位元為10<br>字左邊第一個位元組介於128與191之間<br>寢有14個網路位元ˋ16個主機位元<br>&gt;可提供16,384 (也就是2ex28) 個網路系統<br>&gt;每個B類網路可提供246-2 (65,534) 個主機位址<br>ee er te re</div>
-      <div class="highlight-box">C類(Class C) 位址<br>字最左邊三個位元設為110<br>字左中第一個位元組值介於192與223間<br>&gt;C類位址具21個網路位元<br>&gt;&gt;可提供2,097,152 (也就是25x28x28) 個網路系統<br>&gt;每個C類網路可提供28-2 (254) 個主機位址<br>Ce a se網路概論和與顛務圖!</div>
-      <div class="highlight-box">D3&amp; (Class D) 位址<br>ow Bet Rts (Multicast)<br>信最左四位元為1110<br>&gt;左邊第一個位元組值介於224與239之問<br>字沒有網路位元與主機位元的區分<br>字每個多點群播「群組」需擁有一個D類位址<br>字藉多點群播路由器(MRouter ; Mutlicasting<br>Router) 以一對多方式進行資料傳送<br>全有效降低網路的資料傳送量<br>吧re | es網路概論和與實務圖</div>
-      <div class="highlight-box">一對一      ¥<br>Eas es ee<br>g=0 Ce<br>Router         4<br>pa i<br>|   a g  ™ .<br>MRouter   | =~ 5<br>rT<br>Fan bth 80</div>
-      <div class="highlight-box">E%6 (Class E) 位址<br>密最左邊四個位元設為1111<br>密左邊第一個位元組值介於240至255之間<br>寢目前規劃保留作實驗網路運用<br>a es |</div>
-    </section>
 
+      <div class="highlight-box">
+        <strong>IP 位址的分類</strong>
+        <ul>
+          <li><strong>A 類位址</strong>：首位元 = 0，範圍 0~127</li>
+          <li>▶ 網路位元：8 個，主機位元：24 個</li>
+          <li><strong>B 類位址</strong>：前二位元 = 10，範圍 128~191</li>
+          <li>▶ 網路位元：16 個，主機位元：16 個</li>
+          <li><strong>C 類位址</strong>：前三位元 = 110，範圍 192~223</li>
+          <li>▶ 網路位元：24 個，主機位元：8 個</li>
+          <li><strong>D 類位址</strong>：前四位元 = 1110，範圍 224~239</li>
+          <li>▶ 用於群播位元 (Multicast)</li>
+          <li><strong>E 類位址</strong>：前四位元 = 1111，範圍 240~255</li>
+          <li>▶ 預留位元，實驗網路使用</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box">
+        <strong>網域位址與廣播位址</strong>
+        <ul>
+          <li>每個 IP 類別的網域位址：該網段的第一個位址（主機位元全為 0）</li>
+          <li>每個 IP 類別的廣播位址：該網段的最後一個位址（主機位元全為 1）</li>
+          <li>A 類網域：0.0.0.0，A 類廣播：X.255.255.255</li>
+          <li>B 類網域：X.0.0.0，B 類廣播：X.Y.255.255</li>
+          <li>C 類網域：X.Y.0.0，C 類廣播：X.Y.Z.255</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box">
+        <strong>A 類 (Class A) 位址</strong>
+        <ul>
+          <li>▶ 最左邊位元值設為 0</li>
+          <li>▶ 7 個網路位元，24 個主機位元</li>
+          <li>▶ 2<sup>7</sup> = 128 種組合，也就是有 128 個 A 類網路系統</li>
+          <li>▶ 第一個位元組的十進位數介於 <strong>0~127</strong> 之間</li>
+          <li>▶ 一個 A 類網路能提供 2<sup>24</sup> - 2 = <strong>16,777,214</strong> 個主機位址</li>
+          <li>▶ 減 2 是扣除網域位址與廣播位址</li>
+          <li>▶ 大多早已提供給 Internet 創始之初便參與運作的組織機構使用</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box">
+        <strong>B 類 (Class B) 位址</strong>
+        <ul>
+          <li>▶ 最左邊兩個位元為 <strong>10</strong></li>
+          <li>▶ 左邊第一個位元組介於 <strong>128 與 191</strong> 之間</li>
+          <li>▶ 有 14 個網路位元，16 個主機位元</li>
+          <li>▶ 可提供 2<sup>14</sup> = <strong>16,384</strong> 個網路系統</li>
+          <li>▶ 每個 B 類網路可提供 2<sup>16</sup> - 2 = <strong>65,534</strong> 個主機位址</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box">
+        <strong>C 類 (Class C) 位址</strong>
+        <ul>
+          <li>▶ 最左邊三個位元設為 <strong>110</strong></li>
+          <li>▶ 左邊第一個位元組值介於 <strong>192 與 223</strong> 之間</li>
+          <li>▶ C 類位址具 21 個網路位元</li>
+          <li>▶ 可提供 2<sup>21</sup> = <strong>2,097,152</strong> 個網路系統</li>
+          <li>▶ 每個 C 類網路可提供 2<sup>8</sup> - 2 = <strong>254</strong> 個主機位址</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box">
+        <strong>D 類 (Class D) 位址</strong>
+        <ul>
+          <li>▶ 用於多點群播 (Multicast)</li>
+          <li>▶ 最左四位元為 <strong>1110</strong></li>
+          <li>▶ 左邊第一個位元組值介於 <strong>224 與 239</strong> 之間</li>
+          <li>▶ 沒有網路位元與主機位元的區分</li>
+          <li>▶ 每個多點群播「群組」需擁有一個 D 類位址</li>
+          <li>▶ 藉多點群播路由器 (MRouter ; Multicasting Router) 以一對多方式進行資料傳送</li>
+          <li>▶ 可有效降低網路的資料傳送量</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box">
+        <strong>E 類 (Class E) 位址</strong>
+        <ul>
+          <li>▶ 最左邊四個位元設為 <strong>1111</strong></li>
+          <li>▶ 左邊第一個位元組值介於 <strong>240 至 255</strong> 之間</li>
+          <li>▶ 目前規劃保留作實驗網路運用</li>
+        </ul>
+      </div>
+    </section>
     <!-- 網路遮罩 -->
-    <section id="s4">
-      <h2>📌 4｜網路遮罩</h2>
-      <div class="highlight-box">|<br>網路遮罩<br>eee 書單位使用</div>
-      <div class="highlight-box">字網路遮罩 (Network Mask)<br>寢網路位元:1,主機位元:0<br>&gt;&gt;遮掉不同網域的部分<br>寢遮罩值由左到右的排列<br>&gt;一連串的1接續一連串的0<br>&gt;不至於有0與1交錯的情形<br>寢有時以「/n」方式與網域位址一起搭配表示<br>&gt;n代表遮踢值設為1的位元數數量<br>&gt;避免每次要繁瑣地寫出一連串的數字<br>&gt; Ex: 210.134.56.0/24<br>0210.134.56.0網域<br>0遮直值:24位元的1 , 也就是255.255.255.0<br>ee er te re</div>
-      <div class="highlight-box">各類IP位址的網路遮罩設定<br>C 類位址網路遮踢 Set en oe<br>uy    ui  AER<br>Ce a te ef</div>
-      <div class="highlight-box">字概念:是否屬相同網域的概念作區分<br>&gt;相同網域電腦間可以想像為看得見的節點<br>0主機位址:網路遮罩設為0<br>&gt;網路位元的部分 , 一般主機無法關注到<br>0位元值設為1<br>le! |         (Ga<br>Meer ee ee       Bk BRA</div>
-      <div class="highlight-box">網路遮罩的應用與判別<br>140 134 0 0<br>140 134 0 0<br>=    =» ill ii BARR<br>Ce a te ef</div>
-    </section>
+<section id="s4">
+  <h2>📌 4｜網路遮罩（Network Mask）</h2>
 
-    <!-- 子網路規劃 -->
-    <section id="s5">
-      <h2>📌 5｜子網路規劃</h2>
-      <div class="highlight-box">|<br>子網路規劃<br>eee 書單位使用</div>
-      <div class="highlight-box">ee<br>————<br>FOSS  Eres um 主 fo eed | 7<br>a es |</div>
-      <div class="highlight-box">範例<br>一個B類網路向主機位元借三位元作子網路<br>&gt;三個子網路位元: 8 (2°) 個子網路<br>&gt;每個子網路系統有13個位元提供作主機位元<br>QQ每個子網路系統可擁有8190 (219-2) 個主機位址<br>&gt;子網路遮罩255.255.224.0 (或以/19表示)<br>可支配 8,190 個主機位址<br>10 NNNNNN.NNNNNNNN | 000<br>001<br>:     010    ‧<br>011    ‘<br>:     100    :<br>‘     101    :<br>;   110   il  才</div>
-      <div class="highlight-box">子網路規劃與IP位址分配<br>子網路 | 子網路位元 ]子網域位址 “| 子網路廣播位址 |   可用IP範圍<br>#1 | 000 { 140.134.0.0 |} 140.134.31.255 | 140.134.0.1~31.254<br>#2 =} 001 | 140.134.32.0 ; 140.134.63.255 ; 140.134.32.1~63.254<br>#3 | 010 | 140.134.64.0 ; 140.134.95.255 | 140.134.64.1~95.254<br>#4: 011 | 140.134.96.0 ; 140.134.127.255 ; 140.134.96.1~127.254<br>#5 | 100 | 140.134.128.0 } 140.134.159.255 | 140.134.128.1~159.254<br>#6 =: 101 | 140.134.160.0 ; 140.134.191.255 ; 140.134.160.1~191.254<br>#7} 110} 140.134.192.0 ; 140.134.223.255 ; 140.134.192.1~223.254<br>#8: 141) 140.134.224.0 ; 140.134.255.255 | 140.134.224.1~255.254<br>BURL<br>fia end tbe etinlhy)                     kt BBRe</div>
-      <div class="highlight-box">人      4<br>hd<br>子網路遮罩運算換算表<br>(128) | 4 | @2 |} | @ | @ | @ | a | Peete<br>1  f  0  0  0  0  ‘  0  i  0  0    128<br>1  ll  t  0  :  0  '  0  H  0  0  0    192<br>1  1  1  i  0  t  0  t  0  '  0  1  0    224<br>4|  :  1  ii  1  0  0  0  1  0    240<br>1  t  1  t  1  4)  t  ‘  t  0  t  0  t  0    248<br>Hi  8  1  ‘  1  1  &gt;  0  K  0    252<br>4  H  il  t  1  t  il  i  1  H  1  H  1  H  0    254<br>4  1  t  1  t  1  t  1  '  1  ‘  1  1    255<br>、      ¥ 「1,」位元多的用25                              說念, 4<br>NN ALLE GRIER ©                      S<br>Gow waxe?<br>BARR<br>MA人 oy        KH BRA</div>
-      <div class="highlight-box">ue<br>子網路判斷<br>140.134.36.19 sezsicat [40004400 | [10000110 |00100100 00010011<br>41111111111111  ,00000000<br>AND 之入時,10001100 | 10000110 |00100100 | 00000000<br>140             134              36               0<br>*40.194.176.154 wazetzat 100047100} (70000179) (710107777) [10017010<br>111111111 | 19111111) (00000000,<br>AND i@stiss# 10001100 | 10000110 | 10101111 00000000<br>140             134             175               0<br>@)               (a)        BARR</div>
-      <div class="highlight-box">Windows環境相關位址設定<br>網網中通邵協定笨4 版TCP/Ipv4) -內說 。 本<br>|   一般<br>如果您的網路支援這項功能,您可以取得自動指派的IP 設定。否<br>則,您必須詢問網路系統管理員正確的IF 設定。-<br>© 自動取得IP位址(O)<br>© 使用下列的IP 位址(5)<br>IP (art):              140. 134. 36 . 19<br>FRBIEZ CU):                 255. 255.255. 0<br>FARM O):                  140. 134. 36 . 254<br>自動取得 DNS 伺服器位址(B)<br>© 使用下列的 DNS 伺服器位址EE:<br>慣用DNS 伺服器tp        8.8.8  8<br>其他 DNS {AAR BEA):         168.95. 1   1<br>加結束時確認設定L)<br>|<br>=] 2)<br>BARR<br>j                                                       Ba ph ee<br>Mr和tt               «RH BBA</div>
-      <div class="highlight-box">Ex: B類子網路規劃<br>.             q            f= =]<br>1     t    255.255.128.0    t       2)       H       32,766<br>2     t    255.255.192.0    :       4       ‘      16,382<br>3     t   255.255.224.0   H       8       H       8,190<br>4     1   255.255.240.0   1       16      t       4,094<br>&gt;     Hi   255.255.248.0   Hi       oe      Hi       2,046<br>6     t   255.255.252.0   t      64       1,022<br>7     t   255.255.254.0   t      128      H       510<br>8     :   255.255.255.0   t      256      1       254<br>9     H   255.255.255.128   H      512      '       126<br>10     t   255.255.255.192   t      1024      4        62<br>11     '   255.255.255.224      2048      H        30<br>12     t   255.255.255.240 |      4096     :        14<br>13   255.255.255.248 ,      8192        6<br>14    t   255'255:.255 252 00.     16384     t        2<br>16      不使用      =      不使用<br>16      不使用      ; 不合用      不使用<br>BARR<br>;                                                    one<br>frig Ha Filson’ 生386放                    網路概論 BS &amp;</div>
-      <div class="highlight-box">子網路規劃<br>字依子網路所需數量決定<br>Ex: 要對一個B類網路做50個子網路劃分<br>&gt;50介於30與62之間<br>&gt;子網路位元數必需有6位<br>&gt;子網路遮罩值便為255.255.252.0<br>&gt;每個子網域能擁有的IP位址數為1,022個<br>a ce ok pe |</div>
-    </section>
+  <div class="highlight-box">
+    <strong>網路遮罩（Network Mask）</strong>
+    <ul>
+      <li>▶ 用途：遮掉不同網域（Network）的主機位元，區分網路位元與主機位元</li>
+      <li>▶ 格式規則：<strong>網路位元 = 1，主機位元 = 0</strong></li>
+      <li>▶ 排列方式：由左到右 <strong>一連串的 1 接續一連串的 0</strong>（不會 0 與 1 交錯）</li>
+      <li>▶ 常以 <span class="formula">/n</span> 語法表示（如 <span class="formula">210.134.56.0/24</span>）
+        <ul>
+          <li>n = 遮罩值設為 1 的位元數量</li>
+          <li>Ex: <span class="formula">210.134.56.0/24</span> → 網域位址 <strong>210.134.56.0</strong>，遮罩值 <strong>24 位元的 1</strong> = <span class="formula">255.255.255.0</span></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 
-    <!-- CIDR 無分類網際尋徑 -->
-    <section id="s6">
-      <h2>📌 6｜CIDR 無分類網際尋徑</h2>
-      <div class="highlight-box">CIDR<br>Classless Inter-Domain Routing<br>(無分類網際尋徑)<br>—<br>Se    :               @僅授權用書單位使用</div>
-      <div class="highlight-box">無分類架構規劃<br>寢IP位址Aˋ、B、ˋ、C類型區分,導致IP位址浪費<br>*CIDR ; 無分類網際尋徑<br>»Classless Inter-Domain Routing<br>&gt;IETF提出<br>&gt;打破分類藩籬,網域規劃完全依照網路遮軍定義<br>字一些小網路系統可以整合成一個較大的網路<br>架構 : 超網(Supernet)<br>&gt;減少路由器需求量<br>&gt;減輕尋徑內容數量負擔<br>&gt;提升路由器效率<br>Ce a se網路概論和與顛務圖!</div>
-      <div class="highlight-box">Example<br>(a)<br>rar<br>(b)<br>a es |</div>
-      <div class="highlight-box">CIDR區塊選取原則<br>字位址區塊必須連續<br>~ BRS DS S2NERA<br>&gt; DEO) DASA ASRS SB Ba Ha tah (Hr ay a) EAB AE<br>字盡量以位址位元變化少的進行規劃<br>&gt;網域位址與遮罩 :依包含位址的變化判斷<br>Ce a se網路概論和與顛務圖!</div>
-      <div class="highlight-box">bY                 av<br>網路遮罩值與網域位址的判斷(1/2)<br>|        二進位值<br>201.100.36.X 11001001.01100100.001001 00.HHHHHHHH<br>網域 201.100.37.X 11001001.01100100.001001 , 01.HHHHHHHH<br>it 201.100.38.X _11001001.01100100.001001 10.HHHHHHHH<br>201.100.39.X .11001001.01100100.001001 11.HHHHHHHH<br>eee    11111111 .11111111 111111 '00.00000000<br>網路遮罩   a<br>( 255.255.2520 )<br>11001001.01100100.001001 !00.00000000<br>網域位址   一一一一一一一一<br>( 201.100.36.0 )<br>開    11001001.01100100.001001111.11111111<br>廣播位址   = OSS<br>(7201100°392255 7)<br>BARR<br>HI Hsing ches               # 網路概論 BRE</div>
-      <div class="highlight-box">網路遮罩值與網域位址的判斷(2/2)<br>201.100.37.X 11001001.01100100.0010 0101.HHHHHHH<br>網域 201.100.38.X 11001001.01100100.0010 0110.HHHHHHH<br>201.100.39.X 11001001.01100100.0010 0111 .HHHHHHH<br>201.100.40.X 11001001.01100100.0010 1000.HHHHHHH<br>000.00000000 —<br>( 255.255.240.0 )<br>網域位址    11001001.01100100.0010;0000.00000000<br>(0 20m)<br>廣播位址    11001001.01100100.0010 93011111.11111111<br>-   點            ( 201.100.47.255 )<br>BARR<br>IM du對2         # 網路概論 BRE</div>
-      <div class="highlight-box">|<br>位址整合性規劃<br>Se ~ rere</div>
-      <div class="highlight-box">寢必需從區塊的界限上做開端<br>&gt;&gt;才不致網域位址與網路遮罩訂定的錯亂<br>寢假設機構忠、乙ˋ丙ˋ丁分別需要1000、<br>2000、ˋ、200與500個網路位址<br>&gt;在210.100.0.0網域內的C類位址為單位作分配<br>&gt;先到先配且盡量往前排為原則<br>210.100.4.0/ 24                       210.100.8.0/ 21<br>210.100.0.0/ 22          丙         loots 0/ 23          Z<br>. 人  gy gs<br>210.100.0.0                                                eon —é<br>SUAS POOR BGSHASTOSR     38<br>a ce ok pe |</div>
-      <div class="highlight-box">機構甲的位址分配<br>=e                 a<br>o ACM /FAS<br>4) 2210.100.0.0~3.255-9 49 IPAiztit<br>210.100.0.X | 11010010.01100100.000000'00.HHHHHHHH<br>時<br>sj wy -210-100.1.X__, 11010010.01100100.000000 01.HHHHHHHH<br>'340.100.2.X _. 11010010.01100100,.000000. 10. HHHHHHHH<br>210.100.3.X _ 11010010.01100100.000000. 11. HHHHHHHH<br>_    "41114111.11111111.111111:00.00000000<br>i         (_255.255.252.0 )<br>sn     "71010010.01100100.000000;00.00000000<br>Se    i         ( 210.100.0.0)<br>cpus     *41010010.01100100.000000:11.11111111<br>te    i        ( 210.100.3.255 )<br>BARR<br>8                            BA py ae<br>Mr Ed還        «REG BRA</div>
-      <div class="highlight-box">機構乙的位址分配<br>寢2000個IP位址=&gt;需8個C類網域作組合<br>&gt;選用210.100.4.0 ~ 11.255範圍的PP位址<br>0網域位址為210.100.0.0<br>Q與機構甲的網域位址相衝<br>&gt;選用210.100.8.0 ~ 15.255範圍的PP位址<br>0網域位址為210.100.8.0<br>密從區塊界限上開始<br>&gt;2048個位址的整數倍做開端<br>a ce ok pe |</div>
-      <div class="highlight-box">人<br>機構乙良好的IP位址分派<br>"210.100.8.X “11010010.01100100.00001 000.HHHHHHHH<br>210.100.9.X 11010010.01100100.00001 001.HHHHHHHH<br>"210.100.10.X_.11010010.01100100.00001 010.HHHHHHHH<br>網過 1210.100.11.X ,11010010.01100100.00001 ,011.HHHHHHHH<br>240.100.12.X 11010010.01100100.00001 100.HHHHHHHH<br>210.100.13.X 11010010.01100100.00001 101.HHHHHHHH<br>210.100.14.X . 11010010.01100100.00001 110. HHHHHHHH<br>210.100.15.X .11010010.01100100.00001 . 111. HHHHHHHH<br>;      141111111.11111111.11111 |000.00000000<br>BER     =.<br>;        (255.255.248.0 )<br>a      '41010010.01100100.00001 :000.00000000<br>ses    i         ( 210.100.8.0 )<br>;11010010.01100100.000011111.11111111<br>廣播位址     由<br>i        (210.100.15.255 )<br>BARR<br>Mr Ed四           和網路概論三實務 繹</div>
-      <div class="highlight-box">人<br>機構乙不良的IP位址分派<br>210.100.4.X “11010010.01100100.0000 “0100.HHHHHHH<br>210.100.5.X “11010010.01100100.0000 0101.HHHHHHH<br>240.100.6.X 11010010.01100100.0000 0110.HHHHHHH<br>網過 1210.100.7.X 一,11010010.01100100.0000 | 0111 HHHHHHH<br>"210.100.8.X 11010010.01100100.0000 ,1000.HHHHHHH<br>“210.100.9.X 11010010.01100100.0000 “1001.HHHHHHH<br>210.100.10.X .11010010.01100100.0000 1010.HHHHHHH<br>210.100.11.X .11010010.01100100.0000 1011. HHHHHHH<br>coon saan    1411111 11.11111111.1111 }0000.00000000<br>Ae    i        (_255.255.240.0 )<br>網域位址     a til ODO TOECILOOLCC OGCE OCCT 0000 0Cmm<br>oe     i         ( 210.100.0.0 )<br>10.01100100.0000 1人11人11111111<br>廣播位址     Lite lia<br>:        (210.100.15.255 )<br>BARR<br>Mr Ed四           網路概論 BREA</div>
-      <div class="highlight-box">EHS &gt; 防     if<br>(ee 到底要往哪裡<br>|         =<br>| 210.100.0.0                               同 210.100.0.0<br>210.100.0.0   m     210.100.0.0        210.100.0.0   "    210.100.8.0<br>(a)                                  (b)<br>BARR<br>.                                       三公   =<br>Mr Ed還          «RE BRA</div>
-      <div class="highlight-box">其他機構的位址分配<br>字丙:210.100.4.0 / 24<br>寢丁:210.100.6.0 / 23<br>210.100.4.0/ 24                       210.100.8.0/ 21<br>210.100.0.0/ 22      A      210.100.6.0/ 23      Zz<br>210.100.0.0                                                coed<br>.                                     “              as<br>ee er te re</div>
-    </section>
+  <div class="highlight-box">
+    <strong>各類 IP 位址的預設網路遮罩</strong>
+    <ul>
+      <li>▶ <strong>A 類（Class A）</strong>：<span class="formula">255.0.0.0</span> 或 <span class="formula">/8</span></li>
+      <li>▶ <strong>B 類（Class B）</strong>：<span class="formula">255.255.0.0</span> 或 <span class="formula">/16</span></li>
+      <li>▶ <strong>C 類（Class C）</strong>：<span class="formula">255.255.255.0</span> 或 <span class="formula">/24</span></li>
+    </ul>
+  </div>
 
-    <!-- 保留位址 -->
-    <section id="s7">
-      <h2>📌 7｜保留位址</h2>
-      <div class="highlight-box">保留位址<br>—— |      表</div>
-      <div class="highlight-box">一<br>常見的保留位址<br>IP網域     |    IP位址保留目的<br>0.0.0.0/8        t       本網域(“This” Network)<br>10.0.0.0/8              !_A類私人使用網域(Private-Use Networks)<br>14.0.0.0/8            | 公眾數據網路(Public-Data Networks;PDN)<br>24.0.0.0/8              ; _ 有線電視網路(Cable Television Networks)<br>127.0.0.0/8            迴路回測(Loopback Test)<br>169.254.0.0/16           i              鏈結區域(Link Local)<br>172.16.0.0/12           | _B類私人使用網域Private-Use Networks)<br>192.0.2.0/24            測試網路(Test-Net)<br>192.88.99.0/24           :     6to4中繼任點傳播(Relay Anycast){iz tit<br>192.168.0.0/16           ;_C類私人使用網域(Private-Use Networks)<br>HESIOD           i (Network Interconnect Device Benchmark)<br>255.255.255.255        :           區域(Local)廣播位址<br>BURL<br>IM還 KH BRA</div>
-      <div class="highlight-box">重要的保留位址<br>寢1. 本網域 ("This”Network)<br>2. 企業網路內部保留位址<br>&gt; Intranet IP Address<br>#3, 迴路回測 (Loopback Test)<br>4, 區域廣播 (Local Broadcast)</div>
-      <div class="highlight-box">1. 本網域 ("This”Network)<br>寢0.0.0.0/8 : 是A類網路的第一個網域<br>&gt;代表「本網域(This Network) ,<br>寢與自己網域節點通訊 ,可運用本網域位址<br>&gt;Ex: 0.0.0.123<br>0相同網域中主機位址為123的節點<br>= 「0.0.0.0<br>&gt;尚未取得IP位址 ,用以對自己IP位址表示<br>&gt;不知對方P位址 ,以「0.0.0.0 」代表目的端IP位<br>址,表示為所有網域<br>Ce a se網路概論和與顛務圖!</div>
-      <div class="highlight-box">2. 企業網路內部保留位址<br>歸屬於內部自己獨立的網路系統<br>字內部網路可透過具NAT (Network Address<br>Translation ; 網路位址轉譯) 功能路由器與<br>外界網路連線<br>寢NAT路由器有一個正規IP位址與外界聯繫<br>&gt;內部由內部網路IP位址進行溝通<br>字各企業網路系統間相互獨立<br>&gt;對和位址普遍不足的情況有很大的貢獻<br>密內部網路節點與正規IP位址的對應<br>&gt;運用傳輸層埠編號(Port Number)</div>
-      <div class="highlight-box">=    =<br>企業網路的連通<br>網域位址僅在內<br>1                       使用,即使重覆         A<br>ee tere                        下會有衝突。       4<br>NAT<br>aa<br>i<br>每個企業都用和<br>同的網域 AN<br>還他1               NAT                      NAT<br>aa                ial<br>a                                v                  i<br>TERT Intranet                                                               ERA intranet<br>BARR<br>e                                                  ss    =<br>Mr和tt    «RE BRA</div>
-      <div class="highlight-box">常見的企業內部網路位址<br>&lt;A類、ˋB類ˋC類各保留一個區段<br>&gt;分別適用於大型ˋ、中型或小型的網路系統使用<br>© AHR BRE<br>&gt;10.0.0.0/8 (10.0.0.0 ~ 10.255.255.255)<br>BHR BBE<br>&gt;172.16.0.0/12 (172.16.0.0 ~ 172.31.255.255)<br>&lt;C類的保留區段<br>&gt;192.168.0.0/16 (192.168.0.0 ~ 192.168.255.<br>255)<br>a ce ok pe |</div>
-      <div class="highlight-box">3. 迴路回測 (Loop Back Test)<br>寢對自身的TCP/IP設定正確與否進行測試<br>字測試訊號只在本機上進行,不會傳到網路上<br>字原來Aˋ、BˋC各類都將其最後一個網域區塊<br>設定為迴路回測使用<br>&gt;目前只保留127.0.0.0/8網域進行迴路回測<br>&gt;B 類的191.255.0.0/16區塊與C類的<br>223.255.255.0/24區塊不再保留<br>* ping 127.0.0.1 命令<br>&gt;檢測本機TCP/IP網路設定是否完整</div>
-      <div class="highlight-box">檢查自己主機成功的情形<br>C:\WINDOWS=ping 127.0.0.1<br>Pinging 127.0.0.1 with 32 bytes ofdata:<br>Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32<br>Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32<br>Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32<br>Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32<br>Ping statistics for 127.0.0.1:<br>Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),<br>Approximate round trip times in milli-seconds:<br>Minimum = Oms, Maximum = Oms, Average = Oms<br>BURL<br>A                                                  EA ons ep<br>Mr Ed還          «RE BRA</div>
-      <div class="highlight-box">4<br>檢查自己主機失敗的情形<br>C:WINDOWS&gt;ping 127.0.0.1<br>Pinging 127.0.0.1 with 32 bytes ofdata:<br>PING: transmit failed, error code 10091.<br>PING: transmit failed, error code 10091.<br>PING: transmit failed, error code 10091.<br>PING: transmit failed, error code 10091.<br>Ping statistics for 127.0.0.1:<br>Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),<br>Approximate round trip times in milli-seconds:<br>Minimum = Oms, Maximum = Oms, Average = 0ms<br>BURL<br>,                                                  EO hy se<br>Mr和tt          «HE BRA</div>
-      <div class="highlight-box">4. 區域廣播 (Local Broadcast)<br>寢尚未取得IP位址 ,或不知道自己網域位址<br>&gt;可運用255.255.255.255對自己所在網域所有<br>節點進行廣揪<br>a es |</div>
-    </section>
+  <div class="highlight-box">
+    <strong>概念：是否屬於相同網域的判斷</strong>
+    <ul>
+      <li>▶ 相同網域的電腦間可以想像為「看得見」的節點</li>
+      <li>▶ 主機位址：網路遮罩設為 <strong>0</strong> 的部分</li>
+      <li>▶ 網路位元的部分，一般主機無法直接關注到</li>
+      <li>▶ 將 IP 位址與網路遮罩做 <strong>AND 運算</strong>，可判斷兩台主機是否在同一網域</li>
+    </ul>
+  </div>
 
-    <!-- DHCP 動態主機設定協定 -->
-    <section id="s8">
-      <h2>📌 8｜DHCP 動態主機設定協定</h2>
-      <div class="highlight-box">DHCP<br>Dynamic Host Configuration Protocol<br>(動態主機設定協定)<br>Se       @僅授權用書單位使用</div>
-      <div class="highlight-box">為何需要 DHCP ?<br>密一個網路節點擁有一個永久使用的IP位址<br>&gt;理想方式<br>寢網路需求無限,但IP位址有限<br>&gt; QO FIP IAEA SAR<br>«DHCP<br>&gt;動態地對IP位址進行分配<br>&gt;只有網路連線時才向DHCP伺服器取得IP位址<br>&gt;&gt;可以有效地對IP位址數量進行分配與運用</div>
-      <div class="highlight-box">DHCP架構<br>寢網路必須配置DHCP伺服主機<br>字節點連線後以廣播方式與DHCP伺服器連繫<br>字節點和位址由伺服器統一分配,不至於重複<br>字避免長時間佔用某個IP位址:設定使用期限<br>應用<br>&gt;電腦教室環境<br>Q省去一一對各電腦設定與管理<br>&gt;居家上網連線環境<br>0只有一個固定IP位址 ,但要上網節點有好幾個<br>0運用DHCP &gt; 配合保留位址<br>010.0.0.0/8、172.16.0.0/12、 192 168,0 0/46 .     rs</div>
-    </section>
+  <div class="highlight-box">
+    <strong>網路遮罩的應用與判別</strong>
+    <ul>
+      <li>▶ <strong>Example</strong>：判斷 <span class="formula">140.134.36.19</span> 與 <span class="formula">140.134.36.254</span> 是否同網域</li>
+      <li>▶ 假設遮罩為 <span class="formula">255.255.255.0（/24）</span></li>
+      <li>▶ <span class="formula">140.134.36.19 AND 255.255.255.0 = 140.134.36.0</span></li>
+      <li>▶ <span class="formula">140.134.36.254 AND 255.255.255.0 = 140.134.36.0</span></li>
+      <li>▶ 結果相同 → <strong>兩者屬於相同網域</strong></li>
+    </ul>
+  </div>
+</section>
 
-    <!-- DNS 網域名稱系統 -->
-    <section id="s9">
-      <h2>📌 9｜DNS 網域名稱系統</h2>
-      <div class="highlight-box">DNS<br>Domain Name System<br>(網域名稱系統)<br>———&lt;—&lt;<br>ee     @僅授權用書單位使用</div>
-      <div class="highlight-box">簡介<br>寢網路藉由位址對節點進行定址<br>&gt;數字拼湊的PP位址 : 不容易記憶<br>字根據節點特性,以名稱對節點進行表示<br>&gt;明白清楚 ,也容易記憶<br>寢名稱容易記憶,但真正定址的還是IP位址<br>&gt;在IP位址與名稱間需要有個轉換機制<br>(eee<br>Meer ee ee REO RBA</div>
-      <div class="highlight-box">DNS<br>字以hosts.txt 檔案提供單機個別的對照<br>&gt;早期網路環境單純,主機數量不多<br>字網路快速發展 ,主機數量快速增長<br>&gt;為了解決大量P位址與名稱間的對映<br>字網域名稱系統 (DNS)<br>&gt;網域名稱 (Domain Name)<br>Q綱路節點的名稱<br>&gt;Domain Name System<br>Q進行名稱與IP位址轉換的系統<br>#1983 Paul Mockapetris經由RFC 882提出<br>«Paul Mockapetris於1987年在RFC1034和<br>RFC1035對DNS技術再修正一         en<br>Ce cr pe |</div>
-      <div class="highlight-box">DNS查詢<br>信由網域名稱查出上位址的動作<br>&gt;「正向名稱查詢 (Forward Name Query)」<br>字由IP位址查得網域位址的動作<br>&gt;「反向名稱查詢 (Reverse Name Query)」<br>a a Tt |</div>
-      <div class="highlight-box">網域名稱<br>*FQDN ; Fully Qualified Domain Name<br>字網域名稱命名有其規則性<br>&gt;依階層方式組成,階層間以小數點區隔<br>&gt;最多五個層級<br>&gt;每一級名稱至少2個字元 ,最多不超過63個字元<br>&gt;名稱總長度不超過253個字元<br>&gt;名稱字元<br>ORR : 英文字母、數字、ˋ破折號「一」,不分大小寫<br>0Q02008年以後 : 可接受Unicode規範之中文ˋ、希臘文ˋ<br>阿拉伯文等各國文字<br>Ce a se網路概論和與顛務圖!</div>
-      <div class="highlight-box">完整網域名稱<br>*FQDN ; Fully Qualified Domain Name<br>= —{§FQDNAND A= (Baa<br>&gt;主機名稱 (HostName)<br>&gt;網域名稱 (Domain Name)<br>&gt;「.」=&gt; 根網域 (Root Domain)<br>Q常將FQDN最後的句點「.」省去,系統自動補上<br>&gt;Ex: www.flag.com.tw.<br>ee er te re</div>
-      <div class="highlight-box">DNS階層式架構<br>歸根網域是整個架構的最上層<br>&gt;實際上是個空標記! 」,以一個點「.」表示;<br>字頂層網域(TLD ; Top-Level Domain)<br>&gt;根網域的下面一層<br>&gt;gTLD (Generic TLD ; 一般頂層網域)<br>OQgTLD以使用組織機構性質來區分<br>&gt;ccTLD (Country Code TLD ; 國家頂層網域)<br>QccTLD以使用的國家或地區來區分<br>ee er te re</div>
-      <div class="highlight-box">DNS階層式架構<br>or ll ee<br>ALAM th<br>oe   8 @®</div>
-      <div class="highlight-box">gILD<br>字原來有七種單位定義<br>&gt;後續有museum、ˋftravelˋtelˋasia等十幾類正<br>式gTLD的設立<br>| RE | mame |<br>edu            教育機構            |<br>gov            政府機構            |<br>com        I          公司企業行號          |<br>net          網路事業機構          |<br>org         1 非營利事業財團法人、基金會<br>int            國際組織            |<br>mi         :            軍事單位<br>人                                            BARR<br>a         9 aE BBA</div>
-      <div class="highlight-box">ccTLD<br>* Country Code TLD<br>字各國語言也可以設立 , 台灣ccTLD增加 了中<br>=                      2534 es a<br>cn      H    中國大陸           us      :     美國<br>hk      H     香港            uk      Hi     英國<br>ip      :     日本            eu     歐盟<br>kr      !     韓國            au      t     澳洲<br>Meer ee ee          &gt; SBR BRE</div>
-      <div class="highlight-box">TLD之後<br>全可依需要進行定義<br>&gt;甚至可以有中文的網域名稱<br>ccTLD之後一般使用gTLD作下一層名稱<br>&gt;沒有強制性<br>&gt;有些國家 (如日本ˋ英國等) 以acˋgoˋcoˋor<br>進行表示<br>運用類似反轉樹狀目錄的結構型態<br>&gt;. ABR: 網域為枝幹,主機為最末層的<br>葉端<br>&gt;每台主機的網域名稱都是唯一<br>a ce ok pe |</div>
-      <div class="highlight-box">統籌負責<br>字整個DNS由ICANN負責統籌<br>&gt; http://Awww.icann.org<br>= ICANNIR 19984 BY 17<br>&gt; Ett InterNIC (http://www.internic.net)<br>&gt;也負責IP位址分配的工作<br>字各TLD則由個別成立的單位組織來負責<br>&gt;台灣由台灣資訊中心 (TWNIC) 負責<br>&gt;Taiwan Network Information Center<br>&gt; http://www.twnic.net</div>
-      <div class="highlight-box">網域名稱申請<br>寢edu.tw、ˋ、gov.tw由教育部ˋ行政院負責<br>其餘委由相關業者提供民眾申請<br>字類別 : com.tw(公司)ˋ、net.tw(電信或網路業<br>者)ˋorg.tw(財團法人)、ˋidv.tw(個人)、ˋ<br>ebiz.tw(電子商務)ˋ、game.tw(遊戲)ˋ<br>club.tw(俱樂部)等<br>寢網域名稱年費台幣800元,個人網域名稱年<br>費台幣400元<br>a es |</div>
-      <div class="highlight-box">短網址<br>&gt;將冗長網址轉換成15個字以內替代網址<br>&gt;存取時再導向原來網址<br>&gt;短網址通常會使用罕用的TLD區塊<br>&gt;Ex:Google用goo.gl便是使用格陵蘭的網域<br>a es |</div>
-      <div class="highlight-box">泛用型網域名稱<br>&gt;提供更廣泛的網域名般<br>&gt;只要名稱沒有衝突 ,就可以申請<br>&gt;gTLD也做開放<br>&gt;各式各樣、ˋ各國語言的名稱都有<br>&gt;台北市政府也申請5「.taipei」的gTLD<br>&gt;未來網域名稱將會越來越多元<br>a es |</div>
-      <div class="highlight-box">網域名稱範例<br>www.flag.com.tw           旗標出版公司<br>www.cisco.com                思科公司<br>www.twnic.net            H           台灣網路資訊中心<br>www.toyota.co.jp           :           日本豐田汽車公司<br>www.thebritishmuseum.ac.uk —}         英國大英博物館<br>www.tsmc.com.tw          H           台灣積體電路公司<br>www.redcross.org.tw         H           中華民國紅十字會<br>goo.gl/maps/08W96               短網址範例<br>www.twnic.tw          H        泛用型英文網址範例<br>台灣盆栽世界.tw         :          中文網址範例<br>中文.台灣            「.台灣,網域範例<br>www.travel.taipei               台北旅遊網<br>BARR<br>fel esa lee se網路概論與實務轉,</div>
-      <div class="highlight-box">‘|<br>網域名稱伺服器<br>還        @僅授權用書單位使用</div>
-      <div class="highlight-box">DNS iz<br>= Pim (Client) : 提出名稱解析請求<br>&gt;稱為Resolver<br>= fal AR iim (Server) : 接受要求的一方<br>&gt;網域名稱系統伺服器(DNS Server)<br>&gt;或簡稱名稱伺服器(Name Server)<br>寢DNS是個全球性的分散式資料庫<br>&gt;分層管理,使每台主機需記憶的名稱資訊下降<br>字每個網域( Domain) 至少有一台名稱伺服器<br>&gt;下層可以自行管理自己的部份<br>&gt;伺服器管理的範圍:扣除下層自行管理後的區塊。</div>
-      <div class="highlight-box">DNS 伺服器的管理區塊<br>Ae<br>com            cel             net)<br>€¢.,.8     cia      Lina<br>tw domain<br>網路概論 自實務 “a</div>
-      <div class="highlight-box">根伺服器<br>&gt;記錄各TLD伺服器的IP位址<br>&gt;只要是有效的網域名稱 ,從根網域開始逐步一層<br>一層地進行尋找,最終一定可以找到的答案<br>&gt;目前有超過五百台以上的根伺服器分13組在<br>全球各地分散處理每天龐大的名稱解析工作<br>a es |</div>
-      <div class="highlight-box">sre      -                國<br>遞迴查詢與反覆查詢<br>【        f<br>【   人<br>i<br>i    1<br>1    伺服器<br>了  ‘         1      1<br>mast       ~一一一一一<br>am        , Ras :<br>=P    Lf ee          :    Y<br>WN<br>\<br>Ne<br>(a8<br>BARR<br>ity             os                                          王公    Se<br>fh ii Ved scatter’ = temp) lip»              s網路概論 BI a</div>
-      <div class="highlight-box">$       j=]<br>~    oY<br>DNS 的運作流程 g<br>sf<br>SE<br>tt oe  根伺服器<br>BE<br>is<br>AHIR  3<br>4查詢www.ftag,com.tw<br>ai is sie              5告知管理.com.w 伺服器的|P位址<br>一    tw伺服器<br>10回覆 www.flag.com:tw 的出位址  a £88 com ny<br>ad        2S ao<br>SINS   -<br>EX<br>aN Reo comitw伺服器<br>人2<br>.fiag.com.tw伺服器<br>BARR<br>Hh id VOM’ tumble      網路概論 : 實務</div>
-      <div class="highlight-box">Lab<br>福要了解自己電腦的DNS記錄 ,可運用<br>ipconfig /displaydns指令來進行<br>&gt;參考實習手冊第一單元L1.1中ipconfig指令<br>a ce ok pe |</div>
-      <div class="highlight-box">|<br>動態DNS<br>eee 書單位使用</div>
-      <div class="highlight-box">動態DNS<br>寢適合DHCP之類動態PP位址的網站<br>&gt;IP位址不固定仍能進行DNS對應<br>寢步驟:<br>&gt;使用者申請設定啟動動態DNS<br>&gt;在自己網站上安裝動態DNS軟體,設定與機構伺服器間<br>&gt;主機開機,提供目前使用的IP位址予伺服器,達到動態<br>對應網域位址與IP位址的目標<br>密企業網路位址 (Intranet IP Address) 不保證成功<br>寢不可用來架設DNS伺服器<br>字架設電子郵件伺服器,可能會有郵件漏失的問題<br>BURL</div>
-    </section>
+<!-- 子網路規劃 -->
+<section id="s5">
+  <h2>📌 5｜子網路規劃（Subnet Planning）</h2>
 
-    <!-- IP 協定標頭 -->
-    <section id="s10">
-      <h2>📌 10｜IP 協定標頭</h2>
-      <div class="highlight-box">IP 協定<br>一一                              © 僅授權用書單位使用</div>
-      <div class="highlight-box">IP 協定<br>&gt;標頭以32個位元為單位<br>&gt;括弧內數字:以位元 (bit)為單位說明欄位寬度<br>32 位元<br>tel sven MRS AIRE aa ll</div>
-      <div class="highlight-box">Ver (Version ; 4位元) : 版本<br>字第四版IP規格<br>&gt;此欄位值為4 (0100)<br>人第六版IP規格<br>&gt;此欄位值為6 (0110)<br>a es |</div>
-      <div class="highlight-box">IHL (4位元) : 標頭長度<br>IHL<br>&gt;Internet Header Length : 標頭長度<br>字以32位元為單位<br>人Ex: 160位元IP標頭<br>&gt;32個位元為1單位:5單位<br>&gt;欄位值為5(0101)<br>a a Tt |</div>
-      <div class="highlight-box">TOS or DS (8位元) (1/2)<br>字定義IP封包傳送的服務類別<br>&gt; a. TOS (Type of Service ; 服務類型)<br>&gt; b. DS (Differentiated Service ; 差異服務)<br>3       A   1   1   1   1<br>(a)  Precedence fojriRici{ of<br>(b)           —        |  =  |<br>寢由八位元所組成<br>&gt;發送端設定,不具強制性,僅作尋徑參考<br>寢原來定義為TOS<br>&gt;後來上ETF更改此欄位的位元解釋定義,稱為DS<br>a ce ok pe |</div>
-      <div class="highlight-box">1. TOS: 服務類型<br>3        1    1    1    1    1<br>__ Precedence | o | T| R| c/o |<br>基本上:一般性傳送:0,高效率:1<br>«Precedence : 優先權<br>&gt;八種不同的優先權值<br>&gt;7 (111) : 最高優先權; 控制傳送<br>&gt;0 (000) : 最低優先權 ; 一般性訊號<br>&gt;由發送端設定 , 網路軟體可以不理會<br>*D : 延遲(Delay)<br>&gt;0:一般延遲 ,1:低延遲         I 3 ae 28<br>Ce a ee rr re</div>
-      <div class="highlight-box">3        1    1    1    1    1<br>__ Precedence | o| t| R| co} of<br>©T : 傳送流通量 (Throughput)<br>&gt;0:一般傳送量,1:高傳送量<br>*R : 可靠度(Reliability)<br>&gt;0:低可靠度傳送,1: 高可靠度傳送<br>QQ行走光纖網路路徑可以設為高可靠度傳輸<br>人C :路徑成本 (Cost)<br>&gt;0: 一般成本路徑,1: 最小成本路徑<br>密最後一個位元<br>&gt;未做定義:0</div>
-      <div class="highlight-box">2. DS : 差異服務 (1/2)<br>6                   2<br>DSCP            |   ECN   |<br>«DSCP<br>&gt; Differentiated Service Codepoint ; 差異服務<br>代碼點<br>&gt;對傳送類別區分,以達到QoS 需求<br>DSCP右邊三個位元為0<br>&gt;左邊三個位元定義與TOS優先權 (Precedence)<br>相同,達到與TOS相容<br>DSCP右邊三個位元不全為0時<br>&gt;定義各種不同層級與類別 (Class) 的差異服務<br>a ce ok pe |</div>
-      <div class="highlight-box">2. DS : 差異服務 (2/2)<br>人DSCP右邊兩個位元<br>&gt;明確擁塞通知之用<br>&gt;ECN ; Explicit Congestion Notification<br>&gt;網路擁塞時,對來源端進行擁塞通知<br>oo }                  未使用ECN<br>01      由來源端設定,指具ECN處理能力,01或10任選<br>10      由來源端設定,指具ECN處理能力,01或10任選<br>11    H          由路由器設定,通知端點已經發生擁塞<br>一         BARR</div>
-      <div class="highlight-box">TL (16位元) : 封包總長度<br>=Total Length<br>&gt;傳送封包總長度<br>字包含P標頭以及IP所帶資料內容總合<br>字以位元組(Byte) 為單位<br>最長封包長度為65,535 (219-1) 位元組<br>iiidlduuutss。 eg網路概論與實務轉:</div>
-      <div class="highlight-box">ID (16位元) : 識別代碼<br>Identification<br>&gt;發送端對每個IP資料封包設定的唯一辨識碼<br>密封包超過最大傳輸單位 (MTU ; Maximum<br>Transfer Unit)<br>&gt;將封包切成幾個分片 (Fragments) 傳送<br>© FRUIT ET BSAA , 以此識別碼判斷<br>寢重組工作只有接收端才進行<br>ta    CARB     ZARB    wie<br>~— a                            a<br>節點 A                            節點 B<br>a ce ok pe |</div>
-      <div class="highlight-box">FL (3位元) : 旗幟識別<br>* Flags                         1 1 1<br>&gt;最左位元: 0                  2 oF | wel<br>字位元DF (Don’t Fragment ; 不可分割)<br>&gt;0: 此封包可進行切割<br>&gt;1: 此封包不可進行切割<br>字位元MF(More Fragment ; 更多分片)<br>&gt;0: 原始封包切割的最後分片<br>&gt;1: 還有相同原始封包的其他分片</div>
-      <div class="highlight-box">FO (13位元) : 分片位移<br>= Fragment Offset<br>| IPRA | 4480 位元組 NSE    i<br>L<br>| 1480 位元組 BEE | — FO=0<br>+<br>IP標頭 | 1480 位元組 資料和     FO=185 (=1480/8)<br>十<br>Fo=a70 (=1480x2/8)<br>+<br>| _IP 標頭 | 40位》                 FO=555 (=1480x3/8)<br>=      BURL<br>a ce ok pe |</div>
-      <div class="highlight-box">TTL (8位元) : 存活時間<br>Time To Live<br>&gt;描述封包在IP網路上傳送所剩餘可以存活的時間<br>字以秒為單位<br>字資料封包抵達路由器時<br>&gt;計數器會先自動減1<br>&gt;再減去封包在路由器上處理的秒數<br>&gt;直到數值為0為止<br>字數值為0時,如果資料封包仍未抵達目的端<br>&gt;系統便會捨棄該封包</div>
-      <div class="highlight-box">PROT (8位元) : 網路協定<br>(8位元) : #    定<br>Protocol<br>1      + ICMP ,            Internet Control Message Protocol<br>2      : IGMP ;           Internet Group Management Protocol<br>3      : GGP ,                Gateway-Gateway Protocol<br>6      oe Ws at              Transmission Control Protocol<br>8      t EGP i;                Exterior Gateway Protocol<br>9      H    IGP    H                 Interior Gateway Protocol<br>17     H    UDP                User Datagram Protocol<br>41     i: IPv6 i                Internet Protocol version 6<br>47     + GRE i;             Generic Routing Encapsulation<br>50     t    ESE:             Encapsulating Security Payload<br>51     H    AH    H                Authentication Header<br>88     i:_EIGRP ,       Enhanced Interior Gateway Routing Protocol<br>89    + OSPF ,               Open Shortest Path First<br>BARR<br>7              :                                                   =.       oS<br>MIN 還              «KG BRA</div>
-      <div class="highlight-box">HC (16位元) : 標頭檢查人碼<br>Header Checksum : 由16個位元組成<br>字用以檢查『標頭』」內容的傳送是否正確<br>字來源端與目的端間所有路由器都會檢查<br>寢僅對IP標頭的部份執行運算 : 不含資料部份<br>&gt;將檢查碼欄位設為0<br>&gt;將吧標頭內容以16個位元為單位運用1補數演算<br>法(1 s Complement Algorithm) 進行加總<br>O1補數演算法:相加進位,對結果加1<br>&gt;最後結果再執行1的補數 =&gt; 便為檢查碼值</div>
-      <div class="highlight-box">IP位址<br>= SA (32位元) : 來源端IP位址<br>&gt;Source IP Address<br>&gt;來源端主機的PP位址<br>=DA (32位元) : 目的端IP位址<br>&gt;Destination IP Address<br>&gt;目的端主機的PP位址<br>Ce a se網路概論和與顛務圖!</div>
-      <div class="highlight-box">OPT (長度不定) : 選擇項<br>* Options<br>寢用作測試與除錯之用<br>&gt;來源端路徑 (Source Route)<br>&gt; #8 {3c ik (Route Record)<br>&gt;時間標記 (Time Stamp)<br>&gt;安全標誌(Security Label)<br>人選擇性欄位,非絕對必要<br>&gt;因此欄位長度也就不確定了<br>a ce ok pe |</div>
-      <div class="highlight-box">PAD (長度不定) : 填充<br>寢Padding<br>配合選擇項欄位使用<br>字使IP標頭總長度為32位元的整數倍<br>字填補資料通常以0作處理<br>ee er te re</div>
-      <div class="highlight-box">際封包的擷取解析<br>實  有 Ry<br>2 0k 140.134.36.1  140.134.36.110 DNS Query Answer:Type=A,Class-IN.Name=proxy.96 說<br>3 Ok 140.134.36.110 140.134.4.16 TCP 165S-&gt;8080, [Syn] ,S-23056775,A-0,W-8192 66<br>4 (Ok 140.134.4.16  140.134.36.110 TCP 8080-&gt; 1655, [Syn] .S«2912210236 A«2305677¢ 64<br>dd                  ot<br>SM) Ethernet Version IT<br>(BaAddress: 00-80-C8-34-B2-A7 ---&gt;08-00-20-1B-67-45<br>DjEthernet II Protocol Type: IP<br>PY aa<br>Version (MSB 4 bits) :(4)<br>Dueader length (LSB 4 bite) :(S)(32-bit word)<br>eDService type: 0x00<br>Bo000. .... = 0 - Routine’<br>B...0 1... = Normal delay<br>B.... 0... = Normal throughput<br>B.... .0.. = pigrmal reliabiNty<br>BTotal length: (62) (octets)<br>GFragment ID: 72623<br>eB Flags sumary/ 0x00<br>Bo... .... f Reserved<br>B.0.. ..../ Moy be fragmented<br>B..0. .../= Last fragment<br>Dragnent/offset (LSB 13 bits): 0 (0x09)<br>‘QTime to 1ie:(128)secondszhops<br>DIP protochl typeNUnp (0413)<br>Checksum/ 0x800C<br>全IP oddrdss 140.134.46.110 |-&gt;140.134.36.1<br>BNo optjfn                             I                           =<br>00000000: pam 20 1b 67 4540 &amp; cO 34 b2 a7 00 00 45000)|.. of...4....<br>00000010: @oyse)!         OO                    1<br>00000020:     [06 76 00 35 OO 2a Sd ec 00 01 01 00 00 01 [Gx.v.5."].......<br>00000030: 00 00 00 00 00 00 05 70 72 6f 78 79 03 66 63 75 |.......proxy.fcu<br>is             圖       BARR<br>iiidlduuutss。 eg網路概論與實務轉:</div>
-      <div class="highlight-box">HC 運算<br>標頭資料       二進制表示法              累計加總值<br>4500     ! 0100 ; 0101 ; 0000 ; 0000<br>003e     10400 | 0101 ; 0011 ; 1110<br>5927    11001 | 1410 } 0110 ; 0104<br>0000    ‘1004 : 1110 } 0110 : 0104<br>8011 進位 | 0001 | 1110 | 0111 ; 0110<br>Mi} 0001 ; 1110 : 0141 : 0111<br>0000    10001 | 1110 ; 0111 ; 0111<br>8086     4010: 1010 ; 1141 : 1101<br>246e    1.1100 ; 1111 ; 0110 | 1011<br>8c86 進位 ; 0101 | 1011 ; 1111 ; 0001<br>01} 0104 } 1011 11100140<br>2401    Otten ide 00<br>; 1000 ; 0000 ; 0000 ; 1100<br>取1的補數值              0<br>BARR<br>ae          &gt; PR BBA</div>
-      <div class="highlight-box">a)                           +<br>xe                           a<br>No. .| Time    Source         Destination     Protocol Info                         u<br>ee<br>34_0.831627 wistronL0c:d4:8c_Broadcast      arp who has 140.134.36.250? Tell 140.13: 一<br>36 0.833051 wistron_oc:d4:8¢ Broadcast     ARP      140,134.36.2507 Tell 140.13¢<br>37 0.834780 wistron_Ocid4:8c Broadcast     ARP.       has 140.134.36.2502 Tell 140.13¢<br>&lt;)   7  —   aT SRA  7  —  i]  (E3}<br>[= Frame 35       es on wire, 154 bytes capture                                  *<br>je Ethernet I1, src: AsustekC_37:35:9¢ (00:0e:a6:37:35:9c), Ost: Micro~St_18:10:35 (00:0c:76:<br>= Internet Protocol, Src: 140.134.31.1 (140.134.31.1), Ost: 140.134.31.74 (140.134.31.74)<br>version: 4<br>Header length: 20 bytes<br>Poitrerentiated Services Field: Ox00 COSCP Ox00: Derault; ECN: 0x00                J<br>0000 00.. = differentiated Services Codepoint: Default (0x00)<br>++++ «+0. = ECN-Capable Transport (ECT): 0<br>,--- ..-Q-ECN-CE: 0<br>Total Length: 140<br>Identification: Oxf63a (63034)<br>Flags: 0x00<br>Fragment offset: 0<br>Time to live: 128                                                           im<br>a<br>BARR<br>iiidlduuutss。 eg網路概論與實務轉:</div>
-    </section>
+  <div class="highlight-box">
+    <strong>子網路規劃（Subnetting）概念</strong>
+    <ul>
+      <li>▶ 將原本的「網路位元」再細分出「子網路位元」</li>
+      <li>▶ 向主機位元借位元（Borrow Bits）來表示子網路</li>
+      <li>▶ 子網路數量 = <strong>2^n</strong>（n = 借位的位元數）</li>
+      <li>▶ 每個子網路可容納的主機數量 = <strong>2^m - 2</strong>（m = 借位後剩餘的主機位元數，扣掉網域位址與廣播位址）</li>
+    </ul>
+  </div>
 
-    <!-- IP 選擇項 -->
-    <section id="s11">
-      <h2>📌 11｜IP 選擇項</h2>
-      <div class="highlight-box">|<br>IP 選擇項<br>eee 書單位使用</div>
-      <div class="highlight-box">選項碼 (Code)<br>字佔8位元<br>字針對選擇項的種類作區別<br>字分為三個部份<br>&gt;1. 複製 (Copy ; 1位元)<br>&gt;2. 類型 (Class ; 2位元)<br>&gt;3. 選擇項編號 (Option Number ; 5位元)<br>Code (8)              |</div>
-      <div class="highlight-box">1. 複製(Copy) 欄位<br>&lt;佔1個位元<br>&gt; (Fragment) 切割,是否要複製到所有分片<br>字條複製所有分片<br>寢0:只複製到第一個分片<br>ee er te re</div>
-      <div class="highlight-box">2. 類型 (Class) 欄位<br>字佔2位元 :說明選擇項類型<br>=0 (00.)<br>&gt; BHR (Datagram) 或網路控制<br>&gt;2(102)<br>&gt;&gt;除錯 (Debugging) 與量測 (Measurment)<br>#4 (01,) 與3 (112)<br>&gt;保留(Reserved) : 未來擴充之用<br>a ce ok pe |</div>
-      <div class="highlight-box">3. 選擇項編號(Option Number)<br>0                                選擇項末端<br>1        無操作(用以對選擇項欄位進行位元組排列)<br>2    ;         安全性與處理限制(軍事應用)<br>s    ;     鬆散源路行徑,用以大致按一定路徑傳送<br>7        :                 記錄行進路徑,用以追蹤路徑<br>8                資料流識別碼(已不用)<br>9             嚴格源路行徑,用以按特定路徑傳送<br>BURL<br>Meer ee ee              kt BRE</div>
-      <div class="highlight-box">常見IP選擇項<br>1. 記錄路徑 (Record Route)<br>2. 源路行徑 (Source Routing)<br>Faas     鬆散式 與 嚴格式<br>“3. 時間戳記 (Timestamp)<br>a           僅授權用 書單位使用</div>
-      <div class="highlight-box">1. 記錄路徑 (Record Route)<br>寢常用在路徑追蹤場合<br>Code的值為71o (000001112)<br>&gt;複製欄位值設為0 ,不進行複製<br>Q各分片行徑路徑會有不同<br>&gt;屬網路控制類型,類型欄位值設為002<br>&gt;選擇項編號值740 (001112)<br>一說一</div>
-      <div class="highlight-box">Length 欄位<br>寢佔8個位元<br>&gt;以位元組為單位<br>&gt;說明該選擇項欄位的總長度<br>0包含前三個位元組以及預留路徑記錄的位元組長度<br>寢路徑記錄預留的位元組長度由初始來源端點<br>依通訊範圍大小作判斷訂定<br>ee se網路概論與賣務,繞|</div>
-      <div class="highlight-box">Pointer 欄位<br>預計記錄20筆<br>第一筆 Pointer = 3              |                        1             |<br>第二筆 Pointer = 7            |                                                  |<br>第n筆 Pointer =3+4x (n-1)<br>最後一筆 Pointer = 79            |                                                                  |<br>Pointer 等於或超過 83 不再記錄<br>=                                                                    BARR</div>
-      <div class="highlight-box">2. 源路行徑 (Source Routing)<br>字指定封包傳送依指定路徑行進<br>字常用在對某特定路線網路流通量的測試<br>Code (8)  |  Length (8) Pointer (8) |<br>第一個節點路徑IP位址 (32)                  |<br>第二個節點路徑IP位址 (32)                  |<br>oe               aise nis</div>
-      <div class="highlight-box">嚴格源路行徑與鬆散源路行徑<br>字嚴格源路行徑 (Strict Source Routing)<br>&gt;嚴格地對封包行經的「每一個」路徑進行規範<br>&gt;相鄰的路徑節點間不得有其他節點存在<br>&gt;路徑次序不得更改<br>字鬆散源路行徑 (Loose Source Routing)<br>&gt;允許相鄰路徑節點間存在其他節點<br>&gt;並非提供一條完備的路徑<br>&gt;「要點式」行進路徑<br>&gt;未描述的路徑由各路徑節點自行決定<br>a se網路概論與真務,點|</div>
-      <div class="highlight-box">Code欄位<br>&gt;複製到所有分片 , 複製欄位值設為1<br>&gt;網路控制類型:類型欄位值設為0,, (00,)<br>&gt;鬆散源路行徑的選擇項編號值為370(000112)<br>&gt;Code欄位值為131 10 (100000112)<br>&gt;嚴格源路行徑的選擇項編號值為9., (01001,)<br>&gt;Code欄位值為1 3749 (100010012)<br>a es |</div>
-      <div class="highlight-box">3. 時間截記 (Timestamp)<br>寢用在對每個路徑節點IP位址與時間進行記錄<br>寢時間值以格林威治時間 (或稱環球時間 ;<br>Universal Time) 表示<br>&gt;自午夜0點算起,千分之一秒為一單位 (ms)<br>a es |</div>
-      <div class="highlight-box">時間截記 (Timestamp)</div>
-      <div class="highlight-box">時間截記 Code欄位<br>&lt;佔8位元<br>&lt;Code欄位值為681 (01000100,)<br>&gt;僅需第一個分片進行量測工作即可<br>0複製欄位值設為0<br>&gt;屬除錯與量測類型<br>0類型欄位值設為210(102)<br>&gt;選擇項編號為410 (001002)<br>a ce ok pe |</div>
-      <div class="highlight-box">時間戳記欄位定義<br>*Lengthi {iz<br>&gt;選擇項的總位元組數<br>寢Pointer欄位<br>&gt;下一筆記錄資料的起始位移值<br>寢OFlow欄位佔4個位元<br>&gt;記錄封包傳送過程有多少個路徑節點未被記錄到<br>&gt;當Pointer欄位值大於或等於Length欄位值<br>Q預留的記錄欄位已滿,不再進行戳記記錄<br>0將OFlow (Overflow ; 328417) 欄位值加1<br>a ce ok pe |</div>
-      <div class="highlight-box">時間截記 Filags欄位<br>寢佔4個位元<br>oo YAS fal vac Se t= ABV aC ERAS TUE TE Ss<br>&gt;只記錄時間,不記錄IP位址<br>&gt;同時對IP位址與時間做記錄<br>&gt;只針對原始發送端所指定的位址處作時間記錄<br>寢Flags值為1: 可取代「記錄路徑」選擇項<br>寢記錄只能做大概參考值:時鐘非嚴格同步<br>0001: 同時對IP位址與時間進行記錄<br>0011 |   只記錄由原始發送端所指定IP位址處的時間    _</div>
-    </section>
+  <div class="highlight-box">
+    <strong>範例：B 類網路借 3 位元作子網路</strong>
+    <ul>
+      <li>▶ 借 3 個位元 → <strong>2³ = 8</strong> 個子網路</li>
+      <li>▶ 每個子網路有 <strong>13 個位元</strong>（16 - 3 = 13）提供主機位元</li>
+      <li>▶ 每個子網路可擁有 <strong>2¹³ - 2 = 8,190</strong> 個主機位址</li>
+      <li>▶ 子網路遮罩：<span class="formula">255.255.224.0</span>（或以 <span class="formula">/19</span> 表示）</li>
+    </ul>
+  </div>
 
-    <!-- IPv6 簡介 -->
-    <section id="s12">
-      <h2>📌 12｜IPv6 簡介</h2>
-      <div class="highlight-box">由          IPv6位址<br>1. 簡介<br>2. IPv6的傳播方式<br>3. IPv6位址型式<br>4. IPv4與IPv6間的遷移<br>5. IPv6標頭與封包解析<br>a ..</div>
-      <div class="highlight-box">簡介 (1/3)<br>寢根據Network Wizards公司對網路位址使用的調查<br>&gt;IP位址的使用量一直以指數方式成長<br>@ ALE (Address Lifetime Expectation ; 位址生命<br>期預測) 工作小組推估IPv4位址會很快耗盡<br>@ IETF 從1991年開始對IPv4位址不足的問題探求各<br>種可能解決方案<br>&gt;NAT 是目前常用的方式之一<br>&gt;為了能在未來有更大的發展空間 , IPv6架構是另一個相<br>當廣為受重視的方案<br>寢IPv6完全改變現有定址方式<br>&gt;被視為是下一代 (ng ; next generation) 網路定址的模<br>355  因此一般也將IPv6稱為IPng                               BURL<br>nasal len § pea REE aes</div>
-      <div class="highlight-box">簡介 (2/3)<br>寢IPv6的位址空間增加到128個位元<br>&gt;有2128個位址 , 解決位址不足的現象<br>&gt;340,282,366,920,938,463,463,374,607,431,76<br>8,211,456<br>密比IPv4增加了296倍<br>&gt; DHA RSE<br>&gt;每平方公愉擁有665X 1024個位址<br>密以全人類的人口數來分配<br>&gt;每人可擁有5X 1028個位址<br>密每秒分配出一萬個|位址<br>&gt;要花費20萬年才可以將IPv6位址耗盡             =<br>ee Te |</div>
-      <div class="highlight-box">物聯網(toT; Internet of Things)<br>字網路節點不再只侷限必須是電腦<br>&gt;手機、家電、ˋ水電錶、紅綠燈ˋ貨品等都可以擁<br>有自己的IP位址<br>字手機可以用來上網、收發email<br>字智慧型居家環境<br>&gt;透過網路對家中的監視攝影機、冷氣、電燈、電<br>鍋、ˋ電視ˋ 電話ˋ安全警報等進行設定控制<br>字水電錶數據透過網路即時讀取<br>寢紅綠燈、ˋ交通看板透過網路進行設定控制 ,<br>讓交通控制更為即時         圖<br>ee eS re |</div>
-      <div class="highlight-box">物聯網(toT; Internet of Things)<br>字運輸物流<br>&gt;隨時掌握車輛行蹤、貨品位置<br>字物品的生產與管理ˋ健康醫療的運用等等<br>寢一個物聯網(toT ; InternetofThings)概念<br>的環境<br>字將生活周遭所有物體透過網路串接在一起<br>人IPv6讓網路的服務更為廣閣,更為多元<br>ee Ts |</div>
-      <div class="highlight-box">更多彩多姿的數位生活<br>(ee ra<br>oo. Fa     wed<br>un ri, ” rein ARB Hao ll</div>
-      <div class="highlight-box">9慧型居家的願景<br>3}     x    京<br>s<br>nf<br>圖中紅點代表IPv6<br>和 家裡的冷氣打開蘿     呈的情況    J<br>8             ay    ee  BES<br>“說網路概論自實務 疆</div>
-      <div class="highlight-box">簡介 (3/3)<br>密在架構上也做了許多改善<br>&gt;IPv6架構下,相同的介面因為需求的不同可以有<br>不同的出位址設定<br>&gt;IPv6有更嚴謹的安全機制,讓日益興盛的電子商<br>務線上交易更得到保障<br>&gt;IPv6讓每個行動通訊器材有自己的上位址, 使得<br>服務可以更加多元化<br>Q未來行動通訊「IP化」將是必然的趨勢<br>&gt;&gt;IPv6提供的QoS (Quality of Service ; 品質化服<br>務) 架構比IPv4多,可以提供足夠的頻寬保證服<br>務品質<br>el eae ARE Bee</div>
-    </section>
+  <div class="highlight-box">
+    <strong>子網路規劃與 IP 位址分配表</strong>
+    <ul>
+      <li>▶ 以 <span class="formula">140.134.0.0/19</span> 為例（向 B 類借 3 位元）：</li>
+    </ul>
+    <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+      <tr style="background:#4299e1; color:white;">
+        <th style="padding:6px; border:1px solid #ccc;">子網路</th>
+        <th style="padding:6px; border:1px solid #ccc;">子網路位元</th>
+        <th style="padding:6px; border:1px solid #ccc;">子網域位址</th>
+        <th style="padding:6px; border:1px solid #ccc;">子網路廣播位址</th>
+        <th style="padding:6px; border:1px solid #ccc;">可用 IP 範圍</th>
+      </tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">#1</td><td style="padding:6px; border:1px solid #ccc;">000</td><td style="padding:6px; border:1px solid #ccc;">140.134.0.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.31.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.0.1 ~ 31.254</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">#2</td><td style="padding:6px; border:1px solid #ccc;">001</td><td style="padding:6px; border:1px solid #ccc;">140.134.32.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.63.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.32.1 ~ 63.254</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">#3</td><td style="padding:6px; border:1px solid #ccc;">010</td><td style="padding:6px; border:1px solid #ccc;">140.134.64.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.95.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.64.1 ~ 95.254</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">#4</td><td style="padding:6px; border:1px solid #ccc;">011</td><td style="padding:6px; border:1px solid #ccc;">140.134.96.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.127.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.96.1 ~ 127.254</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">#5</td><td style="padding:6px; border:1px solid #ccc;">100</td><td style="padding:6px; border:1px solid #ccc;">140.134.128.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.159.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.128.1 ~ 159.254</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">#6</td><td style="padding:6px; border:1px solid #ccc;">101</td><td style="padding:6px; border:1px solid #ccc;">140.134.160.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.191.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.160.1 ~ 191.254</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">#7</td><td style="padding:6px; border:1px solid #ccc;">110</td><td style="padding:6px; border:1px solid #ccc;">140.134.192.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.223.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.192.1 ~ 223.254</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">#8</td><td style="padding:6px; border:1px solid #ccc;">111</td><td style="padding:6px; border:1px solid #ccc;">140.134.224.0</td><td style="padding:6px; border:1px solid #ccc;">140.134.255.255</td><td style="padding:6px; border:1px solid #ccc;">140.134.224.1 ~ 255.254</td></tr>
+    </table>
+  </div>
 
-    <!-- IPv6 傳播方式 -->
-    <section id="s13">
-      <h2>📌 13｜IPv6 傳播方式</h2>
-      <div class="highlight-box">IPv6 的傳播方式<br>1. 單點傳播(Unicast ; 1-to-1)<br>2. 多點群播 (Multicast ; 1-to-many)<br>3. 任點傳播 (Anycast ; 1-to-any)</div>
-      <div class="highlight-box">IPv6 的傳播方式<br>人IPv6的傳輸型態有三種型式<br>&gt;單點傳播 (Unicast ; 1-to-1)<br>&gt;多點群播 (Multicast ; 1-to-many)<br>&gt;任點傳播 (Anycast ; 1-to-any)<br>人IPv6移除廣播傳播 (Broadcast)機制<br>&gt;以多點群播位址架構來取代<br>人IPv6新增任點傳播<br>&gt;相同任點傳播位址可指定到許多不同的介面<br>ee Tr Te |</div>
-      <div class="highlight-box">任點傳播(Anycast ; 1-to-any)<br>字訊息送到這群介面中的一個<br>&gt;只要找到,不需要固定對象<br>&gt;最普遍的應用:尋徑工作<br>字任點傳播位址使用的兩項限制<br>&gt;此位址不能是來源員<br>&gt;只能用在路由器介面,不能用在主機上<br>ie Siu<br>ee er Te |</div>
-    </section>
+  <div class="highlight-box">
+    <strong>子網路遮罩運算換算表</strong>
+    <ul>
+      <li>▶ 子網路位元數增加 → 網路遮罩從 <span class="formula">255.255.128.0（/17）</span> 遞增到 <span class="formula">255.255.255.255（/32）</span></li>
+      <li>▶ 每增加 1 位元：主機位元少 1，可分配子網路數 × 2，主機數 ÷ 2</li>
+    </ul>
+    <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+      <tr style="background:#4299e1; color:white;">
+        <th style="padding:6px; border:1px solid #ccc;">借位元數</th>
+        <th style="padding:6px; border:1px solid #ccc;">子網路遮罩</th>
+        <th style="padding:6px; border:1px solid #ccc;">/n</th>
+        <th style="padding:6px; border:1px solid #ccc;">子網路數</th>
+        <th style="padding:6px; border:1px solid #ccc;">每網路主機數</th>
+      </tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">1</td><td style="padding:6px; border:1px solid #ccc;">255.255.128.0</td><td style="padding:6px; border:1px solid #ccc;">/17</td><td style="padding:6px; border:1px solid #ccc;">2</td><td style="padding:6px; border:1px solid #ccc;">32,766</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">2</td><td style="padding:6px; border:1px solid #ccc;">255.255.192.0</td><td style="padding:6px; border:1px solid #ccc;">/18</td><td style="padding:6px; border:1px solid #ccc;">4</td><td style="padding:6px; border:1px solid #ccc;">16,382</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">3</td><td style="padding:6px; border:1px solid #ccc;">255.255.224.0</td><td style="padding:6px; border:1px solid #ccc;">/19</td><td style="padding:6px; border:1px solid #ccc;">8</td><td style="padding:6px; border:1px solid #ccc;">8,190</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">4</td><td style="padding:6px; border:1px solid #ccc;">255.255.240.0</td><td style="padding:6px; border:1px solid #ccc;">/20</td><td style="padding:6px; border:1px solid #ccc;">16</td><td style="padding:6px; border:1px solid #ccc;">4,094</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">5</td><td style="padding:6px; border:1px solid #ccc;">255.255.248.0</td><td style="padding:6px; border:1px solid #ccc;">/21</td><td style="padding:6px; border:1px solid #ccc;">32</td><td style="padding:6px; border:1px solid #ccc;">2,046</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">6</td><td style="padding:6px; border:1px solid #ccc;">255.255.252.0</td><td style="padding:6px; border:1px solid #ccc;">/22</td><td style="padding:6px; border:1px solid #ccc;">64</td><td style="padding:6px; border:1px solid #ccc;">1,022</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">7</td><td style="padding:6px; border:1px solid #ccc;">255.255.254.0</td><td style="padding:6px; border:1px solid #ccc;">/23</td><td style="padding:6px; border:1px solid #ccc;">128</td><td style="padding:6px; border:1px solid #ccc;">510</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">8</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.0</td><td style="padding:6px; border:1px solid #ccc;">/24</td><td style="padding:6px; border:1px solid #ccc;">256</td><td style="padding:6px; border:1px solid #ccc;">254</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">9</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.128</td><td style="padding:6px; border:1px solid #ccc;">/25</td><td style="padding:6px; border:1px solid #ccc;">512</td><td style="padding:6px; border:1px solid #ccc;">126</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">10</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.192</td><td style="padding:6px; border:1px solid #ccc;">/26</td><td style="padding:6px; border:1px solid #ccc;">1,024</td><td style="padding:6px; border:1px solid #ccc;">62</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">11</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.224</td><td style="padding:6px; border:1px solid #ccc;">/27</td><td style="padding:6px; border:1px solid #ccc;">2,048</td><td style="padding:6px; border:1px solid #ccc;">30</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">12</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.240</td><td style="padding:6px; border:1px solid #ccc;">/28</td><td style="padding:6px; border:1px solid #ccc;">4,096</td><td style="padding:6px; border:1px solid #ccc;">14</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">13</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.248</td><td style="padding:6px; border:1px solid #ccc;">/29</td><td style="padding:6px; border:1px solid #ccc;">8,192</td><td style="padding:6px; border:1px solid #ccc;">6</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">14</td><td style="padding:6px; border:1px solid #ccc;">255.255.255.252</td><td style="padding:6px; border:1px solid #ccc;">/30</td><td style="padding:6px; border:1px solid #ccc;">16,384</td><td style="padding:6px; border:1px solid #ccc;">2</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">15</td><td style="padding:6px; border:1px solid #ccc;">不使用</td><td style="padding:6px; border:1px solid #ccc;">—</td><td style="padding:6px; border:1px solid #ccc;">不使用</td><td style="padding:6px; border:1px solid #ccc;">不使用</td></tr>
+      <tr><td style="padding:6px; border:1px solid #ccc;">16</td><td style="padding:6px; border:1px solid #ccc;">不使用</td><td style="padding:6px; border:1px solid #ccc;">—</td><td style="padding:6px; border:1px solid #ccc;">不合用</td><td style="padding:6px; border:1px solid #ccc;">不使用</td></tr>
+    </table>
+  </div>
 
-    <!-- IPv6 位址結構 -->
-    <section id="s14">
-      <h2>📌 14｜IPv6 位址結構</h2>
-      <div class="highlight-box">N<br>IPv6 位址基本型式<br>=    © 僅授權用書單位使用</div>
-      <div class="highlight-box">IPv6 位址表示法<br>寢128個位元<br>仿分成8個區塊,每個區塊16個位元 ,以16和進<br>位法表示,區塊間以「 :」區隔<br>eEx:<br>&gt; 2002:8C6E:C7FA:00A1:0000:0000:0000:09E3<br>字可以把「:」與「:」 間屬於前面的 「0」 省掉 ?<br>簡化為2002:8C6E:C7FA:A1:0:0:0:9E3<br>寢幾個連續的「0」,可用兩個冒號「::」表示,<br>但只能出現一次<br>&gt;2002:8C6E:C7FA:A1::9E3      a<br>ee ey tT Te |</div>
-      <div class="highlight-box">IPv6位址的大致格式<br>Prefix (N) | subnet ID (w/       IID (128-N-M)      |<br>包含三個部分<br>字1. 格式首碼 (Format Prefix)<br>&gt;指定一個網路的範圍<br>2. 子網路辨識碼 (Subnet ID)<br>&gt;在一個網路範圍內,再細分出許多的子網路以利<br>管理者進行網路規劃<br>寢3. 介面辨識碼 (IID ; Interface ID)<br>&gt;辨識子網路內的唯一介面<br>I es網路概論與埋務點</div>
-      <div class="highlight-box">格式首碼 (Format Prefix)<br>保留作IPv4配籌       10000 0000                 11/256<br>未配置           +0000 0001                 11/256<br>保留作NASP配置      10000 001                   11/128<br>保留作IPX配置      1!0000 010              11/128<br>未配置           10000 011                  11/128<br>未配置           '0000 1                     11/32<br>ARS         10001                  11/16<br>可聚集全球性單點傳播位址 | 001                         11/8<br>AS         1010                   11/8<br>未配置         1011                   11/8<br>ARE         1100                   11/8<br>未配置         !101                   11/8<br>未配置         1110                   11/8<br>未配置         +1110                  11/16<br>ARS         111110                 11/32<br>未配置          £1117: 10                  !1/64<br>未配置         11111 110               !1/128<br>ARE        11111 11100           1/512<br>區域連結單點傳播位址 11111 1110 10              11/1024<br>區域站台單點傳播位址 1111 1110 11              11/1024<br>多點群播位址       11111 1111                !1/256<br>BURL<br>ya       aah                                                  aA     a)<br>Gh roar lite’ &lt;P dog                     kHn BRe</div>
-      <div class="highlight-box">子網路辨識碼 (Subnet ID)<br>&gt;IPv6位址網域範圍表示<br>&gt;在位址後附加首碼位元長度值<br>&gt;類似IPv4 CIDR的方式<br>&gt;FE80:3600::/8 表示是有8位元首碼的IPv6區塊<br>&gt;子網路辨識碼依首碼的不同有不同的格式<br>ee Ts |</div>
-      <div class="highlight-box">介面辨識碼 (IID ; Interface ID)<br>字主要由介面MAC位址進行轉換所產生<br>寢每個網路設備的介面辨識碼都不相同<br>為了避免使用者曝露自己的MAC位址<br>&gt;辨識碼產生的方法並非唯一<br>QQ直接手動設定<br>0Q亂數來產生<br>Q隨著啟用時間的不同來進行變換....<br>字FTP伺服器ˋ郵件伺服器:固定IPv6位址<br>mem) am . ih . rt     ee   ; 路概論  ie : a</div>
-      <div class="highlight-box">IPv6 特殊位址<br>= 0:0:0:0:0:0:0:0 (縮寫為「::」)<br>&gt;代表任意位址 ; 類似IPv4 的 0.0.0.0 位址<br>&gt;節點尚未完成IP位址設定 , 以此位址與外界通訊<br>#0:0:0:0:0:0:0:1 (縮寫成 ::1)<br>&gt;迴路位址 ; 類似IPv4迴路位址的127.0.0.1<br>密使IPv4位址能與IPv6環境節點相互通訊<br>&gt;IPv448 Biz (IPv4-Compatible Address)<br>O原來IPv4位址左邊加96位元0<br>&gt;6to4位址:首碼2002+32位元IPv4位址+子網路欄<br>位+64位元介面辨識碼 (ID ; Interface ID)<br>ee Te Te |</div>
-      <div class="highlight-box">ul<br>IPv4位址與IPv6位址間的遷移<br>ee ee              @ 僅授權用書單位使用</div>
-      <div class="highlight-box">簡介<br>寢要將行之多年的IPv4環境完全轉換成IPv6位<br>址並不是一件容易的事<br>&gt;不致於浪費過去在IPv4架構上所做的努力與投資<br>密轉換會以漸進方式逐步進行遷移(Migration)<br>&gt;讓原來IPv4位址能夠在IPv6環境中通訊<br>&gt;將IPv4位址轉換成IPv4相容位址或6to4位址<br>寢網路遷移初期 ,大部分網路骨幹還是IPv4,<br>分隔兩地的IPv6主機需經由IPv4網路通訊<br>&gt;通道透通 (Tunneling)<br>ee Tr Te |</div>
-      <div class="highlight-box">通道透通 (Tunneling)<br>春,  gg<br>_levemn | TCP標頭| sans |<br>(a) 原始IPv6封包<br>(b) 經封裝後的封包<br>PROT=41、`  BURR<br>ee Te |</div>
-    </section>
+  <div class="highlight-box">
+    <strong>子網路判斷（AND 運算）</strong>
+    <ul>
+      <li>▶ 將 IP 位址與網路遮罩執行 <strong>AND（二進位邏輯閘）</strong> 運算，可得到網域位址</li>
+      <li>▶ <strong>Example 1</strong>：<span class="formula">140.134.36.19</span> 與遮罩 <span class="formula">255.255.255.0</span>
+        <ul>
+          <li><span class="formula">140.134.36.19 AND 255.255.255.0 = 140.134.36.0</span> → 網域位址</li>
+        </ul>
+      </li>
+      <li>▶ <strong>Example 2</strong>：<span class="formula">140.134.175.154</span> 與遮罩 <span class="formula">255.255.255.0</span>
+        <ul>
+          <li><span class="formula">140.134.175.154 AND 255.255.255.0 = 140.134.175.0</span> → 網域位址</li>
+        </ul>
+      </li>
+      <li>▶ 若 AND 運算結果相同，則兩 IP 屬於同一網域，可直接通訊</li>
+    </ul>
+  </div>
 
-    <!-- IPv6 標頭與延伸標頭 -->
-    <section id="s15">
-      <h2>📌 15｜IPv6 標頭與延伸標頭</h2>
-      <div class="highlight-box">|<br>IPv6標頭<br>9 ee ee          © 僅授權用書單位使用</div>
-      <div class="highlight-box">簡介<br>人IPv6標頭:主標頭+延伸標頭<br>字主標頭: 固定8個<br>&gt;欄位數量比IPv4少很多<br>&gt;標頭長度固定<br>QQ封包處理更單純、ˋ更快<br>QQ提昇效能<br>© 3iE {298 (Extension Header)<br>&gt;代替IPv4的選擇項<br>ee TT ee |</div>
-      <div class="highlight-box">主標頭<br>32 位元<br>#1. Version : 版本 (4位元)<br>&gt; 6 (0110,)</div>
-      <div class="highlight-box">2. Traffic Class : 訊務等級<br>8個位元<br>字如同IPv4標頭的TOS、ˋ、DS欄位<br>&gt;對封包傳輸所期間的等級進行區分<br>人前6個位元稱為DSCP (Differentiated<br>Service Codepoint)<br>字後兩個位元 ,作為明確擁塞通知 (ECN ;<br>Explicit Congestion Notification) 之用<br>&gt; WISBEZEDS ARRIETA<br>I ee eT tre |</div>
-      <div class="highlight-box">3. Flow Label : 流量標籤<br>寢IPv6新增的欄位<br>&gt;用以對某些特定封包進行標示,配合相關協定進<br>行封包分類傳送<br>&gt;Ex: 即時性服務 (Real-time Service)<br>&gt;相同封包群資料流必須擁有相同的流量標籤、<br>來源端IPv6位址與目的端IPv6位址<br>字不支援此欄位的IPv6節點<br>&gt;轉送封包<br>&gt;不會理會此欄位<br>&gt;不能對這個欄位做任何變更                  mi<br>ae Te Te |</div>
-      <div class="highlight-box">4. Payload Length : 承載資料長度<br>字與IPv4的TotalLength欄位功能相同,表示<br>封包長度<br>&gt;同樣佔16位元<br>&gt;同樣以位元組為單位<br>寢只計算IPv6標頭後資料的長度<br>ee Ts |</div>
-      <div class="highlight-box">5. Next Header : 下一個標頭<br>字如IPv4的「協定 (PROT)」欄位<br>字欄位佔8位元<br>&gt;可以是IPv4 PROT所列的項目<br>&gt;也可以是IPv6新增延伸標頭 (Extension Header)<br>項目<br>ee Tr Te |</div>
-      <div class="highlight-box">[一一】)<br>IPv4「PROT」標示的協定項目<br>1      + ICMP i            Internet Control Message Protocol<br>2      : IGMP ;           Internet Group Management Protocol<br>3      t    GGP i;                 Gateway-Gateway Protocol<br>6     : TCP 4              Transmission Control Protocol<br>8      t    EGP                 Exterior Gateway Protocol<br>9      H     IGP     H                  Interior Gateway Protocol<br>17     H    UDP    t                User Datagram Protocol<br>41     1 IPv6 ,                Internet Protocol version 6<br>47     : GRE i              Generic Routing Encapsulation<br>50     H    ESP    H              Encapsulating Security Payload<br>51     H    AH    H                Authentication Header<br>88     : EIGRP ,       Enhanced Interior Gateway Routing Protocol<br>89     : OSPF :                Open Shortest Path First<br>“選讀                                                                                 BER<br>Ot    ke eee</div>
-      <div class="highlight-box">IPv6新增延伸標頭項目<br>0     '      逐點(Hop-by-Hop)選擇項標頭      | 經過每個節點檢查其封包<br>come           路由(Routing)標頭           H      指定需經過的節點<br>44 |}      封包分片(Fragmentation)標頭      :          分割封包<br>| 封裝安全性承載資料(Encapsulating |       ea<br>at    :      Security Payload)標頭          :        安全性加密機制<br>51     '        認證(Authentication)標頭          身份認證<br>58    t                ICMPv6                ! 在IPv6使用的ICMP協定<br>59     t      無下一個標頭(No Next Header)      t     後面沒有下一個標頭<br>60 | 目的地選擇項(Destination Options)標頭 | 在目的地執行的選擇項<br>135__; _IPv6移動節點 (Mobile IPv6) ROR |“ 提供移動節點使用的選擇項<br>“選讀                                                                                 BARR<br>ri 33 1    aint                               4   =<br>Ot            kt BRE</div>
-      <div class="highlight-box">6. Hop Limit : 最大節點數<br>&gt;8位元<br>&gt;取代IPv4的 「TTL,」欄位<br>&gt;TTL欄位以秒為單位<br>寢「最大節點數」欄位以經過節點數為單位<br>寢數值為0,封包便會被丟棄<br>eT ee |</div>
-      <div class="highlight-box">7,8 IPv6 Address<br>© 7. 來源端IPv6位址 (128位元)<br>8, 目的端IPv6位址 (128位元)<br>ee Ts |</div>
-      <div class="highlight-box">延伸標頭<br>密等於代替IPv4協定的選擇項部份<br>密由「下一個標頭」引導, 並依優先權排列<br>密延伸標頭項目只會由目的位址進行處理<br>&gt;除了Hop-by-Hop沁擇項延伸標頭在所有中繼節<br>點都會進行處理之外</div>
-      <div class="highlight-box">常見的延伸標頭項<br>常見的延伸標頭項目<br>1   t                  IPv6標頭<br>2                          逐點 (Hop-by-Hop) 標頭<br>3 | 目的地選擇項標頭 (在目的節點及路由標頭內指定的所有節點都進行處理)<br>4                          路由 (Routing) 標頭<br>5 |                 封包分片標豆<br>6   :                  認證標頭<br>能              封裝安全性承載資料標豆<br>8     :                目的地選擇項標頭 (僅在目的節點進行處理)<br>9 3                 上層協定標豆<br>ean                                           BURR<br>Ot        kHn BRe</div>
-      <div class="highlight-box">IPv6封包解析<br>LINe [Souce Addess  [DestAddess en BytejHel Time<br>圖 2    2002:8c86: le4b:| 3ffe:b00:c18:1:|ICMPve: Echo Request Message Code=0    114    0:00:03.553,<br>i) 3    3£fe;b00:c18:1:|2002:8c86;le4b:|ICMPvé: Echo Reply Message Code=0     114    0:00:03.820<br>eee9611e4 3tfe-b00:c10-2 [ieMEve. Echo Eequsst Hessaoe coae-o (244 | 0-00:04 o69<br>|<br>IP: Protocol<br>IP urce address    = [(140.134.30.75]<br>B 1 Destination address * (131.107.33.60]<br>BP: No options<br>= #) IPv6: 一一 IPv6 Header -一一<br>IPv6é<br>eve. Version           =<br>IPv6: Priority         = 0 (Uncharacterized Traffic)<br>IPv6: Flow Label        = 0x000000<br>IPv6: Payload Length     = 40<br>IPv6: Next Header<br>BB ipvé. fop-eret          - 128<br>IPve   jource address     = 2002.ac86 : le4b: : 8ca6: le4b<br>Ipfe: Destination address = 3ffe:b00.c18.1..10<br>pe<br>$y ICMPve ——— ICMPv6 Header —-—<br>ICMPv6<br>ICHPv6: Type            = 128 (Echo Request Message)<br>(00000000: 00 05 dd c2 70 00 00 00 e8 85 fa ed 08 00 45 00    Pp   ?    E                   4]<br>100000010: 00 64 46 d7 00 00 80 29 a4 21 8c 86 le 4b 83 6b dF?  27K<br>100000020: 21 2 人00000 29 2 00 2 NO MB |&lt; Ny Tak)<br>100000030. 00 00 GO 00 00 00 8c 86 le 4b 3f fe Ob 00 Oc 18 ......?.K??...<br>100000040: 00 01 00 00 00 00 00 00 00 10 30 00 07 fe 00 00 Le   ?<br>|l00000050: 00 2f 61 62 63 64 65 66 67 68 69 6a bb 6c bd be /abcdefghijklan<br>|00000060: 6f 70 71 72 73 74 78 76 77 61 62 63 64 65 66 67 opqrstuvvabedefg                  a<br>BAR<br>i                                            =,       Se<br>網路概論實務 轉<br>只~                                                                               ae 7              ~        ’</div>
-    </section>
+  <div class="highlight-box">
+    <strong>子網路規劃實例</strong>
+    <ul>
+      <li>▶ <strong>需求</strong>：對一個 B 類網路做 <strong>50 個子網路</strong>劃分</li>
+      <li>▶ 50 介於 32（2⁵）與 62（2⁶）之間 → <strong>需要 6 個子網路位元</strong></li>
+      <li>▶ 子網路遮罩：<span class="formula">255.255.252.0（/22）</span></li>
+      <li>▶ 每個子網域能擁有的 IP 位址數：<strong>1,022 個</strong>（2¹⁰ - 2）</li>
+    </ul>
+  </div>
+</section>
 
-    <!-- 結語 -->
-    <section id="s16">
-      <h2>📌 16｜結語</h2>
-      <div class="highlight-box">+E<br>結語<br>生                                          @ 僅授權用書單位使用<br>en ©</div>
-      <div class="highlight-box">結語 (1/3)<br>人IPv6是Internet史上重大的技術升級工作<br>人將會慢慢地在既有的IPv4架構下細露頭角<br>人IPv4協定與IPv6協定之間的差別<br>1. 定址容量的延展<br>2. 簡化標頭格式<br>3. 延伸標頭與選擇項的改進<br>4. 流量標示的能力<br>6. 漫遊機制<br>I es網路概論與埋務點</div>
-      <div class="highlight-box">結語 (2/3)<br>1. 定址容量的延展<br>&gt;位址空間增加到128個位元<br>&gt;提供更多階層 (Hierarchy) 的定址層級 (Level)<br>與更大的定址主機數量<br>&gt;定義任點傳播(Anycast) 位址型態<br>0更有效將封包傳送到某群組的任一主機上<br>寢2. 簡化標頭格式<br>&gt;固定標頭 :40個位元組<br>&gt;刪除部份IPv4標頭欄位<br>0減少封包運作成本並提升執行效率<br>ee Tr Te |</div>
-      <div class="highlight-box">結語 (3/3)<br>© 3. 延伸標頭<br>&gt;需要時才納入,使IPv6封包轉送效率更好<br>&gt;有新的選擇項定義, 容易整合<br>寢4. 流量標示的能力<br>&gt; 使IP協定傳送可以達到品質化服務(QoS)、即時服務<br>(Real-time Service) 等特殊需求<br>@ 5. 認證與隱私<br>&gt;規劃在IPv6延伸標頭中<br>&gt;資料完整性ˋ、加密、ˋ認證支援<br>© 6. 漫遊機制<br>&gt; IPv4的漫遊 (Roaming) 功能,必須透過轉接<br>&gt; IPv6 以Mobile IPv6對漫遊機制進行規範<br>Q9降低傳輸延己                                   Bah<br>(eee arabia ARE Bee:</div>
-      <div class="highlight-box">有<br>問題與討論<br>關鍵字<br>填充題<br>選擇題<br>問答題<br>還      @ 僅授權用書單位使用</div>
-    </section>
+<!-- CIDR -->
+<section id="s6">
+  <h2>📌 6｜CIDR 無分類網際尋徑</h2>
+
+  <div class="highlight-box">
+    <strong>CIDR（Classless Inter-Domain Routing）無分類網際尋徑</strong>
+    <ul>
+      <li>▶ 由 <strong>IETF</strong> 提出，打破傳統 A、B、C 類位址的分類限制</li>
+      <li>▶ 網域規劃完全依照<strong>網路遮罩（Network Mask）</strong>定義</li>
+      <li>▶ 一些小網路系統可以整合成一個較大的網路架構，稱為<strong>超網（Supernet）</strong></li>
+      <li>▶ <strong>優點</strong>：
+        <ul>
+          <li>減少路由器需求量</li>
+          <li>減輕尋徑內容（Routing Table）數量負擔</li>
+          <li>提升路由器效率</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="highlight-box">
+    <strong>傳統 IP 位址分類的問題</strong>
+    <ul>
+      <li>▶ IP 位址 A、B、C 類型區分明確，導致<strong>IP 位址浪費</strong></li>
+      <li>▶ 例如：一個需要 300 個 IP 的組織，申請 C 類（254 個）不夠，申請 B 類（65,534 個）又浪費</li>
+      <li>▶ CIDR 讓組織可以申請「任意大小」的位址區塊，彈性配合實際需求</li>
+    </ul>
+  </div>
+
+  <div class="highlight-box">
+    <strong>CIDR 區塊選取原則</strong>
+    <ul>
+      <li>▶ 位址區塊必須<strong>連續</strong>（不能有空洞）</li>
+      <li>▶ 盡量以<strong>位址位元變化少</strong>的進行規劃</li>
+      <li>▶ 網域位址與遮罩：依<strong>包含位址的變化</strong>來判斷</li>
+    </ul>
+  </div>
+
+  <div class="highlight-box">
+    <strong>網路遮罩值與網域位址的判斷（範例）</strong>
+    <ul>
+      <li>▶ <strong>Example</strong>：有一連續位址區塊 <span class="formula">201.100.36.X ~ 201.100.39.X</span>（256 個位址）
+        <ul>
+          <li>二進位變化範圍：<span class="formula">00100100 ~ 00100111</span>（最後 8 位元）</li>
+          <li>網路遮罩：<span class="formula">255.255.252.0（/22）</span></li>
+          <li>網域位址：<span class="formula">201.100.36.0</span></li>
+          <li>廣播位址：<span class="formula">201.100.39.255</span></li>
+        </ul>
+      </li>
+      <li>▶ <strong>Example 2</strong>：有一連續位址區塊 <span class="formula">201.100.37.X ~ 201.100.40.X</span>
+        <ul>
+          <li>二進位變化範圍：<span class="formula">00100101 ~ 00101000</span></li>
+          <li>網路遮罩：<span class="formula">255.255.240.0（/20）</span></li>
+          <li>網域位址：<span class="formula">201.100.32.0</span></li>
+          <li>廣播位址：<span class="formula">201.100.47.255</span></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="highlight-box">
+    <strong>位址整合性規劃（超網整合）</strong>
+    <ul>
+      <li>▶ 必需從區塊的<strong>界限上做開端</strong>，才不致網域位址與網路遮罩訂定錯亂</li>
+      <li>▶ <strong>Example</strong>：機構甲、乙、丙、丁分別需要 1,000、2,000、200、500 個 IP 位址
+        <ul>
+          <li>以 <span class="formula">210.100.0.0</span> 網域內的 C 類位址為單位作分配</li>
+          <li>先到先配且盡量往前排為原則</li>
+        </ul>
+      </li>
+      <li>▶ <strong>機構甲（1,000 個）</strong>：需要 4 個 C 類（每個 254 個）→ <span class="formula">210.100.0.0/22</span></li>
+      <li>▶ <strong>機構乙（2,000 個）</strong>：需要 8 個 C 類 → <span class="formula">210.100.8.0/21</span>
+        <ul>
+          <li>需從區塊界限（2,048 的倍數）開始：8, 16, 24...</li>
+          <li>選用 <span class="formula">210.100.8.0 ~ 15.255</span> 而非 <span class="formula">4.0 ~ 11.255</span>（避免與甲衝突）</li>
+        </ul>
+      </li>
+      <li>▶ <strong>機構丙（200 個）</strong>：1 個 C 類 → <span class="formula">210.100.4.0/24</span></li>
+      <li>▶ <strong>機構丁（500 個）</strong>：2 個 C 類 → <span class="formula">210.100.6.0/23</span></li>
+    </ul>
+  </div>
+
+  <div class="highlight-box">
+    <strong>良好的 IP 位址分派 vs 不良的 IP 位址分派</strong>
+    <ul>
+      <li>▶ <strong>良好分派</strong>：從 <span class="formula">210.100.8.0/21</span> 開始
+        <ul>
+          <li>8 個連續 C 類位址（8.0 ~ 15.255）</li>
+          <li>網路遮罩：<span class="formula">255.255.248.0（/21）</span></li>
+          <li>網域位址：<span class="formula">210.100.8.0</span></li>
+          <li>廣播位址：<span class="formula">210.100.15.255</span></li>
+          <li>可獲得很乾淨的超網整合</li>
+        </ul>
+      </li>
+      <li>▶ <strong>不良分派</strong>：從 <span class="formula">210.100.4.0/20</span> 開始
+        <ul>
+          <li>分散在 4.0 ~ 11.255（4.0 ~ 7.255 + 8.0 ~ 11.255）</li>
+          <li>網路遮罩：<span class="formula">255.255.240.0（/20）</span></li>
+          <li>網域位址：<span class="formula">210.100.0.0</span>（等於機構甲的網域，造成位址衝突）</li>
+          <li>整合效果差，浪費可用位址</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="highlight-box">
+    <strong>整合示意圖</strong>
+    <ul>
+      <li>▶ <span class="formula">210.100.0.0/22</span> → 機構甲（1,000 個）</li>
+      <li>▶ <span class="formula">210.100.4.0/24</span> → 機構丙（200 個）</li>
+      <li>▶ <span class="formula">210.100.6.0/23</span> → 機構丁（500 個）</li>
+      <li>▶ <span class="formula">210.100.8.0/21</span> → 機構乙（2,000 個）</li>
+      <li>▶ 四個機構的網域位址在路由器看來都不同，順利完成整合</li>
+    </ul>
+  </div>
+</section>
+    <h2>📌 7｜保留位址</h2>
+
+<div class="highlight-box">
+  <p>保留位址表</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 常見的保留位址</p>
+  <p>IP 網域                   │  IP 位址保留目的</p>
+  <p>0.0.0.0/8         │  本網域（"This" Network）</p>
+  <p>10.0.0.0/8        │  A 類私人使用網域（Private-Use Networks）</p>
+  <p>14.0.0.0/8        │  公眾數據網路（Public-Data Networks；PDN）</p>
+  <p>24.0.0.0/8        │  有線電視網路（Cable Television Networks）</p>
+  <p>127.0.0.0/8       │  迴路回測（Loopback Test）</p>
+  <p>169.254.0.0/16    │  鏈結區域（Link Local）</p>
+  <p>172.16.0.0/12     │  B 類私人使用網域（Private-Use Networks）</p>
+  <p>192.0.2.0/24      │  測試網路（Test-Net）</p>
+  <p>192.88.99.0/24    │  6to4 中繼任點傳播（Relay Anycast）</p>
+  <p>192.168.0.0/16    │  C 類私人使用網域（Private-Use Networks）</p>
+  <p>—                 │  HESIOD（Network Interconnect Device Benchmark）</p>
+  <p>255.255.255.255  │  區域（Local）廣播位址</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 重要的保留位址</p>
+  <p>▶ 1. 本網域（"This" Network）</p>
+  <p>▶ 2. 企業網路內部保留位址（Intranet IP Address）</p>
+  <p>▶ 3. 迴路回測（Loopback Test）</p>
+  <p>▶ 4. 區域廣播（Local Broadcast）</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 1. 本網域（"This" Network）</p>
+  <p>▶ 0.0.0.0/8 是 A 類網路的第一個網段</p>
+  <p>　代表「本網域（This Network）」</p>
+  <p>▶ 與自己網域節點通訊，可運用本網域位址</p>
+  <p>　例：0.0.0.123 代表相同網域中主機位址為 123 的節點</p>
+  <p>▶ 0.0.0.0</p>
+  <p>　尚未取得 IP 位址，用以對自己 IP 位址表示</p>
+  <p>　不知對方 IP 位址，以「0.0.0.0」代表目的端 IP 位址，表示為所有網域</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 2. 企業網路內部保留位址</p>
+  <p>▶ 歸屬於內部自己獨立的網路系統</p>
+  <p>▶ 內部網路可透過具 NAT（Network Address Translation；網路位址轉譯）功能路由器與外界網路連線</p>
+  <p>　NAT 路由器有一個正規 IP 位址與外界聯繫</p>
+  <p>　內部由內部網路 IP 位址進行溝通</p>
+  <p>▶ 各企業網路系統間相互獨立</p>
+  <p>　對 IP 位址普遍不足的情況有很大的貢獻</p>
+  <p>▶ 內部網路節點與正規 IP 位址的對應</p>
+  <p>　運用傳輸層埠編號（Port Number）</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 企業網路的連通</p>
+  <p>▶ 網域位址僅在內部使用，即使重覆也不會有衝突</p>
+  <p>▶ 每個企業都使用相同的私有位址區段，透過 NAT 路由器與外部網路溝通</p>
+  <p>　企業向 ISP 申請一個正式 IP，內部所有節點共用此 IP 對外通訊</p>
+  <p>　（圖說：每個企業內部使用私有位址，NAT 路由器負責對外轉換）</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 常見的企業內部網路位址</p>
+  <p>▶ A、B、C 類各保留一個區段，分別適用於大型、中型或小型的網路系統使用</p>
+  <p>▶ A 類保留區段：10.0.0.0/8（10.0.0.0 ～ 10.255.255.255）</p>
+  <p>▶ B 類保留區段：172.16.0.0/12（172.16.0.0 ～ 172.31.255.255）</p>
+  <p>▶ C 類保留區段：192.168.0.0/16（192.168.0.0 ～ 192.168.255.255）</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 3. 迴路回測（Loopback Test）</p>
+  <p>▶ 對自身的 TCP/IP 設定正確與否進行測試</p>
+  <p>▶ 測試訊號只在本機上進行，不會傳到網路上</p>
+  <p>▶ 原來 A、B、C 類都將其最後一個網段設定為迴路回測使用</p>
+  <p>　目前只保留 127.0.0.0/8 網域進行迴路回測</p>
+  <p>　B 類的 191.255.0.0/16 區塊與 C 類的 223.255.255.0/24 區塊不再保留</p>
+  <p>▶ ping 127.0.0.1 命令</p>
+  <p>　檢測本機 TCP/IP 網路設定是否完整</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 檢查自己主機成功的情形</p>
+  <p>C:\WINDOWS&gt; ping 127.0.0.1</p>
+  <p>Pinging 127.0.0.1 with 32 bytes of data:</p>
+  <p>Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32</p>
+  <p>Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32</p>
+  <p>Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32</p>
+  <p>Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32</p>
+  <p>Ping statistics for 127.0.0.1:</p>
+  <p>Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),</p>
+  <p>Minimum = 0ms, Maximum = 0ms, Average = 0ms</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 檢查自己主機失敗的情形</p>
+  <p>C:\WINDOWS&gt; ping 127.0.0.1</p>
+  <p>Pinging 127.0.0.1 with 32 bytes of data:</p>
+  <p>PING: transmit failed, error code 10091.</p>
+  <p>PING: transmit failed, error code 10091.</p>
+  <p>PING: transmit failed, error code 10091.</p>
+  <p>PING: transmit failed, error code 10091.</p>
+  <p>Ping statistics for 127.0.0.1:</p>
+  <p>Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),</p>
+  <p>Minimum = 0ms, Maximum = 0ms, Average = 0ms</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 4. 區域廣播（Local Broadcast）</p>
+  <p>▶ 尚未取得 IP 位址，或不知道自己網域位址</p>
+  <p>　可運用 **255.255.255.255** 對自己所在網域所有節點進行廣播</p>
+</div>
+
+<h2>📌 8｜DHCP 動態主機設定協定</h2>
+
+<div class="highlight-box">
+  <p>DHCP</p>
+  <p>Dynamic Host Configuration Protocol</p>
+  <p>（動態主機設定協定）</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 為何需要 DHCP？</p>
+  <p>▶ 每個網路節點擁有一個永久使用的 IP 位址（理想方式）</p>
+  <p>▶ 網路需求無限，但 IP 位址有限</p>
+  <p>▶ DHCP</p>
+  <p>　動態地對 IP 位址進行分配</p>
+  <p>　只有網路連線時才向 DHCP 伺服器取得 IP 位址</p>
+  <p>　可以有效地對 IP 位址數量進行分配與運用</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ DHCP 架構</p>
+  <p>▶ 網路必須配置 DHCP 伺服主機</p>
+  <p>▶ 節點連線後以廣播方式與 DHCP 伺服器連繫</p>
+  <p>▶ 節點 IP 位址由伺服器統一分配，不至於重複</p>
+  <p>▶ 避免長時間佔用某個 IP 位址：設定使用期限</p>
+  <p>▶ 應用情境</p>
+  <p>　電腦教室環境：省去一一對各電腦設定與管理</p>
+  <p>　居家上網連線環境：只有一個固定 IP 位址，但要上網節點有好幾個</p>
+  <p>　運用 DHCP 配合保留位址：10.0.0.0/8、172.16.0.0/12、192.168.0.0/16</p>
+</div>
+
+<h2>📌 9｜DNS 網域名稱系統</h2>
+
+<div class="highlight-box">
+  <p>DNS</p>
+  <p>Domain Name System</p>
+  <p>（網域名稱系統）</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 簡介</p>
+  <p>▶ 網路藉由位址對節點進行定址</p>
+  <p>　數字拼湊的 IP 位址：不容易記憶</p>
+  <p>▶ 根據節點特性，以名稱對節點進行表示</p>
+  <p>　明白清楚，也容易記憶</p>
+  <p>▶ 名稱容易記憶，但真正定址的還是 IP 位址</p>
+  <p>　在 IP 位址與名稱間需要有個轉換機制</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ DNS</p>
+  <p>▶ 以 hosts.txt 檔案提供單機個別的對照</p>
+  <p>　早期網路環境單純，主機數量不多</p>
+  <p>▶ 網路快速發展，主機數量快速增長</p>
+  <p>　為了解決大量 IP 位址與名稱間的對映</p>
+  <p>▶ 網域名稱系統（DNS）</p>
+  <p>　網域名稱（Domain Name）：網路節點的名稱</p>
+  <p>　Domain Name System：進行名稱與 IP 位址轉換的系統</p>
+  <p>▶ 1983 年 Paul Mockapetris 經由 RFC 882 提出</p>
+  <p>▶ Paul Mockapetris 於 1987 年在 RFC 1034 和 RFC 1035 對 DNS 技術再修正</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ DNS 查詢</p>
+  <p>▶ 由網域名稱查出 IP 位址的動作</p>
+  <p>　「正向名稱查詢（Forward Name Query）」</p>
+  <p>▶ 由 IP 位址查得網域名稱的動作</p>
+  <p>　「反向名稱查詢（Reverse Name Query）」</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 網域名稱（FQDN；Fully Qualified Domain Name）</p>
+  <p>▶ 網域名稱命名有其規則性</p>
+  <p>　依階層方式組成，階層間以小數點區隔</p>
+  <p>　最多五個層級</p>
+  <p>　每一級名稱至少 2 個字元，最多不超過 63 個字元</p>
+  <p>　名稱總長度不超過 **253** 個字元</p>
+  <p>▶ 名稱字元</p>
+  <p>　英文字母、數字、破折號，不分大小寫</p>
+  <p>　2008 年以後：可接受 Unicode 規範之中文、希臘文、阿拉伯文等各國文字</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 完整網域名稱（FQDN；Fully Qualified Domain Name）</p>
+  <p>▶ 主機名稱（HostName）</p>
+  <p>▶ 網域名稱（Domain Name）</p>
+  <p>▶ 「.」＝ 根網域（Root Domain）</p>
+  <p>▶ 常將 FQDN 最後的句點「.」省去，系統自動補上</p>
+  <p>　例：www.flag.com.tw.（完整形式）</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ DNS 階層式架構</p>
+  <p>▶ 根網域是整個架構的最上層</p>
+  <p>　實際上是個空標記，以一個點「.」表示</p>
+  <p>▶ 頂層網域（TLD；Top-Level Domain）</p>
+  <p>　根網域的下面一層</p>
+  <p>▶ gTLD（Generic TLD；一般頂層網域）</p>
+  <p>　以使用組織機構性質來區分</p>
+  <p>▶ ccTLD（Country Code TLD；國家頂層網域）</p>
+  <p>　以使用的國家或地區來區分</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ gTLD（一般頂層網域）</p>
+  <p>▶ 原來有七種單位定義，後續有 museum、travel、tel、asia 等十幾類正式 gTLD 的設立</p>
+  <p>　edu    │  教育機構</p>
+  <p>　gov    │  政府機構</p>
+  <p>　com    │  公司企業行號</p>
+  <p>　net    │  網路事業機構</p>
+  <p>　org    │  非營利事業財團法人、基金會</p>
+  <p>　int    │  國際組織</p>
+  <p>　mil    │  軍事單位</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ ccTLD（Country Code TLD；國家頂層網域）</p>
+  <p>▶ 各國語言也可以設立，台灣 ccTLD 增加了中文網域</p>
+  <p>　cn  │  中國大陸          us  │  美國</p>
+  <p>　hk  │  香港              uk  │  英國</p>
+  <p>　jp  │  日本              eu  │  歐盟</p>
+  <p>　kr  │  韓國              au  │  澳洲</p>
+  <p>　tw  │  台灣</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ TLD 之後</p>
+  <p>▶ 可依需要進行定義，甚至可以有中文的網域名稱</p>
+  <p>▶ ccTLD 之後一般使用 gTLD 作下一層名稱（沒有強制性）</p>
+  <p>　有些國家（如日本、英國等）以 ac、go、co、or 進行表示</p>
+  <p>▶ 運用類似反轉樹狀目錄的結構型態</p>
+  <p>　網域為枝幹，主機為最末層的葉端</p>
+  <p>　每台主機的網域名稱都是唯一</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 統籌負責</p>
+  <p>▶ 整個 DNS 由 ICANN 負責統籌（http://www.icann.org）</p>
+  <p>▶ InterNIC（http://www.internic.net）也負責 IP 位址分配的工作</p>
+  <p>▶ 各 TLD 則由個別成立的單位組織來負責</p>
+  <p>▶ 台灣由台灣資訊中心（TWNIC）負責</p>
+  <p>　Taiwan Network Information Center</p>
+  <p>　http://www.twnic.net</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 網域名稱申請</p>
+  <p>▶ edu.tw、gov.tw 由教育部、行政院負責</p>
+  <p>▶ 其餘委由相關業者提供民眾申請</p>
+  <p>▶ 類別：com.tw（公司）、net.tw（電信或網路業者）、org.tw（財團法人）、idv.tw（個人）、ebiz.tw（電子商務）、game.tw（遊戲）、club.tw（俱樂部）等</p>
+  <p>▶ 網域名稱年費台幣 **800 元**，個人網域名稱年費台幣 **400 元**</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 短網址</p>
+  <p>▶ 將冗長網址轉換成 15 個字以內替代網址，存取時再導向原來網址</p>
+  <p>▶ 短網址通常會使用罕用的 TLD 區塊</p>
+  <p>　例：Google 用 goo.gl 便是使用格陵蘭的網域（.gl）</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 泛用型網域名稱</p>
+  <p>▶ 提供更廣泛的網域名稱，只要名稱沒有衝突就可以申請</p>
+  <p>▶ gTLD 也做開放，各式各樣、各國語言的名稱都有</p>
+  <p>▶ 例：台北市政府申請了「.taipei」的 gTLD</p>
+  <p>▶ 未來網域名稱將會越來越多元</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 網域名稱範例</p>
+  <p>　www.flag.com.tw        │  旗標出版公司</p>
+  <p>　www.cisco.com         │  思科公司</p>
+  <p>　www.twnic.net         │  台灣網路資訊中心</p>
+  <p>　www.toyota.co.jp      │  日本豐田汽車公司</p>
+  <p>　www.thebritishmuseum.ac.uk │  英國大英博物館</p>
+  <p>　www.tsmc.com.tw       │  台灣積體電路公司</p>
+  <p>　www.redcross.org.tw   │  中華民國紅十字會</p>
+  <p>　goo.gl/maps/08W96     │  短網址範例</p>
+  <p>　www.twnic.tw          │  泛用型英文網址範例</p>
+  <p>　台灣盆栽世界.tw        │  中文網址範例</p>
+  <p>　中文.台灣              │  「.台灣」網域範例</p>
+  <p>　www.travel.taipei     │  台北旅遊網</p>
+</div>
+
+<div class="highlight-box">
+  <p>網域名稱伺服器</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ DNS 角色</p>
+  <p>▶ DNS Client（Client）：提出名稱解析請求，稱為 Resolver</p>
+  <p>▶ DNS Server（Server）：接受要求的一方，網域名稱系統伺服器（DNS Server）或簡稱名稱伺服器（Name Server）</p>
+  <p>▶ DNS 是個全球性的分散式資料庫，分層管理，使每台主機需記憶的名稱資訊下降</p>
+  <p>▶ 每個網域（Domain）至少有一台名稱伺服器</p>
+  <p>　下層可以自行管理自己的部分</p>
+  <p>　伺服器管理的範圍：扣除下層自行管理後的區塊</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ DNS 伺服器的管理區塊</p>
+  <p>（圖說：根網域管理所有 TLD；TLD 向下管理各第二層網域如 .com、.net、.tw；各網域如 flag.com.tw 由該網域自行管理其下的主機）</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 根伺服器</p>
+  <p>▶ 記錄各 TLD 伺服器的 IP 位址</p>
+  <p>▶ 只要是有效的網域名稱，從根網域開始逐步一層一層地進行尋找，最終一定可以找到答案</p>
+  <p>▶ 目前有超過 **500 台**以上的根伺服器分 **13 組**在全球各地分散處理每天龐大的名稱解析工作</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 遞迴查詢與反覆查詢</p>
+  <p>▶ 遞迴查詢（Recursive Query）：DNS 伺服器代替用戶端向其他 DNS 伺服器查詢，直到獲得最終答案後回覆給用戶端</p>
+  <p>▶ 反覆查詢（Iterative Query）：DNS 伺服器只回覆自己已知最佳答案，讓用戶端自行向下一層伺服器繼續查詢</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ DNS 的運作流程</p>
+  <p>▶ 用戶端向本機 DNS 伺服器查詢 www.flag.com.tw</p>
+  <p>▶ 本機 DNS 伺服器若無快取，向根伺服器查詢</p>
+  <p>▶ 根伺服器回覆管理 .tw 的 TLD 伺服器 IP 位址</p>
+  <p>▶ 本機 DNS 向 .tw 伺服器查詢，回覆管理 .com.tw 的伺服器 IP 位址</p>
+  <p>▶ 本機 DNS 向 .com.tw 伺服器查詢，回覆管理 .flag.com.tw 的伺服器 IP 位址</p>
+  <p>▶ 本機 DNS 向 .flag.com.tw 伺服器查詢，獲得 www.flag.com.tw 的 IP 位址</p>
+  <p>▶ 回覆結果給用戶端</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ Lab</p>
+  <p>▶ 若要了解自己電腦的 DNS 記錄，可運用 ipconfig /displaydns 指令來進行</p>
+</div>
+
+<div class="highlight-box">
+  <p>動態 DNS</p>
+</div>
+
+<div class="highlight-box">
+  <p>▶ 動態 DNS（DDNS）</p>
+  <p>▶ 適合 DHCP 之類動態 IP 位址的網站，IP 位址不固定仍能進行 DNS 對應</p>
+  <p>▶ 步驟：</p>
+  <p>　使用者申請設定啟動動態 DNS</p>
+  <p>　在自己網站上安裝動態 DNS 軟體，設定與機構伺服器間的連線</p>
+  <p>　主機開機，提供目前使用的 IP 位址予伺服器，達到動態對應網域名稱與 IP 位址的目標</p>
+  <p>▶ 企業網路位址（Intranet IP Address）不保證成功</p>
+  <p>▶ 不可用來架設 DNS 伺服器</p>
+  <p>▶ 架設電子郵件伺服器，可能會有郵件漏失的問題</p>
+</div>
+    <h2>📌 10｜IP 協定標頭</h2>
+<div class="highlight-box">
+<h3>IP 標頭結構</h3>
+▶ IP 標頭以 **32 位元** 為單位<br>
+▶ 括弧內數字：表示該欄位的位元（bit）寬度
+</div>
+
+<div class="highlight-box">
+<h3>Ver（Version；版本）— 4 位元</h3>
+▶ IP 第四版（IPv4）：此欄位值為 **4**（0100）<br>
+▶ IP 第六版（IPv6）：此欄位值為 **6**（0110）
+</div>
+
+<div class="highlight-box">
+<h3>IHL（Internet Header Length；標頭長度）— 4 位元</h3>
+▶ 以 **32 位元** 為單位<br>
+▶ Ex: 160 位元 IP 標頭 → 32 位元為 1 單位 → **5 單位**，欄位值為 **5**（0101）
+</div>
+
+<div class="highlight-box">
+<h3>TOS 或 DS（服務類型 / 差異服務）— 8 位元</h3>
+▶ 定義 IP 封包傳送的服務類別<br>
+▶ TOS（Type of Service；服務類型）<br>
+▶ DS（Differentiated Service；差異服務）<br>
+▶ 由八位元組成，發送端設定，不具強制性，僅作尋徑參考
+</div>
+
+<div class="highlight-box">
+<h3>1. TOS：服務類型</h3>
+▶ **Precedence（優先權）**：八種不同的優先權值<br>
+&nbsp;&nbsp;- 7（111）：最高優先權，控制傳送<br>
+&nbsp;&nbsp;- 0（000）：最低優先權，一般性訊號<br>
+&nbsp;&nbsp;- 由發送端設定，網路軟體可以不理會<br>
+▶ **D（Delay；延遲）**：0=一般延遲，1=低延遲<br>
+▶ **T（Throughput；傳送流通量）**：0=一般傳送量，1=高傳送量<br>
+▶ **R（Reliability；可靠度）**：0=低可靠度傳送，1=高可靠度傳送<br>
+▶ **C（Cost；路徑成本）**：0=一般成本路徑，1=最小成本路徑<br>
+▶ 最後一個位元：未做定義（0）
+</div>
+
+<div class="highlight-box">
+<h3>2. DS：差異服務</h3>
+▶ **DSCP（Differentiated Service Codepoint；差異服務代碼點）**：對傳送類別區分，以達到 QoS 需求<br>
+&nbsp;&nbsp;- DSCP 右邊三個位元為 0：左邊三個位元定義與 TOS 優先權相同，達到與 TOS 相容<br>
+&nbsp;&nbsp;- DSCP 右邊三個位元不全為 0：定義各種不同層級與類別（Class）的差異服務<br>
+▶ **ECN（Explicit Congestion Notification；明確擁塞通知）**：網路擁塞時對來源端進行擁塞通知<br>
+&nbsp;&nbsp;- 00：未使用 ECN<br>
+&nbsp;&nbsp;- 01 或 10：由來源端設定，指具 ECN 處理能力<br>
+&nbsp;&nbsp;- 11：由路由器設定，通知端點已經發生擁塞
+</div>
+
+<div class="highlight-box">
+<h3>TL（Total Length；封包總長度）— 16 位元</h3>
+▶ 傳送封包總長度<br>
+▶ 包含 IP 標頭以及 IP 所帶資料內容總合<br>
+▶ 以位元組（Byte）為單位<br>
+▶ 最長封包長度為 **65,535**（2¹⁶-1）位元組
+</div>
+
+<div class="highlight-box">
+<h3>ID（Identification；識別代碼）— 16 位元</h3>
+▶ 發送端對每個 IP 資料封包設定的唯一辨識碼<br>
+▶ 當封包超過最大傳輸單位（MTU；Maximum Transfer Unit）時，將封包切成幾個分片（Fragments）傳送，以此識別碼判斷重組<br>
+▶ 重組工作只有接收端才進行
+</div>
+
+<div class="highlight-box">
+<h3>FL（Flags；旗幟識別）— 3 位元</h3>
+▶ 最左位元：0（保留）<br>
+▶ **DF（Don't Fragment；不可分割）**：0=此封包可進行切割，1=此封包不可進行切割<br>
+▶ **MF（More Fragment；更多分片）**：0=原始封包切割的最後分片，1=還有相同原始封包的其他分片
+</div>
+
+<div class="highlight-box">
+<h3>FO（Fragment Offset；分片位移）— 13 位元</h3>
+▶ 以 8 位元組為單位計算位移<br>
+▶ Ex: 4480 位元組封包，MTU=1480 位元組<br>
+&nbsp;&nbsp;- 第一片：FO=0（1480 位元組）<br>
+&nbsp;&nbsp;- 第二片：FO=185（=1480/8）<br>
+&nbsp;&nbsp;- 第三片：FO=370（=1480×2/8）<br>
+&nbsp;&nbsp;- 第四片：FO=555（=1480×3/8）
+</div>
+
+<div class="highlight-box">
+<h3>TTL（Time To Live；存活時間）— 8 位元</h3>
+▶ 描述封包在 IP 網路上傳送所剩餘可以存活的時間<br>
+▶ 以秒為單位<br>
+▶ 資料封包抵達路由器時：計數器會先自動減 1，再減去封包在路由器上處理的秒數，直到數值為 0 為止<br>
+▶ 數值為 0 時，若資料封包仍未抵達目的端，系統便會捨棄該封包
+</div>
+
+<div class="highlight-box">
+<h3>PROT（Protocol；網路協定）— 8 位元</h3>
+<table>
+<tr><td>1</td><td>ICMP</td><td>Internet Control Message Protocol</td></tr>
+<tr><td>2</td><td>IGMP</td><td>Internet Group Management Protocol</td></tr>
+<tr><td>3</td><td>GGP</td><td>Gateway-Gateway Protocol</td></tr>
+<tr><td>6</td><td>TCP</td><td>Transmission Control Protocol</td></tr>
+<tr><td>8</td><td>EGP</td><td>Exterior Gateway Protocol</td></tr>
+<tr><td>9</td><td>IGP</td><td>Interior Gateway Protocol</td></tr>
+<tr><td>17</td><td>UDP</td><td>User Datagram Protocol</td></tr>
+<tr><td>41</td><td>IPv6</td><td>Internet Protocol version 6</td></tr>
+<tr><td>47</td><td>GRE</td><td>Generic Routing Encapsulation</td></tr>
+<tr><td>50</td><td>ESP</td><td>Encapsulating Security Payload</td></tr>
+<tr><td>51</td><td>AH</td><td>Authentication Header</td></tr>
+<tr><td>88</td><td>EIGRP</td><td>Enhanced Interior Gateway Routing Protocol</td></tr>
+<tr><td>89</td><td>OSPF</td><td>Open Shortest Path First</td></tr>
+</table>
+</div>
+
+<div class="highlight-box">
+<h3>HC（Header Checksum；標頭檢查碼）— 16 位元</h3>
+▶ 用以檢查「標頭」內容的傳送是否正確<br>
+▶ 來源端與目的端間所有路由器都會檢查<br>
+▶ 僅對 IP 標頭的部份執行運算（不含資料部份）：<br>
+&nbsp;&nbsp;1. 將檢查碼欄位設為 0<br>
+&nbsp;&nbsp;2. 將 IP 標頭內容以 16 個位元為單位運用 1 補數演算法進行加總<br>
+&nbsp;&nbsp;3. 最後結果再執行 1 的補數 → 即為檢查碼值
+</div>
+
+<div class="highlight-box">
+<h3>SA、DA（IP 位址）— 各 32 位元</h3>
+▶ **SA（Source IP Address）**：來源端主機的 IP 位址<br>
+▶ **DA（Destination IP Address）**：目的端主機的 IP 位址
+</div>
+
+<div class="highlight-box">
+<h3>OPT（Options；選擇項）— 長度不定</h3>
+▶ 用作測試與除錯之用<br>
+▶ 包含：<br>
+&nbsp;&nbsp;- 來源端路徑（Source Route）<br>
+&nbsp;&nbsp;- 記錄路徑（Record Route）<br>
+&nbsp;&nbsp;- 時間標記（Time Stamp）<br>
+&nbsp;&nbsp;- 安全標記（Security Label）<br>
+▶ 選擇性欄位，非絕對必要，因此欄位長度不確定
+</div>
+
+<div class="highlight-box">
+<h3>PAD（Padding；填充）— 長度不定</h3>
+▶ 配合選擇項欄位使用<br>
+▶ 使 IP 標頭總長度為 32 位元的整數倍<br>
+▶ 填補資料通常以 0 作處理
+</div>
+
+<h2>📌 11｜IP 選擇項</h2>
+<div class="highlight-box">
+<h3>選項碼（Code）— 8 位元</h3>
+▶ 針對選擇項的種類作區別，分為三個部分：<br>
+&nbsp;&nbsp;1. **複製（Copy）**：1 位元 — 切割時是否要複製到所有分片<br>
+&nbsp;&nbsp;2. **類型（Class）**：2 位元 — 說明選擇項類型<br>
+&nbsp;&nbsp;3. **選擇項編號（Option Number）**：5 位元
+</div>
+
+<div class="highlight-box">
+<h3>1. 複製（Copy）欄位</h3>
+▶ 佔 1 個位元<br>
+▶ 1：複製所有分片<br>
+▶ 0：只複製到第一個分片
+</div>
+
+<div class="highlight-box">
+<h3>2. 類型（Class）欄位 — 2 位元</h3>
+▶ **0（00）**：-datagram）或網路控制<br>
+▶ **2（10）**：除錯（Debugging）與量測（Measurement）<br>
+▶ **1（01）** 與 **3（11）**：保留（Reserved），未來擴充之用
+</div>
+
+<div class="highlight-box">
+<h3>3. 選擇項編號（Option Number）</h3>
+▶ **0**：選擇項末端<br>
+▶ **1**：無操作（用以對選擇項欄位進行位元組排列）<br>
+▶ **2**：安全性與處理限制（軍事應用）<br>
+▶ **3**：鬆散源路徑（用以大致按一定路徑傳送）<br>
+▶ **7**：記錄行進的路徑（用以追蹤路徑）<br>
+▶ **8**：資料流識別碼（已不用）<br>
+▶ **9**：嚴格源路徑（用以按特定路徑傳送）
+</div>
+
+<div class="highlight-box">
+<h3>常見 IP 選擇項</h3>
+▶ **1. 記錄路徑（Record Route）**<br>
+▶ **2. 源路徑（Source Routing）**：鬆散式與嚴格式<br>
+▶ **3. 時間戳記（Timestamp）**
+</div>
+
+<div class="highlight-box">
+<h3>1. 記錄路徑（Record Route）</h3>
+▶ 常用在路徑追蹤場合<br>
+▶ Code 值為 **7o**（00000111₂）<br>
+&nbsp;&nbsp;- 複製欄位值設為 0，不進行複製（各分片行徑路徑會有不同）<br>
+&nbsp;&nbsp;- 屬網路控制類型，類型欄位值設為 0（00）<br>
+&nbsp;&nbsp;- 選擇項編號值為 7（00111₂）
+</div>
+
+<div class="highlight-box">
+<h3>Length 欄位</h3>
+▶ 佔 8 個位元，以位元組為單位<br>
+▶ 說明該選擇項欄位的總長度（包含前三個位元組以及預留路徑記錄的位元組長度）<br>
+▶ 路徑記錄預留的位元組長度由初始來源端依通訊範圍大小作判斷訂定
+</div>
+
+<div class="highlight-box">
+<h3>Pointer 欄位</h3>
+▶ 預計記錄 20 筆<br>
+▶ 第一筆 Pointer = **3**<br>
+▶ 第二筆 Pointer = **7**<br>
+▶ 第 n 筆 Pointer = **3 + 4×(n-1)**<br>
+▶ 最後一筆 Pointer = **79**<br>
+▶ Pointer 等於或超過 **83** 不再記錄
+</div>
+
+<div class="highlight-box">
+<h3>2. 源路徑（Source Routing）</h3>
+▶ 指定封包傳送依指定路徑行進<br>
+▶ 常用在對某特定路線網路流通量的測試<br>
+▶ 結構：Code(8) | Length(8) | Pointer(8) | 第一個節點路徑IP位址(32) | 第二個節點路徑IP位址(32) | ...
+</div>
+
+<div class="highlight-box">
+<h3>嚴格源路徑與鬆散源路徑</h3>
+▶ **嚴格源路徑（Strict Source Routing）**：<br>
+&nbsp;&nbsp;- 嚴格地對封包行經的「每一個」路徑進行規範<br>
+&nbsp;&nbsp;- 相鄰的路徑節點間不得有其他節點存在<br>
+&nbsp;&nbsp;- 路徑次序不得更改<br>
+▶ **鬆散源路徑（Loose Source Routing）**：<br>
+&nbsp;&nbsp;- 允許相鄰路徑節點間存在其他節點<br>
+&nbsp;&nbsp;- 並非提供一條完備的路徑<br>
+&nbsp;&nbsp;- 「要點式」行進路徑<br>
+&nbsp;&nbsp;- 未描述的路徑由各路徑節點自行決定
+</div>
+
+<div class="highlight-box">
+<h3>Code 欄位（源路徑）</h3>
+▶ **鬆散源路徑**：<br>
+&nbsp;&nbsp;- 複製欄位值設為 1（複製到所有分片）<br>
+&nbsp;&nbsp;- 網路控制類型：類型欄位值設為 0（00）<br>
+&nbsp;&nbsp;- 選擇項編號值為 3（00011₂）<br>
+&nbsp;&nbsp;- Code 欄位值為 **131**（10000011₂）<br>
+▶ **嚴格源路徑**：<br>
+&nbsp;&nbsp;- 選擇項編號值為 9（01001₂）<br>
+&nbsp;&nbsp;- Code 欄位值為 **137**（10001001₂）
+</div>
+
+<div class="highlight-box">
+<h3>3. 時間戳記（Timestamp）</h3>
+▶ 用在對每個路徑節點 IP 位址與時間進行記錄<br>
+▶ 時間值以格林威治時間（Universal Time）表示<br>
+▶ 自午夜 0 點算起，千分之一秒為一單位（ms）
+</div>
+
+<div class="highlight-box">
+<h3>時間戳記 Code 欄位</h3>
+▶ 佔 8 位元，Code 欄位值為 **68**（01000100₂）<br>
+▶ 複製欄位值設為 0（僅需第一個分片進行量測工作即可）<br>
+▶ 屬除錯與量測類型：類型欄位值設為 2（10）<br>
+▶ 選擇項編號為 4（00100₂）
+</div>
+
+<div class="highlight-box">
+<h3>時間戳記欄位定義</h3>
+▶ **Length 欄位**：選擇項的總位元組數<br>
+▶ **Pointer 欄位**：下一筆記錄資料的起始位移值<br>
+▶ **OFlow（Overflow）欄位**：佔 4 個位元<br>
+&nbsp;&nbsp;- 記錄封包傳送過程有多少個路徑節點未被記錄到<br>
+&nbsp;&nbsp;- 當 Pointer 欄位值大於或等於 Length 欄位值（預留的記錄欄位已滿，不再進行戳記記錄）時，將 OFlow 欄位值加 1
+</div>
+
+<div class="highlight-box">
+<h3>時間戳記 Flags 欄位 — 4 位元</h3>
+▶ **0000**：只記錄時間，不記錄 IP 位址<br>
+▶ **0001**：同時對 IP 位址與時間做記錄<br>
+▶ **0011**：只針對原始發送端所指定的位址處作時間記錄<br>
+▶ Flags 值為 1 時，可取代「記錄路徑」選擇項<br>
+▶ 記錄只能做大概參考值：時鐘非嚴格同步
+</div>
+
+<h2>📌 12｜IPv6 簡介</h2>
+<div class="highlight-box">
+<h3>IPv6 位址大綱</h3>
+▶ 1. 簡介<br>
+▶ 2. IPv6 的傳播方式<br>
+▶ 3. IPv6 位址型式<br>
+▶ 4. IPv4 與 IPv6 間的遷移<br>
+▶ 5. IPv6 標頭與封包解析
+</div>
+
+<div class="highlight-box">
+<h3>簡介（1/3）</h3>
+▶ 根據 Network Wizards 公司對網路位址使用的調查：IP 位址的使用量一直以指數方式成長<br>
+▶ ALE（Address Lifetime Expectancy；位址生命週期預測）工作小組推估 IPv4 位址會很快耗盡<br>
+▶ IETF 從 1991 年開始對 IPv4 位址不足的問題探求各種可能解決方案：<br>
+&nbsp;&nbsp;- NAT 是目前常用的方式之一<br>
+&nbsp;&nbsp;- IPv6 架構是另一個相當廣為受重視的方案<br>
+▶ IPv6 完全改變現有定址方式，被視為是下一代（ng；next generation）網路定址的標準<br>
+▶ 因此一般也將 IPv6 稱為 **IPng**
+</div>
+
+<div class="highlight-box">
+<h3>簡介（2/3）</h3>
+▶ IPv6 的位址空間增加到 **128 個位元**（有 2¹²⁸ 個位址）<br>
+▶ IPv6 位址總數：**340,282,366,920,938,463,463,374,607,431,768,211,456**<br>
+▶ 比 IPv4 增加了 **2⁹⁶ 倍**<br>
+▶ 每平方公尺擁有 **665×10²⁴ 個位址**<br>
+▶ 以全人類的人口數來分配：每人可擁有 **5×10²⁸ 個位址**<br>
+▶ 每秒分配出一萬個位址，要花費 **20 萬年** 才可以將 IPv6 位址耗盡
+</div>
+
+<div class="highlight-box">
+<h3>物聯網（IoT；Internet of Things）</h3>
+▶ 網路節點不再只侷限必須是電腦：<br>
+&nbsp;&nbsp;- 手機、家電、水電錶、紅綠燈、貨品等都可以擁有自己的 IP 位址<br>
+▶ 手機可以用來上網、收發 email<br>
+▶ 智慧型居家環境：透過網路對家中的監視攝影機、冷氣、電燈、電鍋、電視、電話、安全警報等進行設定控制<br>
+▶ 水電錶數據透過網路即時讀取<br>
+▶ 紅綠燈、交通看板透過網路進行設定控制，讓交通控制更為即時<br>
+▶ 運輸物流：隨時掌握車輛行蹤、貨品位置<br>
+▶ 物品的生產與管理、健康醫療的運用等等<br>
+▶ 一個物聯網（IoT）概念的環境：將生活周遭所有物體透過網路串接在一起<br>
+▶ IPv6 讓網路的服務更為廣闘，更為多元
+</div>
+
+<div class="highlight-box">
+<h3>簡介（3/3）</h3>
+▶ 在架構上也做了許多改善：<br>
+&nbsp;&nbsp;- IPv6 架構下，相同的介面因為需求的不同可以有不同的 IP 位址設定<br>
+&nbsp;&nbsp;- IPv6 有更嚴謹的安全機制，讓日益興盛的電子商務線上交易更得到保障<br>
+&nbsp;&nbsp;- IPv6 讓每個行動通訊器材有自己的 IP 位址，使得服務可以更加多元化<br>
+▶ 未來行動通訊「IP 化」將是必然的趨勢<br>
+▶ IPv6 提供的 QoS（Quality of Service；品質化服務）架構比 IPv4 多，可以提供足夠的頻寬保證服務品質
+</div>
+
+<h2>📌 13｜IPv6 傳播方式</h2>
+<div class="highlight-box">
+<h3>IPv6 的傳播方式</h3>
+▶ **1. 單點傳播（Unicast；1-to-1）**<br>
+▶ **2. 多點群播（Multicast；1-to-many）**<br>
+▶ **3. 任點傳播（Anycast；1-to-any）**
+</div>
+
+<div class="highlight-box">
+<h3>IPv6 傳播方式說明</h3>
+▶ IPv6 的傳輸型態有三種型式：<br>
+&nbsp;&nbsp;- 單點傳播（Unicast；1-to-1）<br>
+&nbsp;&nbsp;- 多點群播（Multicast；1-to-many）<br>
+&nbsp;&nbsp;- 任點傳播（Anycast；1-to-any）<br>
+▶ IPv6 移除廣播傳播（Broadcast）機制，以多點群播位址架構來取代<br>
+▶ IPv6 新增任點傳播：相同任點傳播位址可指定到許多不同的介面
+</div>
+
+<div class="highlight-box">
+<h3>任點傳播（Anycast）</h3>
+▶ 訊息送到這群介面中的其中一個，只要找到，不需要固定對象<br>
+▶ 最普遍的應用：尋徑工作<br>
+▶ 任點傳播位址使用的兩項限制：<br>
+&nbsp;&nbsp;- 此位址不能是來源端<br>
+&nbsp;&nbsp;- 只能用在路由器介面，不能用在主機上
+</div>
+
+<h2>📌 14｜IPv6 位址結構</h2>
+<div class="highlight-box">
+<h3>IPv6 位址基本型式</h3>
+▶ **128 個位元**，分成 **8 個區塊**，每個區塊 **16 個位元**，以 **16 進位** 法表示，區塊間以「:」區隔<br>
+▶ Ex: 2002:8C6E:C7FA:00A1:0000:0000:0000:09E3<br>
+▶ 可以把「:」與「:」間屬於前面的「0」省掉：2002:8C6E:C7FA:A1:0:0:0:9E3<br>
+▶ 幾個連續的「0」，可用兩個冒號「::」表示，但只能出現一次：2002:8C6E:C7FA:A1::9E3
+</div>
+
+<div class="highlight-box">
+<h3>IPv6 位址大致格式</h3>
+▶ **Prefix(N) | Subnet ID(M) | IID(128-N-M)**<br>
+▶ 包含三個部分：<br>
+&nbsp;&nbsp;1. **格式首碼（Format Prefix）**：指定一個網路的範圍<br>
+&nbsp;&nbsp;2. **子網路辨識碼（Subnet ID）**：在一個網路範圍內，再細分出許多的子網路以利管理者進行網路規劃<br>
+&nbsp;&nbsp;3. **介面辨識碼（IID；Interface ID）**：辨識子網路內的唯一介面
+</div>
+
+<div class="highlight-box">
+<h3>格式首碼（Format Prefix）</h3>
+<table>
+<tr><td>0000 0000</td><td>保留作 IPv4 配置</td><td>1/256</td></tr>
+<tr><td>0000 0001</td><td>未配置</td><td>1/256</td></tr>
+<tr><td>0000 0010</td><td>保留作 NSAP 配置</td><td>1/128</td></tr>
+<tr><td>0000 0100</td><td>保留作 IPX 配置</td><td>1/128</td></tr>
+<tr><td>0000 0110</td><td>未配置</td><td>1/256</td></tr>
+<tr><td>0000 1</td><td>未配置</td><td>1/32</td></tr>
+<tr><td>0001</td><td>未配置</td><td>1/16</td></tr>
+<tr><td>001</td><td>可聚集全球性單點傳播位址</td><td>1/8</td></tr>
+<tr><td>010</td><td>未配置</td><td>1/8</td></tr>
+<tr><td>100</td><td>未配置</td><td>1/8</td></tr>
+<tr><td>101</td><td>未配置</td><td>1/8</td></tr>
+<tr><td>110</td><td>未配置</td><td>1/8</td></tr>
+<tr><td>1110</td><td>未配置</td><td>1/16</td></tr>
+<tr><td>1111 0</td><td>未配置</td><td>1/32</td></tr>
+<tr><td>1111 10</td><td>未配置</td><td>1/64</td></tr>
+<tr><td>1111 110</td><td>未配置</td><td>1/128</td></tr>
+<tr><td>1111 1110 0</td><td>區域連結單點傳播位址</td><td>1/1024</td></tr>
+<tr><td>1111 1110 11</td><td>區域站台單點傳播位址</td><td>1/1024</td></tr>
+<tr><td>1111 1111</td><td>多點群播位址</td><td>1/256</td></tr>
+</table>
+</div>
+
+<div class="highlight-box">
+<h3>子網路辨識碼（Subnet ID）</h3>
+▶ IPv6 位址網域範圍表示<br>
+▶ 在位址後附加首碼位元長度值（類似 IPv4 CIDR 的方式）<br>
+▶ Ex: FE80:3600::/8 表示是有 8 位元首碼的 IPv6 區塊<br>
+▶ 子網路辨識碼依首碼的不同有不同的格式
+</div>
+
+<div class="highlight-box">
+<h3>介面辨識碼（IID；Interface ID）</h3>
+▶ 主要由介面 MAC 位址進行轉換所產生<br>
+▶ 每個網路設備的介面辨識碼都不相同<br>
+▶ 為了避免使用者曝露自己的 MAC 位址，辨識碼產生的方法並非唯一：<br>
+&nbsp;&nbsp;- 直接手動設定<br>
+&nbsp;&nbsp;- 亂數來產生<br>
+&nbsp;&nbsp;- 隨著啟動時間的不同來進行變換<br>
+▶ FTP 伺服器、郵件伺服器：固定 IPv6 位址
+</div>
+
+<div class="highlight-box">
+<h3>IPv6 特殊位址</h3>
+▶ **0:0:0:0:0:0:0:0**（縮寫為「::」）：<br>
+&nbsp;&nbsp;- 代表任意位址，類似 IPv4 的 0.0.0.0 位址<br>
+&nbsp;&nbsp;- 節點尚未完成 IP 位址設定，以此位址與外界通訊<br>
+▶ **0:0:0:0:0:0:0:1**（縮寫成 ::1）：<br>
+&nbsp;&nbsp;- 迴路位址，類似 IPv4 迴路位址的 127.0.0.1<br>
+▶ **使 IPv4 位址能與 IPv6 環境節點相互通訊**：<br>
+&nbsp;&nbsp;- IPv4 相容位址（IPv4-Compatible Address）：原來 IPv4 位址左邊加 96 位元 0<br>
+&nbsp;&nbsp;- 6to4 位址：首碼 2002 + 32 位元 IPv4 位址 + 子網路欄位 + 64 位元介面辨識碼（IID）
+</div>
+
+<h2>📌 15｜IPv6 標頭與延伸標頭</h2>
+<div class="highlight-box">
+<h3>簡介</h3>
+▶ IPv6 標頭 = 主標頭 + 延伸標頭<br>
+▶ 主標頭：固定 **8 個欄位**<br>
+&nbsp;&nbsp;- 欄位數量比 IPv4 少很多<br>
+&nbsp;&nbsp;- 標頭長度固定<br>
+&nbsp;&nbsp;- 封包處理更單純、更快，提昇效能<br>
+▶ 延伸標頭（Extension Header）：代替 IPv4 的選擇項
+</div>
+
+<div class="highlight-box">
+<h3>主標頭 — 40 位元組（固定）</h3>
+▶ **1. Version（版本）— 4 位元**：6（0110₂）<br>
+▶ **2. Traffic Class（訊務等級）— 8 位元**：如同 IPv4 標頭的 TOS、DS 欄位，對封包傳輸期間的等級進行區分<br>
+&nbsp;&nbsp;- 前 6 個位元稱為 DSCP（Differentiated Service Codepoint）<br>
+&nbsp;&nbsp;- 後兩個位元作為明確擁塞通知（ECN；Explicit Congestion Notification）之用
+</div>
+
+<div class="highlight-box">
+<h3>3. Flow Label（流量標籤）</h3>
+▶ IPv6 新增的欄位<br>
+▶ 用以對某些特定封包進行標示，配合相關協定進行封包分類傳送<br>
+▶ Ex: 即時性服務（Real-time Service）<br>
+▶ 相同封包群資料流必須擁有相同的流量標籤、來源端 IPv6 位址與目的端 IPv6 位址<br>
+▶ 不支援此欄位的 IPv6 節點：轉送封包、不會理會此欄位、不能對這個欄位做任何變更
+</div>
+
+<div class="highlight-box">
+<h3>4. Payload Length（承載資料長度）</h3>
+▶ 與 IPv4 的 Total Length 欄位功能相同，表示封包長度<br>
+▶ 同樣佔 16 位元，同樣以位元組為單位<br>
+▶ 只計算 IPv6 標頭後資料的長度
+</div>
+
+<div class="highlight-box">
+<h3>5. Next Header（下一個標頭）</h3>
+▶ 如同 IPv4 的「協定（PROT）」欄位<br>
+▶ 欄位佔 8 位元<br>
+▶ 可以是 IPv4 PROT 所列的項目，也可以是 IPv6 新增延伸標頭項目
+</div>
+
+<div class="highlight-box">
+<h3>IPv4「PROT」標示的協定項目</h3>
+<table>
+<tr><td>1</td><td>ICMP</td><td>Internet Control Message Protocol</td></tr>
+<tr><td>2</td><td>IGMP</td><td>Internet Group Management Protocol</td></tr>
+<tr><td>3</td><td>GGP</td><td>Gateway-Gateway Protocol</td></tr>
+<tr><td>6</td><td>TCP</td><td>Transmission Control Protocol</td></tr>
+<tr><td>8</td><td>EGP</td><td>Exterior Gateway Protocol</td></tr>
+<tr><td>9</td><td>IGP</td><td>Interior Gateway Protocol</td></tr>
+<tr><td>17</td><td>UDP</td><td>User Datagram Protocol</td></tr>
+<tr><td>41</td><td>IPv6</td><td>Internet Protocol version 6</td></tr>
+<tr><td>47</td><td>GRE</td><td>Generic Routing Encapsulation</td></tr>
+<tr><td>50</td><td>ESP</td><td>Encapsulating Security Payload</td></tr>
+<tr><td>51</td><td>AH</td><td>Authentication Header</td></tr>
+<tr><td>88</td><td>EIGRP</td><td>Enhanced Interior Gateway Routing Protocol</td></tr>
+<tr><td>89</td><td>OSPF</td><td>Open Shortest Path First</td></tr>
+</table>
+</div>
+
+<div class="highlight-box">
+<h3>IPv6 新增延伸標頭項目</h3>
+<table>
+<tr><td>0</td><td>逐點（Hop-by-Hop）選擇項標頭</td><td>經過每個節點檢查其封包</td></tr>
+<tr><td>43</td><td>路由（Routing）標頭</td><td>指定需經過的節點</td></tr>
+<tr><td>44</td><td>封包分片（Fragmentation）標頭</td><td>分割封包</td></tr>
+<tr><td>50</td><td>封裝安全性承載資料（ESP）標頭</td><td>安全性加密機制</td></tr>
+<tr><td>51</td><td>認證（Authentication）標頭</td><td>身份認證</td></tr>
+<tr><td>58</td><td>ICMPv6</td><td>在 IPv6 使用的 ICMP 協定</td></tr>
+<tr><td>59</td><td>無下一個標頭（No Next Header）</td><td>後面沒有下一個標頭</td></tr>
+<tr><td>60</td><td>目的地選擇項（Destination Options）標頭</td><td>在目的地執行的選擇項</td></tr>
+<tr><td>135</td><td>IPv6 移動節點（Mobile IPv6）標頭</td><td>提供移動節點使用的選擇項</td></tr>
+</table>
+</div>
+
+<div class="highlight-box">
+<h3>6. Hop Limit（最大節點數）</h3>
+▶ 8 位元，取代 IPv4 的「TTL」欄位<br>
+▶ TTL 欄位以秒為單位<br>
+▶ 「最大節點數」欄位以經過節點數為單位<br>
+▶ 數值為 0，封包便會被丟棄
+</div>
+
+<div class="highlight-box">
+<h3>7, 8. IPv6 位址</h3>
+▶ **7. 來源端 IPv6 位址（Source Address）— 128 位元**<br>
+▶ **8. 目的端 IPv6 位址（Destination Address）— 128 位元**
+</div>
+
+<div class="highlight-box">
+<h3>延伸標頭</h3>
+▶ 等於代替 IPv4 協定的選擇項部分<br>
+▶ 由「下一個標頭」引導，並依優先權排列<br>
+▶ 延伸標頭項目只會由目的位址進行處理<br>
+▶ 除了 Hop-by-Hop 選擇項延伸標頭在所有中繼節點都會進行處理之外
+</div>
+
+<div class="highlight-box">
+<h3>常見的延伸標頭</h3>
+▶ **1**：IPv6 標頭<br>
+▶ **2**：逐點（Hop-by-Hop）標頭<br>
+▶ **3**：目的地選擇項標頭（在目的節點及路由標頭內指定的所有節點都進行處理）<br>
+▶ **4**：路由（Routing）標頭<br>
+▶ **5**：封包分片標頭<br>
+▶ **6**：認證標頭<br>
+▶ **7**：封裝安全性承載資料標頭<br>
+▶ **8**：目的地選擇項標頭（僅在目的節點進行處理）<br>
+▶ **9**：上層協定標頭
+</div>
+
+<h2>📌 16｜結語</h2>
+<div class="highlight-box">
+<h3>結語（1/3）</h3>
+▶ IPv6 是 Internet 史上重大的技術升級工作<br>
+▶ 將會慢慢地在既有的 IPv4 架構下嶄露頭角<br>
+▶ IPv4 協定與 IPv6 協定之間的差別：<br>
+&nbsp;&nbsp;1. 定址容量的延展<br>
+&nbsp;&nbsp;2. 簡化標頭格式<br>
+&nbsp;&nbsp;3. 延伸標頭與選擇項的改進<br>
+&nbsp;&nbsp;4. 流量標示的能力<br>
+&nbsp;&nbsp;5. 認證與隱私<br>
+&nbsp;&nbsp;6. 漫遊機制
+</div>
+
+<div class="highlight-box">
+<h3>結語（2/3）</h3>
+▶ **1. 定址容量的延展**：<br>
+&nbsp;&nbsp;- 位址空間增加到 128 個位元<br>
+&nbsp;&nbsp;- 提供更多階層（Hierarchy）的定址層級（Level）與更大的定址主機數量<br>
+&nbsp;&nbsp;- 定義任點傳播（Anycast）位址型態，更有效將封包傳送到某群組的任一主機上<br>
+▶ **2. 簡化標頭格式**：<br>
+&nbsp;&nbsp;- 固定標頭：40 個位元組<br>
+&nbsp;&nbsp;- 刪除部分 IPv4 標頭欄位<br>
+&nbsp;&nbsp;- 減少封包運作成本並提升執行效率
+</div>
+
+<div class="highlight-box">
+<h3>結語（3/3）</h3>
+▶ **3. 延伸標頭**：<br>
+&nbsp;&nbsp;- 需要時才納入，使 IPv6 封包轉送效率更好<br>
+&nbsp;&nbsp;- 有新的選擇項定義，容易整合<br>
+▶ **4. 流量標示的能力**：<br>
+&nbsp;&nbsp;- 使 IP 協定傳送可以達到品質化服務（QoS）、即時服務（Real-time Service）等特殊需求<br>
+▶ **5. 認證與隱私**：<br>
+&nbsp;&nbsp;- 規劃在 IPv6 延伸標頭中<br>
+&nbsp;&nbsp;- 資料完整性、加密、認證支援<br>
+▶ **6. 漫遊機制**：<br>
+&nbsp;&nbsp;- IPv4 的漫遊（Roaming）功能必須透過轉接<br>
+&nbsp;&nbsp;- IPv6 以 Mobile IPv6 對漫遊機制進行規範<br>
+&nbsp;&nbsp;- 大幅降低傳輸延遲
+</div>
+
+<div class="highlight-box">
+<h3>問題與討論</h3>
+▶ 關鍵字<br>
+▶ 填充題<br>
+▶ 選擇題<br>
+▶ 問答題
+</div>
 
     <footer class="note-footer">
       <span>📖 柯的筆記天地 — 資訊網路</span>
@@ -308,4 +1434,3 @@
 
   </main>
 </body>
-</html>
