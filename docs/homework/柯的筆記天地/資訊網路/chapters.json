@@ -127,12 +127,19 @@
   {
     "id": 9,
     "slug": "ch9",
-    "title": "第九章（待確認）",
+    "title": "傳輸層協定（TCP/UDP）",
     "filename": "ch9.html",
     "tags": [
-      "CH9"
+      "CH9",
+      "TCP",
+      "UDP",
+      "埠編號",
+      "Port",
+      "SYN",
+      "ACK",
+      "滑動訊窗"
     ],
-    "desc": "待確認"
+    "desc": "傳輸層角色、埠編號（Well-known/Random Port）、UDP 協定（不可靠、無連線）、TCP 協定（可靠、連線導向）、序列號碼、回應號碼、緩衝區、滑動訊窗、TCP 標頭欄位詳解、控制旗標（SYN/ACK/FIN/RST/URG）、TCP 三向交握、四向終止、TCP 選擇項（MSS/SACK/URG）"
   },
   {
     "id": 10,
