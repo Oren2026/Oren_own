@@ -68,23 +68,19 @@
       </div>
 
       <h3>主要工作群組</h3>
-      <div style="overflow-x:auto;">
-      <table style="width:100%;border-collapse:collapse;background:var(--card-bg);font-size:0.82rem;">
-        <tr style="background:var(--accent);color:white;">
-          <th style="padding:0.4rem;border:1px solid #333;">群組</th>
-          <th style="padding:0.4rem;border:1px solid #333;">內容</th>
-          <th style="padding:0.4rem;border:1px solid #333;">狀態</th>
-        </tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">802.1</td><td style="padding:0.4rem;border:1px solid #ddd;">高階層介面 (HLI) 標準</td><td style="padding:0.4rem;border:1px solid #ddd;">運作中</td></tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">802.2</td><td style="padding:0.4rem;border:1px solid #ddd;">LLC (邏輯鏈路控制)</td><td style="padding:0.4rem;border:1px solid #ddd;">已解散</td></tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">802.3</td><td style="padding:0.4rem;border:1px solid #ddd;">乙太網路</td><td style="padding:0.4rem;border:1px solid #ddd;">運作中</td></tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">802.4</td><td style="padding:0.4rem;border:1px solid #ddd;">記號匯流排 (Token Bus)</td><td style="padding:0.4rem;border:1px solid #ddd;">已解散</td></tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">802.5</td><td style="padding:0.4rem;border:1px solid #ddd;">記號環 (Token Ring)</td><td style="padding:0.4rem;border:1px solid #ddd;">已解散</td></tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">802.11</td><td style="padding:0.4rem;border:1px solid #ddd;">無線區域網路 (WLAN)</td><td style="padding:0.4rem;border:1px solid #ddd;">運作中</td></tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">802.15</td><td style="padding:0.4rem;border:1px solid #ddd;">無線個人網路 (WPAN)</td><td style="padding:0.4rem;border:1px solid #ddd;">運作中</td></tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">802.16</td><td style="padding:0.4rem;border:1px solid #ddd;">寬頻無線存取都會網路</td><td style="padding:0.4rem;border:1px solid #ddd;">暫停</td></tr>
-      </table>
-      </div>
+      <table class="compare-table">
+<thead><tr><th>群組</th><th>內容</th><th>狀態</th></tr></thead>
+<tbody>
+  <tr><td>802.1</td><td>高階層介面 (HLI) 標準</td><td>運作中</td></tr>
+  <tr><td>802.2</td><td>LLC (邏輯鏈路控制)</td><td>已解散</td></tr>
+  <tr><td>802.3</td><td>乙太網路</td><td>運作中</td></tr>
+  <tr><td>802.4</td><td>記號匯流排 (Token Bus)</td><td>已解散</td></tr>
+  <tr><td>802.5</td><td>記號環 (Token Ring)</td><td>已解散</td></tr>
+  <tr><td>802.11</td><td>無線區域網路 (WLAN)</td><td>運作中</td></tr>
+  <tr><td>802.15</td><td>無線個人網路 (WPAN)</td><td>運作中</td></tr>
+  <tr><td>802.16</td><td>寬頻無線存取都會網路</td><td>暫停</td></tr>
+</tbody>
+</table>
 
       <h3>IEEE802 與 OSI 對應</h3>
       <div class="highlight-box">
@@ -146,21 +142,17 @@
       <div class="highlight-box" style="background:#e8f0fe;border-left:4px solid #316cf4;">📖 本章內容對應老師投影片，請參考 Net7_07LAN.pptx</div>
 
       <h3>訊框組成（Ethernet 2.0）</h3>
-      <div style="overflow-x:auto;">
-      <table style="width:100%;border-collapse:collapse;background:var(--card-bg);font-size:0.82rem;">
-        <tr style="background:var(--accent);color:white;">
-          <th style="padding:0.4rem;border:1px solid #333;">欄位</th>
-          <th style="padding:0.4rem;border:1px solid #333;">大小</th>
-          <th style="padding:0.4rem;border:1px solid #333;">說明</th>
-        </tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">Preamble</td><td style="padding:0.4rem;border:1px solid #ddd;">8 Bytes</td><td style="padding:0.4rem;border:1px solid #ddd;">同步時脈（Ethernet 2.0）</td></tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">Destination MAC</td><td style="padding:0.4rem;border:1px solid #ddd;">6 Bytes</td><td style="padding:0.4rem;border:1px solid #ddd;">目的地 MAC 位址</td></tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">Source MAC</td><td style="padding:0.4rem;border:1px solid #ddd;">6 Bytes</td><td style="padding:0.4rem;border:1px solid #ddd;">來源 MAC 位址</td></tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">EtherType</td><td style="padding:0.4rem;border:1px solid #ddd;">2 Bytes</td><td style="padding:0.4rem;border:1px solid #ddd;">上層協定類型（>0600 為 EtherType）</td></tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">Data</td><td style="padding:0.4rem;border:1px solid #ddd;">46~1500 Bytes</td><td style="padding:0.4rem;border:1px solid #ddd;">資料（不足補 0 做 Padding）</td></tr>
-        <tr><td style="padding:0.4rem;border:1px solid #ddd;">FCS</td><td style="padding:0.4rem;border:1px solid #ddd;">4 Bytes</td><td style="padding:0.4rem;border:1px solid #ddd;">Frame Check Sequence，CRC-32</td></tr>
-      </table>
-      </div>
+      <table class="compare-table">
+<thead><tr><th>欄位</th><th>大小</th><th>說明</th></tr></thead>
+<tbody>
+  <tr><td>Preamble</td><td>8 Bytes</td><td>同步時脈（Ethernet 2.0）</td></tr>
+  <tr><td>Destination MAC</td><td>6 Bytes</td><td>目的地 MAC 位址</td></tr>
+  <tr><td>Source MAC</td><td>6 Bytes</td><td>來源 MAC 位址</td></tr>
+  <tr><td>EtherType</td><td>2 Bytes</td><td>上層協定類型（>0600 為 EtherType）</td></tr>
+  <tr><td>Data</td><td>46~1500 Bytes</td><td>資料（不足補 0 做 Padding）</td></tr>
+  <tr><td>FCS</td><td>4 Bytes</td><td>Frame Check Sequence，CRC-32</td></tr>
+</tbody>
+</table>
 
       <h3>Preamble（前序）</h3>
       <div class="highlight-box">
