@@ -62,6 +62,17 @@
     .hero-line {
       background: var(--accent-text);
     }
+    .back-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--muted);
+      text-decoration: none;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s, color 0.2s;
+    }
+    .back-link.in-view { opacity: 1; transform: translateY(0); }
+    .back-link:hover { color: var(--accent); }
 
     /* ── Phase Cards ── */
     .phases-section {
@@ -404,14 +415,7 @@
 </head>
 <body>
 
-  <!-- ── Nav ── -->
-  <nav id="nav">
-    <a href="../" class="nav-logo">← 比賽專區</a>
-    <a href="./" class="nav-back">← 上銀比賽</a>
-    <a href="../../" class="nav-back">回首頁</a>
-  </nav>
 
-  <!-- ── Hero ── -->
   <section class="hero">
     <div class="hero-bg"></div>
     <div class="hero-grid"></div>
@@ -420,6 +424,7 @@
       <h1 class="hero-title">測試流程手冊</h1>
       <p class="hero-sub">進實驗室前從頭跑一遍，確保各模組正常再進行整合測試</p>
       <div class="hero-line"></div>
+      <a href="./" class="back-link" data-delay="3">← 返回首頁</a>
     </div>
   </section>
 
@@ -1487,10 +1492,7 @@ ard.disconnect()
   <footer>
     <div class="footer-inner">
       <span>© 2026 黑皮團隊 · 上銀撞球 2026</span>
-      <div style="display:flex; gap:1rem;">
-        <a href="./">上銀比賽</a>
-        <a href="../../">回首頁</a>
-      </div>
+      <a href="./">← 返回首頁</a>
     </div>
   </footer>
 
@@ -1512,14 +1514,9 @@ ard.disconnect()
       });
     }, { threshold: 0.08 });
 
-    document.querySelectorAll('.phase-card, .ref-card, .section-label').forEach((el, i) => {
-      el.dataset.delay = i;
+    document.querySelectorAll('.phase-card, .ref-card, .section-label, .back-link').forEach((el, i) => {
+      el.dataset.delay = el.dataset.delay ?? i;
       io.observe(el);
-    });
-
-    // ── Nav scroll ──
-    window.addEventListener('scroll', () => {
-      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
     });
 
     // ── Open first phase by default ──
