@@ -109,12 +109,20 @@
   {
     "id": 8,
     "slug": "ch8",
-    "title": "第八章（待確認）",
+    "title": "IP 協定",
     "filename": "ch8.html",
     "tags": [
-      "CH8"
+      "CH8",
+      "IPv4",
+      "IPv6",
+      "IP",
+      "DHCP",
+      "DNS",
+      "CIDR",
+      "子網路",
+      "NAT"
     ],
-    "desc": "待確認"
+    "desc": "IPv4 位址（A/B/C/D/E 類）、網路遮罩、子網路規劃、CIDR、保留位址（私人/Loopback）、DHCP 動態設定、DNS 網域名稱系統、IP 標頭欄位詳解、IP 選項（Record Route/Source Routing/Timestamp）、IPv6 與 IPv4 差異、IPv6 標頭與傳播方式"
   },
   {
     "id": 9,

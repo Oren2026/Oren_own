@@ -97,6 +97,15 @@ body {
   color: var(--muted-2);
   margin-top: 1px;
 }
+.sidebar-link.stub {
+  color: var(--muted-2);
+  cursor: default;
+  opacity: 0.6;
+}
+.sidebar-link.stub:hover {
+  background: transparent;
+  color: var(--muted-2);
+}
 
 /* ── Main Content ── */
 .content {
