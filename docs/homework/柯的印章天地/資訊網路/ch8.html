@@ -478,7 +478,7 @@
     <h2>📌 7｜保留位址</h2>
 
 <div class="highlight-box">
-  <p>▶ 常見的保留位址
+  <p>▶ 常見的保留位址：以下為 RFC 5735 / 5737 定義的重要保留位址。</p>
 </div>
 <table class="compare-table">
   <thead><tr><th>IP 網域</th><th>保留目的</th></tr></thead>
@@ -497,13 +497,7 @@
     <tr><td>255.255.255.255</td><td>區域（Local）廣播位址</td></tr>
   </tbody>
 </table>
-<div class="highlight-box">
-<p>▶ 重要的保留位址</p>
-  <p>▶ 1. 本網域（"This" Network）</p>
-  <p>▶ 2. 企業網路內部保留位址（Intranet IP Address）</p>
-  <p>▶ 3. 迴路回測（Loopback Test）</p>
-  <p>▶ 4. 區域廣播（Local Broadcast）</p>
-</div>
+
 
 <div class="highlight-box">
   <p>▶ 1. 本網域（"This" Network）</p>
@@ -518,30 +512,18 @@
 
 <div class="highlight-box">
   <p>▶ 2. 企業網路內部保留位址</p>
-  <p>▶ 歸屬於內部自己獨立的網路系統</p>
-  <p>▶ 內部網路可透過具 NAT（Network Address Translation；網路位址轉譯）功能路由器與外界網路連線</p>
-  <p>　NAT 路由器有一個正規 IP 位址與外界聯繫</p>
-  <p>　內部由內部網路 IP 位址進行溝通</p>
-  <p>▶ 各企業網路系統間相互獨立</p>
-  <p>　對 IP 位址普遍不足的情況有很大的貢獻</p>
-  <p>▶ 內部網路節點與正規 IP 位址的對應</p>
-  <p>　運用傳輸層埠編號（Port Number）</p>
-</div>
-
-<div class="highlight-box">
-  <p>▶ 企業網路的連通</p>
+  <p>▶ 歸屬於內部自己獨立的網路系統，透過 <strong>NAT</strong>（Network Address Translation）路由器與外界連線</p>
   <p>▶ 網域位址僅在內部使用，即使重覆也不會有衝突</p>
-  <p>▶ 每個企業都使用相同的私有位址區段，透過 NAT 路由器與外部網路溝通</p>
-  <p>　企業向 ISP 申請一個正式 IP，內部所有節點共用此 IP 對外通訊</p>
-  <p>　（圖說：每個企業內部使用私有位址，NAT 路由器負責對外轉換）</p>
-</div>
-
-<div class="highlight-box">
-  <p>▶ 常見的企業內部網路位址</p>
-  <p>▶ A、B、C 類各保留一個區段，分別適用於大型、中型或小型的網路系統使用</p>
-  <p>▶ A 類保留區段：10.0.0.0/8（10.0.0.0 ～ 10.255.255.255）</p>
-  <p>▶ B 類保留區段：172.16.0.0/12（172.16.0.0 ～ 172.31.255.255）</p>
-  <p>▶ C 類保留區段：192.168.0.0/16（192.168.0.0 ～ 192.168.255.255）</p>
+  <p>▶ 各企業共用一個正規 IP 對外通訊，內部節點與外部 IP 的對應由 <strong>傳輸層埠編號（Port Number）</strong> 管理</p>
+  <p>▶ 對 IP 位址普遍不足的情況有很大的貢獻</p>
+  <table class="compare-table">
+    <thead><tr><th>類別</th><th>私有 IP 範圍</th><th>適用規模</th></tr></thead>
+    <tbody>
+      <tr><td>A 類</td><td>10.0.0.0/8</td><td>大型網路</td></tr>
+      <tr><td>B 類</td><td>172.16.0.0/12</td><td>中型網路</td></tr>
+      <tr><td>C 類</td><td>192.168.0.0/16</td><td>小型網路</td></tr>
+    </tbody>
+  </table>
 </div>
 
 <div class="highlight-box">
@@ -557,28 +539,32 @@
 
 <div class="highlight-box">
   <p>▶ 檢查自己主機成功的情形</p>
-  <p>C:\WINDOWS&gt; ping 127.0.0.1</p>
-  <p>Pinging 127.0.0.1 with 32 bytes of data:</p>
-  <p>Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32</p>
-  <p>Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32</p>
-  <p>Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32</p>
-  <p>Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32</p>
-  <p>Ping statistics for 127.0.0.1:</p>
-  <p>Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),</p>
-  <p>Minimum = 0ms, Maximum = 0ms, Average = 0ms</p>
+  <pre>C:\WINDOWS&gt; ping 127.0.0.1
+
+Pinging 127.0.0.1 with 32 bytes of data:
+Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32
+Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32
+Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32
+Reply from 127.0.0.1: bytes=32 time&lt;10ms TTL=32
+
+Ping statistics for 127.0.0.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+    Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms</pre>
 </div>
 
 <div class="highlight-box">
   <p>▶ 檢查自己主機失敗的情形</p>
-  <p>C:\WINDOWS&gt; ping 127.0.0.1</p>
-  <p>Pinging 127.0.0.1 with 32 bytes of data:</p>
-  <p>PING: transmit failed, error code 10091.</p>
-  <p>PING: transmit failed, error code 10091.</p>
-  <p>PING: transmit failed, error code 10091.</p>
-  <p>PING: transmit failed, error code 10091.</p>
-  <p>Ping statistics for 127.0.0.1:</p>
-  <p>Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),</p>
-  <p>Minimum = 0ms, Maximum = 0ms, Average = 0ms</p>
+  <pre>C:\WINDOWS&gt; ping 127.0.0.1
+
+Pinging 127.0.0.1 with 32 bytes of data:
+PING: transmit failed, error code 10091.
+PING: transmit failed, error code 10091.
+PING: transmit failed, error code 10091.
+PING: transmit failed, error code 10091.
+
+Ping statistics for 127.0.0.1:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss)</pre>
 </div>
 
 <div class="highlight-box">
