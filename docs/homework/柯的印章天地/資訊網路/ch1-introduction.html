@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH1 — 網路初探 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-course">柯志亨的筆記天地</div>
+    <div class="sidebar-title">資訊網路</div>
+    
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">本章大綱</div>
+
+    <details class="sidebar-details" open>
+      <summary>📑 CH1 章節導覽</summary>
+      <nav class="section-nav">
+        <a href="#s1">引言 — 網路是什麼？</a>
+        <a href="#s2">何謂 Internet？</a>
+        <a href="#s3">Internet 功能與應用</a>
+        <a href="#s4">網路類型</a>
+        <a href="#s5">網路拓撲（Network Topology）</a>
+        <a href="#s1a">🖥️ 常見的網路型式</a>
+        <a href="#s6">網路作業環境</a>
+        <a href="#s7">OSI 參考模式</a>
+        <a href="#s2a">結語</a>
+      </nav>
+    </details>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有筆記</div>
+
+    <a href="ch1-introduction.html" class="sidebar-link active">網路初探</a>
+    <a href="ch2-communication.html" class="sidebar-link">通訊與傳輸</a>
+    <a href="ch3-media-equipment.html" class="sidebar-link">傳輸媒介與配備</a>
+    <a href="ch4-protocol.html" class="sidebar-link">網路協定</a>
+    <a href="ch5-ethernet.html" class="sidebar-link">乙太網路</a>
+    <a href="ch6-tia.html" class="sidebar-link">網路規劃設計</a>
+    <a href="ch7.html" class="sidebar-link">LAN 區域網路</a>
+    <a href="ch8.html" class="sidebar-link">IP 協定</a>
+    <a href="ch9.html" class="sidebar-link">傳輸層協定（TCP/UDP）</a>
+    <a href="ch10.html" class="sidebar-link">第十章（待確認）</a>
+    <a href="ch11.html" class="sidebar-link">第十一章（待確認）</a>
+    <a href="ch12.html" class="sidebar-link">第十二章（待確認）</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+
+    <header class="note-header">
+      <div class="note-date">2026 年 04 月 28 日</div>
+      <h1 class="note-title">CH1 — 網路初探</h1>
+      <div class="note-tags">
+        <span class="note-tag">CH1</span>
+        <span class="note-tag">Internet</span>
+        <span class="note-tag">拓撲</span>
+        <span class="note-tag">OSI</span>
+        <span class="note-tag">C/S</span>
+        <span class="note-tag">P2P</span>
+      </div>
+    </header>
+
+    <!-- 大綱 -->
+    <h2>📋 大綱</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+      <div class="concept-card"><div class="concept-card-title">🔷 引言</div><div class="concept-card-desc">網路是什麼？我們要學什麼？</div></div>
+      <div class="concept-card"><div class="concept-card-title">🌐 Internet</div><div class="concept-card-desc">起源、發展、功能與應用</div></div>
+      <div class="concept-card"><div class="concept-card-title">🖥️ 網路類型</div><div class="concept-card-desc">PAN・LAN・MAN・WAN 比較</div></div>
+      <div class="concept-card"><div class="concept-card-title">🔗 網路拓撲</div><div class="concept-card-desc">星狀・匯流排・環狀・樹狀・混合式</div></div>
+      <div class="concept-card"><div class="concept-card-title">💻 網路作業環境</div><div class="concept-card-desc">主從式（C/S）與對等式（P2P）</div></div>
+      <div class="concept-card"><div class="concept-card-title">📐 OSI 參考模式</div><div class="concept-card-desc">七層架構與功能概述</div></div>
+    </div>
+
+    <!-- 1. 引言 -->
+    <section id="intro">
+      <h2 id="s1">🔷 1｜引言 — 網路是什麼？</h2>
+
+      <div class="highlight-box">
+        <strong>📌 學習目標：</strong>不只會上網、網購、通訊、使用雲端，而是要<strong>真正懂網路的世界</strong>——明白網路軟硬體架構、原理、協定、設定、設計、管理。
+      </div>
+
+      <div class="highlight-box">
+        <strong>🌊 網路的洪流：</strong><br>
+        網路早已震撼到生活、工作、休閒娛樂等各層面。<br>
+        ▶ 掌握更多資訊 ⇒ 擁有更多競爭本錢<br>
+        ▶ 掌握未來，把握契機
+      </div>
+    </section>
+
+    <!-- 2. Internet -->
+    <section id="internet">
+      <h2 id="s2">🌐 2｜何謂 Internet？</h2>
+
+      <div class="highlight-box">
+        由 <strong>TCP/IP 開放式協定</strong>所架構的網路系統<br>
+        <em>Transmission Control Protocol / Internet Protocol；傳輸控制協定／網際網路協定</em><br><br>
+        ▶ 運用<strong>分散式機制</strong>使集中式系統得到進一步保障<br>
+        ▶ 由全球各地許多區域網路互相連接所形成的<strong>全球性超大網路架構</strong>
+      </div>
+
+      <div class="highlight-box">
+        <strong>📡 台灣與國際網路的連線：</strong>1991 年 64 Kbps　⇒　2021 年 5.67 Tbps
+      </div>
+    </section>
+
+    <!-- 3. 功能與應用 -->
+    <section id="app">
+      <h2 id="s3">🚀 3｜Internet 功能與應用</h2>
+
+      <div class="highlight-box">
+        <strong>最初三項基本功能：</strong>
+        <ol style="margin:0.5rem 0 0 1.25rem;">
+          <li><strong>電子郵件</strong>（E-mail；Electronic Mail）</li>
+          <li><strong>遠端登入</strong>（Remote Login；Telnet）</li>
+          <li><strong>檔案傳輸</strong>（FTP；File Transfer Protocol）</li>
+        </ol>
+      </div>
+
+      <div class="highlight-box">
+        <strong>衍生應用（難以計數）：</strong><br>
+        WWW、社群交友（Facebook、Instagram、Twitter、LinkedIn）、
+        網路電話（WhatsApp、LINE、WeChat）、影音平台（YouTube）、
+        電子商務（E-Commerce）、雲端服務、遠距教學（Distance Learning）、
+        視訊會議（Video Conferencing）、個人部落格（Blog）、論壇、新聞、維基百科……
+      </div>
+    </section>
+
+    <!-- 4. 網路類型 -->
+    <section id="types">
+      <h2 id="s4">🖥️ 4｜網路類型</h2>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+        <div class="concept-card">
+          <div class="concept-card-title">PAN — 個人網路</div>
+          <div class="concept-card-desc">
+            <strong>Personal Area Network</strong><br>
+            約 10 公尺範圍內<br>
+            用途：醫療照護、智慧生活<br>
+            有線：智慧衣感測器　　<br>
+            無線：手機、耳機、智慧眼鏡、智慧手環
+          </div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-card-title">LAN — 區域網路</div>
+          <div class="concept-card-desc">
+            <strong>Local Area Network</strong><br>
+            同層樓、同棟或數棟建築物<br>
+            有線：乙太網路（100 Mbps～100 Gbps）<br>
+            無線：Wi-Fi（IEEE 802.11，54 Mbps～9.6 Gbps）
+          </div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-card-title">MAN — 都會網路</div>
+          <div class="concept-card-desc">
+            <strong>Metropolitan Area Network</strong><br>
+            數個 LAN 相連構成的系統<br>
+            應用：城市各區行政網路、交通控制網路
+          </div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-card-title">WAN — 廣域網路</div>
+          <div class="concept-card-desc">
+            <strong>Wide Area Network</strong><br>
+            各縣市間、各國間的通訊網路<br>
+            代表：Internet、TANET、HiNet、SEEDNet
+          </div>
+        </div>
+      </div>
+
+      <table class="compare-table">
+        <tr><th>類型</th><th>範圍</th><th>應用</th><th>連線方式</th><th>速度</th></tr>
+        <tr><td><strong>PAN</strong></td><td>約 10 公尺</td><td>醫療照護、智慧生活</td><td>可自行架設</td><td>便宜</td></tr>
+        <tr><td><strong>LAN</strong></td><td>約 2 公里內</td><td>辦公室、校園</td><td>自行或電信公司</td><td>快</td></tr>
+        <tr><td><strong>MAN</strong></td><td>城市範圍</td><td>市政府各區行政網路</td><td>電信公司線路</td><td>中等</td></tr>
+        <tr><td><strong>WAN</strong></td><td>縣市間／各國</td><td>Internet</td><td>電信公司連線</td><td>依方案而異</td></tr>
+      </table>
+
+      <div class="highlight-box">
+        <strong>⚠️ 界線模糊：</strong>由於 LAN 功能越來越強、可傳送距離越來越遠，
+        使得 MAN 與其他網路間的界定逐漸模糊。
+      </div>
+    </section>
+
+    <!-- 5. 網路拓撲 -->
+    <section id="topology">
+      <h2 id="s5">🔗 5｜網路拓撲（Network Topology）</h2>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div class="concept-card"><div class="concept-card-title">⭐ 星狀（STAR）</div><div class="concept-card-desc">架構簡單、維護容易，所有節點連接至中心節點</div></div>
+        <div class="concept-card"><div class="concept-card-title">➖ 匯流排（BUS）</div><div class="concept-card-desc">又稱直線型網路，兩端需終端器（Terminator）</div></div>
+        <div class="concept-card"><div class="concept-card-title">⭕ 環狀（Ring）</div><div class="concept-card-desc">節點形成封閉環路，資料單向或雙向傳遞</div></div>
+        <div class="concept-card"><div class="concept-card-title">🌳 樹狀（Tree）</div><div class="concept-card-desc">如同樹枝狀的連線，應用於辦公室網路、社區網路</div></div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">🔀 混合式（Hybrid）</div>
+        <div class="concept-card-desc">結合兩種以上拓撲結構的網路，兼具各拓撲優點</div>
+      </div>
+    </section>
+
+    <!-- 常見網路型式 -->
+    <h2 id="s1a">🖥️ 常見的網路型式</h2>
+
+    <div class="highlight-box">
+      <strong>▶ 個人網路與區域網路（短距離、可自行架設）</strong><br><br>
+      <strong>PAN：</strong>最常見＝<strong>藍牙（Bluetooth）</strong>，耗費功率低、1～24 Mbps<br><br>
+      <strong>LAN 有線：</strong><strong>乙太網路（Ethernet）</strong>，100 Mbps～100 Gbps，一般以 100 Mbps、1 Gbps 為主<br><br>
+      <strong>LAN 無線：</strong><strong>IEEE 802.11（Wi-Fi）</strong>，有效傳輸距離約幾十公尺，速率 54 Mbps～9.6 Gbps
+    </div>
+
+    <div class="highlight-box">
+      <strong>▶ 廣域網路常見架構</strong><br><br>
+      <strong>租用專線（Leased Line）：</strong>幾個 Mbps～幾個 Gbps，上下行走相同速率，價格較高<br><br>
+      <strong>xDSL：</strong>VDSL2 下行最高 300 Mbps、上行最高 100 Mbps<br><br>
+      <strong>光纖纜線：</strong>下行最高 1 Gbps、上行 600 Mbps<br><br>
+      <strong>行動通訊：</strong>下行最高 2 Gbps、上行 175 Mbps
+    </div>
+
+    <!-- 6. 網路作業環境 -->
+    <section id="env">
+      <h2 id="s6">💻 6｜網路作業環境</h2>
+
+      <div class="highlight-box">
+        <strong>▶ 主從式架構（Client / Server）</strong><br>
+        ▶ 有人提供資源，有人享用資源<br>
+        ▶ <strong>Client（客戶端）：</strong>享用資源，如 Chrome、Edge、Firefox<br>
+        ▶ <strong>Server（伺服器）：</strong>提供資源，如 IIS、Apache<br>
+        ▶ 範例：WWW
+      </div>
+
+      <div class="highlight-box">
+        <strong>▶ 對等式架構（Peer-to-Peer；P2P）</strong><br>
+        ▶ 節點間的地位相同，無明確的 Client/Server 區分<br>
+        ▶ 範例：Windows 共用中心、手機間互傳資料
+      </div>
+    </section>
+
+    <!-- 7. OSI -->
+    <section id="osi">
+      <h2 id="s7">📐 7｜OSI 參考模式</h2>
+
+      <div class="highlight-box">
+        ▶ ISO（International Organization for Standardization；國際標準組織）於 1984 年訂定<br>
+        ▶ OSI（Open Systems Interconnection；開放系統互連）<br>
+        ▶ 將網路各種技術依不同功能區分為<strong>七層</strong><br>
+        ▶ 愈低層與硬體相關性愈高，愈高層與軟體相關性愈高
+      </div>
+
+      <div style="margin-bottom:1rem;">
+        <div style="font-weight:700;color:var(--accent-text);margin-bottom:0.5rem;">OSI 七層（由上而下）</div>
+        <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;font-size:0.85rem;">
+          <div style="flex:1;padding:0.6rem;background:#dbeafe;color:#1e40af;font-weight:700;text-align:center;border-right:1px solid var(--border);">應用層<br>Application</div>
+          <div style="flex:1;padding:0.6rem;background:#dbeafe;color:#1e40af;font-weight:700;text-align:center;border-right:1px solid var(--border);">呈現層<br>Presentation</div>
+          <div style="flex:1;padding:0.6rem;background:#dbeafe;color:#1e40af;font-weight:700;text-align:center;border-right:1px solid var(--border);">會議層<br>Session</div>
+          <div style="flex:1;padding:0.6rem;background:#bfdbfe;color:#1e40af;text-align:center;border-right:1px solid var(--border);">傳輸層<br>Transport</div>
+          <div style="flex:1;padding:0.6rem;background:#bfdbfe;color:#1e40af;text-align:center;border-right:1px solid var(--border);">網路層<br>Network</div>
+          <div style="flex:1;padding:0.6rem;background:#e0e7ff;color:#3730a3;text-align:center;border-right:1px solid var(--border);">資料連結層<br>Data Link</div>
+          <div style="flex:1;padding:0.6rem;background:#e0e7ff;color:#3730a3;text-align:center;">實體層<br>Physical</div>
+        </div>
+      </div>
+
+      <table class="compare-table">
+        <tr><th>OSI 層</th><th>對應</th><th>說明</th></tr>
+        <tr><td>應用層</td><td>應用軟體介面</td><td>人與網路的互動介面</td></tr>
+        <tr><td>呈現層</td><td>編解碼</td><td>轉換 0/1 資料呈現給人們看得懂</td></tr>
+        <tr><td>會議層</td><td>連線視窗</td><td>開啟一個個連線的視窗畫面</td></tr>
+        <tr><td>傳輸層</td><td>TCP</td><td>可靠傳輸、流量控制</td></tr>
+        <tr><td>網路層</td><td>IP 位址</td><td>定址與路由</td></tr>
+        <tr><td>資料連結層</td><td>網路卡</td><td>實體定址、錯誤偵測</td></tr>
+        <tr><td>實體層</td><td>電線／傳輸媒介</td><td>實際的訊號傳遞</td></tr>
+      </table>
+
+      <div class="highlight-box">
+        <strong>📌 為何先介紹 OSI？</strong><br>
+        ▶ 提供開發者一個可以依循的架構<br>
+        ▶ 提供學習者分層清晰的學習指引<br>
+        ▶ 詳細介紹與說明在第四章再與讀者分享
+      </div>
+    </section>
+
+    <!-- 結語 -->
+    <div style="text-align:center;padding:2rem;background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:12px;margin:2rem 0;">
+      <h2 id="s2a" style="border:none;margin-bottom:0.5rem;">結語</h2>
+      <p>一個開端，有些似懂非懂是正常的。<br>讓我們都成為具獨特功能的一群。</p>
+      <p style="font-size:0.85rem;color:var(--muted-2);margin-top:1rem;">📌 關鍵字｜填充題｜選擇題｜問答題</p>
+    </div>
+
+  </main>
+
+
+
+</body>
+</html>

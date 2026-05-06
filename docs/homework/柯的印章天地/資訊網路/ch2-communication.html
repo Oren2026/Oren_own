@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Communication 通訊與傳輸 | 資訊網路</title>
+  <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-course">柯志亨的筆記天地</div>
+    <div class="sidebar-title">資訊網路</div>
+    
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">本章大綱</div>
+
+    <details class="sidebar-details" open>
+      <summary>📑 CH2 章節導覽</summary>
+      <nav class="section-nav">
+        <a href="#s1">通訊傳輸概論</a>
+        <a href="#s2">訊號三要素</a>
+        <a href="#s3">調變（Modulation）與解調變（Demodulation）</a>
+        <a href="#s4">類比調變：AM / FM / PM</a>
+        <a href="#s5">常見頻道頻率範圍</a>
+        <a href="#s6">PCM 脈碼調變（數位傳輸）</a>
+        <a href="#s7">常見數位編碼方式</a>
+        <a href="#s8">多工處理（Multiplexing）</a>
+        <a href="#s9">交換技術</a>
+        <a href="#s10">類比處理（Modem）</a>
+        <a href="#s11">電信網路（Telephony）</a>
+        <a href="#s12">xDSL 數位用戶線路</a>
+        <a href="#s13">光纖到府（FTTx）</a>
+        <a href="#s14">行動通訊演進</a>
+      </nav>
+    </details>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有筆記</div>
+
+    <a href="ch1-introduction.html" class="sidebar-link">網路初探</a>
+    <a href="ch2-communication.html" class="sidebar-link active">通訊與傳輸</a>
+    <a href="ch3-media-equipment.html" class="sidebar-link">傳輸媒介與配備</a>
+    <a href="ch4-protocol.html" class="sidebar-link">網路協定</a>
+    <a href="ch5-ethernet.html" class="sidebar-link">乙太網路</a>
+    <a href="ch6-tia.html" class="sidebar-link">網路規劃設計</a>
+    <a href="ch7.html" class="sidebar-link">LAN 區域網路</a>
+    <a href="ch8.html" class="sidebar-link">IP 協定</a>
+    <a href="ch9.html" class="sidebar-link">傳輸層協定（TCP/UDP）</a>
+    <a href="ch10.html" class="sidebar-link">第十章（待確認）</a>
+    <a href="ch11.html" class="sidebar-link">第十一章（待確認）</a>
+    <a href="ch12.html" class="sidebar-link">第十二章（待確認）</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+
+    <header class="note-header">
+      <div class="note-date">2026 年 04 月 28 日</div>
+      <h1 class="note-title">通訊與傳輸</h1>
+      <div class="note-tags">
+        <span class="note-tag">通訊</span>
+        <span class="note-tag">調變</span>
+        <span class="note-tag">PCM</span>
+        <span class="note-tag">編碼</span>
+        <span class="note-tag">多工</span>
+        <span class="note-tag">DSL</span>
+        <span class="note-tag">行動通訊</span>
+      </div>
+    </header>
+
+    <!-- 通訊傳輸概論 -->
+    <section id="comm-intro">
+      <h2 id="s1">通訊傳輸概論</h2>
+      <p>通訊（Communication）是訊號（Signal）在各種媒體（大氣、電纜線、光纖等）中傳輸（Transmission）處理的過程。</p>
+
+      <div class="concept-card">
+        <div class="concept-card-title">📡 傳輸方向分類</div>
+        <ul>
+          <li><strong>單工傳輸（Simplex）</strong> — 訊號只能單向傳送，如電視、廣播</li>
+          <li><strong>半雙工傳輸（Half-Duplex）</strong> — 雙向但同一時間只能一方發送，如對講機</li>
+          <li><strong>全雙工傳輸（Full-Duplex）</strong> — 雙向可同時傳送，如電話、視訊</li>
+        </ul>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">📊 訊號類型</div>
+        <ul>
+          <li><strong>類比訊號（Analog）</strong> — 連續變化的波形，如聲音、光</li>
+          <li><strong>數位訊號（Digital）</strong> — 離散的階梯波形，如 0/1 二進位</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 訊號三要素 -->
+    <section id="signal">
+      <h2 id="s2">訊號三要素</h2>
+      <p>所有訊號都可用以下三個參數描述：</p>
+      <ul>
+        <li><strong>大小（Magnitude）</strong> — 訊號的振幅</li>
+        <li><strong>頻率（Frequency）</strong> — 訊號變化的速率，單位 Hz</li>
+        <li><strong>相位（Phase）</strong> — 訊號在時間軸上的起始位置</li>
+      </ul>
+
+      <div class="highlight-box">
+        數學公式：<strong>S(t) = m(t) · cos(2πf(t) + φ(t))</strong><br>
+        其中 m = 大小、f = 頻率、φ = 相位
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">📐 波長與頻率關係</div>
+        <p><strong>c = f × λ</strong></p>
+        <ul>
+          <li>c：光速（約 3×10⁸ m/s）</li>
+          <li>f：頻率（Hz）</li>
+          <li>λ：波長（公尺）</li>
+        </ul>
+        <p>頻率愈高，波長愈短。傳輸距離與訊號能量、環境適應性有關。</p>
+      </div>
+    </section>
+
+    <!-- 調變與解調變 -->
+    <section id="modulation">
+      <h2 id="s3">調變（Modulation）與解調變（Demodulation）</h2>
+      <p>傳送端將訊號搬到一個不會與其他訊號衝突的頻率範圍，實現<strong>同一時間、同一地點對一個以上訊號進行傳送</strong>。接收端收到調變訊號後，經過處理將原來的訊號還原。</p>
+
+      <div class="highlight-box">
+        <strong>調變（Modulation）</strong>：將訊號調變到載波上<br>
+        <strong>解調變（Demodulation）</strong>：從載波還原原始訊號
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">載波訊號</div>
+        <div class="layer-card-name">C(t) = A<sub>c</sub> · cos(2πf<sub>c</sub>t + φ<sub>c</sub>)</div>
+        <div class="layer-card-desc">A<sub>c</sub>：振幅、f<sub>c</sub>：頻率、φ<sub>c</sub>：相位 — 這三個參數都可用來攜帶原始訊號的資訊</div>
+      </div>
+    </section>
+
+    <!-- AM FM PM -->
+    <section id="am-fm-pm">
+      <h2 id="s4">類比調變：AM / FM / PM</h2>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>調變方式</th>
+            <th>全名</th>
+            <th>調整參數</th>
+            <th>說明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AM</strong></td>
+            <td>Amplitude Modulation（調幅）</td>
+            <td>振幅</td>
+            <td>維持原來載波的頻率與相位，振幅依原訊號大小變化</td>
+          </tr>
+          <tr>
+            <td><strong>FM</strong></td>
+            <td>Frequency Modulation（調頻）</td>
+            <td>頻率</td>
+            <td>保持載波原有的振幅與相位，只在頻率上變化</td>
+          </tr>
+          <tr>
+            <td><strong>PM</strong></td>
+            <td>Phase Modulation（調相）</td>
+            <td>相位</td>
+            <td>只改變載波訊號的相位，其他項目不變</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 頻道頻率範圍 -->
+    <section id="frequency-spectrum">
+      <h2 id="s5">常見頻道頻率範圍</h2>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>頻道類型</th>
+            <th>頻率範圍</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>AM 廣播網</td><td>526.5 ~ 1606.5 KHz</td></tr>
+          <tr><td>FM 廣播網</td><td>88 ~ 108 MHz</td></tr>
+          <tr><td>類比無線電視台（已停播）</td><td>76~88 / 174~216 MHz</td></tr>
+          <tr><td>數位無線電視台</td><td>530 ~ 596 MHz</td></tr>
+          <tr><td>第二代行動電話（2G）</td><td>上行 895~915 MHz、下行 940~960 MHz</td></tr>
+          <tr><td>第三代行動電話（3G）</td><td>上行 1.92~1.98 GHz、下行 2.11~2.17 GHz</td></tr>
+          <tr><td>第四代行動電話（4G）</td><td>上行 703~748 / 1720~1780 / 1920~1980 MHz<br>下行 758~803 / 1805~1880 / 2110~2170 MHz</td></tr>
+          <tr><td>第五代行動電話（5G）</td><td>3.3~3.57 GHz、27.9~29.5 GHz</td></tr>
+          <tr><td>ISM（工業、科學、醫療）</td><td>2.4~2.5 GHz、5.725~5.875 GHz</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- PCM -->
+    <section id="pcm">
+      <h2 id="s6">PCM 脈碼調變（數位傳輸）</h2>
+      <p>數位系統處理類比訊號的過程：<strong>取樣 → 量化 → 脈碼調變 → 編碼處理</strong></p>
+
+      <div class="concept-card">
+        <div class="concept-card-title">📊 取樣（Sampling）— 奈奎斯特定理（Nyquist Theorem）</div>
+        <p>取樣率 f<sub>s</sub> > 2 × f<sub>max</sub></p>
+        <ul>
+          <li>人類語音：4,000 Hz 以下 → 取樣 8,000 次/秒</li>
+          <li>CD 音響（0~20 KHz）→ 取樣率 > 40 KHz → 標準 44.1 KHz</li>
+        </ul>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">📊 量化（Quantization）</div>
+        <p>在振幅上進行分割，分割層級愈多還原品質愈好，但所需記憶體也愈大。</p>
+        <ul>
+          <li>一般語音：256（2⁸）Levels → 8 bits/sample</li>
+          <li>CD 音響：65,536（2¹⁶）Levels → 16 bits/sample</li>
+        </ul>
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">PCM（Pulse Code Modulation）</div>
+        <div class="layer-card-name">脈碼調變</div>
+        <div class="layer-card-desc">
+          <ul>
+            <li>一般語音：256 Levels → 8 bits/sample → 0 = 00000000、255 = 11111111</li>
+            <li>CD 音響：65,536 Levels → 16 bits/sample</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">64 Kbps 通道的由來</div>
+        <div class="layer-card-desc">
+          8,000（取樣/秒）× 8（位元/取樣）= <strong>64 Kbps</strong><br>
+          常用以作為語音通訊的基本單位，亦為數位傳輸 B 通道（Bearer Channel）的傳輸速率。
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        編碼處理還可降低訊號變化速率、平衡直流訊號量（DC Balance），並達到自我時序（Self-Clocking）—— 將時序（Clocking）訊息隱含在訊號中。
+      </div>
+    </section>
+
+    <!-- 數位編碼方式 -->
+    <section id="encoding">
+      <h2 id="s7">常見數位編碼方式</h2>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>編碼方式</th>
+            <th>全名</th>
+            <th>應用場景</th>
+            <th>特性</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>NRZ-L</strong></td>
+            <td>Non-Return to Zero Level</td>
+            <td>RS-232</td>
+            <td>不使用零電位，簡單成本低</td>
+          </tr>
+          <tr>
+            <td><strong>NRZ-I</strong></td>
+            <td>Non-Return to Zero, Invert on ones</td>
+            <td>FDDI</td>
+            <td>NRZ-L 變形，屬微分編碼，較高傳輸速率</td>
+          </tr>
+          <tr>
+            <td><strong>Manchester</strong></td>
+            <td>Manchester 編碼</td>
+            <td>Ethernet（乙太網路）</td>
+            <td>Self-Clocking，時序訊號內建於訊號中</td>
+          </tr>
+          <tr>
+            <td><strong>Differential Manchester</strong></td>
+            <td>微分曼徹斯特編碼</td>
+            <td>Token-Ring</td>
+            <td>Manchester 微分變形，Self-Clocking</td>
+          </tr>
+          <tr>
+            <td><strong>MLT-3</strong></td>
+            <td>—</td>
+            <td>100BaseTx 乙太網路</td>
+            <td>資料 1：改變訊號輸出值</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="concept-card">
+        <div class="concept-card-title">🔣 4B/5B 編碼</div>
+        <p>將 4 位元資料擴展為 5 位元傳輸，優點：</p>
+        <ul>
+          <li><strong>直流平衡（DC Balance）</strong> — 避免過多連續 1 或 0</li>
+          <li>不會有連續 3 個以上的 0 或連續 8 個以上的 1</li>
+          <li>應用：100BaseFx 光纖乙太網路</li>
+        </ul>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">🔣 8B/10B 編碼</div>
+        <p>8 位元擴展為 10 位元，應用於<strong>超高速乙太網路（Gigabit Ethernet）</strong>。</p>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">🔣 8B6T 編碼</div>
+        <p>8 位元編碼為 6 個三進位訊號，應用於 <strong>100BaseT4</strong>。</p>
+      </div>
+    </section>
+
+    <!-- 多工處理 -->
+    <section id="multiplexing">
+      <h2 id="s8">多工處理（Multiplexing）</h2>
+      <p>在同一傳輸媒介上同時傳送多個訊號，節省線路成本。</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>方式</th>
+            <th>全名</th>
+            <th>多工維度</th>
+            <th>應用實例</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>FDM</strong></td>
+            <td>Frequency Division Multiplexing<br>分頻多工</td>
+            <td>頻率</td>
+            <td>電視、收音機</td>
+          </tr>
+          <tr>
+            <td><strong>TDM</strong></td>
+            <td>Time Division Multiplexing<br>分時多工</td>
+            <td>時間</td>
+            <td>數位電信線路</td>
+          </tr>
+          <tr>
+            <td><strong>CDM</strong></td>
+            <td>Code Division Multiplexing<br>分碼多工</td>
+            <td>編碼</td>
+            <td>手機（CDMA）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="layer-card">
+        <div class="layer-card-num">CDM（分碼多工）核心概念</div>
+        <div class="layer-card-desc">
+          <ul>
+            <li>把其他使用者訊號視為<strong>雜訊</strong></li>
+            <li>相同空間可同時有多個訊號傳送而不相互干擾</li>
+            <li>各使用者將訊號 0/1 碼轉換成對應的<strong>長串具互不干擾特性的數碼</strong></li>
+            <li>接收端解碼還原原訊號</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 交換技術 -->
+    <section id="circuit-packet">
+      <h2 id="s9">交換技術</h2>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>類型</th>
+            <th>說明</th>
+            <th>特性</th>
+            <th>應用</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>電路交換</strong></td>
+            <td>建立專屬通訊電路後才開始傳輸</td>
+            <td>專線、延遲低</td>
+            <td>傳統電話（PSTN）</td>
+          </tr>
+          <tr>
+            <td><strong>分封交換</strong></td>
+            <td>將資料切成封包個別轉送</td>
+            <td>共享線路、彈性高</td>
+            <td>網際網路</td>
+          </tr>
+          <tr>
+            <td><strong>訊息交換</strong></td>
+            <td>各交換節點先完整儲存訊息再往下傳（Store and Forward）</td>
+            <td>不適合即時性應用</td>
+            <td>電子郵件</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 類比處理 -->
+    <section id="modem">
+      <h2 id="s10">類比處理（Modem）</h2>
+      <p>數位訊號不適合遠距離傳輸，因此傳輸時常將訊號轉換成類比訊號。</p>
+      <div class="highlight-box">
+        <strong>Modem</strong>（Modulation and Demodulation）<br>
+        負責將數位訊號調變為類比訊號傳送，以及從類比訊號解調變回數位訊號。<br>
+        範例：居家連線上網時，電腦至電話線間執行數位↔類比轉換。
+      </div>
+    </section>
+
+    <!-- 電信網路 -->
+    <section id="telephony">
+      <h2 id="s11">電信網路（Telephony）</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📞 常見電信網路架構</div>
+        <ul>
+          <li><strong>POTS</strong>（Plain Old Telephone Service）— 傳統電話服務</li>
+          <li><strong>PSTN</strong>（Public Switching Telephone Network）— 公眾交換電話網路</li>
+          <li><strong>DSL</strong>（Digital Subscriber Line）— 數位用戶線路</li>
+          <li><strong>T1 / E1</strong>（Leased Line）— 專線</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- xDSL -->
+    <section id="xdsl">
+      <h2 id="s12">xDSL 數位用戶線路</h2>
+      <p>DSL 以原有低成本的雙絞銅線為基礎，架構高速網路傳輸技術。</p>
+      <ul>
+        <li>4 KHz 以下頻率：語音傳送</li>
+        <li>4 KHz 以上頻率：數據資料傳輸</li>
+      </ul>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>類型</th>
+            <th>全名</th>
+            <th>說明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>ADSL</strong></td>
+            <td>Asymmetric Digital Subscriber Line<br>非對稱數位用戶線路</td>
+            <td>下行最高 12 Mbps，上行最高 1 Mbps<br>目前最普遍</td>
+          </tr>
+          <tr>
+            <td><strong>R-ADSL</strong></td>
+            <td>Rate-Adaptive Digital Subscriber Line<br>可調速率數位用戶線路</td>
+            <td>速率可根據線路狀況動態調整</td>
+          </tr>
+          <tr>
+            <td><strong>HDSL</strong></td>
+            <td>High bit-rate Digital Subscriber Line<br>高速率數位用戶線路</td>
+            <td>高速對稱傳輸</td>
+          </tr>
+          <tr>
+            <td><strong>SDSL</strong></td>
+            <td>Single-line Digital Subscriber Line<br>單線數位用戶線路</td>
+            <td>單一線路</td>
+          </tr>
+          <tr>
+            <td><strong>VDSL</strong></td>
+            <td>Very High bit-rate Digital Subscriber Line<br>超高速數位用戶線路</td>
+            <td>下行最高 52.8 Mbps，上行 3 Mbps</td>
+          </tr>
+          <tr>
+            <td><strong>VDSL2</strong></td>
+            <td>VDSL2</td>
+            <td>下上行各達 100 Mbps</td>
+          </tr>
+          <tr>
+            <td><strong>VDSL2-Vplus</strong></td>
+            <td>VDSL2-Vplus</td>
+            <td>下上行達 300 / 100 Mbps，傳送距離限制 250 公尺</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>ADSL 特性：非對稱（Asymmetrical）</strong><br>
+        上行（Uplink）與下行（Downlink）傳輸速率不同，下行 > 上行。傳送距離愈遠，有效速率愈低（4km 以上明顯衰減）。
+      </div>
+    </section>
+
+    <!-- 光纖到府 -->
+    <section id="fiber">
+      <h2 id="s13">光纖到府（FTTx）</h2>
+      <p>為了解決傳輸距離問題，結合光纖通訊擴大覆蓋範圍。</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>架構</th>
+            <th>全名</th>
+            <th>說明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>FTTH</strong></td>
+            <td>Fiber To The Home — 光纖到府</td>
+            <td>光纖直接到家，速度最快</td>
+          </tr>
+          <tr>
+            <td><strong>FTTB</strong></td>
+            <td>Fiber To The Building — 光纖到大樓</td>
+            <td>光纖到建築物，再由大樓內部網路分送</td>
+          </tr>
+          <tr>
+            <td><strong>FTTC</strong></td>
+            <td>Fiber To The Curb — 光纖到街角</td>
+            <td>光纖到路邊機房，再以 VDSL 接到用戶</td>
+          </tr>
+          <tr>
+            <td><strong>FTTN</strong></td>
+            <td>Fiber To The Neighborhood — 光纖到鄰里</td>
+            <td>光纖到鄰近節點，覆蓋範圍最廣</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>FTTC + VDSL 結合</strong>：光纖到街角，最後一段用 VDSL 接到用戶，是兼顾速度與成本的常見方案。
+      </div>
+    </section>
+
+    <!-- 行動通訊 -->
+    <section id="mobile">
+      <h2 id="s14">行動通訊演進</h2>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>世代</th>
+            <th>技術</th>
+            <th>速率</th>
+            <th>特性</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1G</strong></td>
+            <td>AMPS、TACS</td>
+            <td>—</td>
+            <td>類比語音，純語音通訊</td>
+          </tr>
+          <tr>
+            <td><strong>2G</strong></td>
+            <td>GSM（Global System for Mobile Communications）</td>
+            <td>9.6 Kbps</td>
+            <td>數位化，開始有資料傳輸（SMS）</td>
+          </tr>
+          <tr>
+            <td><strong>2.5G</strong></td>
+            <td>GPRS（General Packet Radio Service）</td>
+            <td>56 ~ 114 Kbps</td>
+            <td>整合封包式無線服務</td>
+          </tr>
+          <tr>
+            <td><strong>3G</strong></td>
+            <td>WCDMA、HSDPA/HSUPA</td>
+            <td>384 Kbps ~ 2 Mbps（下行）</td>
+            <td>寬頻化，APP 與社群軟體普及</td>
+          </tr>
+          <tr>
+            <td><strong>3.75G</strong></td>
+            <td>HSPA+</td>
+            <td>下行最高 42 Mbps</td>
+            <td>速率再提升</td>
+          </tr>
+          <tr>
+            <td><strong>4G</strong></td>
+            <td>LTE（Long Term Evolution）</td>
+            <td>下行 300 Mbps、上行 75 Mbps</td>
+            <td>全 IP 網路，VoLTE 語音</td>
+          </tr>
+          <tr>
+            <td><strong>5G</strong></td>
+            <td>5th Generation Mobile Networks</td>
+            <td>下行 2 Gbps、上行 175 Mbps</td>
+            <td>高速度、低延遲、巨量存取，支援物聯網</td>
+          </tr>
+          <tr>
+            <td><strong>6G（預計 2030 年）</strong></td>
+            <td>—</td>
+            <td>Tbps 等級</td>
+            <td>使用 THz 頻段，延遲極低</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>演進趨勢</strong>：第一代語音通訊佔 100%，現今語音只是其中一種應用，<strong>數據通訊已成為主角</strong>。未來語音將只是眾多 APP 中的其中一種功能。
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📡 資訊網路 · 柯安祥</span>
+      <span>Communication · 2026/04/28</span>
+    </footer>
+  </main>
+</body>
+</html>

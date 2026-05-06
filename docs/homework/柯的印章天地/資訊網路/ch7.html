@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH7 — LAN 區域網路 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-course">柯志亨的筆記天地</div>
+    <div class="sidebar-title">資訊網路</div>
+    
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">本章大綱</div>
+
+    <details class="sidebar-details" open>
+      <summary>📑 CH7 章節導覽</summary>
+      <nav class="section-nav">
+        <a href="#s1">IEEE802 委員會</a>
+        <a href="#s2">乙太網路協定</a>
+        <a href="#s3">乙太網路訊框格式</a>
+        <a href="#s4">交換式乙太網路</a>
+        <a href="#s5">乙太網路協定的進一步探討</a>
+        <a href="#s6">802.11 無線區域網路協定</a>
+      </nav>
+    </details>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有筆記</div>
+
+    <a href="ch1-introduction.html" class="sidebar-link">網路初探</a>
+    <a href="ch2-communication.html" class="sidebar-link">通訊與傳輸</a>
+    <a href="ch3-media-equipment.html" class="sidebar-link">傳輸媒介與配備</a>
+    <a href="ch4-protocol.html" class="sidebar-link">網路協定</a>
+    <a href="ch5-ethernet.html" class="sidebar-link">乙太網路</a>
+    <a href="ch6-tia.html" class="sidebar-link">網路規劃設計</a>
+    <a href="ch7.html" class="sidebar-link active">LAN 區域網路</a>
+    <a href="ch8.html" class="sidebar-link">IP 協定</a>
+    <a href="ch9.html" class="sidebar-link">傳輸層協定（TCP/UDP）</a>
+    <a href="ch10.html" class="sidebar-link">第十章（待確認）</a>
+    <a href="ch11.html" class="sidebar-link">第十一章（待確認）</a>
+    <a href="ch12.html" class="sidebar-link">第十二章（待確認）</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 05 日</div>
+      <h1 class="note-title">CH7 — LAN 區域網路</h1>
+      <div class="note-tags">
+        <span class="note-tag">CH7</span>
+        <span class="note-tag">IEEE802</span>
+        <span class="note-tag">CSMA/CD</span>
+        <span class="note-tag">MAC</span>
+        <span class="note-tag">802.11</span>
+        <span class="note-tag">CSMA/CA</span>
+      </div>
+    </header>
+
+    <!-- 大綱 -->
+    <h2>📋 大綱</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+      <div class="concept-card"><div class="concept-card-title">📡 IEEE802 委員會</div><div class="concept-card-desc">成立背景、各工作群組、與 OSI 對應</div></div>
+      <div class="concept-card"><div class="concept-card-title">🌐 乙太網路協定</div><div class="concept-card-desc">Ethernet 2.0 vs IEEE 802.3、CSMA/CD</div></div>
+      <div class="concept-card"><div class="concept-card-title">📦 訊框格式</div><div class="concept-card-desc">Preamble、MAC 位址、Etype、資料、FCS</div></div>
+      <div class="concept-card"><div class="concept-card-title">🔀 交換式乙太網路</div><div class="concept-card-desc">碰撞網域、廣播網域、MAC 學習</div></div>
+      <div class="concept-card"><div class="concept-card-title">⚡ 乙太網路深入探討</div><div class="concept-card-desc">5-4 法則、最小訊框法則、速度演進</div></div>
+      <div class="concept-card"><div class="concept-card-title">📶 802.11 無線網路</div><div class="concept-card-desc">DCF/PCF、CSMA/CA、RTS-CTS、NAV</div></div>
+    </div>
+
+    <!-- IEEE802 委員會 -->
+    <section id="ieee802">
+      <h2 id="s1">📡 1｜IEEE802 委員會</h2>
+      <div class="highlight-box" style="background:#e8f0fe;border-left:4px solid #316cf4;">📖 本章內容對應老師投影片，請參考 Net7_07LAN.pptx</div>
+
+      <h3>成立背景</h3>
+      <div class="highlight-box">
+        ▶ 成立於 1980 年 2 月<br>
+        ▶ 委員會名稱取決於 IEEE 一系列委員會的序號，與其成立的時間相仿無關<br>
+        ▶ 輔助記憶：對區域網路 (LAN)、都會網路 (MAN) 與高速網路 (High Speed Networks) 等訂標準
+      </div>
+
+      <h3>主要工作群組</h3>
+      <table class="compare-table">
+<thead><tr><th>群組</th><th>內容</th><th>狀態</th></tr></thead>
+<tbody>
+  <tr><td>802.1</td><td>高階層介面 (HLI) 標準</td><td>運作中</td></tr>
+  <tr><td>802.2</td><td>LLC (邏輯鏈路控制)</td><td>已解散</td></tr>
+  <tr><td>802.3</td><td>乙太網路</td><td>運作中</td></tr>
+  <tr><td>802.4</td><td>記號匯流排 (Token Bus)</td><td>已解散</td></tr>
+  <tr><td>802.5</td><td>記號環 (Token Ring)</td><td>已解散</td></tr>
+  <tr><td>802.11</td><td>無線區域網路 (WLAN)</td><td>運作中</td></tr>
+  <tr><td>802.15</td><td>無線個人網路 (WPAN)</td><td>運作中</td></tr>
+  <tr><td>802.16</td><td>寬頻無線存取都會網路</td><td>暫停</td></tr>
+</tbody>
+</table>
+
+      <h3>IEEE802 與 OSI 對應</h3>
+      <div class="highlight-box">
+        ▶ 802.1：高階層介面 (HLI; High Level Interface)<br>
+        ▶ 802.2：規範資料連結層上半 LLC 子層 (Logical Link Control)<br>
+        ▶ 802.3~802.5：實體層與 MAC 子層
+      </div>
+
+      <h3>代表性區域網路架構</h3>
+      <div class="highlight-box">
+        ▶ 最初以 802.3、802.4、802.5 最具代表性<br>
+        ▶ 目前：802.3（CSMA/CD）、802.11（CSMA/CA）、802.15 較普遍
+      </div>
+    </section>
+
+    <!-- 乙太網路協定 -->
+    <section id="ethernet">
+      <h2 id="s2">🌐 2｜乙太網路協定</h2>
+      <div class="highlight-box" style="background:#e8f0fe;border-left:4px solid #316cf4;">📖 本章內容對應老師投影片，請參考 Net7_07LAN.pptx</div>
+
+      <h3>Ethernet 2.0 與 IEEE 802.3</h3>
+      <div class="highlight-box">
+        ▶ 最普遍的區域網路架構，開放式標準（所有人都可參與開發）<br>
+        ▶ 兩個主要標準：
+        <ul style="margin:0.5rem 0 0.5rem 1.5rem;">
+          <li>DIX (DEC-Intel-Xerox)：1980.9 DIX 1.0，1982.11 DIX 2.0</li>
+          <li>IEEE 802.3：補充規範 802.3a~802.3z、802.3aa 等</li>
+        </ul>
+        ▶ 訊框格式上有所不同，但彼此可相互通訊<br>
+        ▶ 存取處理都採用 CSMA/CD 機制
+      </div>
+
+      <h3>CSMA/CD 協定</h3>
+      <div class="highlight-box">
+        <strong>Carrier Sense Multiple Access / Collision Detection</strong><br>
+        ▶ <strong>CS</strong>：Carrier Sense（載波感測）— 傳送前先聽網路是否有人使用<br>
+        ▶ <strong>MA</strong>：Multiple Access（多重存取）— 多台設備共享同一傳輸媒介<br>
+        ▶ <strong>CD</strong>：Collision Detection（碰撞偵測）— 監控碰撞並處理
+      </div>
+
+      <h3>CSMA/CD 處理流程</h3>
+      <div class="highlight-box">
+        ▶ 依循「先聽再送、送完再聽」的原則<br>
+        ▶ Listen before Send, Send then Listen
+      </div>
+
+      <h3>碰撞處理</h3>
+      <div class="highlight-box">
+        ▶ 發送點停止資料傳送<br>
+        ▶ 送出「堵塞訊號」(Jamming Signal)：一串 32 位元「1」<br>
+        ▶ 清除網路線上訊號，通知所有工作點發生了碰撞<br>
+        ▶ 工作點必須等一段時間再進行載波感測
+      </div>
+    </section>
+
+    <!-- 訊框格式 -->
+    <section id="frame">
+      <h2 id="s3">📦 3｜乙太網路訊框格式</h2>
+      <div class="highlight-box" style="background:#e8f0fe;border-left:4px solid #316cf4;">📖 本章內容對應老師投影片，請參考 Net7_07LAN.pptx</div>
+
+      <h3>訊框組成（Ethernet 2.0）</h3>
+      <table class="compare-table">
+<thead><tr><th>欄位</th><th>大小</th><th>說明</th></tr></thead>
+<tbody>
+  <tr><td>Preamble</td><td>8 Bytes</td><td>同步時脈（Ethernet 2.0）</td></tr>
+  <tr><td>Destination MAC</td><td>6 Bytes</td><td>目的地 MAC 位址</td></tr>
+  <tr><td>Source MAC</td><td>6 Bytes</td><td>來源 MAC 位址</td></tr>
+  <tr><td>EtherType</td><td>2 Bytes</td><td>上層協定類型（>0600 為 EtherType）</td></tr>
+  <tr><td>Data</td><td>46~1500 Bytes</td><td>資料（不足補 0 做 Padding）</td></tr>
+  <tr><td>FCS</td><td>4 Bytes</td><td>Frame Check Sequence，CRC-32</td></tr>
+</tbody>
+</table>
+
+      <h3>Preamble（前序）</h3>
+      <div class="highlight-box">
+        ▶ Ethernet 2.0：8 個位元組<br>
+        ▶ IEEE 802.3：7 個位元組前序 + 1 個位元組 Start Frame Delimiter (SFD)
+      </div>
+
+      <h3>MAC 位址</h3>
+      <div class="highlight-box">
+        ▶ MAC（Medium Access Control）：屬於第二層（資料連結層）<br>
+        ▶ 格式：48 位元（6 位元組），前 24 位元為 OUI（Organizationally Unique Identifier）<br>
+        ▶ 廣播位址：FF-FF-FF-FF-FF-FF（所有位元均為 1）<br>
+        ▶ 由 IEEE 統籌，生產前必須向 IEEE 申請 OUI
+      </div>
+
+      <h3>EtherType（上層類型）</h3>
+      <div class="highlight-box">
+        ▶ 0600ₒₜₒ₂ = XNS、0800 = IP、0806 = ARP、0835 = RARP<br>
+        ▶  IEEE 802.3 最初定義做資料長度判斷（≤1500）<br>
+        ▶  為與 Ethernet 2.0 相容，同一欄位同時代表長度與類型
+      </div>
+
+      <h3>FCS（Frame Check Sequence）</h3>
+      <div class="highlight-box">
+        ▶ 32 位元（4 個位元組）<br>
+        ▶ 採 CRC-32（Cyclic Redundancy Check）方式運算<br>
+        ▶ 一般以硬體線路進行處理以免延誤傳輸時程
+      </div>
+    </section>
+
+    <!-- 交換式乙太網路 -->
+    <section id="switch">
+      <h2 id="s4">🔀 4｜交換式乙太網路</h2>
+      <div class="highlight-box" style="background:#e8f0fe;border-left:4px solid #316cf4;">📖 本章內容對應老師投影片，請參考 Net7_07LAN.pptx</div>
+
+      <h3>封包訊息外漏與解決</h3>
+      <p>使用交換式集線器（Switch）取代一般集線器（Hub），每個連接埠為獨立碰撞網域。</p>
+
+      <h3>碰撞網域與廣播網域</h3>
+      <div class="highlight-box">
+        ▶ 碰撞網域：使用 Hub 連接時，所有設備在同一碰撞網域<br>
+        ▶ 廣播網域：同一廣播域內的設備可收到廣播封包<br>
+        ▶ 交換式集線器每個埠為獨立碰撞網域，但仍在同一廣播網域
+      </div>
+
+      <h3>交換式網路的運作</h3>
+      <div class="highlight-box">
+        ▶ 藉 MAC 位址判斷所屬連接埠<br>
+        ▶ 啟用或重設時，記憶體記錄是空的，逐步學習記錄屬於自己埠的 MAC 位址<br>
+        ▶ 資料非永久保存，一段時間要更新，保持最新資料記錄<br>
+        ▶ 斷電時記錄隨之消失，電源回覆後再重新學習
+      </div>
+
+      <h3>轉接判斷</h3>
+      <div class="highlight-box">
+        ▶ 以接收訊框目的端 MAC 位址進行路徑判斷<br>
+        ▶ 目的節點與來源節點屬於相同連接埠：不將訊號傳送到其他連接埠
+      </div>
+    </section>
+
+    <!-- 乙太網路深入探討 -->
+    <section id="explore">
+      <h2 id="s5">⚡ 5｜乙太網路協定的進一步探討</h2>
+      <div class="highlight-box" style="background:#e8f0fe;border-left:4px solid #316cf4;">📖 本章內容對應老師投影片，請參考 Net7_07LAN.pptx</div>
+
+      <h3>前序與訊框間隔</h3>
+      <div class="highlight-box">
+        ▶ 相鄰訊框間有訊框間隔 (Interframe Gap)：96 個位元（12 個位元組）的時程<br>
+        ▶ 訊框間隔後便為前序 (Preamble)
+      </div>
+
+      <h3>碰撞的傾聽</h3>
+      <div class="highlight-box">
+        ▶ 一般 Hub 架構：一個以上輸入埠有訊號輸入 → 碰撞<br>
+        ▶ 各工作點的偵測判定：不正常訊號振幅、訊框長度小於最小訊框大小 (64 Bytes)
+      </div>
+
+      <h3>訊框大小的規範</h3>
+      <div class="highlight-box">
+        ▶ 最大位元組數：1518 Bytes（可理解，避免傳送訊框過大）<br>
+        ▶ 最小位元組數：64 Bytes（難體會，與碰撞偵測有關）
+      </div>
+
+      <h3>5-4 法則</h3>
+      <div class="highlight-box">
+        ▶ 乙太網路最小訊框最初依據 10Base5 環境的「5-4 法則」分析所訂的 64 位元組<br>
+        ▶ 512 位元傳送時間 = 時槽時間 (Slot Time) = 51.2 μs（10 Mbps）<br>
+        ▶ 為彼此相容，後續乙太網路架構也都配合以 64 位元組為最小訊框
+      </div>
+
+      <h3>最小訊框法則</h3>
+      <div class="highlight-box">
+        ▶ 工作節點送出訊框後，必需傾聽一個時槽的時間<br>
+        ▶ 確認訊號傳輸並未遭遇碰撞
+      </div>
+
+      <h3>退讓等待時間</h3>
+      <div class="highlight-box">
+        ▶ 碰撞發生後，隨機等待一段時間再重傳<br>
+        ▶ 重傳次數越多，等待範圍越大（2ⁿ-1 個時槽）
+      </div>
+
+      <h3>100 Mbps 乙太網路</h3>
+      <div class="highlight-box">
+        ▶ 發送速率比 10 Mbps 快 10 倍，但傳輸線上速率一樣<br>
+        ▶ 512 位元傳送時間為 10 Mbps 的 1/10 → 傳送距離也只有 1/10<br>
+        ▶ 原來 2,500 公尺縮減成 250 公尺<br>
+        ▶ 100BaseTx 將傳送直徑訂為 205 公尺
+      </div>
+
+      <h3>1 Gbps 乙太網路</h3>
+      <div class="highlight-box">
+        ▶ 傳送速率又加快 10 倍，傳送距離縮減到 25 公尺<br>
+        ▶ 將最小訊框加大八倍 → 512 位元組（4,096 位元）
+      </div>
+
+      <h3>10 Gbps 乙太網路</h3>
+      <div class="highlight-box">
+        ▶ 速率增加十倍，傳送距離再成為 1/10<br>
+        ▶ 以全雙工方式進行架構，完全將傳送與接收的訊號分開<br>
+        ▶ 完全避免碰撞的發生與偵測
+      </div>
+    </section>
+
+    <!-- 802.11 無線網路 -->
+    <section id="wifi">
+      <h2 id="s6">📶 6｜802.11 無線區域網路協定</h2>
+      <div class="highlight-box" style="background:#e8f0fe;border-left:4px solid #316cf4;">📖 本章內容對應老師投影片，請參考 Net7_07LAN.pptx</div>
+
+      <h3>802.11 架構</h3>
+      <div class="highlight-box">
+        ▶ 實體層與 MAC 子層<br>
+        ▶ 集中式協調功能 (PCF; Point Coordination Function)：由 AP 扮演協調者，免競爭<br>
+        ▶ 分散式協調功能 (DCF; Distributed Coordination Function)：各主機互相爭取發送權
+      </div>
+
+      <h3>PCF（集中式協調功能）</h3>
+      <div class="highlight-box">
+        ▶ 需有人扮演集中協調者角色，輪詢 (Polling) 各主機是否要傳送<br>
+        ▶ 協調者通常由 AP 擔任，通常只適用在 Infrastructure 環境<br>
+        ▶ 各主機間不具競爭性，屬於免競爭式 (Contention Free) 傳送
+      </div>
+
+      <h3>DCF（分散式協調功能）</h3>
+      <div class="highlight-box">
+        ▶ 由要發送訊息的主機互相爭取發送權，屬於競爭式 (Contention) 傳送機制<br>
+        ▶ 無論 Ad hoc 或 Infrastructure，每個無線主機都具備此功能<br>
+        ▶ 運用 CSMA/CA 進行通訊授權
+      </div>
+
+      <h3>CSMA/CA（碰撞避免）</h3>
+      <div class="highlight-box">
+        ▶ 無線網路不容易偵測碰撞，改採 Collision Avoidance 方式減少碰撞發生機率<br>
+        ▶ 偵測是否已有資料正在傳送，網路沒有資料傳送才發送
+      </div>
+
+      <h3>訊框間隔</h3>
+      <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;background:var(--card-bg);font-size:0.82rem;">
+        <tr style="background:var(--accent);color:white;">
+          <th style="padding:0.4rem;border:1px solid #333;">間隔類型</th>
+          <th style="padding:0.4rem;border:1px solid #333;">802.11b/g</th>
+          <th style="padding:0.4rem;border:1px solid #333;">802.11a</th>
+          <th style="padding:0.4rem;border:1px solid #333;">用途</th>
+          <th style="padding:0.4rem;border:1px solid #333;">優先級</th>
+        </tr>
+        <tr><td style="padding:0.4rem;border:1px solid #ddd;">SIFS</td><td style="padding:0.4rem;border:1px solid #ddd;">10 μs</td><td style="padding:0.4rem;border:1px solid #ddd;">16 μs</td><td style="padding:0.4rem;border:1px solid #ddd;">RTS, CTS, ACK</td><td style="padding:0.4rem;border:1px solid #ddd;">最高</td></tr>
+        <tr><td style="padding:0.4rem;border:1px solid #ddd;">PIFS</td><td style="padding:0.4rem;border:1px solid #ddd;">30 μs</td><td style="padding:0.4rem;border:1px solid #ddd;">25 μs</td><td style="padding:0.4rem;border:1px solid #ddd;">免競爭傳送</td><td style="padding:0.4rem;border:1px solid #ddd;">第二</td></tr>
+        <tr><td style="padding:0.4rem;border:1px solid #ddd;">DIFS</td><td style="padding:0.4rem;border:1px solid #ddd;">50 μs</td><td style="padding:0.4rem;border:1px solid #ddd;">34 μs</td><td style="padding:0.4rem;border:1px solid #ddd;">DCF 傳送模式</td><td style="padding:0.4rem;border:1px solid #ddd;">第三</td></tr>
+        <tr><td style="padding:0.4rem;border:1px solid #ddd;">EIFS</td><td style="padding:0.4rem;border:1px solid #ddd;">更高</td><td style="padding:0.4rem;border:1px solid #ddd;">更高</td><td style="padding:0.4rem;border:1px solid #ddd;">錯誤後重傳</td><td style="padding:0.4rem;border:1px solid #ddd;">最低</td></tr>
+      </table>
+      </div>
+
+      <h3>RTS / CTS / ACK</h3>
+      <div class="highlight-box">
+        ▶ RTS (Request to Send)：發送端先發送 RTS 請求<br>
+        ▶ CTS (Clear to Send)：接收端回應 CTS，確認可以接收<br>
+        ▶ ACK：接收端正確收到資料後回應<br>
+        ▶ RTS/CTS 解決隱藏節點通訊死角的問題
+      </div>
+
+      <h3>NAV（網路配置向量）</h3>
+      <div class="highlight-box">
+        ▶ 包含在 RTS 與 CTS 訊息中，告知需要多久時間才可完成資料傳送<br>
+        ▶ 其他主機看到 RTS 或 CTS 後記錄 NAV 值，在該時段內不發送
+      </div>
+
+      <h3>802.11 訊框格式</h3>
+      <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;background:var(--card-bg);font-size:0.82rem;">
+        <tr style="background:var(--accent);color:white;">
+          <th style="padding:0.4rem;border:1px solid #333;">欄位</th>
+          <th style="padding:0.4rem;border:1px solid #333;">大小</th>
+          <th style="padding:0.4rem;border:1px solid #333;">說明</th>
+        </tr>
+        <tr><td style="padding:0.4rem;border:1px solid #ddd;">控制 (Control)</td><td style="padding:0.4rem;border:1px solid #ddd;">2 Bytes</td><td style="padding:0.4rem;border:1px solid #ddd;">版本、類型、副類型、To-DS/From-DS、フラグ等</td></tr>
+        <tr><td style="padding:0.4rem;border:1px solid #ddd;">持續時間/識別碼</td><td style="padding:0.4rem;border:1px solid #ddd;">2 Bytes</td><td style="padding:0.4rem;border:1px solid #ddd;">0~32767 為持續時間（μs），32768 為免競爭週期</td></tr>
+        <tr><td style="padding:0.4rem;border:1px solid #ddd;">位址 (Address)</td><td style="padding:0.4rem;border:1px solid #ddd;">6 Bytes × 4</td><td style="padding:0.4rem;border:1px solid #ddd;">RA/TA/DA/SA，視 To-DS/From-DS 組合而定</td></tr>
+        <tr><td style="padding:0.4rem;border:1px solid #ddd;">序列控制</td><td style="padding:0.4rem;border:1px solid #ddd;">2 Bytes</td><td style="padding:0.4rem;border:1px solid #ddd;">序列號碼 + 分片號碼</td></tr>
+        <tr><td style="padding:0.4rem;border:1px solid #ddd;">資料</td><td style="padding:0.4rem;border:1px solid #ddd;">< 2312 Bytes</td><td style="padding:0.4rem;border:1px solid #ddd;">上層資料</td></tr>
+        <tr><td style="padding:0.4rem;border:1px solid #ddd;">檢查碼</td><td style="padding:0.4rem;border:1px solid #ddd;">4 Bytes</td><td style="padding:0.4rem;border:1px solid #ddd;">CRC-32</td></tr>
+      </table>
+      </div>
+
+      <h3>位元順序差異</h3>
+      <div class="highlight-box">
+        ▶ TCP/IP：由高位元排列至低位元（Big-endian）<br>
+        ▶ 802.11：由低位元排列至高位元（Little-endian）<br>
+        ▶ 擷取內容與訊框格式有倒轉現象
+      </div>
+    </section>
+
+    <!-- 問題與討論 -->
+    <section id="qna">
+      <h2>❓ 問題與討論</h2>
+      <div class="highlight-box" style="background:#e8f0fe;border-left:4px solid #316cf4;">📖 本章內容對應老師投影片，請參考 Net7_07LAN.pptx</div>
+      <div class="highlight-box">
+        ▶ 關鍵字<br>
+        ▶ 填充題<br>
+        ▶ 選擇題<br>
+        ▶ 問答題
+      </div>
+    </section>
+
+    <footer class="content-footer">
+      <p>© 僅授權用書單位使用｜教材來源：旗標「網路概論×實務」</p>
+    </footer>
+
+  </main>
+</body>
+</html>
