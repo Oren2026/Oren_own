@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH10 — ARP · RARP · ICMP | 柯的note</title>
+  <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">資訊網路</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有筆記</div>
+
+    <a href="ch1-introduction.html" class="sidebar-link">網路初探</a>
+    <a href="ch2-communication.html" class="sidebar-link">通訊與傳輸</a>
+    <a href="ch3-media-equipment.html" class="sidebar-link">傳輸媒介與配備</a>
+    <a href="ch4-protocol.html" class="sidebar-link">網路協定</a>
+    <a href="ch5-ethernet.html" class="sidebar-link">乙太網路</a>
+    <a href="ch6-tia.html" class="sidebar-link">網路規劃設計</a>
+    <a href="ch7.html" class="sidebar-link">LAN 區域網路</a>
+    <a href="ch8.html" class="sidebar-link">IP 協定</a>
+    <a href="ch9.html" class="sidebar-link">傳輸層協定（TCP/UDP）</a>
+    <a href="ch10.html" class="sidebar-link active">ARP · RARP · ICMP</a>
+    <a href="ch11.html" class="sidebar-link">第十一章（待確認）</a>
+    <a href="ch12.html" class="sidebar-link">第十二章（待確認）</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+
+    <!-- 大綱 -->
+    <div class="highlight-box">
+      <div class="highlight-box-title">📋 本章大綱</div>
+      <div class="two-col-grid" style="margin-top:0.75rem;">
+        <div class="concept-card">
+          <div class="concept-card-title">🔗 ARP 機制</div>
+          <div class="concept-card-desc">IP→實體位址、Cache 對照表、廣播請求</div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-card-title">🔄 RARP 機制</div>
+          <div class="concept-card-desc">實體位址→IP、無磁碟主機、RARP 伺服器</div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-card-title">📦 ARP/RARP 標頭</div>
+          <div class="concept-card-desc">9 欄位：硬體類型、協定類型、HLEN、PLEN、Operation、發送端/目的端 HA+IP</div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-card-title">📡 ICMP 機制</div>
+          <div class="concept-card-desc">網路層輔助協定：偵錯、控制、錯誤回報</div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-card-title">🔍 Echo 與 ping/tracert</div>
+          <div class="concept-card-desc">Type 0/8、Type 11、識別碼與序列碼</div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-card-title">⚠️ 錯誤訊息類型</div>
+          <div class="concept-card-desc">Destination Unreachable、Source Quench、Redirect、Time Exceeded、Parameter Problem</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         第 10 章
+    ═══════════════════════════════ -->
+    <section id="ch10-title">
+      <h2>📡 第 10 章｜ARP · RARP · ICMP</h2>
+      <div class="highlight-box">
+        網路層的重要協定不僅於 IP 協定。本章探討 ARP、RARP 與 ICMP，三者都是 TCP/IP 協定的一部分，是了解網路層運作不可或缺的知識。
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         1｜簡介
+    ═══════════════════════════════ -->
+    <section id="intro">
+      <h2>🔗 1｜簡介</h2>
+
+      <h3>ARP 機制</h3>
+      <div class="highlight-box">
+        <strong>ARP</strong>（Address Resolution Protocol，位址解析協定）<br>
+        將 <strong>IP 位址</strong>（邏輯位址）解析為 <strong>實體位址</strong>（MAC 位址）。
+      </div>
+
+      <h3>RARP 機制</h3>
+      <div class="highlight-box">
+        <strong>RARP</strong>（Reverse Address Resolution Protocol，反向位址解析協定）<br>
+        將 <strong>實體位址</strong>（MAC 位址）解析為 <strong>IP 位址</strong>（邏輯位址）。
+      </div>
+
+      <h3>ICMP 機制</h3>
+      <div class="highlight-box">
+        <strong>ICMP</strong>（Internet Control Message Protocol，網際網路控制訊息協定）<br>
+        用於錯誤回報、偵錯與控制，是網路層的輔助協定，需與 IP 標頭搭配使用。
+      </div>
+
+      <h3>ARP 與 RARP — 密實體位址與邏輯位址</h3>
+      <div class="highlight-box">
+        網路設備同時擁有兩種位址：<br>
+        <ul>
+          <li><strong>實體位址（MAC）</strong>：燒錄在網卡中，全域唯一，由 IEEE 管理分配。</li>
+          <li><strong>邏輯位址（IP）</strong>：由網路管理員或 DHCP 動態分配，可改變。</li>
+        </ul>
+        ARP 負責 IP → MAC 的對應查詢；RARP 則反向處理。
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         2｜ARP 機制
+    ═══════════════════════════════ -->
+    <section id="arp">
+      <h2>🔗 2｜ARP 機制</h2>
+
+      <div class="highlight-box">
+        <strong>ARP 核心原理：</strong>傳送資料前，會先檢查 <strong>ARP Cache（ARP 對照表）</strong>。若找不到對應的 IP 位址，才廣播 ARP 請求。
+      </div>
+
+      <h3>運作流程圖</h3>
+      <div class="highlight-box">
+        假設主機 A（140.134.36.56）要和主機 B（140.134.36.110）通訊：<br><br>
+        <ul>
+          <li>主機 A 先查自己的 ARP Cache，找不到 140.134.36.110</li>
+          <li>主機 A 廣播 <strong>ARP 請求</strong>（目標 MAC 為 FF-FF-FF-FF-FF-FF）</li>
+          <li>所有主機收到，但只有 140.134.36.110 回覆 <strong>ARP 回應</strong></li>
+          <li>主機 A 收到回覆後，將 140.134.36.110 與其 MAC 位址寫入 ARP Cache</li>
+        </ul>
+      </div>
+
+      <h3>ARP 請求與回覆訊息傳送</h3>
+      <div class="highlight-box">
+        <strong>訊息三層封裝：</strong>
+        <table class="compare-table">
+          <tr><th>資料連結層標頭</th><th>網路層標頭</th><th>訊息內容</th></tr>
+          <tr><td>含目標 MAC（廣播為 FF-FF-FF...）</td><td>含發送端 IP</td><td>ARP 請求/回覆資料</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         3｜RARP 機制
+    ═══════════════════════════════ -->
+    <section id="rarp">
+      <h2>🔄 3｜RARP 機制</h2>
+
+      <div class="highlight-box">
+        <strong>RARP 應用場景：</strong>來源端知道自己 MAC 位址，但不知道 IP 位址。<br>
+        必須倚賴 <strong>RARP 伺服器</strong>執行查詢工作。<br><br>
+        常見於：<strong>無磁碟機或終端機的場合</strong>——電腦沒有硬碟，無法儲存 IP 位址，開機時需向 RARP 伺服器查詢自己的 IP。
+      </div>
+
+      <h3>運作流程</h3>
+      <div class="highlight-box">
+        <ul>
+          <li>無 IP 主機廣播 <strong>RARP 請求</strong>（含自己的 MAC 位址）</li>
+          <li>RARP 伺服器收到，查表後回覆 <strong>RARP 回應</strong>（含對應 IP 位址）</li>
+          <li>主機取得 IP 位址，即可正常通訊</li>
+        </ul>
+      </div>
+
+      <h3>RARP 與 ARP 的比較</h3>
+      <div class="highlight-box">
+        <table class="compare-table">
+          <tr><th></th><th>ARP</th><th>RARP</th></tr>
+          <tr><td>查詢方向</td><td>IP → MAC</td><td>MAC → IP</td></tr>
+          <tr><td>需求</td><td>已知 IP，查 MAC</td><td>已知 MAC，查 IP</td></tr>
+          <tr><td>伺服器</td><td>不需要</td><td>需要 RARP 伺服器</td></tr>
+          <tr><td>常見用途</td><td>一般主機通訊前解析</td><td>無碟主機開機取得 IP</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         4｜ARP/RARP 標頭
+    ═══════════════════════════════ -->
+    <section id="header">
+      <h2>📦 4｜ARP/RARP 標頭</h2>
+
+      <div class="highlight-box">
+        ARP 與 RARP 的標頭定義相同，共分 <strong>9 個欄位</strong>，每欄位各有其長度與用途。
+      </div>
+
+      <h3>標頭欄位格式（9 欄位）</h3>
+      <div class="highlight-box">
+        <table class="compare-table">
+          <tr><th>欄位</th><th>長度</th><th>說明</th></tr>
+          <tr><td>Hardware Type</td><td>16 位元</td><td>硬體類型，如 Ethernet = 1（0001）</td></tr>
+          <tr><td>Protocol Type</td><td>16 位元</td><td>協定類型，如 IP = 0800ₕ</td></tr>
+          <tr><td>HLEN</td><td>8 位元</td><td>硬體位址長度（位元組），如 Ethernet = 6</td></tr>
+          <tr><td>PLEN</td><td>8 位元</td><td>網路協定位址長度（位元組），如 IP = 4</td></tr>
+          <tr><td>Operation</td><td>16 位元</td><td>操作型態（見下表）</td></tr>
+          <tr><td>Sender HA</td><td>可變</td><td>發送端硬體位址（MAC）</td></tr>
+          <tr><td>Sender IP</td><td>可變</td><td>發送端邏輯位址（IP）</td></tr>
+          <tr><td>Target HA</td><td>可變</td><td>目的端硬體位址（MAC）</td></tr>
+          <tr><td>Target IP</td><td>可變</td><td>目的端邏輯位址（IP）</td></tr>
+        </table>
+      </div>
+
+      <h3>Operation 欄位值</h3>
+      <div class="highlight-box">
+        <table class="compare-table">
+          <tr><th>數值</th><th>操作</th></tr>
+          <tr><td>1</td><td>ARP 請求（ARP Request）</td></tr>
+          <tr><td>2</td><td>ARP 回覆（ARP Reply）</td></tr>
+          <tr><td>3</td><td>RARP 請求（RARP Request）</td></tr>
+          <tr><td>4</td><td>RARP 回覆（RARP Reply）</td></tr>
+        </table>
+      </div>
+
+      <h3>Target HA 特殊規則（ARP 請求時）</h3>
+      <div class="highlight-box">
+        <ul>
+          <li>ARP 請求時，Target HA 欄位值為 <strong>00-00-00-00-00-00</strong></li>
+          <li>資料連結層廣播目的端位址為 <strong>FF-FF-FF-FF-FF-FF</strong></li>
+          <li>回覆時，Target HA 即為請求端真實 MAC 位址</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         5｜ICMP 協定
+    ═══════════════════════════════ -->
+    <section id="icmp">
+      <h2>📡 5｜ICMP 協定</h2>
+
+      <div class="highlight-box">
+        <strong>ICMP（Internet Control Message Protocol）</strong>：網際網路控制訊息協定。<br><br>
+        IP 協定主要在「盡力傳送」封包，但傳送過程中遭遇困難與問題（網路擁塞、主機故障、主機未開機等），並非 IP 協定所能解決。<br><br>
+        <strong>ICMP 便是用來處理此項工作的機制</strong>，讓使用者或路由器依需要進行偵錯與控制。<br><br>
+        屬於網路層的通訊協定，<strong>必需與 IP 標頭搭配，無法單獨運作</strong>。
+      </div>
+
+      <h3>常見應用</h3>
+      <div class="highlight-box">
+        <ul>
+          <li><code>ping</code> — 發送 ICMP Echo Request，偵測主機是否可達</li>
+          <li><code>tracert</code>（Windows）/ <code>traceroute</code>（Linux）— 追蹤封包經過的路徑</li>
+          <li>路由器回報傳輸錯誤（如目的端不可達）</li>
+        </ul>
+      </div>
+
+      <h3>ICMP 訊息類型一覽</h3>
+      <div class="highlight-box">
+        <table class="compare-table">
+          <tr><th>Type</th><th>類型名稱</th></tr>
+          <tr><td>0</td><td>回聲回覆（Echo Reply）</td></tr>
+          <tr><td>3</td><td>目的端無法抵達（Destination Unreachable）</td></tr>
+          <tr><td>4</td><td>來源端抑制（Source Quench）</td></tr>
+          <tr><td>5</td><td>路徑重新定向（Redirect）</td></tr>
+          <tr><td>8</td><td>回聲請求（Echo Request）</td></tr>
+          <tr><td>11</td><td>傳輸逾時（Time Exceeded）</td></tr>
+          <tr><td>12</td><td>參數問題（Parameter Problem）</td></tr>
+          <tr><td>13/14</td><td>時戳請求/回覆（Timestamp Request/Reply）</td></tr>
+          <tr><td>15/16</td><td>網路位址資訊請求/回覆（Information Request/Reply）</td></tr>
+          <tr><td>17/18</td><td>網路遮罩請求/回覆（Address Mask Request/Reply）</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         6｜ICMP 標頭格式
+    ═══════════════════════════════ -->
+    <section id="icmp-header">
+      <h2>🔧 6｜ICMP 標頭格式</h2>
+
+      <div class="highlight-box">
+        無論哪種 ICMP 訊息類型，<strong>標頭前面 32 位元的格式都相同</strong>。
+      </div>
+
+      <h3>三大基本欄位</h3>
+      <div class="highlight-box">
+        <table class="compare-table">
+          <tr><th>欄位</th><th>長度</th><th>說明</th></tr>
+          <tr><td>Type</td><td>8 位元</td><td>ICMP 訊息類型（如 0、3、8、11 等）</td></tr>
+          <tr><td>Code</td><td>8 位元</td><td>內容代碼，對類型發生原因做進一步說明</td></tr>
+          <tr><td>Checksum</td><td>16 位元</td><td>檢驗和，驗證訊息完整性</td></tr>
+        </table>
+      </div>
+
+      <h3>查詢訊息標頭格式</h3>
+      <div class="highlight-box">
+        <table class="compare-table">
+          <tr><th>Type (8)</th><th>Code (8)</th><th>Checksum (16)</th></tr>
+          <tr><td colspan="3">Identifier (16) ｜ Sequence Number (16)</td></tr>
+        </table>
+        <ul style="margin-top:0.5rem;">
+          <li><strong>Identifier</strong> 與 <strong>Sequence Number</strong> 各 16 位元</li>
+          <li>請求與回覆時這兩個欄位數值相同，以便相互辨識</li>
+        </ul>
+      </div>
+
+      <h3>錯誤訊息標頭格式</h3>
+      <div class="highlight-box">
+        <table class="compare-table">
+          <tr><th>Type (8)</th><th>Code (8)</th><th>Checksum (16)</th></tr>
+          <tr><td colspan="3">未定義或其他 (32)</td></tr>
+          <tr><td colspan="3">IP 標頭 + 64 位元的原始資料</td></tr>
+        </table>
+        <ul style="margin-top:0.5rem;">
+          <li>前面三個欄位後的 32 位元：有些類型有定義，有些未定義（以 0 填充）</li>
+          <li>攜帶原始 IP 標頭與 64 位元資料，以便知道錯誤訊息屬於哪個原始封包</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         7｜Echo 與 ping/tracert
+    ═══════════════════════════════ -->
+    <section id="echo">
+      <h2>🔍 7｜Echo 與 ping / tracert</h2>
+
+      <h3>Echo Request / Echo Reply</h3>
+      <div class="highlight-box">
+        <ul>
+          <li><strong>Echo Request</strong>：ICMP Type = <strong>8</strong></li>
+          <li><strong>Echo Reply</strong>：ICMP Type = <strong>0</strong></li>
+          <li>Code 欄位皆為 0</li>
+        </ul>
+      </div>
+
+      <h3>Echo 訊息格式</h3>
+      <div class="highlight-box">
+        <table class="compare-table">
+          <tr><th>類型 (8)</th><th>代碼 (8)</th><th>檢驗和 (16)</th></tr>
+          <tr><td colspan="3">識別碼 (16) ｜ 序列碼 (16)</td></tr>
+          <tr><td colspan="3">附加資料（選擇性）</td></tr>
+        </table>
+      </div>
+
+      <h3>ping 指令輸出範例</h3>
+      <div class="highlight-box">
+        <pre style="background:#1a1a2e;padding:0.75rem;border-radius:6px;overflow-x:auto;font-size:0.82rem;line-height:1.5;">Pinging 204.71.200.243 with 32 bytes of data:
+
+Reply from 204.71.200.243: bytes=32 time=945ms TTL=242
+Reply from 204.71.200.243: bytes=32 time=964ms TTL=242
+Request timed out.
+Reply from 204.71.200.243: bytes=32 time=840ms TTL=242
+
+Ping statistics for 204.71.200.243:
+  Packets: Sent = 4, Received = 3, Lost = 1 (25% loss)
+  Minimum = 840ms</pre>
+      </div>
+
+      <h3>tracert / traceroute 輸出範例</h3>
+      <div class="highlight-box">
+        <pre style="background:#1a1a2e;padding:0.75rem;border-radius:6px;overflow-x:auto;font-size:0.82rem;line-height:1.5;">Tracing route to yahoo.com [204.71.200.245]
+over a maximum of 30 hops:
+
+ 1    4 ms   12 ms    8 ms  140.134.37.254
+ 2   15 ms   18 ms   22 ms  [不同閘道...]
+ ...
+ 4   98 ms  102 ms   95 ms  204.71.200.245
+
+Trace complete.</pre>
+      </div>
+
+      <h3>時戳請求與回覆（Timestamp Request/Reply）</h3>
+      <div class="highlight-box">
+        <ul>
+          <li>ICMP Type：<strong>13</strong>（請求）/ <strong>14</strong>（回覆）</li>
+          <li>Code 欄位皆為 0</li>
+          <li>以 <strong>毫秒（ms）</strong>為單位，依格林威治時間為準</li>
+          <li>主要功能：測量訊號在主機間的傳輸延遲、查詢網路主機時間、系統時間同步調整</li>
+        </ul>
+      </div>
+
+      <h3>時戳訊息格式</h3>
+      <div class="highlight-box">
+        <table class="compare-table">
+          <tr><th>Type (8)</th><th>Code (8)</th><th>Checksum (16)</th></tr>
+          <tr><td colspan="3">Identifier (16) ｜ Sequence Number (16)</td></tr>
+          <tr><td colspan="3">原始時戳 Original Timestamp (32)</td></tr>
+          <tr><td colspan="3">接收時戳 Receive Timestamp (32)</td></tr>
+          <tr><td colspan="3">傳送時戳 Transmit Timestamp (32)</td></tr>
+        </table>
+      </div>
+
+      <h3>單趟延遲計算範例</h3>
+      <div class="highlight-box">
+        <pre style="background:#1a1a2e;padding:0.75rem;border-radius:6px;overflow-x:auto;font-size:0.82rem;line-height:1.5;">單趟延遲時間 = (接收時間 - 原始時間 - 傳送延遲) / 2
+                = (122000 - 120300 - 300) / 2
+                = 700 ms</pre>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         8｜Destination Unreachable
+    ═══════════════════════════════ -->
+    <section id="unreachable">
+      <h2>⚠️ 8｜Destination Unreachable</h2>
+
+      <div class="highlight-box">
+        <ul>
+          <li>ICMP <strong>Type = 3</strong> 訊息，屬於 ICMP <strong>錯誤訊息</strong></li>
+          <li>無法抵達目的節點的原因有 <strong>16 種情況</strong>（Code 0~15）</li>
+        </ul>
+      </div>
+
+      <h3>無法抵達目的端原因（Code 欄位）</h3>
+      <div class="highlight-box">
+        <table class="compare-table">
+          <tr><th>Code</th><th>原因</th></tr>
+          <tr><td>0</td><td>目的端網路無法連接</td></tr>
+          <tr><td>1</td><td>目的端主機無法連接</td></tr>
+          <tr><td>2</td><td>指定的通訊協定不存在</td></tr>
+          <tr><td>3</td><td>指定的連接埠不存在</td></tr>
+          <tr><td>4</td><td>資料需被分割並設定不可分割位元</td></tr>
+          <tr><td>5</td><td>來源選擇路徑失敗</td></tr>
+          <tr><td>6</td><td>目的端網路無法辨識</td></tr>
+          <tr><td>7</td><td>目的端主機無法辨識</td></tr>
+          <tr><td>8</td><td>來源端主機被隔離</td></tr>
+          <tr><td>9</td><td>禁止與目的端網路通訊</td></tr>
+          <tr><td>10</td><td>禁止與目的端主機通訊</td></tr>
+          <tr><td>11</td><td>拒絕此網路服務類型</td></tr>
+          <tr><td>12</td><td>拒絕此主機服務類型</td></tr>
+          <tr><td>13</td><td>被過濾禁止通訊</td></tr>
+          <tr><td>14</td><td>違反主機優先權</td></tr>
+          <tr><td>15</td><td>優先權實行中斷</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+         9｜其他 ICMP 訊息類型
+    ═══════════════════════════════ -->
+    <section id="other-icmp">
+      <h2>🛡️ 9｜其他 ICMP 訊息類型</h2>
+
+      <h3>來源端抑制（Source Quench）— Type 4</h3>
+      <div class="highlight-box">
+        <ul>
+          <li>屬於 ICMP <strong>錯誤訊息</strong></li>
+          <li>功能：對網路流通容量進行控制，修正網路資料傳送量</li>
+          <li>Code 欄位值：0</li>
+        </ul>
+        <table class="compare-table" style="margin-top:0.75rem;">
+          <tr><th>類型 (8)</th><th>代碼 (8)</th><th>檢驗和 (16)</th></tr>
+          <tr><td colspan="3">未定義 (32)：0</td></tr>
+          <tr><td colspan="3">IP 標頭 + 64 位元的原始資料</td></tr>
+        </table>
+      </div>
+
+      <h3>路徑重新定向（Redirect）— Type 5</h3>
+      <div class="highlight-box">
+        <ul>
+          <li>屬於 ICMP <strong>錯誤訊息</strong></li>
+          <li>Code 欄位說明：
+            <table class="compare-table" style="margin-top:0.5rem;">
+              <tr><th>Code</th><th>意義</th></tr>
+              <tr><td>0</td><td>因網路變動而更改傳輸路徑</td></tr>
+              <tr><td>1</td><td>因主機變動而更改傳輸路徑</td></tr>
+              <tr><td>2</td><td>因網路和服務類型的變動而更改傳輸路徑</td></tr>
+              <tr><td>3</td><td>因主機和服務類型的變動而更改傳輸路徑</td></tr>
+            </table>
+          </li>
+        </ul>
+        <table class="compare-table" style="margin-top:0.75rem;">
+          <tr><th>類型 (8)</th><th>代碼 (8)</th><th>檢驗和 (16)</th></tr>
+          <tr><td colspan="3">Gateway IP 位址 (32)</td></tr>
+          <tr><td colspan="3">IP 標頭 + 64 位元的原始資料</td></tr>
+        </table>
+      </div>
+
+      <h3>傳輸逾時（Time Exceeded）— Type 11</h3>
+      <div class="highlight-box">
+        <ul>
+          <li>屬於 ICMP <strong>錯誤訊息</strong></li>
+          <li>可藉 IP 標頭 TTL 欄位值判斷</li>
+          <li>Code 欄位：
+            <table class="compare-table" style="margin-top:0.5rem;">
+              <tr><th>Code</th><th>意義</th></tr>
+              <tr><td>0</td><td>因迴圈問題造成逾時傳輸（TTL=0）</td></tr>
+              <tr><td>1</td><td>因封包重組超過設定時間而造成逾時傳輸</td></tr>
+            </table>
+          </li>
+        </ul>
+      </div>
+
+      <h3>參數問題（Parameter Problem）— Type 12</h3>
+      <div class="highlight-box">
+        <ul>
+          <li>屬於 ICMP <strong>錯誤訊息</strong></li>
+          <li>Code = 0：某欄位值發生錯誤，發生位置由指標（Pointer）欄位說明（指向錯誤位元組）</li>
+          <li>Code = 1：標頭缺少某資料選項，但無法說明缺少的項目為何（Pointer 欄位以 0 填充）</li>
+        </ul>
+        <table class="compare-table" style="margin-top:0.75rem;">
+          <tr><th>類型 (8)</th><th>代碼 (8)</th><th>檢驗和 (16)</th></tr>
+          <tr><td colspan="3">指標 Pointer (8) ｜ 未定義 (24)：0</td></tr>
+          <tr><td colspan="3">IP 標頭 + 64 位元的原始資料</td></tr>
+        </table>
+      </div>
+
+      <h3>網路位址資訊請求/回覆（Information Request/Reply）— Type 15/16</h3>
+      <div class="highlight-box">
+        <ul>
+          <li>屬於 ICMP <strong>查詢訊息</strong></li>
+          <li>功能：向位址伺服器查詢自己的 IP 位址（類似 RARP）</li>
+          <li>此類訊息<strong>幾乎已為 RARP 或 BOOTP 所取代</strong>，現在很少使用</li>
+        </ul>
+        <table class="compare-table" style="margin-top:0.75rem;">
+          <tr><th>類型 (8)</th><th>代碼 (8)</th><th>檢驗和 (16)</th></tr>
+          <tr><td colspan="3">識別碼 (16) ｜ 序列碼 (16)</td></tr>
+          <tr><td colspan="3">位址資訊 (32)</td></tr>
+        </table>
+      </div>
+
+      <h3>網路遮罩請求/回覆（Address Mask Request/Reply）— Type 17/18</h3>
+      <div class="highlight-box">
+        <ul>
+          <li>屬於 ICMP <strong>查詢訊息</strong></li>
+          <li>功能：向閘道查詢網路主機的子網路遮罩位址（Subnet Mask）</li>
+        </ul>
+        <table class="compare-table" style="margin-top:0.75rem;">
+          <tr><th>類型 (8)</th><th>代碼 (8)</th><th>檢驗和 (16)</th></tr>
+          <tr><td colspan="3">識別碼 (16) ｜ 序列碼 (16)</td></tr>
+          <tr><td colspan="3">子網路遮罩位址 (32)</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- 問題與討論 -->
+    <div class="question-section">
+      <h2>📝 問題與討論</h2>
+      <p>關鍵字｜填充題｜選擇題｜問答題</p>
+    </div>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — 資訊網路</span>
+      <span>CH10 · 2026/05/07</span>
+    </footer>
+
+  </main>
+  <script src="right-nav.js"></script>
+</body>
+</html>
