@@ -9,6 +9,8 @@ hermes-chat-app/     ← Hermes Chat App (local only)
 subagents.json       ← agent config with API keys
 agent_skills.json    ← skill definitions
 auth.json            ← auth tokens
+knowledge/           ← personal knowledge base
+memory/              ← agent memory
 *.db                 ← SQLite databases
 *.db-shm
 *.db-wal
