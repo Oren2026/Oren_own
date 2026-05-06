@@ -292,6 +292,33 @@ pre code {
   content: '💡 ';
   font-size: 0.85rem;
 }
+.highlight-box ul,
+.highlight-box ol {
+  /* 禁止 highlight-box 內嵌清單——請改用 concept-card */
+  display: none;
+}
+
+/* ── Two Column Grid ── */
+.two-col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Question Section ── */
+.question-section {
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+.question-section h2 {
+  border: none;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
 
 /* ── Stack Diagram ── */
 .stack-diagram {

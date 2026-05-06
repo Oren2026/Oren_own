@@ -46,7 +46,7 @@
 
     <!-- 大綱 -->
     <h2>📋 大綱</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+    <div class="two-col-grid">
       <div class="concept-card">
         <div class="concept-card-title">🔷 前言</div>
         <div class="concept-card-desc">實體層：架設與規劃</div>
@@ -76,17 +76,18 @@
     <!-- 1. 前言 -->
     <section id="intro">
       <h2>🔷 1｜前言</h2>
-      <div class="highlight-box">
-        由實務架設更加引導學習的興致，對網路的「架設」與「規劃」進行了解。<br>
-        <ul style="margin:0.5rem 0 0;">
+
+      <div class="concept-card">
+        <div class="concept-card-title">📌 實體層的架設與規劃</div>
+        <p>由實務架設更加引導學習的興致，對網路的「架設」與「規劃」進行了解。</p>
+        <ul>
           <li>「架設」屬於小範圍的網路工作</li>
           <li>「規劃」屬於較大範圍的網路工作</li>
           <li>兩者皆屬於「實體層」的部分</li>
         </ul>
       </div>
-      <div class="highlight-box">
-        <strong>第五章：「架設」｜第六章：「規劃」</strong>
-      </div>
+
+      <div class="highlight-box">第五章：「架設」｜第六章：「規劃」</div>
     </section>
 
     <!-- 2. 乙太網路簡介 -->
@@ -95,10 +96,12 @@
       <p>是各種網路架構中最普遍的一種，架構簡單、價位低廉。</p>
 
       <h3>2.1｜乙太網路沿革</h3>
-      <div class="highlight-box">
-        <strong>Xerox Palo Alto 研究中心 Robert Metcalfe 與 Davis Boggs 所開發</strong><br>
-        <ul style="margin:0.5rem 0 0;">
-          <li>自夏威夷大學 (University of Hawaii) 無線通訊的 Aloha 系統</li>
+
+      <div class="concept-card">
+        <div class="concept-card-title">🔬 Ethernet 的起源</div>
+        <ul>
+          <li>Xerox Palo Alto 研究中心 <strong>Robert Metcalfe</strong> 與 <strong>Davis Boggs</strong> 所開發</li>
+          <li>自夏威夷大學 (University of Hawaii) 無線通訊的 <strong>Aloha 系統</strong></li>
           <li>取名為 Ethernet，以 Ether 描述傳送訊號的物質</li>
           <li>希冀這個網路能像以太一般充斥在宇宙每個角落</li>
         </ul>
@@ -118,21 +121,16 @@
       <p>所有乙太網路的基本原理差不多，因傳輸速率、調變方式與傳輸媒體不同進行區分。</p>
 
       <h3>3.1｜依傳輸速率區分</h3>
-      <div class="highlight-box">
-        10 Mbps、100 Mbps、1 Gbps、10 Gbps、40 Gbps、100 Gbps、210 Gbps<br>
-        辦公室、居家以 100 Mbps、1 Gbps 最普遍；骨幹連線以 1 Gbps、10 Gbps 居多
-      </div>
+      <div class="highlight-box">10 Mbps、100 Mbps、1 Gbps、10 Gbps、40 Gbps、100 Gbps、210 Gbps。辦公室、居家以 100 Mbps、1 Gbps 最普遍；骨幹連線以 1 Gbps、10 Gbps 居多。</div>
 
       <h3>3.2｜依調變方式</h3>
       <h3>3.3｜乙太網路名稱的表示</h3>
-      <div class="highlight-box">
-        <strong>100BaseT</strong>：100 Mbps | Baseband | Twisted Pair<br>
-        <strong>10Broad36</strong>：10 Mbps | Broadband | RG-58 同軸電纜，來回最遠可達 3600 公尺
-      </div>
+      <div class="highlight-box"><strong>100BaseT</strong>：100 Mbps | Baseband | Twisted Pair。<br><strong>10Broad36</strong>：10 Mbps | Broadband | RG-58 同軸電纜，來回最遠可達 3600 公尺。</div>
 
       <h3>3.4｜乙太網路發展</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">📈 速率演進</div>
+        <ul>
           <li>一般以 10 的倍數增長</li>
           <li>10 Gbps 以上無法一次增長 10 倍，先發展 40 Gbps 再精進到 100 Gbps</li>
           <li>40 Gbps、100 Gbps 以單模光纖傳送可達 40 公里</li>
@@ -167,8 +165,9 @@
       <h2>🔌 4｜乙太網路架設</h2>
 
       <h3>4.1｜材料與配備</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🔧 必備材料</div>
+        <ul>
           <li>305 公尺的雙絞線線材</li>
           <li>RJ-45 連接頭（8 個金屬連接插片，雙叉式或三叉式）</li>
           <li>RJ-45 護套（預防接頭卡栓可能因碰撞導致接頭脫落）</li>
@@ -179,8 +178,9 @@
       <p>不同介面、Auto-Sensing 功能。</p>
 
       <h3>4.3｜集線器或交換式集線器</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🔀 集線器功能</div>
+        <ul>
           <li>用以進行電腦間或集線器間連接</li>
           <li>集線器面板 LED 顯示連接埠連線狀況</li>
           <li>全雙工功能</li>
@@ -189,11 +189,7 @@
 
       <h3>4.4｜RJ-45 接頭製作</h3>
       <h4>纜線結構</h4>
-      <div class="highlight-box">
-        纜線由四對雙絞線組成：(白藍,藍)、(白橙,橙)、(白綠,綠)、(白棕,棕)<br>
-        定義為第一、二、三、四對線。<br>
-        第五類 UTP 每英吋互絞 3～4 次不等。
-      </div>
+      <div class="highlight-box">纜線由四對雙絞線組成：(白藍,藍)、(白橙,橙)、(白綠,綠)、(白棕,棕)。定義為第一、二、三、四對線。第五類 UTP 每英吋互絞 3～4 次不等。</div>
 
       <h4>EIA/TIA 568B 腳位定義</h4>
       <table class="compare-table">
@@ -211,37 +207,28 @@
           <tr><td>Pin 8</td><td>—</td><td>保留</td></tr>
         </tbody>
       </table>
-      <div class="highlight-box">
-        <strong>568B 線序：</strong>白橙 → 橙 → 白綠 → 藍 → 白藍 → 綠 → 白棕 → 棕<br>
-        <strong>568A 線序：</strong>白綠 → 綠 → 白橙 → 藍 → 白藍 → 橙 → 白棕 → 棕
-      </div>
+
+      <div class="highlight-box"><strong>568B 線序：</strong>白橙 → 橙 → 白綠 → 藍 → 白藍 → 綠 → 白棕 → 棕。<br><strong>568A 線序：</strong>白綠 → 綠 → 白橙 → 藍 → 白藍 → 橙 → 白棕 → 棕。</div>
 
       <h3>4.5｜電腦與集線器間的連線</h3>
-      <div class="highlight-box">
-        <strong>直通線 (Straight-through)：</strong>電腦的 Tx 對接到集線器的 Rx。568A 或 568B 任一端即可，兩端要一致。
-      </div>
+      <div class="highlight-box"><strong>直通線 (Straight-through)：</strong>電腦的 Tx 對接到集線器的 Rx。568A 或 568B 任一端即可，兩端要一致。</div>
 
       <h3>4.6｜電腦與電腦間的連線（跳線）</h3>
       <p><strong>對接式 (Crossover)：</strong>一端 568A，另一端 568B。</p>
 
       <h3>4.7｜直接纜線與跳接纜線</h3>
-      <div class="highlight-box">
-        <strong>直接纜線 (Straight-through)：</strong>兩端接頭排序相同<br>
-        <strong>跳接纜線 (Crossover)：</strong>一端 568A、一端 568B， Tx/Rx 交叉
-      </div>
+      <div class="highlight-box"><strong>直接纜線 (Straight-through)：</strong>兩端接頭排序相同。<strong>跳接纜線 (Crossover)：</strong>一端 568A、一端 568B， Tx/Rx 交叉。</div>
 
       <h3>4.8｜集線器與集線器間的連線</h3>
       <p>使用跳接纜線（568A 對 568B）。</p>
 
       <h3>4.9｜Auto MDI-X</h3>
-      <div class="highlight-box">
-        <strong>Auto MDI-X</strong>（Medium Dependent Interface Crossover）<br>
-        可自動偵測並切換 Tx/Rx，不需要手動選擇直通或跳接線。
-      </div>
+      <div class="highlight-box"><strong>Auto MDI-X</strong>（Medium Dependent Interface Crossover）可自動偵測並切換 Tx/Rx，不需要手動選擇直通或跳接線。</div>
 
       <h3>4.10｜其他應注意事項</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">⚠️ 施工要點</div>
+        <ul>
           <li>線距：< 100 公尺</li>
           <li>互絞：未絞雙絞線 < 0.5 英吋</li>
           <li>束線鬆緊應以適中為宜</li>
@@ -250,8 +237,9 @@
       </div>
 
       <h3>4.11｜常見量測儀表</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🛠️ 檢測工具</div>
+        <ul>
           <li>纜線測試器 (Cable Tester)</li>
           <li>三用電錶（檢測接線連通情形）</li>
         </ul>
@@ -263,22 +251,22 @@
       <h2>⚡ 5｜超高速乙太網路 (Gigabit Ethernet)</h2>
 
       <h3>5.1｜銅纜方案</h3>
-      <div class="highlight-box">
-        超高速乙太網路卡 + 第六類雙絞線
-      </div>
+      <div class="highlight-box">超高速乙太網路卡 + 第六類雙絞線</div>
 
       <h3>5.2｜光纖方案</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🌈 光纖傳輸要件</div>
+        <ul>
           <li>光纖線材接頭網路卡</li>
           <li>超高速乙太網路轉換器 (GBIC；GigaBit Interface Converter) 插槽</li>
         </ul>
       </div>
 
       <h3>5.3｜SFP</h3>
-      <div class="highlight-box">
-        <strong>SFP</strong>：小封裝可插拔收發器 (Small Form-factor Pluggable transceiver)<br>
-        <ul style="margin:0.5rem 0 0;">
+      <div class="concept-card">
+        <div class="concept-card-title">📦 SFP：小封裝可插拔收發器</div>
+        <p><strong>Small Form-factor Pluggable transceiver</strong></p>
+        <ul>
           <li>尺寸較小，又稱 mini-GBIC</li>
           <li>SFP 收發器規格：1 Gbps、10 Gbps、40 Gbps 分別為 SFP、SFP+、QSFP</li>
           <li>可搭配 RJ45 接頭，節省配線的開支</li>
@@ -291,17 +279,16 @@
       <h2>📡 6｜無線網路簡介</h2>
 
       <h3>6.1｜有線傳輸環境的限制</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🏗️ 適合有線的場合</div>
+        <ul>
           <li>適合頻寬需求大、工作地點固定、安全性考量較嚴謹的場合（例：工廠、倉庫）</li>
           <li>兩棟建築物間距離不遠，拉線困難或有礙觀瞻時，無線傳送是理想選擇</li>
         </ul>
       </div>
 
       <h3>6.2｜常見頻帶（不需執照）</h3>
-      <div class="highlight-box">
-        LoRa、802.11、802.15
-      </div>
+      <div class="highlight-box">LoRa、802.11、802.15</div>
     </section>
 
     <!-- 8. 無線網路分類 -->
@@ -309,15 +296,12 @@
       <h2>📡 7｜無線網路分類</h2>
 
       <h3>7.1｜依網路範圍大小分類</h3>
-      <div class="highlight-box">
-        <strong>WWAN</strong>（Wireless Wide Area Network）：智慧城市、智慧農場、環境監控等遠距離連接<br>
-        <strong>WLAN</strong>（Wireless Local Area Network）：無線區域網路
-      </div>
+      <div class="highlight-box"><strong>WWAN</strong>（Wireless Wide Area Network）：智慧城市、智慧農場、環境監控等遠距離連接。<strong>WLAN</strong>（Wireless Local Area Network）：無線區域網路。</div>
 
       <h3>7.2｜LoRa</h3>
-      <div class="highlight-box">
-        <strong>Long Range</strong><br>
-        <ul style="margin:0.5rem 0 0;">
+      <div class="concept-card">
+        <div class="concept-card-title">📡 LoRa — Long Range</div>
+        <ul>
           <li>低能耗下進行低速的長距離通訊</li>
           <li>資料傳輸率：0.3～27 Kbps</li>
           <li>傳輸距離：空曠地方可達 10 公里以上</li>
@@ -341,9 +325,9 @@
       </table>
 
       <h3>7.4｜MIMO 技術</h3>
-      <div class="highlight-box">
-        <strong>MIMO</strong>：Multiple Input Multiple Output（多重輸入多重輸出）<br>
-        <ul style="margin:0.5rem 0 0;">
+      <div class="concept-card">
+        <div class="concept-card-title">📶 MIMO — Multiple Input Multiple Output</div>
+        <ul>
           <li>802.11n 以後規格運用多天線技術</li>
           <li>理論最高傳輸速率：600 Mbps</li>
           <li>802.11ac、ax 以 Giga 級為目標</li>
@@ -351,8 +335,9 @@
       </div>
 
       <h3>7.5｜802.15 — 無線個人網路</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">📡 802.15 標準</div>
+        <ul>
           <li>藍牙 (Bluetooth) 1.1 → 802.15.1：傳輸距離 10 公尺、速率 1 Mbps</li>
           <li>ZigBee → 802.15.4：250 Kbps 以下，最遠傳送距離可達 1 公里</li>
         </ul>
@@ -364,14 +349,12 @@
       <h2>📶 8｜無線區域網路架設</h2>
 
       <h3>8.1｜優勢與限制</h3>
-      <div class="highlight-box">
-        <strong>優勢：</strong>網路連接輕鬆自在<br>
-        <strong>限制：</strong>最高傳送速率較低、配備較貴、訊號容易受外界干擾、媒體共享使資訊安全受到威脅
-      </div>
+      <div class="highlight-box"><strong>優勢：</strong>網路連接輕鬆自在。<strong>限制：</strong>最高傳送速率較低、配備較貴、訊號容易受外界干擾、媒體共享使資訊安全受到威脅。</div>
 
       <h3>8.2｜傳送距離</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">📏 傳送距離參考</div>
+        <ul>
           <li>空曠場所：可達 100～150 公尺</li>
           <li>半開放有隔間環境：可傳送距離 30～50 公尺</li>
           <li>金屬成分越高，訊號衰減阻絕情況越嚴重</li>
@@ -380,15 +363,13 @@
       </div>
 
       <h3>8.3｜安全機制</h3>
-      <div class="highlight-box">
-        WEP (Wired Equivalent Privacy；有線等效保密)
-      </div>
+      <div class="highlight-box">WEP (Wired Equivalent Privacy；有線等效保密)</div>
 
       <h3>8.4｜兩種模式</h3>
       <div class="layer-card">
         <div class="layer-card-num">Ad Hoc 模式（對等式 Peer-to-Peer）</div>
         <div class="layer-card-desc">
-          <ul style="margin:0;">
+          <ul>
             <li>不需要存取點 (AP) 設備</li>
             <li>各節點直接對傳，彼此地位同等</li>
             <li>IBSS (Independent Basic Service Set) 網路</li>
@@ -399,7 +380,7 @@
       <div class="layer-card">
         <div class="layer-card-num">Infrastructure 模式（主從式）</div>
         <div class="layer-card-desc">
-          <ul style="margin:0;">
+          <ul>
             <li>AP 為節點間相互通訊的中繼中心</li>
             <li>以 SSID 對網路進行辨識</li>
             <li>節點送到 AP，再由 AP 傳送給目的節點</li>
@@ -408,22 +389,24 @@
       </div>
 
       <h3>8.5｜中繼模式 (Repeater Mode)</h3>
-      <div class="highlight-box">
-        解決傳輸距離較遠或空間隔間等因素的影響，擴大可傳送的範圍，但傳送速率會下降。
-      </div>
+      <div class="highlight-box">解決傳輸距離較遠或空間隔間等因素的影響，擴大可傳送的範圍，但傳送速率會下降。</div>
 
       <h3>8.6｜橋接模式 (Bridge Mode)</h3>
-      <div class="highlight-box">
-        兩個或兩個以上不相連的有線網路系統運用 AP 的橋接功能串接起來，這些 AP 平台與節點必須設相同 SSID 才可。例：相距不遠建築物間的網路通訊。
-      </div>
+      <div class="highlight-box">兩個或兩個以上不相連的有線網路系統運用 AP 的橋接功能串接起來，這些 AP 平台與節點必須設相同 SSID 才可。例：相距不遠建築物間的網路通訊。</div>
 
       <h3>8.7｜漫遊</h3>
       <p>無線網路間的漫遊功能，允許設備在不同基地台間移動而不中斷連線。</p>
     </section>
 
+    <!-- 問題與討論 -->
+    <div class="question-section">
+      <h2>📝 問題與討論</h2>
+      <p>關鍵字｜填充題｜選擇題｜問答題</p>
+    </div>
+
     <footer class="note-footer">
       <span>📖 柯的note — 資訊網路</span>
-      <a href="index.html" style="color:var(--accent);">← 返回總覽</a>
+      <span>CH5 · 2026/05/06</span>
     </footer>
 
   </main>
