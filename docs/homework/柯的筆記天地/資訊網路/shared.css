@@ -336,3 +336,54 @@ pre code {
   .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1.5px solid var(--border); }
   .content { padding: 1.5rem 1.25rem; }
 }
+
+/* ── Section Separation ── */
+.content section {
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1.5px solid var(--border);
+}
+.content section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+/* ── Table Enhancement ── */
+.compare-table {
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+.compare-table th {
+  background: var(--accent) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  padding: 0.65rem 0.9rem;
+  text-align: left;
+  border-bottom: 2px solid var(--accent) !important;
+}
+.compare-table td {
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.compare-table tr:nth-child(even) td {
+  background: rgba(49,108,244,0.04);
+}
+.compare-table tr:last-child td {
+  border-bottom: none;
+}
+.compare-table tr:hover td {
+  background: var(--accent-dim);
+}
+
+/* ── Bare h2 section separation (s7~s16) ── */
+.content > h2 {
+  padding-bottom: 0.6rem;
+  margin-bottom: 1.25rem;
+  margin-top: 2.5rem;
+  border-bottom: 1.5px solid var(--border);
+}
+.content > h2:first-child {
+  margin-top: 0;
+}
