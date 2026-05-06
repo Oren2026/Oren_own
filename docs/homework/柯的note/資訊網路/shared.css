@@ -480,3 +480,102 @@ span.formula {
 .content > h2:first-child {
   margin-top: 0;
 }
+
+/* ── Right Navigation（右側浮動大綱）── */
+.right-nav {
+  position: fixed;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 200px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.9rem;
+  box-shadow: var(--card-shadow);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  scrollbar-width: thin;
+}
+.right-nav.visible { opacity: 1; pointer-events: auto; }
+.right-nav-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-2);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border);
+}
+.right-nav-list { list-style: none; margin: 0; padding: 0; }
+.right-nav-list li { margin: 0; padding: 0; }
+.right-nav-list a {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+  border-left: 2px solid transparent;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  line-height: 1.4;
+}
+.right-nav-list a:hover { background: var(--accent-dim); color: var(--accent-text); }
+.right-nav-list a.active { background: var(--accent-dim); color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+@media (max-width: 1100px) { .right-nav { display: none; } }
+
+/* ── Right Nav JS ── */
+(function(){
+  var main = document.querySelector('main.content');
+  if (!main) return;
+  var h2s = Array.from(main.querySelectorAll('h2'));
+  if (h2s.length < 2) return;
+
+  // Give each h2 a stable id if missing
+  h2s.forEach(function(h2, i){
+    if (!h2.id) h2.id = 'rnav-' + i;
+  });
+
+  // Build nav HTML
+  var nav = document.createElement('nav');
+  nav.className = 'right-nav';
+  nav.setAttribute('aria-label', '頁面大綱');
+  nav.innerHTML =
+    '<div class="right-nav-title">大綱</div>' +
+    '<ul class="right-nav-list">' +
+    h2s.map(function(h){ return '<li><a href="#' + h.id + '">' + h2.textContent.replace(/^[^\s]+\s/, '') + '</a></li>'; }).join('') +
+    '</ul>';
+  document.body.appendChild(nav);
+
+  // Show when ready
+  requestAnimationFrame(function(){ nav.classList.add('visible'); });
+
+  // Smooth scroll on click
+  nav.addEventListener('click', function(e){
+    var a = e.target.closest('a');
+    if (!a) return;
+    e.preventDefault();
+    var id = a.getAttribute('href').slice(1);
+    var target = document.getElementById(id);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // IntersectionObserver for active state
+  var links = nav.querySelectorAll('a');
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) {
+        links.forEach(function(l){ l.classList.remove('active'); });
+        var a = nav.querySelector('a[href="#' + entry.target.id + '"]');
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
+  h2s.forEach(function(h2){ observer.observe(h2); });
+})();
+
