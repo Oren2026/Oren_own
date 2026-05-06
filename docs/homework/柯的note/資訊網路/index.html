@@ -6,10 +6,82 @@
   <title>資訊網路 | 柯的note</title>
   <link rel="stylesheet" href="shared.css">
   <style>
+    /* ── Index 頁專用 ── */
+    :root {
+      --tab-w: 200px;
+    }
+
+    /* 左側 Tab 欄 */
+    .chapter-tabs {
+      width: var(--tab-w);
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1.5px solid var(--border);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 1.25rem 0.75rem;
+    }
+    .chapter-tabs .course-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      padding: 0 0.5rem;
+    }
+    .chapter-tabs .course-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 1rem;
+      padding: 0 0.5rem;
+    }
+    .chapter-tabs .tab-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0.5rem 0;
+    }
+    .chapter-tab {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      margin-bottom: 2px;
+      border: none;
+      background: transparent;
+      text-align: left;
+      width: 100%;
+    }
+    .chapter-tab:hover {
+      background: var(--accent-dim);
+      color: var(--accent-text);
+    }
+    .chapter-tab.active {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* 右側內容區 */
+    .index-content {
+      flex: 1;
+      padding: 2.5rem 2.5rem;
+      overflow-y: auto;
+    }
+
+    /* 頁首 */
     .index-header {
-      padding: 2.5rem 0 1.5rem;
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
       border-bottom: 1.5px solid var(--border);
-      margin-bottom: 1.5rem;
     }
     .index-header .course-tag {
       font-size: 0.75rem;
@@ -20,201 +92,397 @@
       margin-bottom: 0.4rem;
     }
     .index-header h1 {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: 900;
       color: var(--text);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
     }
     .index-header p {
       color: var(--muted);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       margin: 0;
     }
-    .note-list {
+
+    /* 當前章節標題 */
+    .chapter-panel-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+    .chapter-panel-date {
+      font-size: 0.78rem;
+      color: var(--muted-2);
+      margin-bottom: 1.5rem;
+    }
+    .chapter-panel-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    /* 區塊導航（微分頁） */
+    .section-nav {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
     }
-    .note-card {
+    .section-nav-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted-2);
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .section-link {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.55rem 0.85rem;
       background: var(--surface);
       border: 1.5px solid var(--border);
       border-radius: var(--radius);
-      padding: 1rem 1.25rem;
       text-decoration: none;
       color: var(--text);
-      display: block;
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
-    }
-    .note-card:hover {
-      border-color: var(--accent);
-      box-shadow: var(--card-shadow-hover);
-      transform: translateY(-2px);
-    }
-    .note-card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.4rem;
-    }
-    .note-card-title {
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--accent-text);
-    }
-    .note-card-date {
-      font-size: 0.78rem;
-      color: var(--muted-2);
+      font-size: 0.88rem;
       font-weight: 500;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
     }
-    .note-card-desc {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin: 0;
+    .section-link:hover {
+      border-color: var(--accent);
+      box-shadow: var(--card-shadow);
+      transform: translateX(3px);
     }
-    .note-card-tags {
-      display: flex;
-      gap: 0.3rem;
-      margin-top: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .note-tag {
-      font-size: 0.68rem;
-      padding: 0.1rem 0.45rem;
-      border-radius: 20px;
+    .section-link.active {
+      border-color: var(--accent);
       background: var(--accent-dim);
       color: var(--accent-text);
-      font-weight: 600;
+      font-weight: 700;
     }
-    .note-card:hover .note-tag {
-      background: var(--accent);
-      color: white;
+    .section-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 1.8rem;
+    }
+    .section-link:hover .section-num,
+    .section-link.active .section-num {
+      color: var(--accent-text);
+    }
+
+    /* 留言提示 */
+    .update-note {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #f0f4ff;
+      border-radius: 8px;
+      border-left: 4px solid #316cf4;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ── 響應式 ── */
+    @media (max-width: 680px) {
+      body { flex-direction: column; }
+      .chapter-tabs {
+        width: 100%;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1.5px solid var(--border);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        padding: 0.75rem;
+      }
+      .chapter-tabs .course-label,
+      .chapter-tabs .course-title,
+      .chapter-tabs .tab-divider { display: none; }
+      .chapter-tab {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.6rem;
+        margin-bottom: 0;
+      }
+      .index-content { padding: 1.25rem; }
     }
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
-  <nav class="sidebar">
-    <div class="sidebar-course">柯的note</div>
-    <div class="sidebar-title">資訊網路</div>
-    <div class="sidebar-divider"></div>
-    <div class="sidebar-section-label">所有筆記</div>
 
-    <a href="ch1-introduction.html" class="sidebar-link">網路初探</a>
-    <a href="ch2-communication.html" class="sidebar-link">通訊與傳輸</a>
-    <a href="ch3-media-equipment.html" class="sidebar-link">傳輸媒介與配備</a>
-    <a href="ch4-protocol.html" class="sidebar-link">網路協定</a>
-    <a href="ch5-ethernet.html" class="sidebar-link">乙太網路</a>
-    <a href="ch6-tia.html" class="sidebar-link">網路規劃設計</a>
-    <a href="ch7.html" class="sidebar-link">LAN 區域網路</a>
-    <a href="ch8.html" class="sidebar-link">IP 協定</a>
-    <a href="ch9.html" class="sidebar-link">傳輸層協定（TCP/UDP）</a>
-    <a href="ch10.html" class="sidebar-link">第十章（待確認）</a>
-    <a href="ch11.html" class="sidebar-link">第十一章（待確認）</a>
-    <a href="ch12.html" class="sidebar-link">第十二章（待確認）</a>
+  <!-- 左側 Tab 導航 -->
+  <nav class="chapter-tabs">
+    <div class="course-label">柯的note</div>
+    <div class="course-title">📡 資訊網路</div>
+    <div class="tab-divider"></div>
+
+    <button class="chapter-tab active" data-chapter="ch1">CH1 · 網路初探</button>
+    <button class="chapter-tab" data-chapter="ch2">CH2 · 通訊與傳輸</button>
+    <button class="chapter-tab" data-chapter="ch3">CH3 · 傳輸媒介</button>
+    <button class="chapter-tab" data-chapter="ch4">CH4 · 網路協定</button>
+    <button class="chapter-tab" data-chapter="ch5">CH5 · 乙太網路</button>
+    <button class="chapter-tab" data-chapter="ch6">CH6 · 網路規劃</button>
+    <button class="chapter-tab" data-chapter="ch7">CH7 · LAN 區域網路</button>
+    <button class="chapter-tab" data-chapter="ch8">CH8 · IP 協定</button>
+    <button class="chapter-tab" data-chapter="ch9">CH9 · TCP/UDP</button>
   </nav>
 
-  <!-- Main -->
-  <main class="content">
+  <!-- 右側內容 -->
+  <main class="index-content">
+
     <div class="index-header">
       <div class="course-tag">📡 資訊網路</div>
       <h1>課程筆記總覽</h1>
       <p>金門大學資工系 · 授課教師：柯志亨</p>
     </div>
 
-    
-      <a href="ch1-introduction.html" class="note-card">
-        <div class="note-card-top">
-          <span class="note-card-title">CH1 — 網路初探</span>
-          <span class="note-card-date">2026/04/28</span>
-        </div>
-        <p class="note-card-desc">引言、Internet 起源與功能、網路類型（PAN/LAN/MAN/WAN）、網路拓撲、網路作業環境（C/S、P2P）、OSI 七層參考模式總覽</p>
-        <div class="note-card-tags">
-          <span class="note-tag">CH1</span><span class="note-tag">Internet</span><span class="note-tag">拓撲</span><span class="note-tag">OSI</span><span class="note-tag">C/S</span><span class="note-tag">P2P</span>
-        </div>
+    <!-- 各章節內容面板（JS 切換） -->
+    <div id="panel-ch1" class="chapter-panel">
+      <div class="chapter-panel-title">CH1 — 網路初探</div>
+      <div class="chapter-panel-date">2026/04/28</div>
+      <p class="chapter-panel-desc">引言、Internet 起源與功能、網路類型（PAN/LAN/MAN/WAN）、網路拓撲、網路作業環境（C/S、P2P）、OSI 七層參考模式總覽</p>
+      <div class="section-nav">
+        <div class="section-nav-label">章節內容</div>
+        <a href="ch1-introduction.html" class="section-link">
+          <span class="section-num">01</span><span>引言 — 網路是什麼？</span>
+        </a>
+        <a href="ch1-introduction.html" class="section-link">
+          <span class="section-num">02</span><span>何謂 Internet？</span>
+        </a>
+        <a href="ch1-introduction.html" class="section-link">
+          <span class="section-num">03</span><span>Internet 功能與應用</span>
+        </a>
+        <a href="ch1-introduction.html" class="section-link">
+          <span class="section-num">04</span><span>網路類型</span>
+        </a>
+        <a href="ch1-introduction.html" class="section-link">
+          <span class="section-num">05</span><span>網路拓撲（Network Topology）</span>
+        </a>
+        <a href="ch1-introduction.html" class="section-link">
+          <span class="section-num">06</span><span>網路作業環境</span>
+        </a>
+        <a href="ch1-introduction.html" class="section-link">
+          <span class="section-num">07</span><span>OSI 參考模式</span>
+        </a>
+      </div>
+      <a href="ch1-introduction.html" class="section-link active" style="display:inline-flex;margin-top:0.5rem;">
+        <span class="section-num">→</span><span>前往 CH1 完整內容 →</span>
       </a>
-      <a href="ch2-communication.html" class="note-card">
-        <div class="note-card-top">
-          <span class="note-card-title">CH2 — 通訊與傳輸</span>
-          <span class="note-card-date">2026/04/28</span>
-        </div>
-        <p class="note-card-desc">訊號、調變、AM/FM/PM、PCM 脈碼調變、數位編碼、多工處理（FDM/TDM/CDM）、電路/分封/訊息交換、xDSL、FTTx 光纖到府、行動通訊演進</p>
-        <div class="note-card-tags">
-          <span class="note-tag">CH2</span><span class="note-tag">通訊</span><span class="note-tag">調變</span><span class="note-tag">PCM</span><span class="note-tag">DSL</span><span class="note-tag">行動通訊</span>
-        </div>
+    </div>
+
+    <div id="panel-ch2" class="chapter-panel" style="display:none;">
+      <div class="chapter-panel-title">CH2 — 通訊與傳輸</div>
+      <div class="chapter-panel-date">2026/04/28</div>
+      <p class="chapter-panel-desc">訊號、調變、AM/FM/PM、PCM 脈碼調變、數位編碼、多工處理（FDM/TDM/CDM）、電路/分封/訊息交換、xDSL、FTTx 光纖到府、行動通訊演進</p>
+      <div class="section-nav">
+        <div class="section-nav-label">章節內容</div>
+        <a href="ch2-communication.html" class="section-link">
+          <span class="section-num">01</span><span>通訊 fundamental</span>
+        </a>
+        <a href="ch2-communication.html" class="section-link">
+          <span class="section-num">02</span><span>傳輸模式</span>
+        </a>
+        <a href="ch2-communication.html" class="section-link">
+          <span class="section-num">03</span><span>訊號與調變</span>
+        </a>
+        <a href="ch2-communication.html" class="section-link">
+          <span class="section-num">04</span><span>PCM 脈碼調變</span>
+        </a>
+        <a href="ch2-communication.html" class="section-link">
+          <span class="section-num">05</span><span>數位編碼</span>
+        </a>
+        <a href="ch2-communication.html" class="section-link">
+          <span class="section-num">06</span><span>多工處理</span>
+        </a>
+        <a href="ch2-communication.html" class="section-link">
+          <span class="section-num">07</span><span>交換技術</span>
+        </a>
+        <a href="ch2-communication.html" class="section-link">
+          <span class="section-num">08</span><span>xDSL 與 FTTx</span>
+        </a>
+        <a href="ch2-communication.html" class="section-link">
+          <span class="section-num">09</span><span>有線與行動通訊</span>
+        </a>
+      </div>
+      <a href="ch2-communication.html" class="section-link active" style="display:inline-flex;margin-top:0.5rem;">
+        <span class="section-num">→</span><span>前往 CH2 完整內容 →</span>
       </a>
-      <a href="ch3-media-equipment.html" class="note-card">
-        <div class="note-card-top">
-          <span class="note-card-title">CH3 — 傳輸媒介與配備</span>
-          <span class="note-card-date">2026/04/28</span>
-        </div>
-        <p class="note-card-desc">有線傳輸（UTP/STP 同軸電纜 光纖）、無線傳輸（地波 天波 LOS）、連接器（RJ-45 RJ-11 LC ST SC）、網路設備（Modem NIC 中繼器 Hub 橋接器 Switch 路由器 Layer3 Switch Gateway）</p>
-        <div class="note-card-tags">
-          <span class="note-tag">CH3</span><span class="note-tag">傳輸媒介</span><span class="note-tag">光纖</span><span class="note-tag">UTP</span><span class="note-tag">Hub</span><span class="note-tag">Router</span><span class="note-tag">Gateway</span>
-        </div>
+    </div>
+
+    <div id="panel-ch3" class="chapter-panel" style="display:none;">
+      <div class="chapter-panel-title">CH3 — 傳輸媒介與配備</div>
+      <div class="chapter-panel-date">2026/04/28</div>
+      <p class="chapter-panel-desc">有線傳輸（UTP/STP 同軸電纜 光纖）、無線傳輸（地波 天波 LOS）、連接器（RJ-45 RJ-11 LC ST SC）、網路設備（Modem NIC 中繼器 Hub 橋接器 Switch 路由器 Layer3 Switch Gateway）</p>
+      <div class="section-nav">
+        <div class="section-nav-label">章節內容</div>
+        <a href="ch3-media-equipment.html" class="section-link"><span class="section-num">01</span><span>傳輸媒介總覽</span></a>
+        <a href="ch3-media-equipment.html" class="section-link"><span class="section-num">02</span><span>有線傳輸介質</span></a>
+        <a href="ch3-media-equipment.html" class="section-link"><span class="section-num">03</span><span>光纖傳輸</span></a>
+        <a href="ch3-media-equipment.html" class="section-link"><span class="section-num">04</span><span>傳輸效能与損耗</span></a>
+        <a href="ch3-media-equipment.html" class="section-link"><span class="section-num">05</span><span>網路連接器與纜線標準</span></a>
+        <a href="ch3-media-equipment.html" class="section-link"><span class="section-num">06</span><span>網路設備（中繼器/Hub/橋接器/Switch）</span></a>
+        <a href="ch3-media-equipment.html" class="section-link"><span class="section-num">07</span><span>路由器與 Gateway</span></a>
+      </div>
+      <a href="ch3-media-equipment.html" class="section-link active" style="display:inline-flex;margin-top:0.5rem;">
+        <span class="section-num">→</span><span>前往 CH3 完整內容 →</span>
       </a>
-      <a href="ch4-protocol.html" class="note-card">
-        <div class="note-card-top">
-          <span class="note-card-title">CH4 — 網路協定</span>
-          <span class="note-card-date">2026/04/28</span>
-        </div>
-        <p class="note-card-desc">國際標準機構、OSI 總覽、各層詳細說明、TCP/IP 協定組、IETF/IRTF、RFC 文件、常見協定對照表</p>
-        <div class="note-card-tags">
-          <span class="note-tag">CH4</span><span class="note-tag">Protocol</span><span class="note-tag">OSI</span><span class="note-tag">IETF</span><span class="note-tag">RFC</span>
-        </div>
+    </div>
+
+    <div id="panel-ch4" class="chapter-panel" style="display:none;">
+      <div class="chapter-panel-title">CH4 — 網路協定</div>
+      <div class="chapter-panel-date">2026/04/28</div>
+      <p class="chapter-panel-desc">國際標準機構、OSI 總覽、各層詳細說明、TCP/IP 協定組、IETF/IRTF、RFC 文件、常見協定對照表</p>
+      <div class="section-nav">
+        <div class="section-nav-label">章節內容</div>
+        <a href="ch4-protocol.html" class="section-link"><span class="section-num">01</span><span>標準機構</span></a>
+        <a href="ch4-protocol.html" class="section-link"><span class="section-num">02</span><span>OSI 七層總覽</span></a>
+        <a href="ch4-protocol.html" class="section-link"><span class="section-num">03</span><span>實體層</span></a>
+        <a href="ch4-protocol.html" class="section-link"><span class="section-num">04</span><span>資料鏈結層</span></a>
+        <a href="ch4-protocol.html" class="section-link"><span class="section-num">05</span><span>網路層</span></a>
+        <a href="ch4-protocol.html" class="section-link"><span class="section-num">06</span><span>傳輸層</span></a>
+        <a href="ch4-protocol.html" class="section-link"><span class="section-num">07</span><span>會議/展示/應用層</span></a>
+        <a href="ch4-protocol.html" class="section-link"><span class="section-num">08</span><span>TCP/IP 與 RFC</span></a>
+      </div>
+      <a href="ch4-protocol.html" class="section-link active" style="display:inline-flex;margin-top:0.5rem;">
+        <span class="section-num">→</span><span>前往 CH4 完整內容 →</span>
       </a>
-      <a href="ch5-ethernet.html" class="note-card">
-        <div class="note-card-top">
-          <span class="note-card-title">CH5 — 乙太網路</span>
-          <span class="note-card-date">2026/05/05</span>
-        </div>
-        <p class="note-card-desc">乙太網路沿革與分類、乙太網路標準比較表、RJ-45 接頭製作與接線方式、Auto MDI-X、超高速乙太網路 (Gigabit/SFP)、無線網路 (LoRa/802.11/藍牙/ZigBee)、Ad Hoc 與 Infrastructure 架設模式</p>
-        <div class="note-card-tags">
-          <span class="note-tag">CH5</span><span class="note-tag">Ethernet</span><span class="note-tag">RJ-45</span><span class="note-tag">802.11</span><span class="note-tag">Wi-Fi</span><span class="note-tag">Gigabit</span>
-        </div>
+    </div>
+
+    <div id="panel-ch5" class="chapter-panel" style="display:none;">
+      <div class="chapter-panel-title">CH5 — 乙太網路</div>
+      <div class="chapter-panel-date">2026/05/05</div>
+      <p class="chapter-panel-desc">乙太網路沿革與分類、乙太網路標準比較表、RJ-45 接頭製作與接線方式、Auto MDI-X、超高速乙太網路 (Gigabit/SFP)、無線網路 (LoRa/802.11/藍牙/ZigBee)、Ad Hoc 與 Infrastructure 架設模式</p>
+      <div class="section-nav">
+        <div class="section-nav-label">章節內容</div>
+        <a href="ch5-ethernet.html" class="section-link"><span class="section-num">01</span><span>前言</span></a>
+        <a href="ch5-ethernet.html" class="section-link"><span class="section-num">02</span><span>乙太網路簡介</span></a>
+        <a href="ch5-ethernet.html" class="section-link"><span class="section-num">03</span><span>乙太網路分類</span></a>
+        <a href="ch5-ethernet.html" class="section-link"><span class="section-num">04</span><span>乙太網路標準表</span></a>
+        <a href="ch5-ethernet.html" class="section-link"><span class="section-num">05</span><span>RJ-45 與接線標準</span></a>
+        <a href="ch5-ethernet.html" class="section-link"><span class="section-num">06</span><span>超高速乙太網路</span></a>
+        <a href="ch5-ethernet.html" class="section-link"><span class="section-num">07</span><span>光纖與 SFP</span></a>
+        <a href="ch5-ethernet.html" class="section-link"><span class="section-num">08</span><span>無線網路</span></a>
+        <a href="ch5-ethernet.html" class="section-link"><span class="section-num">09</span><span>Ad Hoc 與 AP 模式</span></a>
+      </div>
+      <a href="ch5-ethernet.html" class="section-link active" style="display:inline-flex;margin-top:0.5rem;">
+        <span class="section-num">→</span><span>前往 CH5 完整內容 →</span>
       </a>
-      <a href="ch6-tia.html" class="note-card">
-        <div class="note-card-top">
-          <span class="note-card-title">CH6 — 網路規劃設計</span>
-          <span class="note-card-date">2026/05/05</span>
-        </div>
-        <p class="note-card-desc">TIA/EIA 結構化佈線六大子系統、水平/機房/骨幹佈線規範、MDF 與 IDF、UPS、集中式與分散式佈線、網路規劃步驟、校園網路實例研討</p>
-        <div class="note-card-tags">
-          <span class="note-tag">CH6</span><span class="note-tag">TIA/EIA</span><span class="note-tag">結構化佈線</span><span class="note-tag">MDF/IDF</span><span class="note-tag">骨幹佈線</span><span class="note-tag">UPS</span>
-        </div>
+    </div>
+
+    <div id="panel-ch6" class="chapter-panel" style="display:none;">
+      <div class="chapter-panel-title">CH6 — 網路規劃設計</div>
+      <div class="chapter-panel-date">2026/05/05</div>
+      <p class="chapter-panel-desc">TIA/EIA 結構化佈線六大子系統、水平/機房/骨幹佈線規範、MDF 與 IDF、UPS、集中式與分散式佈線、網路規劃步驟、校園網路實例研討</p>
+      <div class="section-nav">
+        <div class="section-nav-label">章節內容</div>
+        <a href="ch6-tia.html" class="section-link"><span class="section-num">01</span><span>TIA/EIA 結構化佈線</span></a>
+        <a href="ch6-tia.html" class="section-link"><span class="section-num">02</span><span>六大子系統</span></a>
+        <a href="ch6-tia.html" class="section-link"><span class="section-num">03</span><span>水平/機房/骨幹佈線</span></a>
+        <a href="ch6-tia.html" class="section-link"><span class="section-num">04</span><span>MDF 與 IDF</span></a>
+        <a href="ch6-tia.html" class="section-link"><span class="section-num">05</span><span>UPS 與電源備援</span></a>
+        <a href="ch6-tia.html" class="section-link"><span class="section-num">06</span><span>集中式與分散式佈線</span></a>
+        <a href="ch6-tia.html" class="section-link"><span class="section-num">07</span><span>網路規劃步驟</span></a>
+      </div>
+      <a href="ch6-tia.html" class="section-link active" style="display:inline-flex;margin-top:0.5rem;">
+        <span class="section-num">→</span><span>前往 CH6 完整內容 →</span>
       </a>
-      <a href="ch7.html" class="note-card">
-        <div class="note-card-top">
-          <span class="note-card-title">CH7 — LAN 區域網路</span>
-          <span class="note-card-date">2026/05/05</span>
-        </div>
-        <p class="note-card-desc">IEEE802 委員會、各工作群組、乙太網路協定（CSMA/CD）、訊框格式（Preamble/MAC/Etype/FCS）、交換式乙太網路（碰撞網域/廣播網域）、5-4 法則、100M/1G/10G 乙太網路探討、802.11 無線網路（DCF/PCF/CSMA/CA/RTS-CTS/NAV）</p>
-        <div class="note-card-tags">
-          <span class="note-tag">CH7</span><span class="note-tag">IEEE802</span><span class="note-tag">CSMA/CD</span><span class="note-tag">MAC</span><span class="note-tag">訊框格式</span><span class="note-tag">交換式</span><span class="note-tag">802.11</span><span class="note-tag">CSMA/CA</span>
-        </div>
+    </div>
+
+    <div id="panel-ch7" class="chapter-panel" style="display:none;">
+      <div class="chapter-panel-title">CH7 — LAN 區域網路</div>
+      <div class="chapter-panel-date">2026/05/05</div>
+      <p class="chapter-panel-desc">IEEE802 委員會、各工作群組、乙太網路協定（CSMA/CD）、訊框格式（Preamble/MAC/Etype/FCS）、交換式乙太網路（碰撞網域/廣播網域）、5-4 法則、100M/1G/10G 乙太網路探討、802.11 無線網路（DCF/PCF/CSMA/CA/RTS-CTS/NAV）</p>
+      <div class="section-nav">
+        <div class="section-nav-label">章節內容</div>
+        <a href="ch7.html" class="section-link"><span class="section-num">01</span><span>IEEE 802 委員會</span></a>
+        <a href="ch7.html" class="section-link"><span class="section-num">02</span><span>乙太網路 CSMA/CD</span></a>
+        <a href="ch7.html" class="section-link"><span class="section-num">03</span><span>訊框格式</span></a>
+        <a href="ch7.html" class="section-link"><span class="section-num">04</span><span>交換式乙太網路</span></a>
+        <a href="ch7.html" class="section-link"><span class="section-num">05</span><span>5-4 法則</span></a>
+        <a href="ch7.html" class="section-link"><span class="section-num">06</span><span>802.11 無線網路</span></a>
+      </div>
+      <a href="ch7.html" class="section-link active" style="display:inline-flex;margin-top:0.5rem;">
+        <span class="section-num">→</span><span>前往 CH7 完整內容 →</span>
       </a>
-      <a href="ch8.html" class="note-card">
-        <div class="note-card-top">
-          <span class="note-card-title">CH8 — IP 協定</span>
-          <span class="note-card-date">待確認</span>
-        </div>
-        <p class="note-card-desc">IPv4 位址（A/B/C/D/E 類）、網路遮罩、子網路規劃、CIDR、保留位址（私人/Loopback）、DHCP 動態設定、DNS 網域名稱系統、IP 標頭欄位詳解、IP 選項（Record Route/Source Routing/Timestamp）、IPv6 與 IPv4 差異、IPv6 標頭與傳播方式</p>
-        <div class="note-card-tags">
-          <span class="note-tag">CH8</span><span class="note-tag">IPv4</span><span class="note-tag">IPv6</span><span class="note-tag">IP</span><span class="note-tag">DHCP</span><span class="note-tag">DNS</span><span class="note-tag">CIDR</span><span class="note-tag">子網路</span><span class="note-tag">NAT</span>
-        </div>
+    </div>
+
+    <div id="panel-ch8" class="chapter-panel" style="display:none;">
+      <div class="chapter-panel-title">CH8 — IP 協定</div>
+      <div class="chapter-panel-date">2026/05/05</div>
+      <p class="chapter-panel-desc">IPv4 位址（A/B/C/D/E 類）、網路遮罩、子網路規劃、CIDR、保留位址（私人/Loopback）、DHCP 動態設定、DNS 網域名稱系統、IP 標頭欄位詳解、IP 選項、IPv6 與 IPv4 差異、IPv6 標頭與傳播方式</p>
+      <div class="section-nav">
+        <div class="section-nav-label">章節內容</div>
+        <a href="ch8.html" class="section-link"><span class="section-num">02</span><span>IPv4 簡介</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">03</span><span>IP 位址分類</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">04</span><span>網路遮罩</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">05</span><span>子網路規劃</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">06</span><span>CIDR</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">07</span><span>保留位址</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">08</span><span>DHCP</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">09</span><span>DNS</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">10</span><span>IP 標頭</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">11</span><span>IP 選擇項</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">12</span><span>IPv6 簡介</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">13</span><span>IPv6 位址結構</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">15</span><span>IPv6 標頭</span></a>
+        <a href="ch8.html" class="section-link"><span class="section-num">16</span><span>結語</span></a>
+      </div>
+      <a href="ch8.html" class="section-link active" style="display:inline-flex;margin-top:0.5rem;">
+        <span class="section-num">→</span><span>前往 CH8 完整內容 →</span>
       </a>
-      <a href="ch9.html" class="note-card">
-        <div class="note-card-top">
-          <span class="note-card-title">CH9 — 傳輸層協定（TCP/UDP）</span>
-          <span class="note-card-date">待確認</span>
-        </div>
-        <p class="note-card-desc">傳輸層角色、埠編號（Well-known/Random Port）、UDP 協定（不可靠、無連線）、TCP 協定（可靠、連線導向）、序列號碼、回應號碼、緩衝區、滑動訊窗、TCP 標頭欄位、控制旗標（SYN/ACK/FIN/RST）、三向交握、四向終止、TCP 選擇項（MSS/SACK）</p>
-        <div class="note-card-tags">
-          <span class="note-tag">CH9</span><span class="note-tag">TCP</span><span class="note-tag">UDP</span><span class="note-tag">埠編號</span><span class="note-tag">滑動訊窗</span><span class="note-tag">SACK</span>
-        </div>
+    </div>
+
+    <div id="panel-ch9" class="chapter-panel" style="display:none;">
+      <div class="chapter-panel-title">CH9 — 傳輸層協定（TCP/UDP）</div>
+      <div class="chapter-panel-date">2026/05/06</div>
+      <p class="chapter-panel-desc">傳輸層角色、埠編號（Well-known/Random Port）、UDP 協定、TCP 協定（可靠、連線導向）、序列號碼、滑動訊窗、TCP 標頭欄位、控制旗標（SYN/ACK/FIN/RST）、三向交握、四向終止、TCP 選擇項（MSS/SACK）</p>
+      <div class="section-nav">
+        <div class="section-nav-label">章節內容</div>
+        <a href="ch9.html" class="section-link"><span class="section-num">01</span><span>傳輸層簡介</span></a>
+        <a href="ch9.html" class="section-link"><span class="section-num">02</span><span>埠編號</span></a>
+        <a href="ch9.html" class="section-link"><span class="section-num">03</span><span>UDP 協定</span></a>
+        <a href="ch9.html" class="section-link"><span class="section-num">04</span><span>TCP 序列號碼</span></a>
+        <a href="ch9.html" class="section-link"><span class="section-num">05</span><span>滑動訊窗</span></a>
+        <a href="ch9.html" class="section-link"><span class="section-num">06</span><span>TCP 標頭欄位</span></a>
+        <a href="ch9.html" class="section-link"><span class="section-num">07</span><span>TCP 連線管理</span></a>
+        <a href="ch9.html" class="section-link"><span class="section-num">08</span><span>TCP 選擇項</span></a>
+      </div>
+      <a href="ch9.html" class="section-link active" style="display:inline-flex;margin-top:0.5rem;">
+        <span class="section-num">→</span><span>前往 CH9 完整內容 →</span>
       </a>
-     padding:1rem; background:#f0f4ff; border-radius:8px; border-left:4px solid #316cf4; font-size:0.88rem; color:var(--muted);">
+    </div>
+
+    <div class="update-note">
       💡 筆記陸續新增中。老師內容有疑問或想補充的地方，隨時跟我說。
     </div>
+
   </main>
+
+  <script>
+    // Tab 切換邏輯
+    const tabs = document.querySelectorAll('.chapter-tab');
+    const panels = document.querySelectorAll('.chapter-panel');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const ch = tab.dataset.chapter;
+
+        // 切換 tab active 狀態
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        // 切換面板
+        panels.forEach(p => {
+          p.style.display = p.id === 'panel-' + ch ? 'block' : 'none';
+        });
+
+        // 滾到頂部
+        document.querySelector('.index-content').scrollTop = 0;
+      });
+    });
+  </script>
+
 </body>
 </html>

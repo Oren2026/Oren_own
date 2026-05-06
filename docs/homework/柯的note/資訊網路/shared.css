@@ -292,11 +292,6 @@ pre code {
   content: '💡 ';
   font-size: 0.85rem;
 }
-.highlight-box ul,
-.highlight-box ol {
-  /* 禁止 highlight-box 內嵌清單——請改用 concept-card */
-  display: none;
-}
 
 /* ── Two Column Grid ── */
 .two-col-grid {
@@ -404,7 +399,78 @@ pre code {
   background: var(--accent-dim);
 }
 
-/* ── Bare h2 section separation (s7~s16) ── */
+/* ── TOC Grid（CH8/CH9 大綱）── */
+.toc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.toc-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+  padding: 0.3rem 0;
+  border-bottom: 1px dashed var(--border);
+}
+.toc-item:last-child { border-bottom: none; }
+.toc-num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 1.5rem;
+}
+
+/* ── IP 彩色標籤（CH8）── */
+.ip-block {
+  border-radius: var(--radius);
+  padding: 0.35rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: inline-block;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+.ip-block.ipv4 { background: #eff6ff; color: #1a56db; }
+.ip-block.ipv6 { background: #ecfeff; color: #0e7490; }
+
+/* ── Header Diagram（CH8/CH9 深色程式碼區塊）── */
+.header-diagram {
+  background: #1e2530;
+  color: #c9d1d9;
+  border-radius: var(--radius);
+  padding: 1.1rem 1.4rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  line-height: 1.8;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+.header-diagram .field { color: #79c0ff; }
+.header-diagram .bits { color: #8b949e; }
+.header-diagram .note { color: #7ee787; }
+
+/* ── Formula（CH8 內聯公式）── */
+code.formula,
+span.formula {
+  font-family: 'Courier New', monospace;
+  background: var(--code-bg);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.88em;
+  color: var(--accent-text);
+}
+
+/* ── IPv6 Section（左側紫色豎線）── */
+.ipv6-section {
+  border-left: 4px solid #0e7490;
+  padding-left: 1rem;
+  margin-left: 0.5rem;
+}
+
+/* ── Section Separation ── */
 .content > h2 {
   padding-bottom: 0.6rem;
   margin-bottom: 1.25rem;

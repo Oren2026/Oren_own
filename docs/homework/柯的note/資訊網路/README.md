@@ -103,21 +103,42 @@ docs/homework/柯志亨的筆記天地/資訊網路/
 | 待確認章節 | `<span class="sidebar-link stub">第九章（待確認）</span>` |
 
 ### 內容區塊類別（`shared.css`）
-| 類別 | 用途 |
-|------|------|
-| `.highlight-box` | 投影片內容（預設灰底橘框） |
-| `.concept-card` | 大綱 grid 卡片 |
-| `.layer-card` | 協定/階層卡片（藍色左框） |
-| `.compare-table` | 比較表格（表頭藍底） |
-| `.note-header` | 頁首（日期+標題+標籤） |
-| `.note-footer` | 頁尾 |
-| `.note-tag` | 標籤（圓角藍底） |
+| 類別 | 用途 | 適用時機 |
+|------|------|---------|
+| `.highlight-box` | 投影片內容框（💡 符號） | OCR 原文、老師口語補充、重點摘錄。可包 `<ul>/<ol>` |
+| `.concept-card` | 概念卡片 | 定義、列表型內容（特點、功能、版本比較） |
+| `.layer-card` | 協定/階層卡片（藍色左框） | 有編號/名稱/描述的階層結構（標頭欄位說明、MDF/IDF 系統） |
+| `.compare-table` | 比較表格（表頭藍底） | A/B/C 類比較、欄位對照、規格表 |
+| `.header-diagram` | 深色程式碼區塊 | IP/TCP/UDP 標頭結構圖、FQDN 分解圖。**不要**用在一般教學內容 |
+| `.toc-grid` + `.toc-item` | 大綱格狀列表 | 章節開頭的閱讀地圖，每項含編號圓點 |
+| `.ip-block` | 彩色小標籤 | `[IPv4]` `[IPv6]` 放在章節標題旁，標示內容類別 |
+| `.ipv6-section` | 左側紫色豎線 | IPv6 專用區塊，與 IPv4 內容做視覺區隔 |
+| `.two-col-grid` | 雙欄格狀佈局 | 兩個等寬並排的元素（常配合 concept-card 使用） |
+| `.question-section` | 問題區（漸層底） | 章節結尾的練習題或反思問題 |
+| `.formula` | 公式內嵌 | IP 運算、CIDR 計算等公式 |
+
+### 語義對照表（什麼情況用什麼）
+
+```
+教學內容（OCR 原文、投影片摘要）  → highlight-box（可包 ul/ol）
+定義 + 列表（特性說明、比較）     → concept-card
+編號結構（標頭欄位、系統階層）    → layer-card
+數據對照（A/B/C 類、版本差異）    → compare-table
+規格文件（IP 標頭、欄位結構）     → header-diagram（深色底）
+閱讀地圖（章節大綱）             → toc-grid + toc-item
+內容類別標記（IPv4/IPv6）        → ip-block
+大範圍內容切換（IPv4 vs IPv6）   → ipv6-section（左豎線）
+雙欄並排佈局                     → two-col-grid
+結語問題                        → question-section
+```
 
 ### 禁止事項
 - ❌ 不要在章節 HTML 裡寫 `<style>` 覆寫全域樣式
 - ❌ 不要用 `<ul>/<li>` 包 sidebar 連結
 - ❌ 不要用 inline `style="position:fixed"` 改變佈局
+- ❌ `header-diagram` **不要**用在一般文字說明，只用在結構圖（標頭、格式）
 - ✅ body 已是 `display:flex`，直接用 `.sidebar` + `.content` 雙欄
+- ✅ highlight-box 可包 `<ul>/<ol>`（已還原）
 
 ---
 
