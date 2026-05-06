@@ -45,7 +45,7 @@
 
     <!-- 大綱 -->
     <h2>📋 大綱</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+    <div class="two-col-grid">
       <div class="concept-card">
         <div class="concept-card-title">🔷 前言</div>
         <div class="concept-card-desc">「架設」→「規劃」的延伸學習</div>
@@ -75,9 +75,7 @@
     <!-- 前言 -->
     <section id="intro">
       <h2>🔷 前言</h2>
-      <div class="highlight-box">
-        第五章「架設」的延伸，進入第六章「規劃」的學習。
-      </div>
+      <div class="highlight-box">第五章「架設」的延伸，進入第六章「規劃」的學習。</div>
     </section>
 
     <!-- TIA/EIA 結構化佈線標準 -->
@@ -85,7 +83,7 @@
       <h2>🏗️ TIA/EIA 結構化佈線標準</h2>
 
       <h3>六大子系統</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+      <div class="two-col-grid">
         <div class="concept-card">
           <div class="concept-card-title">1｜出入口設施</div>
           <div class="concept-card-desc">Entrance Facilities：外部配線與內部主幹間連線，POD 連接點</div>
@@ -113,8 +111,9 @@
       </div>
 
       <h3>1｜出入口設施 (Entrance Facilities)</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🚪 POP 連接點</div>
+        <ul>
           <li>外部配線與內部主幹間的連線</li>
           <li>電信公司的紅線連接點</li>
           <li>POP (Point of Presence)：整體連接架構的重心</li>
@@ -122,16 +121,18 @@
       </div>
 
       <h3>2｜機房室 (Equipment Room)</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🗄️ 機房設備</div>
+        <ul>
           <li>重要設備：機架櫃、數據機、交換器、路由器等</li>
           <li>機房室大小依服務區間大小而異，小型建築物一棟樓只配備一個機房</li>
         </ul>
       </div>
 
       <h3>3｜骨幹纜線 (Backbone Cabling)</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🔗 垂直纜線</div>
+        <ul>
           <li>又稱「垂直纜線」(Vertical Cabling)</li>
           <li>用於：入口設施與機房室、不同建築物間、不同樓層間</li>
           <li>屬於重要的連線架構，一般採用較好材質纜線</li>
@@ -139,8 +140,9 @@
       </div>
 
       <h3>4｜配線機架櫃</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">📦 19 吋標準</div>
+        <ul>
           <li>1940 年代後，機櫃常採用 19 吋寬度作標準</li>
           <li>高度以 1.75 吋為一個單位 (1U)</li>
           <li>常見設備：配線盤 (Patch Panel)、集線器等</li>
@@ -151,16 +153,18 @@
       <p>配線盤到資訊插座間的連接纜線。打線工具用於切線、切斷、切齊。</p>
 
       <h3>6｜工作區間 (Work Area)</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">💻 工作區間</div>
+        <ul>
           <li>資訊插座到工作電腦平台間連線</li>
           <li>可運用現成纜線連接，省去製作纜線的工作</li>
         </ul>
       </div>
 
       <h3>結構化設計規劃的優點</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">✅ 結構化佈線的價值</div>
+        <ul>
           <li>為每個部分作明確的定義</li>
           <li>對整體架構設計相當重要</li>
           <li>提供規劃一個依循的準則</li>
@@ -173,10 +177,10 @@
       <h2>📏 1｜水平佈線規範</h2>
 
       <h3>纜線架設方式</h3>
-      <div class="highlight-box">
-        直接由工作電腦平台連接一條纜線與集線器相連，是比較偷懶的方式。<br><br>
-        依循 TIA/EIA 規範需區隔成三個部分：
-        <ul style="margin:0.5rem 0 0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🔧 TIA/EIA 90m / 3m / 6m 規範</div>
+        <p>直接由工作電腦平台連接一條纜線與集線器相連，是比較偷懶的方式。依循 TIA/EIA 規範需區隔成三個部分：</p>
+        <ul>
           <li><strong>水平纜線：</strong>不超過 90 公尺</li>
           <li><strong>工作區間：</strong>不超過 3 公尺</li>
           <li><strong>合計（水平+工作區間+電信連接）：</strong>不超過 6 公尺</li>
@@ -184,8 +188,9 @@
       </div>
 
       <h3>纜線管理</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🏷️ 纜線標記與管理</div>
+        <ul>
           <li>小架構可運用連接頭護套顏色做管理</li>
           <li>以合宜的連接點編號作標記（房間號碼等具意義序號較理想）</li>
         </ul>
@@ -197,8 +202,9 @@
       <h2>🗄️ 2｜機房室的佈置與規範</h2>
 
       <h3>機房設備</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">⚙️ 機房必備元件</div>
+        <ul>
           <li>網路通訊器材、機架櫃</li>
           <li>不斷電系統 (UPS；Uninterruptible Power Supply)</li>
           <li>配線架、集線器、交換器、路由器</li>
@@ -207,16 +213,21 @@
       </div>
 
       <h3>MDF 與 IDF</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
-          <li><strong>MDF</strong> (Main Distribution Facility)：主機房室</li>
-          <li><strong>IDF</strong> (Intermediate Distribution Facility)：中介機房室</li>
-        </ul>
+      <div class="layer-card">
+        <div class="layer-card-num">主機房與中介機房</div>
+        <div class="layer-card-name">MDF 與 IDF 的差異</div>
+        <div class="layer-card-desc">
+          <ul>
+            <li><strong>MDF</strong> (Main Distribution Facility)：主機房室</li>
+            <li><strong>IDF</strong> (Intermediate Distribution Facility)：中介機房室</li>
+          </ul>
+        </div>
       </div>
 
       <h3>主機房室 (MDF) 位置選擇</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">📍 MDF 選址原則</div>
+        <ul>
           <li>同棟建築物：選在較底層，方便與 POP 一起運作</li>
           <li>高樓層建築：考慮配置在中間樓層位置</li>
           <li>數棟建築物：選擇在中間位置的大樓作架構</li>
@@ -224,8 +235,9 @@
       </div>
 
       <h3>中介機房室 (IDF)</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🔄 IDF 設置要點</div>
+        <ul>
           <li>主要透過水平纜線與工作節點作連接</li>
           <li>每層樓有主機房或至少一間中介機房</li>
           <li>每 1000 平方公尺考慮配置一間中介機房</li>
@@ -238,20 +250,21 @@
       <h2>🔗 3｜骨幹佈線規範</h2>
 
       <h3>骨幹佈線四大型態</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🔗 骨幹佈線類型</div>
+        <ul>
           <li>大樓樓層間的垂直纜線佈置 (Vertical Cabling)</li>
           <li>大樓與大樓之間的連線</li>
           <li>機房室與機房室之間的連線</li>
           <li>跳線配線連接</li>
         </ul>
-        <br>
-        佈線材料：以單模光纖、多模光纖、UTP 與 STP 為主；同軸電纜也可用，但 TIA/EIA 標準不推薦。
+        <p>佈線材料：以單模光纖、多模光纖、UTP 與 STP 為主；同軸電纜也可用，但 TIA/EIA 標準不推薦。</p>
       </div>
 
       <h3>不同建築物間的骨幹佈置</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🏢 跨建築骨幹考量</div>
+        <ul>
           <li>以光纖建置居多（距離較遠）</li>
           <li>不同的接地參考點</li>
           <li>防雷擊、防電磁干擾、防潮以及防竊取</li>
@@ -259,22 +272,26 @@
       </div>
 
       <h3>中介跳線配接 (ICC)</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
-          <li><strong>ICC</strong> (Intermediate Cross-Connect)</li>
-          <li><strong>MCC</strong> (Main Cross-Connect)：主跳線配接</li>
-          <li><strong>HCC</strong> (Horizontal Cross-Connect)：水平跳線配接</li>
-        </ul>
+      <div class="layer-card">
+        <div class="layer-card-num">跳線配接類型</div>
+        <div class="layer-card-name">ICC / MCC / HCC</div>
+        <div class="layer-card-desc">
+          <ul>
+            <li><strong>ICC</strong> (Intermediate Cross-Connect)</li>
+            <li><strong>MCC</strong> (Main Cross-Connect)：主跳線配接</li>
+            <li><strong>HCC</strong> (Horizontal Cross-Connect)：水平跳線配接</li>
+          </ul>
+        </div>
       </div>
 
       <h3>集中式 vs 分散式佈線</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="two-col-grid">
         <div class="concept-card">
-          <div class="concept-card-title">集中式佈線</div>
+          <div class="concept-card-title">🏠 集中式佈線</div>
           <div class="concept-card-desc">所有纜線集中由中央機房向外佈署，適合小型或中等規模建築</div>
         </div>
         <div class="concept-card">
-          <div class="concept-card-title">分散式佈線</div>
+          <div class="concept-card-title">🏬 分散式佈線</div>
           <div class="concept-card-desc">各樓層/區域有自己的 IDF，適合大型或多棟建築物</div>
         </div>
       </div>
@@ -285,10 +302,10 @@
       <h2>📐 網路的規劃與步驟</h2>
 
       <h3>規劃四大階段</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
+      <div class="two-col-grid">
         <div class="concept-card">
           <div class="concept-card-title">📋 設計前研究</div>
-          <div class="concept-card-desc">人、時、事、地、物的週全規劃</div>
+          <div class="concept-card-desc">人、時，事、地、物的週全規劃</div>
         </div>
         <div class="concept-card">
           <div class="concept-card-title">⚙️ 配備選擇與架構設計</div>
@@ -305,8 +322,9 @@
       </div>
 
       <h3>配備選擇與架構設計需考慮</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">❓ 規劃前自檢清單</div>
+        <ul>
           <li>頻寬的需求有多大？</li>
           <li>使用者需要什麼樣的軟體？</li>
           <li>未來幾年內需求是否會變更？</li>
@@ -335,8 +353,9 @@
       </table>
 
       <h3>校園設施範例</h3>
-      <div class="highlight-box">
-        <ul style="margin:0;">
+      <div class="concept-card">
+        <div class="concept-card-title">🏫 校園設施分布</div>
+        <ul>
           <li>地下一樓：撞球場、藝術中庭、圖書館</li>
           <li>迎賓大廳、車道出入口</li>
           <li>藝術流泉</li>
@@ -345,9 +364,15 @@
       </div>
     </section>
 
+    <!-- 問題與討論 -->
+    <div class="question-section">
+      <h2>📝 問題與討論</h2>
+      <p>關鍵字｜填充題｜選擇題｜問答題</p>
+    </div>
+
     <footer class="note-footer">
       <span>📖 柯的note — 資訊網路</span>
-      <a href="index.html" style="color:var(--accent);">← 返回總覽</a>
+      <span>CH6 · 2026/05/06</span>
     </footer>
 
   </main>
