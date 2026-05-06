@@ -1,0 +1,18 @@
+自律系統
+
+AS ; Autonomous System
+>以16位元的AS編碼 (AS Number) 進行辦識
+>因應網路快速發展需3
+QQ開始分配32位元的AS編碼
+寢合灣網際網路交換中心 (http://www.twix.net)
+「成員資訊」
+
+TANet       1659                HiNet      i       3462
+政府網路        4782                遠傳電信        4780
+精誠資訊          4783              是方電訊          17408
+台灣固網           9924               亞太線上           17709
+Google            15169               TWNIC           131621
+
+BRS
+
+Mr和tt          > Re RBA

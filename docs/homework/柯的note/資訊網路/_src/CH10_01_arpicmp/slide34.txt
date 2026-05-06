@@ -1,0 +1,30 @@
+訊息無法抵達封包實例解析
+
+所33 Ok 140.134.37.77 204.71.200.243 ICMP Type-Echo Request, ID-512, Seq No=29952 110 0
+I-40 Ok 140.126.250.254 140.134.37.77 ICMP ‘Type-Time Exceeded for a Datagram,Code~-    :
+
+kg 3- Destination Unreachable
+
+Bcode: 3 - Port Unreacheble
+Bchecksum: 027104
+‘B unused (MBZ): Ox0000-0000
+B<Internet Header + 64 bits of datagram>: (28 bytes)
+BVersion(MSB 4 bits): 4
+BHeader length(LS8 4 bits): 5 (32-bit word)
+@ DB Service type: Precd-Routine,Delay-Normal ,Thrput-Normal ,Reli-Normal
+BTotal length: 76 (octets)
+ByFragment ID: 33303
+wD Flags: May be fragmonted.Lest fragment Offset=0 (0x00)
+BTime to live: 125 seconds’hops
+Bip protocol type: UDP (0x11)
+Bchecksum: 0x8621
+@IP address 140.134.37.77 ->140.128.247.18
+BNo option
+B 64 bits of Datagram: (6 bytes)
+0x317dec81
+
+0000000: 00 50 ba 00 95 09 00 90 2b 7c 64 00 0B OO 45 cl
+00 38 74 99 00 00 fa 01 09 05 8c 80 £7 12 8c 66
+
+0 00 00
+

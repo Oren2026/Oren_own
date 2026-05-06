@@ -1,0 +1,24 @@
+RARP機制 (1/2)
+歸來源端知道自己MAC位址,不知道IP位址
+字運作RARP機制來尋找IP位址
+>必需倚賴RARP伺服器執行查詢工作
+© BS Ey 受有磁碟機或終端機的場合
+>電腦沒有硬碟機,無法進行PP位址儲存
+
+RARP 伺服器
+
+140.134,36.100
+MAC Address           MAC Address                  MAC Address           MAC Address
+‘4C-54-20-32-4A-7B 02-06-20-86-45-A2-85        02-07-C8-54-87-E6 00-C4-E3-50-94-93
+
+一一一一一一
+
+MAC Address                MAC Address                MAC Address
+44B-20-32-54-4A-4F [69-4E-2E-7B-FD-D3 08-76-45-9F-2D-E6
+
+a «@ @
+
+Bet]                                                                                         BURR
+
+Ce ce ok poe |
+

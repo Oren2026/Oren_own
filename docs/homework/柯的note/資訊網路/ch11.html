@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH11 — 路由與尋徑 | 柯的note</title>
+  <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">資訊網路</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有筆記</div>
+
+    <a href="ch1-introduction.html" class="sidebar-link">網路初探</a>
+    <a href="ch2-communication.html" class="sidebar-link">通訊與傳輸</a>
+    <a href="ch3-media-equipment.html" class="sidebar-link">傳輸媒介與配備</a>
+    <a href="ch4-protocol.html" class="sidebar-link">網路協定</a>
+    <a href="ch5-ethernet.html" class="sidebar-link">乙太網路</a>
+    <a href="ch6-tia.html" class="sidebar-link">網路規劃設計</a>
+    <a href="ch7.html" class="sidebar-link">LAN 區域網路</a>
+    <a href="ch8.html" class="sidebar-link">IP 協定</a>
+    <a href="ch9.html" class="sidebar-link">傳輸層協定（TCP/UDP）</a>
+    <a href="ch10.html" class="sidebar-link">ARP · RARP · ICMP</a>
+    <a href="ch11.html" class="sidebar-link active">路由與尋徑</a>
+    <a href="ch12.html" class="sidebar-link">第十二章（待確認）</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+
+    <!-- Note Header -->
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH11 — 路由與尋徑</h1>
+      <div class="note-tags">
+        <span class="note-tag">Router</span>
+        <span class="note-tag">Routing</span>
+        <span class="note-tag">RIP</span>
+        <span class="note-tag">OSPF</span>
+        <span class="note-tag">BGP</span>
+        <span class="note-tag">自治系統</span>
+      </div>
+    </header>
+
+    <!-- ══════════════════════════════════════
+         大綱（TOC）
+    ══════════════════════════════════════ -->
+    <section>
+      <h2>📋 大綱</h2>
+      <div class="toc-grid">
+        <div class="toc-item"><span class="toc-num">2</span><span>靜態尋徑與動態尋徑</span></div>
+        <div class="toc-item"><span class="toc-num">3</span><span>距離向量法（DV）— RIP</span></div>
+        <div class="toc-item"><span class="toc-num">4</span><span>連線狀態法（LS）— OSPF</span></div>
+        <div class="toc-item"><span class="toc-num">5</span><span>混合式尋徑 — EIGRP / IS-IS</span></div>
+        <div class="toc-item"><span class="toc-num">6</span><span>尋徑問題與解決方式</span></div>
+        <div class="toc-item"><span class="toc-num">7</span><span>自律系統（AS）</span></div>
+        <div class="toc-item"><span class="toc-num">8</span><span>內部與外部尋徑協定</span></div>
+        <div class="toc-item"><span class="toc-num">9</span><span>RIP 1.0 / 2.0</span></div>
+        <div class="toc-item"><span class="toc-num">10</span><span>OSPF 與外部閘道器協定</span></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         2｜簡介
+    ══════════════════════════════════════ -->
+    <section id="s2">
+      <h2>📡 2｜簡介</h2>
+
+      <div class="layer-card">
+        <div class="layer-card-num">尋徑三元素</div>
+        <div class="layer-card-name">Router · Route · Routing Table</div>
+        <div class="layer-card-desc">
+          路由器（Router）依據內部記憶體的<strong>尋徑表（Routing Table）</strong>，
+          運用<strong>尋徑協定（Routing Protocol）</strong>，
+          在來源端與目的端之間進行路徑（Route）的尋徑（Routing）工作。
+        </div>
+      </div>
+
+      <h3>路徑距離的量測方式</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">簡單距離量測</div>
+        <ul>
+          <li>以<strong>行經節點數（Hops）</strong>為唯一考量</li>
+          <li>方式簡單，但數值不夠嚴謹</li>
+        </ul>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">綜合性路徑距離</div>
+        <ul>
+          <li>時間延遲（Propagation Delay）</li>
+          <li>頻寬（Bandwidth）</li>
+          <li>負載（Loading）</li>
+          <li>可靠度（Reliability）</li>
+          <li>路程計數（Hop Count）</li>
+          <li>時脈計數（Tic Count）</li>
+          <li>相對價格（Relative Cost）</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         3｜靜態尋徑與動態尋徑
+    ══════════════════════════════════════ -->
+    <section id="s3">
+      <h2>📡 3｜靜態尋徑與動動尋徑</h2>
+
+      <h3>靜態尋徑</h3>
+      <div class="highlight-box">
+        機制比較簡單，以<strong>人工方式輸入</strong>，缺乏彈性。適合系統不大、架構固定的環境。<br>
+        例如：Windows 中 TCP/IP 內容的「預設閘道」設定。
+      </div>
+
+      <h3>動態尋徑</h3>
+      <div class="highlight-box">
+        在路由器間進行路徑資訊交換。大部分網路系統採用動態尋徑方式。
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">依機制交換訊息時機的不同，分為三類</div>
+        <table class="compare-table" style="margin-top:0.5rem;">
+          <tr><th>類型</th><th>說明</th><th>範例</th></tr>
+          <tr><td>距離向量法（Distance Vector）</td><td>定期交換完整尋徑表</td><td>RIP</td></tr>
+          <tr><td>連線狀態法（Link State）</td><td>拓撲變動時才更新</td><td>OSPF</td></tr>
+          <tr><td>混合尋徑（Hybrid Routing）</td><td>結合 DV 與 LS 優點</td><td>EIGRP</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         4｜距離向量法（DV）
+    ══════════════════════════════════════ -->
+    <section id="s4">
+      <h2>📡 4｜距離向量法（DV）</h2>
+
+      <h3>優點</h3>
+      <div class="layer-card">
+        <ul>
+          <li>設定方式簡單，耗費資源低</li>
+          <li>路由器可以專心進行封包傳送工作</li>
+        </ul>
+      </div>
+
+      <h3>缺點</h3>
+      <div class="layer-card">
+        <ul>
+          <li>網路規模大時，拓撲資訊交換增加網路負荷</li>
+          <li>路徑資訊交換需要相當時間才能完成</li>
+          <li>只掌握鄰接路由器，資訊掌握有限</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         5｜連線狀態法（LS）
+    ══════════════════════════════════════ -->
+    <section id="s5">
+      <h2>📡 5｜連線狀態法（LS）</h2>
+
+      <div class="highlight-box">
+        運用<strong>連線狀態宣傳（LSA；Link-State Advertisement）</strong>機制，
+        以<strong>泛播（Flooding）</strong>將路徑訊息傳送到所有路由器。
+      </div>
+
+      <h3>最短路徑優先樹（SPF）</h3>
+      <div class="layer-card">
+        <div class="layer-card-num">Shortest Path First</div>
+        <div class="layer-card-name">以自己為根節點（Root）計算最佳路徑</div>
+        <div class="layer-card-desc">
+          拓撲資料庫 → 最短路徑優先樹 → 尋徑表
+        </div>
+      </div>
+
+      <h3>優點</h3>
+      <div class="layer-card">
+        <ul>
+          <li>只有拓撲變動時，才進行資訊更新</li>
+          <li>不像距離向量法耗費太多時間作定期更新</li>
+        </ul>
+      </div>
+
+      <h3>缺點</h3>
+      <div class="layer-card">
+        <ul>
+          <li>機制複雜，需較多記憶體與處理器資源</li>
+          <li>網路運作之初，需耗費大量通訊頻寬</li>
+        </ul>
+      </div>
+
+      <h3>距離向量法 vs 連線狀態法</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">兩者比較</div>
+        <table class="compare-table" style="margin-top:0.5rem;">
+          <tr><th>項目</th><th>距離向量法（DV）</th><th>連線狀態法（LS）</th></tr>
+          <tr><td>拓撲資訊</td><td>由相鄰路由器的觀點得知網路拓撲</td><td>藉由共通方式得知整體網路拓撲</td></tr>
+          <tr><td>計算方式</td><td>以路由器連接路由器的方式增加距離向量</td><td>計算到其他路由器的最短路徑</td></tr>
+          <tr><td>更新時機</td><td>經常的、周期性更新</td><td>事件發生時才更新</td></tr>
+          <tr><td>收斂速度</td><td>慢</td><td>快</td></tr>
+          <tr><td>傳遞內容</td><td>傳遞整個尋徑表至相鄰的路由器</td><td>傳遞尋徑更新資料至其他路由器</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         6｜混合式尋徑
+    ══════════════════════════════════════ -->
+    <section id="s6">
+      <h2>📡 6｜混合式尋徑</h2>
+
+      <div class="highlight-box">
+        結合距離向量與連線狀態尋徑協定的優點。
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">混合原則</div>
+        <ul>
+          <li>距離向量：建立到其他網路最佳路徑的路徑表</li>
+          <li>連線狀態：路徑狀況改變時才更新</li>
+        </ul>
+      </div>
+
+      <h3>常見混合式尋徑協定</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">IS-IS 與 EIGRP</div>
+        <table class="compare-table" style="margin-top:0.5rem;">
+          <tr><th>協定</th><th>全名</th><th>說明</th></tr>
+          <tr><td>IS-IS</td><td>Intermediate System-to-Intermediate System</td><td>OSI 標準</td></tr>
+          <tr><td>EIGRP</td><td>Enhanced Interior Gateway Routing Protocol</td><td>Cisco 專有</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         7｜尋徑問題與解決方式
+    ══════════════════════════════════════ -->
+    <section id="s7">
+      <h2>📡 7｜尋徑問題與解決方式</h2>
+
+      <div class="concept-card">
+        <div class="concept-card-title">四大問題與對應解法</div>
+        <table class="compare-table" style="margin-top:0.5rem;">
+          <tr><th>問題</th><th>說明</th><th>解決方式</th></tr>
+          <tr><td>迴圈問題（Routing Loop）</td><td>封包在網路中循環</td><td>定義最大數值</td></tr>
+          <tr><td>無窮計數（Count to Infinity）</td><td>距離數值不斷增加</td><td>分離界線</td></tr>
+          <tr><td>計時裝置</td><td>等待資訊更新的時間問題</td><td>設定合理計時</td></tr>
+          <tr><td>更新延遲</td><td>收斂太慢導致迴圈</td><td>觸發更新（Triggered Update）</td></tr>
+        </table>
+      </div>
+
+      <h3>解決方法 1：定義最大數值</h3>
+      <div class="layer-card">
+        <div class="layer-card-num">以 RIP 為例</div>
+        <div class="layer-card-desc">
+          Hop Count 最大為 <strong>15</strong>，16 即視為網路無法到達。
+          防止無窮計數問題。
+        </div>
+      </div>
+
+      <h3>解決方法 2：分離界線（Split Horizon）</h3>
+      <div class="layer-card">
+        <div class="layer-card-desc">
+          不將從某路由器學來的資訊再傳回去給該路由器，
+          避免造成資訊來回反覆計算。
+        </div>
+      </div>
+
+      <h3>解決方法 3：計時裝置</h3>
+      <div class="layer-card">
+        <div class="layer-card-desc">
+          設定合理的等待時間，避免因單一訊息延遲而做出錯誤判斷。
+        </div>
+      </div>
+
+      <h3>解決方法 4：觸發更新（Triggered Update）</h3>
+      <div class="layer-card">
+        <div class="layer-card-num">加速收斂</div>
+        <div class="layer-card-desc">
+          路徑發生變化時，馬上送出路由更新資訊，
+          不等下次定期更新時間，加速收斂速度，避免迴圈產生。
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         8｜自律系統（AS）
+    ══════════════════════════════════════ -->
+    <section id="s8">
+      <h2>📡 8｜自律系統（AS）</h2>
+
+      <div class="highlight-box">
+        <strong>AS（Autonomous System）</strong>以 16 位元的<strong>AS 編碼（AS Number）</strong>進行辨識。<br>
+        因應網路快速發展，現已開始分配 32 位元的 AS 編碼。
+      </div>
+
+      <h3>台灣 AS 範例</h3>
+      <div class="concept-card">
+        <table class="compare-table">
+          <tr><th>單位</th><th>AS Number</th></tr>
+          <tr><td>TANet（台灣學術網路）</td><td>1659</td></tr>
+          <tr><td>HiNet（中華電信）</td><td>3462</td></tr>
+          <tr><td>政府網路</td><td>4782</td></tr>
+          <tr><td>遠傳電信</td><td>4780</td></tr>
+          <tr><td>精誠資訊</td><td>4783</td></tr>
+          <tr><td>是方電訊</td><td>17408</td></tr>
+          <tr><td>台灣固網</td><td>（待確認）</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         9｜內部與外部尋徑協定
+    ══════════════════════════════════════ -->
+    <section id="s9">
+      <h2>📡 9｜內部與外部尋徑協定</h2>
+
+      <div class="concept-card">
+        <div class="concept-card-title">兩種協定的範疇</div>
+        <table class="compare-table" style="margin-top:0.5rem;">
+          <tr><th>類型</th><th>全名</th><th>範例</th></tr>
+          <tr><td>內部尋徑協定</td><td>Interior Routing Protocol</td><td>RIP、OSPF、IGRP、EIGRP</td></tr>
+          <tr><td>外部尋徑協定</td><td>Exterior Routing Protocol</td><td>BGP、EGP</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         10｜RIP
+    ══════════════════════════════════════ -->
+    <section id="s10">
+      <h2>📡 10｜RIP（Routing Information Protocol）</h2>
+
+      <div class="highlight-box">
+        <strong>距離向量</strong>、<strong>內部</strong>尋徑協定。最普遍的內部尋徑協定。
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">特性</div>
+        <ul>
+          <li>以<strong>路程數（Hop Count）</strong>為距離單位</li>
+          <li>距離最大數設為 <strong>15</strong>（16 = 無法到達）</li>
+          <li>每 <strong>30 秒</strong>對相鄰路由器執行路徑交換</li>
+          <li>180 秒未更新：標記為無效</li>
+          <li>270 秒未更新：從尋徑表中刪除</li>
+        </ul>
+      </div>
+
+      <h3>RIP 1.0 與 2.0 比較</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">RIP 2.0 在 1.0 基礎上的改進</div>
+        <table class="compare-table" style="margin-top:0.5rem;">
+          <tr><th>項目</th><th>RIP 1.0</th><th>RIP 2.0</th></tr>
+          <tr><td>傳送方式</td><td>廣播（Broadcast）</td><td>群播（Multicasting）</td></tr>
+          <tr><td>認證</td><td>無</td><td>支援認證密碼</td></tr>
+          <tr><td>區域觀念</td><td>無</td><td>運用區域（Area）概念，多個邏輯獨立的 RIP 尋徑網域</td></tr>
+          <tr><td>外部路徑標籤</td><td>無</td><td>支援 Route Tag</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         11｜OSPF
+    ══════════════════════════════════════ -->
+    <section id="s11">
+      <h2>📡 11｜OSPF（Open Shortest Path First）</h2>
+
+      <div class="highlight-box">
+        <strong>連線狀態</strong>、<strong>內部</strong>尋徑協定。
+        適合大型網路尋徑工作。
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">特性</div>
+        <ul>
+          <li>距離資訊：頻寬、可靠度、延遲</li>
+          <li>具<strong>區域（Area）觀念</strong>，將連續的路由器統稱為一個區域</li>
+          <li>區域內部拓撲變化資訊在區域內部被吸收</li>
+          <li>區域外的路由資訊，各路由器無從得知</li>
+        </ul>
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">最短路徑優先樹</div>
+        <div class="layer-card-desc">
+          以自己為根節點（Root），計算到其他網路的最短路徑。
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         12｜EGP 與 BGP
+    ══════════════════════════════════════ -->
+    <section id="s12">
+      <h2>📡 12｜EGP 與 BGP</h2>
+
+      <h3>EGP（Exterior Gateway Protocol）</h3>
+      <div class="highlight-box">
+        <strong>最早期、唯一的外部尋徑協定</strong>。所有 AS 都直接連上 ARPANet 骨幹的協定。
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">限制</div>
+        <ul>
+          <li>每 30 秒對相鄰路由器進行訊息傳送</li>
+          <li>每 120 秒將尋徑表傳給相鄰路由器</li>
+          <li>不適合現今龐大網路環境的尋徑表</li>
+          <li>不適合現今複雜多重的 Internet 環境</li>
+        </ul>
+      </div>
+
+      <h3>BGP（Border Gateway Protocol）</h3>
+      <div class="highlight-box">
+        外部尋徑工作：改良 EGP，適用於大型網路。
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">BGP 特色</div>
+        <ul>
+          <li>透過 <strong>TCP</strong> 傳送，封包不致於遺失</li>
+          <li>廢棄核心概念，支援網路多重路徑</li>
+          <li>建立一份經過的<strong>自律系統名單</strong>，可偵測迴圈是否存在</li>
+          <li>若同一個 AS 編號出現兩次，代表有迴圈</li>
+          <li>可過濾特殊路徑，支援 <strong>Weight</strong> 概念</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 問題與討論 -->
+    <div class="question-section">
+      <h2>📝 問題與討論</h2>
+      <p>關鍵字｜填充題｜選擇題｜問答題</p>
+    </div>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — 資訊網路</span>
+      <span>CH11 · 2026/05/07</span>
+    </footer>
+
+  </main>
+  <script src="right-nav.js"></script>
+</body>
+</html>

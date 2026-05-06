@@ -1,0 +1,9 @@
+寢類型欄位
+>回聲回覆:0, 回聲請求:8
+寢無內容選項,內容代碼欄位:0
+寢識別碼 (Identifier)
+字序列碼 (Sequence Number)
+寢附加資料
+>ping指令封包附帶32位元組資料:abc....uvwabec...
+
+Sa ee Pee pee fl

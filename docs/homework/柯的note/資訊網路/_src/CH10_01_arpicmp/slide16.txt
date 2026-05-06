@@ -1,0 +1,11 @@
+欄位定義 (3/3)
+
+Target HA (Target Hardware Address)
+>目的端硬體位址
+>ARP請求時
+OTarget HA 欄位值 00-00-00-00-00-00
+Q資料連結層目的端位址:FF-FF-FF-FF-FF-FF
+«Target LP (Target Logical Protocol)
+>目的端的邏輯位址
+
+ee er te re

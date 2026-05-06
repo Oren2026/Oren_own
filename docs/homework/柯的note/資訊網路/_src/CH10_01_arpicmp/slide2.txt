@@ -1,0 +1,18 @@
+Ait
+
+* ARP 機制
+> ARP (Address Resolution Protocol ; 位址解析協定)
+*RARP 機制
+
+>RARP (Reversed Address Resolution Protocol ;
+反向位址解析協定)
+
+寢ICMP 機制
+
+>ICMP (Internet Control Message Protocol ; 網際網
+路控制訊息協定)
+字問題與討論
+
+BRS
+
+a ce ok pe |

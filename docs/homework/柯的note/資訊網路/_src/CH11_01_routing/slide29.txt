@@ -1,0 +1,17 @@
+內部尋徑協定與外部尋徑協定
+
+字內部尋徑協定:lnterior Routing Protocol
+>Ex:RIP \ OSPF \ IGRP \ EIGRP
+
+字外部尋徑協定:Exterior Routing Protocol
+
+>Ex: BGP、ˋ、EGP
+
+外部尋徑協定
+BGP、EGP
+
+內部尋徑協定
+自律系統 |         NP Skeid?        自律系統
+BARR
+
+a ce ok pe |

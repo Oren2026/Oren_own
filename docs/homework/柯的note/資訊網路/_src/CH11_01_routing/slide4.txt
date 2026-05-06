@@ -1,0 +1,18 @@
+路徑距離
+字距離 (Distance)
+
+>並非實際的長度量測距離
+
+寢簡單的距離量測
+>單純以行經節點數為唯一考量: 路程 (Hop)
+>方式簡單,但不嚴謹
+
+寢綜合性路徑距離
+> 時間延遲 (Propagation Delay)
+> 頻寬 (Bandwidth)
+> 負載 (Loading)
+> 可靠度(Reliability)
+> 路程計數 (Hop Count)
+> 時脈計數(Tic Count)
+> 相對價格(Relative Cost)                            pan
+

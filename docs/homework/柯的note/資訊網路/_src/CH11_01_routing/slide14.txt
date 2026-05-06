@@ -1,0 +1,13 @@
+2. 連線狀態尋徑協定
+字運用連線狀態宣傳 (LSA ; Link-State
+
+Advertisement) 機制泛播 (Flooding) 將路
+徑訊息傳送到所有路由器
+
+最短路徑演算法 (SPF ; Shortest Path First)
+以自己為根節點 (Root) 計算最佳路徑
+
+拓撲資料庫                         最短路徑優先樹                             尋徑表
+
+Niele acai lt se網路
+

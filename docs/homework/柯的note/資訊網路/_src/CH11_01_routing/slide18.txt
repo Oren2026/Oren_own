@@ -1,0 +1,22 @@
+to
+
+>a
+
+3. 混合式尋徑協定架構
+距離向量與連線狀態尋徑協定優點
+
+E離向量:建立到
+
+的網路最佳路徑的路徑表
+
+>連線狀態:路徑狀況改變時才更新
+
+寢常見協定
+>OSI的IS-lS
+
+Olntermediate System-to-Intermediate System
+
+>Cisco的EIGRP
+0Enhanced Interior Gateway Routing Protocol
+
+ee er te re

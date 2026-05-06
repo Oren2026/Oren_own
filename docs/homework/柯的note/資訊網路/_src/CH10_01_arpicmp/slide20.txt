@@ -1,0 +1,18 @@
+ICMP訊息
+
+0 |.                 回聲回覆(Echo Reply)                 Ley
+S|      目的端無法抵達(Destination Unreachable)     I        [
+4    i            來源端抑制(Source Quench)        i   V
+535 1               路徑重新定向(Redirect)               I        Lv
+8     i                回聲請求(Echo Request)   之   )
+11    i             傳輸逾時(Time Exceeded)             |        I   Vv
+12    i           參數問題(Parameter Problem)           i        I   V/V
+13    I            時戳請求(Timestamp Request)            1   S   I
+14    i            時截回覆(Timestamp Reply)            i   Vv   j
+15    !         位址資訊請求(Information Request)         I   Vv   I
+16     !            (itt Bei GA (Information Reply)            {   V   i
+cm        {TILE SB SSR (Address Mask Request)       iva
+18         {TtIESE 8 © (Address Mask Reply)         —   Wal
+
+Bh oi Wael lsc’ etd dog
+

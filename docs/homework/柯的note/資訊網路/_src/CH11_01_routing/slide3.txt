@@ -1,0 +1,16 @@
+簡介
+
+字尋徑協定(Routing Protocol)
+> #8 (Router)
+
+= 78 (Route)
+
+= 23 {& (Routing)
+
+信尋徑表 (Routing Table)
+
+字路由器(Router) 依據內部記憶體的尋徑表
+(Routing Table) 運用尋徑協定(Routing
+Protocol) 在來源端與目的端之間進行路徑
+(Route) 的尋徑 (Routing) 工作
+

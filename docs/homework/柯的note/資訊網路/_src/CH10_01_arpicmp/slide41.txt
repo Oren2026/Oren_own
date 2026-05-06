@@ -1,0 +1,25 @@
+fess KARO
+>以ms(毫秒)為單位,依格林威治時間為準
+
+> §S Bia k/ Gl (Timestamp Request/Reply)
+> ICMP 48 2! 13/14 (Type 13/14) 訊息:查詢訊息
+
+> PASS BCE AB
+
+>測量訊號在#
+
+機間的傳
+
+>查詢網路某#
+
+,主要功能為
+>在網路主機間進行系統
+
+峙間同步調整」
+
+上作
+
+輸延遲
+fal
+
+BES

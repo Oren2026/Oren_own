@@ -1,0 +1,8 @@
+Destination Unreachable
+
+<ICMP類型3 (Type 3) 訊息
+>屬於ICMP錯誤訊息封包
+無法抵達目的節點原因有16種情況
+
+>以內容代碼欄位值0~15進行描述
+

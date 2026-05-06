@@ -1,0 +1,130 @@
+> S ARE
+
+Tracing route to yahoo.com [204.
+
+ARSE
+
+通過程ˋ路徑與回應時程等
+
+over a maximum of 30 hops:
+
+15
+
+1
+
+4
+702
+888
+1978
+1081
+1150
+*
+882
+1059
+1053
+1262
+
+982
+
+ms
+ms
+ms
+ms
+ms
+
+ms
+ms
+
+ms
+ms
+ms
+ms
+
+ms
+
+2
+
+4
+559
+898
+844
+980
+1122
+
+1257
+
+999
+*
+
+*
+*
+1048
+989
+
+Trace complete.
+
+Mr和tt
+
+ms
+ms
+ms
+ms
+ms
+ms
+ms
+
+ms
+ms
+
+ms
+ms
+
+228
+935
+
+940
+1059
+1164
+
+1112
+1198
+
+1068
+
+ms
+ms
+ms
+ms
+
+ms
+
+ms
+ms
+
+71.200.245)]
+
+140.134.37.254
+hestia.fcu.edu.tw [140.134.6.253]
+140.128.247.18
+
+140.128.250.254
+
+TANet-defaultgateway.edu.tw [203.72.38.101]
+TANet-Internet.edu.tw [210.70.55.2]
+12.127.196.201
+
+gbr2-a30s2.sffca.ip.att.net [12.127.1.154]
+garl-p370.sffca.ip.att.net [12.123.13.61]
+12.127.201.14
+
+pos4-3-155M.cr2.SNV.gblx.net [206.132.150.242]
+gel-0-1000M.hr8.SNV.gblx.net [206.132.254.41]
+basir-ge3-0-hr8.snv.yahoo.com [208.178.103.62]
+yahoo.com [204.71.200.245]
+
+yahoo.com [204.71.200.245]
+
+BRS
+
+ IS BRA
+

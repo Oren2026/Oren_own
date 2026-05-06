@@ -1,0 +1,22 @@
+RIP1.0、ˋ2.0
+
+寢RIP含1.0與2.0版本
+*RIP2.0
+
+>RIP 1.0原來功能
+
+>RIP2運用群播 (Multicasting) 方式傳送
+ORIP1採用廣播方式傳送
+
+> AGES MESES oS
+
+>運用區域 (Area) 概念,讓同一網路系統使用多
+個邏輯獨立的RIP尋徑網域
+
+>外部路徑標籤(Route Tag)
+>認證密碼
+
+a ce ok pe |
+
+BRS
+

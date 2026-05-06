@@ -1,0 +1,13 @@
+欄位定義 (2/3)
+
+Operation (16位元) : 操作型態
+>ARP請求 (ARP Request) : 1
+>ARP回覆 (ARP Reply) : 2
+>RARP請求 (RARP Request) : 3
+>RARP回覆 (RARP Reply) : 4
+«Sender HA (Sender Hardware Address)
+>發送端硬體位址
+«Sender LP (Sender Logical Protocol)
+> SE 5 lina SETH
+
+BRS

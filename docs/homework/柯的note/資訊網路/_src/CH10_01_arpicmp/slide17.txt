@@ -1,0 +1,49 @@
+封包範例
+
+36 Ok 140.134.232.38 140.134.232.255 SMB      ae Sub-Write_Mailslot
+
+37 OK 140-134-232. 38 140, 134.232, 255 Net Bios NS C-Nane Que:
+
+fF'39 Ok 140. 134.232.19 /140.156.254.255 NotBios-NS C-Nano Query~ Question Type-NB,Class=IK 100 0: 圖
+<I                                                             |              圖
+89 Ethernet Version II
+
+(BaAddress: 4C-54-2D-32-4A-4F --->FF-FF-FF-FF-FF-FF
+
+Ethernet II Protocol Type: ARP
+© Y Address Resolution Protocol!
+
+‘Hardware Type: 1 (Ethernet)
+
+BProtocol Type: 800
+
+Sjxordware Address Length: 6
+
+QProtocol Address Length: 4
+
+{3 Operations: ARP Request
+
+QSource Hardware Address: 4C-54-2D-32-4A-4F
+
+SJIP Source Address: 140.134.232.17
+
+destination Hardware Address: 00-00-00-00-00-00
+
+QUIP Destination Address: 140.134.232.38
+
+data 0000: 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 |
+
+3B    0010: 20 20                                 I
+
+@) Sliced Packet( Data Length = 60)
+
+|00000000: ff ff ff ff ff ff 4c 54 2d 32
+
+4f 08 06 OO Oi)
+日                           4f Gc 86 e8 11 |
+00000020: 00 00 00 00 00 00 8c 86 e8 26 20 20 20 20 20 20 |
+looo00030: 20 20 20 20 20 20 20 20 20 20 20 20            |
+
+BRS
+
+Mr和tt           » SR BRA

@@ -1,0 +1,16 @@
+動態尋徑
+>在路徑器間進行路徑資訊交換
+~大部分網路系統採用動態尋徑方式
+
+寢依機制交換訊息時機的不同 > DA
+>距離向量法 (Distance Vector)
+0範例 : RIP
+>連線狀態法 (Link State)
+0範例: OSPF
+>混合尋徑 (Hybird Routing)
+
+Q9距離向量法與連線狀態法的結合
+O86) : EIGRP
+
+a ce ok pe |
+

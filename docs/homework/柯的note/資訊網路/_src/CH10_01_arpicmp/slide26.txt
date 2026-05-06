@@ -1,0 +1,19 @@
+同   atin o ibe
+
+Pinging 204.71.200.243 with 32 bytes of data:
+
+Reply from 204.71.200.243: bytes=32 time=945msTTL=242
+Reply from 204.71.200.243: bytes=32 time=964ms TTL=242
+
+Request timed out.
+Reply from 204.71.200.243: bytes=32 time=840ms TTL=242
+
+Ping statistics for 204.71.200.243:
+
+Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+Minimum = 840ms, Maximum = 964ms, Average = 687ms
+
+BRS
+
+Meer ee ee      $B BBA
