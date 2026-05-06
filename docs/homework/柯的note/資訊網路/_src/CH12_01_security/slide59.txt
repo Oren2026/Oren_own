@@ -1,0 +1,16 @@
+|     Part Il :駭客其他入侵方式
+
+my)
+
+2.密碼破解
+
+APES
+4.阻斷服務 (DoS)
+5.網路釣魚 (Phishing)
+
+6.網址嫁接(Pharming)
+7.ARP欺騙 (ARP Spoofing)
+
+8.32 線劫持 ees 3100 Hijacking)
+
+© HEH AS BR A

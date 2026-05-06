@@ -1,0 +1,17 @@
+對象、方式、策略
+71. 網路威謂對象 2. 網路威田的方式
+
+>身份                  >資料自改
+.                     >身份冒用
+“3. ae A       和         >系統入侵
+Wie (Firewa          惡意破壞
+>加密 (Encryption)        nee
+
+> sRze (Authentication)
+
+>入侵偵測系統 (IDS)
+
+Olntrusion Detection
+
+es eT ee |
+

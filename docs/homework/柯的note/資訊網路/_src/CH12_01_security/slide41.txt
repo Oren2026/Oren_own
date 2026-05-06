@@ -1,0 +1,16 @@
+數位憑證
+
+= Digital Certificate
+
+寢公鑰要在何處取得 ? 要  Cr
+如何證明公鑰所有者 ?       —
+
+PEALE 認證機 構
+(Certification Authority ;
+CA) 執行認證工作
+
+人如同網路身份證
+
+ARR
+
+a es |

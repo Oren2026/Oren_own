@@ -1,0 +1,13 @@
+4. 阻斷服務(DoS)
+
+字破壞原本提供服務的主機,使之無法提供正
+常運作 (DoS ; Denialof Service)
+
+寢阻斷服務的方式
+
+> BLE iti ya (Syn Flood)
+
+>碰撞死結 (Ping of Death)
+>分散式阻斷服務 (DDoS)
+>實體阻斷
+

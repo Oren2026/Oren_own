@@ -1,0 +1,17 @@
+啟動溢滿
+SRW AMT CP HIRED RMA GRE
+
+Seq ?X,Syn
+
+攻擊者
+
+Seq:Y
+
+時           之後,攻擊者不回應
+使 TCP 連線未完成
+
+BRS
+
+ IS BRA
+
+Mr和tt

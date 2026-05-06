@@ -1,0 +1,10 @@
+公開金鑰密碼系統 (1/3)
+寢1976年由Diffie與Hellman提出
+#1978 MIT = jy & 3 Rivest. Shamir 2%
+
+Adleman共同發表RSA演算法正式將此演算
+法實現
+
+BRS
+
+Mr Ed還             > SBR BRE

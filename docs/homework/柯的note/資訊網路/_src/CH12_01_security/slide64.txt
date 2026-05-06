@@ -1,0 +1,24 @@
+碰撞死結 (Ping of Death)
+
+發送ICMP的蔬
+
+攻擊
+
+>每次查詢送
+
+目標主機
+
+統保留的空間不大
+
+字攻擊者利用
+包中,
+
+{SP SE a hs Yon aE HBR
+
+應請求 (Echo Request) 封包
+出的資料不多 (ping:32 Bytes) , 系
+
+這項弱點,將大量資料包含在封
+
+目標主機
+

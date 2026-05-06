@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH12 — 網路安全 | 柯的note</title>
+  <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">資訊網路</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有筆記</div>
+
+    <a href="ch1-introduction.html" class="sidebar-link">網路初探</a>
+    <a href="ch2-communication.html" class="sidebar-link">通訊與傳輸</a>
+    <a href="ch3-media-equipment.html" class="sidebar-link">傳輸媒介與配備</a>
+    <a href="ch4-protocol.html" class="sidebar-link">網路協定</a>
+    <a href="ch5-ethernet.html" class="sidebar-link">乙太網路</a>
+    <a href="ch6-tia.html" class="sidebar-link">網路規劃設計</a>
+    <a href="ch7.html" class="sidebar-link">LAN 區域網路</a>
+    <a href="ch8.html" class="sidebar-link">IP 協定</a>
+    <a href="ch9.html" class="sidebar-link">傳輸層協定（TCP/UDP）</a>
+    <a href="ch10.html" class="sidebar-link">ARP · RARP · ICMP</a>
+    <a href="ch11.html" class="sidebar-link">路由與尋徑</a>
+    <a href="ch12.html" class="sidebar-link active">網路安全</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+
+    <!-- Note Header -->
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH12 — 網路安全</h1>
+      <div class="note-tags">
+        <span class="note-tag">Firewall</span>
+        <span class="note-tag">加密</span>
+        <span class="note-tag">IDS</span>
+        <span class="note-tag">CIA</span>
+        <span class="note-tag">數位簽章</span>
+        <span class="note-tag">駭客</span>
+      </div>
+    </header>
+
+    <!-- ══════════════════════════════════════
+         大綱（TOC）
+    ══════════════════════════════════════ -->
+    <section>
+      <h2>📋 大綱</h2>
+      <div class="toc-grid">
+        <div class="toc-item"><span class="toc-num">2</span><span>簡介 — CIA 目標、資訊安全範圍</span></div>
+        <div class="toc-item"><span class="toc-num">3</span><span>防火牆 — 封包過濾式 vs 應用閘道式</span></div>
+        <div class="toc-item"><span class="toc-num">4</span><span>加密要件 — 私密性、完整性、不可否認性</span></div>
+        <div class="toc-item"><span class="toc-num">5</span><span>秘密金鑰 vs 公開金鑰密碼系統</span></div>
+        <div class="toc-item"><span class="toc-num">6</span><span>雜湊函數 — MD5、SHA 與訊息摘要</span></div>
+        <div class="toc-item"><span class="toc-num">7</span><span>認證機制 — 數位簽章與數位憑證</span></div>
+        <div class="toc-item"><span class="toc-num">8</span><span>入侵偵測系統 — 主機型 vs 網路型</span></div>
+        <div class="toc-item"><span class="toc-num">9</span><span>駭客入侵手法 — 8 種類型</span></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         2｜簡介
+    ══════════════════════════════════════ -->
+    <section id="s2">
+      <h2>📡 2｜簡介</h2>
+
+      <div class="layer-card">
+        <div class="layer-card-num">資訊安全的目標（CIA）</div>
+        <div class="layer-card-name">機密性 · 完整性 · 可用性</div>
+        <div class="layer-card-desc">
+          如同保險櫃：<strong>資訊系統</strong>＝保險櫃本身，<strong>內容</strong>＝保險內容。
+          理想的資訊安全機制，讓使用者享受網路便利，同時阻絕非法存取。
+        </div>
+      </div>
+
+      <h3>資訊安全成因（依序）</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">主要威脅來源</div>
+        <ul>
+          <li>1. 網路　2. 火災　3. 地震　4. 人員操作不良　5. 實體</li>
+          <li>6. 資訊犯罪　7. 電力　8. 雷擊　9. 軟體</li>
+        </ul>
+      </div>
+
+      <h3>資訊安全範圍</h3>
+      <div class="concept-card">
+        <table class="compare-table">
+          <tr><th>領域</th><th>說明</th></tr>
+          <tr><td>實體安全</td><td>實體設備的保護與備份</td></tr>
+          <tr><td>軟體安全</td><td>作業系統與應用程式的安全性</td></tr>
+          <tr><td>資料安全</td><td>資料的加密與存取控制</td></tr>
+          <tr><td>系統安全</td><td>伺服器與網路設備的防護</td></tr>
+          <tr><td>網路安全</td><td>防火牆、入侵偵測、加密傳輸</td></tr>
+        </table>
+      </div>
+
+      <h3>網路安全的三大對象與策略</h3>
+      <div class="layer-card">
+        <div class="layer-card-num">對象</div>
+        <ul>
+          <li>身份（Identity）</li>
+          <li>資料（Data）</li>
+          <li>系統（System）</li>
+        </ul>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">方式</div>
+        <ul>
+          <li>資料竄改（Data Modification）</li>
+          <li>身份冒用（Identity Impersonation）</li>
+          <li>系統入侵（System Intrusion）</li>
+          <li>惡意破壞（Malicious Damage）</li>
+        </ul>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">策略</div>
+        <ul>
+          <li>防火牆（Firewall）</li>
+          <li>加密（Encryption）</li>
+          <li>認證（Authentication）</li>
+          <li>入侵偵測系統（IDS）</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         3｜防火牆
+    ══════════════════════════════════════ -->
+    <section id="s3">
+      <h2>📡 3｜防火牆（Firewall）</h2>
+
+      <div class="highlight-box">
+        防火牆阻絕外來攻擊，透過<strong>過濾</strong>與<strong>驗證</strong>保護網路系統，
+        將不正常工作阻絕在外。
+      </div>
+
+      <h3>常見部署位置</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">兩種典型架構</div>
+        <ul>
+          <li>（a）Intranet 與 Internet 之間</li>
+          <li>（b）特殊部門的內部防火牆</li>
+        </ul>
+      </div>
+
+      <h3>防火牆的種類</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">封包過濾式（Packet Filter）</div>
+        <ul>
+          <li>在<strong>網路層與傳輸層</strong>進行</li>
+          <li>運用存取控制規則過濾，根據：來源端 IP、目的端 IP、封包類型、TCP/UDP 埠服務編號</li>
+          <li>可在路由器、作業系統或伺服程式中實作</li>
+        </ul>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">應用閘道式（Application Gateway）</div>
+        <ul>
+          <li>在<strong>應用層</strong>進行，負責連結代理與資料轉送</li>
+          <li>又稱為<strong>代理伺服器（Proxy）</strong></li>
+          <li>外界無法直接對網內主機進行攻擊</li>
+        </ul>
+      </div>
+
+      <h3>封包過濾規則範例</h3>
+      <div class="concept-card">
+        <table class="compare-table">
+          <tr><th>#</th><th>來源 IP</th><th>目的 IP</th><th>協定</th><th>埠</th><th>動作</th></tr>
+          <tr><td>1</td><td>210.21.*.*</td><td>*.*.*.*</td><td>*</td><td>*</td><td>拒絕</td></tr>
+          <tr><td>2</td><td>140.130.149.*</td><td>140.112.*</td><td>TCP</td><td>23 (Telnet)</td><td>通過</td></tr>
+          <tr><td>3</td><td>140.112.*</td><td>140.130.149.*</td><td>TCP</td><td>23</td><td>通過</td></tr>
+          <tr><td>4</td><td>140.*</td><td>140.*</td><td>TCP</td><td>25 (Email)</td><td>通過</td></tr>
+          <tr><td>5</td><td>*</td><td>*</td><td>*</td><td>*</td><td>拒絕（其餘）</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         4｜加密要件
+    ══════════════════════════════════════ -->
+    <section id="s4">
+      <h2>📡 4｜加密要件</h2>
+
+      <div class="layer-card">
+        <div class="layer-card-num">三大要件</div>
+        <ul>
+          <li><strong>私密性（Confidentiality）</strong>：只有授權者能讀取資料</li>
+          <li><strong>完整性（Integrity）</strong>：資料傳輸過程中不被竄改</li>
+          <li><strong>不可否認性（Non-Repudiation）</strong>：傳送者無法否認已傳送的資料</li>
+        </ul>
+      </div>
+
+      <h3>基本術語</h3>
+      <div class="concept-card">
+        <table class="compare-table">
+          <tr><th>術語</th><th>說明</th></tr>
+          <tr><td>明文（Plaintext / Cleartext）</td><td>未經加密的可讀資料</td></tr>
+          <tr><td>密文（Ciphertext / Cryptogram）</td><td>加密後的不可讀資料</td></tr>
+          <tr><td>加密（Encryption）</td><td>將明文轉換為密文</td></tr>
+          <tr><td>解密（Decryption）</td><td>將密文還原為明文</td></tr>
+        </table>
+      </div>
+
+      <h3>金鑰（Key）</h3>
+      <div class="layer-card">
+        <div class="layer-card-num">加解密核心</div>
+        <div class="layer-card-desc">
+          加解密轉換機制的運算法則，分為<strong>加密金鑰</strong>與<strong>解密金鑰</strong>。
+        </div>
+        <ul>
+          <li>簡單範例：明文每個文字以比它大 2 的文字取代（A→C，B→D）</li>
+          <li>解密：金鑰演算法的逆函數</li>
+          <li>金鑰的保存與管理是密碼系統安全的關鍵</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         5｜秘密金鑰 vs 公開金鑰
+    ══════════════════════════════════════ -->
+    <section id="s5">
+      <h2>📡 5｜秘密金鑰 vs 公開金鑰密碼系統</h2>
+
+      <div class="concept-card">
+        <div class="concept-card-title">秘密金鑰（對稱金鑰）</div>
+        <ul>
+          <li>加密與解密採用<strong>相同金鑰</strong></li>
+          <li>優點：運算簡單，處理速度快</li>
+          <li>缺點：每兩人之間便要有一把金鑰，n 人需 n(n-1)/2 把金鑰</li>
+          <li>常見演算法：DES、FEAL、IDEA、SKIPJACK</li>
+        </ul>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">公開金鑰（非對稱金鑰）</div>
+        <ul>
+          <li>加密與解密採用<strong>不同金鑰</strong></li>
+          <li>每個使用者有兩把金鑰：<strong>公鑰（Public Key）</strong>與<strong>私鑰（Private Key）</strong></li>
+          <li>以公鑰加密，以私鑰解密</li>
+          <li>優點：金鑰管理負擔大幅減輕，公鑰可公開傳送</li>
+          <li>缺點：計算複雜，大量資料加解密系統負擔大</li>
+          <li>常見演算法：RSA、DSA、SHA</li>
+        </ul>
+      </div>
+
+      <h3>金鑰數量比較（n = 10 人）</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">實例</div>
+        <table class="compare-table" style="margin-top:0.5rem;">
+          <tr><th>系統</th><th>所需金鑰數</th><th>每人保管</th></tr>
+          <tr><td>秘密金鑰</td><td>45 把（10×9/2）</td><td>9 把</td></tr>
+          <tr><td>公開金鑰</td><td>20 把（10 把公鑰 + 10 把私鑰）</td><td>1 把（私鑰）</td></tr>
+        </table>
+        <p style="margin-top:0.5rem;font-size:0.88rem;">使用者愈多，兩者差異愈顯著。</p>
+      </div>
+
+      <h3>「鎖」與密碼系統的比喻</h3>
+      <div class="layer-card">
+        <div class="layer-card-num">秘密金鑰：汽車開關鎖</div>
+        <ul>
+          <li>啟動、熄火皆用同一把鑰匙</li>
+          <li>这把鑰匙不能任意交付給別人，須妥善保管</li>
+        </ul>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">公開金鑰：喇叭鎖</div>
+        <ul>
+          <li>鎖門與開門的方法<strong>不相同</strong></li>
+          <li>鎖門：按下鎖鈕即可，任何人都可以（公鑰概念）</li>
+          <li>開門：需要鑰匙，只有房間主人有（私鑰概念）</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         6｜雜湊函數
+    ══════════════════════════════════════ -->
+    <section id="s6">
+      <h2>📡 6｜雜湊函數（Hash Function）</h2>
+
+      <div class="highlight-box">
+        用以鑑別資料是否遭到<strong>竄改</strong>，確保資料的<strong>真實性</strong>及<strong>完整性</strong>。
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">原理</div>
+        <div class="layer-card-desc">
+          將訊息轉換為固定長度的雜湊值（如 128 位元）。不同內容的訊息，雜湊值也會不同。
+          又稱為<strong>訊息摘要（Message Digest）</strong>。
+        </div>
+      </div>
+
+      <h3>運作過程</h3>
+      <div class="layer-card">
+        <div class="layer-card-num">驗證流程</div>
+        <ul>
+          <li>發送端：將訊息透過雜湊函數計算出<strong>雜湊值</strong>，與訊息一起送出</li>
+          <li>接收端：以相同雜湊函數計算接收到的訊息，比對兩者</li>
+          <li>結果不同 → 訊息遭到干擾、破壞或竄改</li>
+        </ul>
+      </div>
+
+      <h3>特性與限制</h3>
+      <div class="concept-card">
+        <ul>
+          <li>良好雜湊函數演算法具有極高靈敏度（一位元之差結果差很多）</li>
+          <li>位元數愈多，雜湊值重覆的機率愈低</li>
+          <li>由雜湊值還原原始訊息非常困難，可保障安全性</li>
+        </ul>
+      </div>
+
+      <h3>常見演算法</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">MD 系列與 SHA</div>
+        <table class="compare-table" style="margin-top:0.5rem;">
+          <tr><th>演算法</th><th>說明</th></tr>
+          <tr><td>MD4</td><td>第一代，已不安全</td></tr>
+          <tr><td>MD5</td><td>輸出 128 位元，廣泛使用但已有碰撞攻擊</td></tr>
+          <tr><td>SHA</td><td>輸出 160 位元以上，安全性更高</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         7｜認證機制
+    ══════════════════════════════════════ -->
+    <section id="s7">
+      <h2>📡 7｜認證機制</h2>
+
+      <div class="highlight-box">
+        達到傳輸的<strong>不可否認性</strong>。透過金鑰系統、數位簽章與數位憑證確保身份真實。
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">認證方式</div>
+        <ul>
+          <li>金鑰系統（Key System）</li>
+          <li>數位簽章（Digital Signature）</li>
+          <li>數位憑證（Digital Certificate）</li>
+        </ul>
+      </div>
+
+      <h3>數位簽章（Digital Signature）</h3>
+      <div class="layer-card">
+        <div class="layer-card-num">原理</div>
+        <ul>
+          <li>以發送者<strong>私鑰</strong>對訊息的<strong>雜湊值</strong>加密 → 數位簽章</li>
+          <li>僅對固定長度雜湊值加密，運算簡單</li>
+          <li>接收端以發送者<strong>公鑰</strong>解密，確保訊息完整性及不可否認性</li>
+          <li>訊息仍以明文傳送（如需確保私密性，再運用加密法對訊息加密）</li>
+        </ul>
+      </div>
+
+      <h3>數位憑證（Digital Certificate）</h3>
+      <div class="highlight-box">
+        公鑰要在何處取得？如何證明公鑰的所有者？
+        由<strong>憑證機構（CA；Certification Authority）</strong>執行認證工作，如同網路身份證。
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">憑證包含的資料</div>
+        <ul>
+          <li>使用者名稱與公鑰</li>
+          <li>發證者（CA）名稱</li>
+          <li>憑證有效期限</li>
+          <li>以 CA 的私鑰對此憑證進行簽章</li>
+          <li>運用 CA 公鑰可驗證憑證真偽</li>
+        </ul>
+      </div>
+
+      <h3>HTTPS 與 SSL</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">安全網頁傳輸</div>
+        <ul>
+          <li>以 <code>https://</code> 開頭的網址，瀏覽器狀態列可看到鎖頭圖案</li>
+          <li>以 <strong>SSL（Secure Sockets Layer）</strong> 安全協定傳送資料</li>
+          <li>瀏覽器預設信任清單中已內建多家 CA 的公鑰</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         8｜入侵偵測系統
+    ══════════════════════════════════════ -->
+    <section id="s8">
+      <h2>📡 8｜入侵偵測系統（IDS）</h2>
+
+      <div class="highlight-box">
+        一種防範入侵系統的設備。<strong>不是防火牆</strong>：
+        防火牆阻擋可能的駭客，IDS 則在駭客通過防火牆進入主機後，藉由偵測提出警告。
+      </div>
+
+      <h3>分類</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">依所在位置分類</div>
+        <table class="compare-table" style="margin-top:0.5rem;">
+          <tr><th>類型</th><th>說明</th></tr>
+          <tr><td>主機型 IDS（Host-Based）</td><td>安裝在欲保護的主機上，監控系統記錄檔</td></tr>
+          <tr><td>網路型 IDS（Network-Based）</td><td>安裝在可監聽網路節點的位置，監聽封包內容</td></tr>
+        </table>
+      </div>
+
+      <h3>主機型 IDS 優缺點</h3>
+      <div class="two-col-grid">
+        <div>
+          <div class="layer-card">
+            <div class="layer-card-num">優點</div>
+            <ul>
+              <li>直接檢視主機記錄，可偵測網路型 IDS 無法偵測的入侵</li>
+              <li>可在加密環境下運作（內容到主機已解密）</li>
+              <li>可在交換式網路環境運作</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="layer-card">
+            <div class="layer-card-num">缺點</div>
+            <ul>
+              <li>每台要保護的主機都需安裝並維護</li>
+              <li>主機受到入侵，IDS 可能無法運作</li>
+              <li>無法瞭解其他主機是否也受攻擊</li>
+              <li>占用主機硬體資源</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3>網路型 IDS 優缺點</h3>
+      <div class="two-col-grid">
+        <div>
+          <div class="layer-card">
+            <div class="layer-card-num">優點</div>
+            <ul>
+              <li>不容易被察覺偵測系統的存在</li>
+              <li>可同時監聽多台主機</li>
+              <li>均成本較低</li>
+              <li>偵測不會對網路造成負擔</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="layer-card">
+            <div class="layer-card-num">缺點</div>
+            <ul>
+              <li>無法在交換式網路環境下監聽</li>
+              <li>可能遺漏部分封包</li>
+              <li>可推測有入侵，但不知是否成功</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3>IDS 三大功能</h3>
+      <div class="layer-card">
+        <div class="layer-card-num">流程</div>
+        <ul>
+          <li><strong>資料收集：</strong>網路封包、系統記錄檔等</li>
+          <li><strong>特徵選擇：</strong>資料量大，需過濾選取關鍵特徵</li>
+          <li><strong>資料分析：</strong>整個 IDS 最核心的部分</li>
+          <li><strong>回報機制：</strong>發出警告、終止入侵程序、通知其他 IDS 提高警覺</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         9｜駭客入侵手法
+    ══════════════════════════════════════ -->
+    <section id="s9">
+      <h2>📡 9｜駭客入侵手法</h2>
+
+      <h3>1｜惡意程式</h3>
+      <div class="concept-card">
+        <table class="compare-table">
+          <tr><th>類型</th><th>說明</th></tr>
+          <tr><td>病毒（Virus）</td><td>附加在檔案或程式中，會自我複製，潛伏後發作，可刪除資料</td></tr>
+          <tr><td>蠕蟲（Worm）</td><td>針對系統漏洞設計，不需附加在其他檔案即可自我執行及複製</td></tr>
+          <tr><td>特洛伊木馬（Trojan Horse）</td><td>表面是正常軟體，背後進行危害，不會自我複製</td></tr>
+          <tr><td>間諜軟體（Spyware）</td><td>未經同意執行，發佈廣告、追蹤網頁、側錄鍵盤、收集個資</td></tr>
+        </table>
+      </div>
+
+      <h3>2｜密碼破解</h3>
+      <div class="layer-card">
+        <ul>
+          <li>直接對不良密碼進行猜測</li>
+          <li>字典攻擊法（Dictionary Attack）</li>
+          <li>密碼監聽：鍵盤監聽裝置</li>
+          <li>取得密碼檔</li>
+        </ul>
+        <p style="margin-top:0.5rem;font-size:0.88rem;"><strong>防範：</strong>定期更換密碼，使用強度高的密碼。</p>
+      </div>
+
+      <h3>3｜封包監聽</h3>
+      <div class="layer-card">
+        <ul>
+          <li>Ethernet 以廣播方式傳送，所有節點都會收到封包</li>
+          <li>正常模式：節點檢查目的 MAC 位址，不符合就丟棄</li>
+          <li>混亂模式（Promiscuous Mode）：關閉檢查位址的過濾機制，可監聽所有封包</li>
+          <li>Sniffer、Wireshark 等軟體可進行封包分析</li>
+        </ul>
+        <p style="margin-top:0.5rem;font-size:0.88rem;"><strong>防範：</strong>資料加密傳輸，避免明文密碼。</p>
+      </div>
+
+      <h3>4｜阻斷服務（DoS / DDoS）</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">攻擊方式</div>
+        <table class="compare-table" style="margin-top:0.5rem;">
+          <tr><th>類型</th><th>說明</th></tr>
+          <tr><td>SYN Flood</td><td>發送大量 SYN 請求但不回應，使 TCP 連線未完成，佔滿連線資源</td></tr>
+          <tr><td>Ping of Death</td><td>發送超過標準大小的 ICMP Echo Request 封包，使目標系統崩潰</td></tr>
+          <tr><td>DDoS</td><td>許多節點同時對同一目標發動攻擊，結合多種技術</td></tr>
+          <tr><td>實體阻斷</td><td>直接破壞實體設備，成本損耗高</td></tr>
+        </table>
+      </div>
+
+      <h3>5｜網路釣魚（Phishing）</h3>
+      <div class="highlight-box">
+        <code>Phishing = Phone + Fishing</code>：最早利用電話引誘受害者，現多以電子郵件偽裝成金融機構，
+        要求使用者點擊連結並輸入帳號密碼或信用卡號。
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">特徵</div>
+        <ul>
+          <li>製作假網站，網址與真實網站類似</li>
+          <li>Email 伪装成官方通知，要求驗證資料</li>
+        </ul>
+      </div>
+
+      <h3>6｜網址嫁接（Pharming）</h3>
+      <div class="highlight-box">
+        將合法網站的網域名稱或 URL 重新導向到偽造的冒牌網站。
+        比網路釣魚更恐怖——使用者輸入的網址是<strong>正確的</strong>。
+      </div>
+      <div class="layer-card">
+        <ul>
+          <li>DNS 下毒（DNS Cache Poisoning）</li>
+          <li>修改本機 hosts 檔內容</li>
+        </ul>
+      </div>
+
+      <h3>7｜ARP 欺騙（ARP Spoofing）</h3>
+      <div class="layer-card">
+        <div class="layer-card-num">目標</div>
+        <ul>
+          <li>交換式集線器（Switched Hub）：攻擊者送出大量偽造 ARP Reply，將記憶體塞滿，使交換式集線器降級為一般集線器模式，監聽封包</li>
+          <li>作業系統：篡改 ARP Table，使目標主機將封包送往攻擊者</li>
+        </ul>
+      </div>
+
+      <h3>8｜連線劫持（Session Hijacking）</h3>
+      <div class="highlight-box">
+        A 與 B 雙方的通訊連線建立後，C 不需帳號密碼便能與 B 通訊。
+        利用雙方通訊的 Session ID 或 Cookie 進行劫持。
+      </div>
+    </section>
+
+    <!-- 問題與討論 -->
+    <div class="question-section">
+      <h2>📝 問題與討論</h2>
+      <p>關鍵字｜填充題｜選擇題｜問答題</p>
+    </div>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — 資訊網路</span>
+      <span>CH12 · 2026/05/07</span>
+    </footer>
+
+  </main>
+  <script src="right-nav.js"></script>
+</body>
+</html>

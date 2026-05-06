@@ -1,0 +1,10 @@
+Presentafion Layer
+
+Data Link Layer                Data Link Layer
+
+還                   7
+1
+
+1
+Physical Layer               Physical Layer —
+

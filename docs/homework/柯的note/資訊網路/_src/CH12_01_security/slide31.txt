@@ -1,0 +1,27 @@
+雜湊函數 (Hash Function)
+
+字用以鑑別資料是否遭到
+>真實性及完整性 (integ
+寢Ex:將訊息轉換成固
+字轉換值可視為此記
+湊值也會不同
+函數又稱為訊息摘要 (Message Digest)
+
+息很困難,可保障安全性
+
+>雜湊
+
+想由雜湊值還原訊
+PSI BL A A SS (SRE SIL
+
+> RES
+
+CO ee
+rity)
+
+定
+
+長度值(如 : 128位元)
+息的代表值,內容不同雜
+
+ee er te re

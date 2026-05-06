@@ -1,0 +1,26 @@
+對作業系統的ARP欺騙一
+
+ARP Thee        ae           }        來源端                                  攻擊者
+IP ATE
+140.134.36.33     woes ee6ooo |     時      i)          Ss
+收到目的端回覆後  |
+ioe     140. ‘ane    orien
+
+ARP Table
+IP fit                        實體位址
+140.134.36.33 ”00-C4-E3-CC-CC-CC
+140.134.36.22  4B-2D-32-BB-BB-BB
+
+收到攻擊者的假造封包後 |                            (Geen)
+位址,目的端的實  — 440.134.36.22
+ARP Tabl
+加            體位址被取代了。             eee
+
+140.134.36.33  00-C4-E3-CC-CC-CC
+140.134.36.22 ——
+
+*
+
+BRS
+
+Meer ee ee       KH BRe
