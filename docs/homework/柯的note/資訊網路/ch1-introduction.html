@@ -46,7 +46,7 @@
 
     <!-- 大綱 -->
     <h2>📋 大綱</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+    <div class="two-col-grid">
       <div class="concept-card"><div class="concept-card-title">🔷 引言</div><div class="concept-card-desc">網路是什麼？我們要學什麼？</div></div>
       <div class="concept-card"><div class="concept-card-title">🌐 Internet</div><div class="concept-card-desc">起源、發展、功能與應用</div></div>
       <div class="concept-card"><div class="concept-card-title">🖥️ 網路類型</div><div class="concept-card-desc">PAN・LAN・MAN・WAN 比較</div></div>
@@ -113,7 +113,7 @@
     <section id="types">
       <h2>🖥️ 4｜網路類型</h2>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+      <div class="two-col-grid">
         <div class="concept-card">
           <div class="concept-card-title">PAN — 個人網路</div>
           <div class="concept-card-desc">
@@ -169,7 +169,7 @@
     <section id="topology">
       <h2>🔗 5｜網路拓撲（Network Topology）</h2>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+      <div class="two-col-grid">
         <div class="concept-card"><div class="concept-card-title">⭐ 星狀（STAR）</div><div class="concept-card-desc">架構簡單、維護容易，所有節點連接至中心節點</div></div>
         <div class="concept-card"><div class="concept-card-title">➖ 匯流排（BUS）</div><div class="concept-card-desc">又稱直線型網路，兩端需終端器（Terminator）</div></div>
         <div class="concept-card"><div class="concept-card-title">⭕ 環狀（Ring）</div><div class="concept-card-desc">節點形成封閉環路，資料單向或雙向傳遞</div></div>
@@ -229,16 +229,18 @@
         ▶ 愈低層與硬體相關性愈高，愈高層與軟體相關性愈高
       </div>
 
-      <div style="margin-bottom:1rem;">
-        <div style="font-weight:700;color:var(--accent-text);margin-bottom:0.5rem;">OSI 七層（由上而下）</div>
-        <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;font-size:0.85rem;">
-          <div style="flex:1;padding:0.6rem;background:#dbeafe;color:#1e40af;font-weight:700;text-align:center;border-right:1px solid var(--border);">應用層<br>Application</div>
-          <div style="flex:1;padding:0.6rem;background:#dbeafe;color:#1e40af;font-weight:700;text-align:center;border-right:1px solid var(--border);">呈現層<br>Presentation</div>
-          <div style="flex:1;padding:0.6rem;background:#dbeafe;color:#1e40af;font-weight:700;text-align:center;border-right:1px solid var(--border);">會議層<br>Session</div>
-          <div style="flex:1;padding:0.6rem;background:#bfdbfe;color:#1e40af;text-align:center;border-right:1px solid var(--border);">傳輸層<br>Transport</div>
-          <div style="flex:1;padding:0.6rem;background:#bfdbfe;color:#1e40af;text-align:center;border-right:1px solid var(--border);">網路層<br>Network</div>
-          <div style="flex:1;padding:0.6rem;background:#e0e7ff;color:#3730a3;text-align:center;border-right:1px solid var(--border);">資料連結層<br>Data Link</div>
-          <div style="flex:1;padding:0.6rem;background:#e0e7ff;color:#3730a3;text-align:center;">實體層<br>Physical</div>
+      <div class="layer-card">
+        <div class="layer-card-num">OSI 七層</div>
+        <div class="layer-card-name">由上而下</div>
+        <div class="layer-card-desc">依序：應用層 → 呈現層 → 會議層 → 傳輸層 → 網路層 → 資料連結層 → 實體層</div>
+        <div style="display:flex;gap:4px;margin-top:0.75rem;font-size:0.82rem;">
+          <div style="flex:1;padding:0.5rem;background:#dbeafe;color:#1e40af;font-weight:700;text-align:center;border-radius:6px;">應用層<br><small>Application</small></div>
+          <div style="flex:1;padding:0.5rem;background:#dbeafe;color:#1e40af;font-weight:700;text-align:center;border-radius:6px;">呈現層<br><small>Presentation</small></div>
+          <div style="flex:1;padding:0.5rem;background:#dbeafe;color:#1e40af;font-weight:700;text-align:center;border-radius:6px;">會議層<br><small>Session</small></div>
+          <div style="flex:1;padding:0.5rem;background:#bfdbfe;color:#1e40af;text-align:center;border-radius:6px;">傳輸層<br><small>Transport</small></div>
+          <div style="flex:1;padding:0.5rem;background:#bfdbfe;color:#1e40af;text-align:center;border-radius:6px;">網路層<br><small>Network</small></div>
+          <div style="flex:1;padding:0.5rem;background:#e0e7ff;color:#3730a3;text-align:center;border-radius:6px;">資料連結<br><small>Data Link</small></div>
+          <div style="flex:1;padding:0.5rem;background:#e0e7ff;color:#3730a3;text-align:center;border-radius:6px;">實體層<br><small>Physical</small></div>
         </div>
       </div>
 
@@ -262,8 +264,8 @@
     </section>
 
     <!-- 結語 -->
-    <div style="text-align:center;padding:2rem;background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:12px;margin:2rem 0;">
-      <h2 style="border:none;margin-bottom:0.5rem;">結語</h2>
+    <div class="question-section">
+      <h2>結語</h2>
       <p>一個開端，有些似懂非懂是正常的。<br>讓我們都成為具獨特功能的一群。</p>
       <p style="font-size:0.85rem;color:var(--muted-2);margin-top:1rem;">📌 關鍵字｜填充題｜選擇題｜問答題</p>
     </div>
