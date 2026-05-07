@@ -12,7 +12,7 @@
 
       // 回到柯的note 首頁
       var back = document.createElement('a');
-      back.href = '../../index.html';
+      back.href = '../index.html';
       back.className = 'sidebar-link sidebar-back';
       back.textContent = '📚 回到柯的note';
       sidebar.appendChild(back);
