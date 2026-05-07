@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH1 — Linux 基礎認識 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有筆記</div>
+    <a href="ch1-linux.html" class="sidebar-link active">🐧 CH1 Linux 基礎認識</a>
+  </nav>
+
+  <main class="content">
+
+    <!-- 頁首 -->
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH1 — Linux 基礎認識</h1>
+      <div class="note-tags">
+        <span class="note-tag">CH1</span>
+        <span class="note-tag">Linux</span>
+        <span class="note-tag">作業系統</span>
+      </div>
+    </header>
+
+    <!-- 大綱 -->
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>🐧 1-1 Linux 的特色 — 開放原始碼與發行版生態</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>💼 2 為什麼要學習 Linux？— 產業與職涯需求</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>⌨️ 1-3 習慣文字模式的操作 — CLI 的必要性</span></div>
+    </div>
+
+    <!-- s1 -->
+    <section id="s1">
+      <h2>🐧 1｜Linux 的特色</h2>
+
+      <div class="highlight-box">
+        <strong>Linux</strong> 就像 Windows 和 macOS 一樣，都是<strong>作業系統</strong>。
+        首先，要先學會安裝 Linux 環境！
+      </div>
+
+      <div class="highlight-box">
+        Linux 是 <strong>Linus Torvalds</strong> 於 1991 年所開發的作業系統，他以<strong>開放原始碼</strong>的方式釋出 Linux 的原始碼。
+      </div>
+
+      <div class="highlight-box">
+        <strong>自由、開放的作業系統：</strong>每個人都可以修改後重新散佈。
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">🐧 Linux 的吉祥物</div>
+        <div class="concept-card-desc">Linux 的吉祥物是「Tux」這隻可愛的企鵝，由赖ovement於 1996 年設計。</div>
+      </div>
+
+      <h3 id="s1-1">📌 1-1 形形色色的發行版</h3>
+
+      <div class="highlight-box">
+        有些組織或廠商將多種軟體組合起來，與 Linux 系統核心一併包裝、發行或販賣，成為現在為數眾多的各種 <strong>Linux 發行版 (distribution)</strong>。
+      </div>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th>發行版</th><th>特色</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Debian GNU/Linux</td><td>社群驅動，穩定優先</td></tr>
+          <tr><td>Ubuntu</td><td>簡單好用的人性化介面</td></tr>
+          <tr><td>Fedora</td><td>由 Red Hat 贊助，創新優先</td></tr>
+          <tr><td>openSUSE</td><td>企業級應用導向</td></tr>
+          <tr><td>CentOS</td><td>企業級 Linux 社群版</td></tr>
+          <tr><td>Linux Mint</td><td>易於使用，桌面導向</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="s1-2">📌 1-2 核心 (Kernel) 與發行版的關係</h3>
+
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">核心 (Kernel)</div>
+        <div class="layer-card-desc">作業系統最重要的心臟部位。負責所有讓系統得以正確、有效運行相關的工作。</div>
+      </div>
+
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">發行版 (Distribution)</div>
+        <div class="layer-card-desc">將多種軟體（網頁瀏覽器、文書編輯、影像處理、辦公室軟體、程式開發工具、架站軟體等）與 Linux 系統核心一併包裝的完整作業系統。</div>
+      </div>
+
+      <h3 id="s1-3">📌 1-3 Linux 的用途</h3>
+
+      <div class="toc-grid">
+        <div class="toc-item"><span class="toc-num">🖥️</span><span>超級電腦</span></div>
+        <div class="toc-item"><span class="toc-num">🌐</span><span>伺服器</span></div>
+        <div class="toc-item"><span class="toc-num">📱</span><span>行動裝置（Android）</span></div>
+        <div class="toc-item"><span class="toc-num">🔧</span><span>嵌入式裝置</span></div>
+      </div>
+
+      <div class="highlight-box">
+        <strong>一應俱全的功能：</strong>網路瀏覽器、文書編輯、影像處理、辦公室軟體、程式開發工具，甚至架設伺服器等等的軟體。<br>
+        <strong>從物聯網到超級電腦的廣泛用途。</strong>
+      </div>
+
+    </section>
+
+    <!-- s2 -->
+    <section id="s2">
+      <h2>💼 2｜為什麼要學習 Linux？</h2>
+
+      <div class="highlight-box">
+        <strong>大公司的 IT 部門多半是採用 Windows 與 Linux 混合使用的環境，</strong>建議要有基礎的 Linux 知識。
+      </div>
+
+      <div class="highlight-box">
+        除了嵌入式系統、伺服器等需要 Linux，<strong>許多 IT 領域需要的軟體只能在 Linux 環境運行，或是在 Linux 環境能有最好的執行效率。</strong>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">💡 學習 Linux 的理由</div>
+        <ul>
+          <li>產業剛需：伺服器、嵌入式、雲端運算的主流環境</li>
+          <li>效率優勢：許多開發工具在 Linux 環境執行效率最佳</li>
+          <li>就業競爭力：IT 工程師的基礎能力之一</li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- s3 -->
+    <section id="s3">
+      <h2>⌨️ 3｜習慣文字模式的操作</h2>
+
+      <div class="highlight-box">
+        Linux 發行版分為<strong>純文字模式</strong>及<strong>圖形模式</strong>。
+      </div>
+
+      <div class="highlight-box">
+        但各個雲端服務所提供的 Linux 虛擬機器<strong>預設沒有提供圖形模式</strong>。
+      </div>
+
+      <div class="highlight-box">
+        此外，Linux 為系統的嵌入式裝置或網路通訊設備在開發、測試階段都是使用<strong>遠端連線進文字模式</strong>來設定。
+      </div>
+
+      <div class="highlight-box" style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-left: 4px solid #16a34a;">
+        <strong>⌨️ 文字模式的優點：</strong>不管換到什麼 Linux 發行版都很容易上手。
+      </div>
+
+    </section>
+
+    <!-- 頁尾 -->
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+
+  </main>
+
+  <script src="right-nav.js"></script>
+</body>
+</html>

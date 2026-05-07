@@ -1,0 +1,47 @@
+/* ── Right Navigation（右側浮動大綱）── */
+.right-nav {
+  position: fixed;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 360px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  box-shadow: var(--card-shadow);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  scrollbar-width: thin;
+}
+.right-nav.visible { opacity: 1; pointer-events: auto; }
+.right-nav-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-2);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border);
+}
+.right-nav-list { list-style: none; margin: 0; padding: 0; }
+.right-nav-list li { margin: 0; padding: 0; }
+.right-nav-list a {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+  border-left: 2px solid transparent;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  line-height: 1.4;
+}
+.right-nav-list a:hover { background: var(--accent-dim); color: var(--accent-text); }
+.right-nav-list a.active { background: var(--accent-dim); color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+@media (max-width: 1100px) { .right-nav { display: none; } }
