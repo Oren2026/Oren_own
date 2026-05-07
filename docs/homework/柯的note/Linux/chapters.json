@@ -54,24 +54,6 @@
     "tag": "CH10"
   },
   {
-    "file": "ch7-account.html",
-    "emoji": "👤",
-    "title": "CH7 — 使用者帳號管理",
-    "tag": "CH7"
-  },
-  {
-    "file": "ch8-network.html",
-    "emoji": "🌐",
-    "title": "CH8 — 網路設定",
-    "tag": "CH8"
-  },
-  {
-    "file": "ch9-ssh.html",
-    "emoji": "🔐",
-    "title": "CH9 — SSH 遠端登入",
-    "tag": "CH9"
-  },
-  {
     "file": "ch11-shell-script.html",
     "emoji": "📜",
     "title": "CH11 — Shell Script",
