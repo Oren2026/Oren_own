@@ -213,23 +213,11 @@
 <body>
 
   <!-- 左側 Tab 導航 -->
-  <nav class="chapter-tabs">
-    <div class="course-label">柯的note</div>
-    <div class="course-title">📡 資訊網路</div>
-    <div class="tab-divider"></div>
-
-    <button class="chapter-tab active" data-chapter="ch1">CH1 · 網路初探</button>
-    <button class="chapter-tab" data-chapter="ch2">CH2 · 通訊與傳輸</button>
-    <button class="chapter-tab" data-chapter="ch3">CH3 · 傳輸媒介</button>
-    <button class="chapter-tab" data-chapter="ch4">CH4 · 網路協定</button>
-    <button class="chapter-tab" data-chapter="ch5">CH5 · 乙太網路</button>
-    <button class="chapter-tab" data-chapter="ch6">CH6 · 網路規劃</button>
-    <button class="chapter-tab" data-chapter="ch7">CH7 · LAN 區域網路</button>
-    <button class="chapter-tab" data-chapter="ch8">CH8 · IP 協定</button>
-    <button class="chapter-tab" data-chapter="ch9">CH9 · TCP/UDP</button>
-    <button class="chapter-tab" data-chapter="ch10">CH10 · ARP/RARP/ICMP</button>
-    <button class="chapter-tab" data-chapter="ch11">CH11 · 路由與尋徑</button>
-    <button class="chapter-tab" data-chapter="ch12">CH12 · 網路安全</button>
+  <nav class="sidebar" style="width:var(--tab-w);flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.25rem 0.75rem;background:var(--surface);border-right:1.5px solid var(--border);display:flex;flex-direction:column;gap:0;">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">📡 資訊網路</div>
+    <div class="sidebar-divider"></div>
+    <div id="sidebar-links"></div>
   </nav>
 
   <!-- 右側內容 -->
@@ -541,6 +529,6 @@
       });
     });
   </script>
-
+  <script src="sidebar.js"></script>
 </body>
 </html>
