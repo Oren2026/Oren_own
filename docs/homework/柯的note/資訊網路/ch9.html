@@ -48,39 +48,15 @@
 
     <!-- 大綱 -->
     <h2>📋 大綱</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
-      <div class="concept-card">
-        <div class="concept-card-title">傳輸層角色</div>
-        <div class="concept-card-desc">在網路層之上、會議層之下，TCP vs UDP 的定位</div>
-      </div>
-      <div class="concept-card">
-        <div class="concept-card-title">埠編號</div>
-        <div class="concept-card-desc">Well-known / 註冊 / 動態 Port，常用服務對照</div>
-      </div>
-      <div class="concept-card">
-        <div class="concept-card-title">UDP 協定</div>
-        <div class="concept-card-desc">非可靠性、標頭 4 欄位、虛擬標頭 Checksum 運算</div>
-      </div>
-      <div class="concept-card">
-        <div class="concept-card-title">TCP 序列與回應號碼</div>
-        <div class="concept-card-desc">以位元組為單位的累積序號，雙向傳輸範例</div>
-      </div>
-      <div class="concept-card">
-        <div class="concept-card-title">滑動訊窗</div>
-        <div class="concept-card-desc">緩衝區概念、Window 欄位、傳輸單位（封包數 vs 位元組數）</div>
-      </div>
-      <div class="concept-card">
-        <div class="concept-card-title">TCP 標頭欄位</div>
-        <div class="concept-card-desc">20 Bytes + 選項，6 個控制旗標詳細說明</div>
-      </div>
-      <div class="concept-card">
-        <div class="concept-card-title">TCP 連線管理</div>
-        <div class="concept-card-desc">三向交握建立連線，四向終止結束連線</div>
-      </div>
-      <div class="concept-card">
-        <div class="concept-card-title">TCP 選擇項</div>
-        <div class="concept-card-desc">MSS、SACK Permitted、SACK 區塊格式</div>
-      </div>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>傳輸層角色 — 在網路層之上、會議層之下，TCP vs UDP 的定位</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>埠編號 — Well-known / 註冊 / 動態 Port，常用服務對照</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>UDP 協定 — 非可靠性、標頭 4 欄位、虛擬標頭 Checksum 運算</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>TCP 序列與回應號碼 — 以位元組為單位的累積序號，雙向傳輸範例</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>滑動訊窗 — 緩衝區概念、Window 欄位、傳輸單位（封包數 vs 位元組數）</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>TCP 標頭欄位 — 20 Bytes + 選項，6 個控制旗標詳細說明</span></div>
+      <div class="toc-item"><span class="toc-num">7</span><span>TCP 連線管理 — 三向交握建立連線，四向終止結束連線</span></div>
+      <div class="toc-item"><span class="toc-num">8</span><span>TCP 選擇項 — MSS、SACK Permitted、SACK 區塊格式</span></div>
     </div>
 
     <!-- 傳輸層簡介 -->
