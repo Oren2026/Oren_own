@@ -58,5 +58,11 @@
     "emoji": "👤",
     "title": "CH7 — 使用者帳號管理",
     "tag": "CH7"
+  },
+  {
+    "file": "ch8-network.html",
+    "emoji": "🌐",
+    "title": "CH8 — 網路設定",
+    "tag": "CH8"
   }
 ]

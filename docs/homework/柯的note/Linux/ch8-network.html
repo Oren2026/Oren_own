@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH8 — 網路設定 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH8 — 網路設定</h1>
+      <div class="note-tags"><span class="note-tag">CH8</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>🌐 安裝網路套件</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>🌐 xDSL 寬頻撥接</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>🌐 固定 IP 設定</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>🌐 DHCP 自動取得 IP</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>🌐 無線網路設定</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>🌐 網路偵錯工具</span></div>
+    </div>
+
+    <!-- S1: 安裝網路套件 -->
+    <section id="s1">
+      <h2>🌐 1｜安裝網路套件</h2>
+      <div class="highlight-box">
+        <p>Ubuntu 預設沒有安裝 <code>ifconfig</code> 指令（用於檢視所有網路介面狀態）。需先安裝：</p>
+        <p><code>sudo apt install net-tools</code></p>
+      </div>
+    </section>
+
+    <!-- S2: xDSL 寬頻撥接 -->
+    <section id="s2">
+      <h2>🌐 2｜xDSL 寬頻撥接</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📡 非固定制（計時制）寬頻</div>
+        <p>Linux 支援 xDSL 寬頻上網。本節介紹非固定制（計時制、撥接制）的設定方式。</p>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">安裝 PPPoE 套件</div>
+        <div class="layer-card-desc"><code>sudo apt install pppoeconf</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">執行設定精靈</div>
+        <div class="layer-card-desc">執行 <code>sudo pppoeconf</code>，依指示輸入帳號密碼</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">連線與斷線</div>
+        <div class="layer-card-desc"><code>sudo pon dsl-provider</code> 連線，<code>sudo poff</code> 斷線</div>
+      </div>
+      <div class="highlight-box">
+        <p>驗證連線：執行網路狀態檢查指令，確認已成功取得 IP。</p>
+      </div>
+    </section>
+
+    <!-- S3: 固定 IP 設定 -->
+    <section id="s3">
+      <h2>🌐 3｜固定 IP 設定（nmcli）</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">查詢網路介面</div>
+        <div class="layer-card-desc"><code>nmcli connection show</code> 或 <code>nmcli device status</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">設定 IP 與網路遮罩</div>
+        <div class="layer-card-desc"><code>nmcli connection modify "enp3s0" ipv4.addresses 10.10.10.100/8</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">設定閘道器</div>
+        <div class="layer-card-desc"><code>nmcli connection modify "enp3s0" ipv4.gateway 10.10.10.1</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">4</div>
+        <div class="layer-card-name">設定 DNS</div>
+        <div class="layer-card-desc"><code>nmcli connection modify "enp3s0" ipv4.dns "8.8.8.8"</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">5</div>
+        <div class="layer-card-name">套用並啟動</div>
+        <div class="layer-card-desc"><code>nmcli connection up "enp3s0"</code></div>
+      </div>
+      <div class="highlight-box">
+        <p>驗證：<code>ifconfig</code> 與 <code>route -n</code> 檢查 IP、網路遮罩、預設閘道是否正確；<code>nmcli device show</code> 檢查完整設定。</p>
+      </div>
+    </section>
+
+    <!-- S4: DHCP -->
+    <section id="s4">
+      <h2>🌐 4｜DHCP 自動取得 IP</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🔄 DHCP 運作流程</div>
+        <p>DHCP（Dynamic Host Configuration Protocol）可讓網路介面自動向路由器取得 IP 位址、子網路遮罩、預設閘道、DNS 等資訊，無需手動設定。</p>
+      </div>
+      <div class="highlight-box">
+        <p>將固定 IP 改為 DHCP：</p>
+        <p><code>nmcli connection modify "enp3s0" ipv4.method auto</code></p>
+        <p><code>nmcli connection up "enp3s0"</code></p>
+      </div>
+    </section>
+
+    <!-- S5: 無線網路 -->
+    <section id="s5">
+      <h2>🌐 5｜無線網路設定</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">確認網卡驅動</div>
+        <div class="layer-card-desc">檢查系統是否正確驅動無線網路卡</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">掃描基地台</div>
+        <div class="layer-card-desc"><code>nmcli device wifi list</code> 列出可用無線網路</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">連線</div>
+        <div class="layer-card-desc"><code>nmcli device wifi connect "SSID名稱" password "密碼"</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">4</div>
+        <div class="layer-card-name">驗證</div>
+        <div class="layer-card-desc"><code>ifconfig</code> 確認網卡啟動且 IP 正確；<code>iwconfig</code> 檢視無線資訊</div>
+      </div>
+      <div class="highlight-box">
+        <p>若網卡未啟動：<code>sudo ip link set wlan0 up</code> 或使用 <code>nmcli networking on</code>。</p>
+      </div>
+    </section>
+
+    <!-- S6: 網路偵錯 -->
+    <section id="s6">
+      <h2>🌐 6｜網路偵錯工具</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>用途</th><th>範例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>ping IP/網域</code></td><td>測試區域網路或對外連線是否可達</td><td><code>ping 8.8.8.8</code>、<code>ping google.com</code></td></tr>
+          <tr><td><code>route -n</code></td><td>顯示路由表，確認預設閘道設定</td><td>檢查 0.0.0.0 閘道是否正確</td></tr>
+          <tr><td><code>nslookup 網域</code></td><td>查詢 DNS 解析結果</td><td><code>nslookup google.com</code></td></tr>
+          <tr><td><code>ip addr show</code></td><td>顯示所有網路介面的 IP 位址</td><td>確認各介面已取得正確 IP</td></tr>
+          <tr><td><code>dhclient</code></td><td>向 DHCP 伺服器重新請求 IP</td><td><code>sudo dhclient -r &amp;&amp; sudo dhclient</code></td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>常見偵錯流程：<strong>ping 區域網路閘道</strong>（確認區網）→ <strong>ping 8.8.8.8</strong>（確認對外）→ <strong>ping google.com</strong>（確認 DNS）。若 DNS 解析失敗，檢查 <code>/etc/resolv.conf</code> 或 <code>nmcli</code> 中的 DNS 設定。</p>
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>
