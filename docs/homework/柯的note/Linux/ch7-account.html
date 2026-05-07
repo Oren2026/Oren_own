@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH7 — 使用者帳號管理 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH7 — 使用者帳號管理</h1>
+      <div class="note-tags"><span class="note-tag">CH7</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>👤 認識使用者帳號</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>👤 /etc/passwd 檔案</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>👤 /etc/shadow 檔案</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>👤 建立帳號 useradd</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>👤 管理者 root 與 sudo</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>👤 帳號切換 su</span></div>
+      <div class="toc-item"><span class="toc-num">7</span><span>👤 停用與刪除帳號</span></div>
+      <div class="toc-item"><span class="toc-num">8</span><span>👤 群組管理</span></div>
+    </div>
+
+    <!-- S1: 認識使用者帳號 -->
+    <section id="s1">
+      <h2>👤 1｜認識使用者帳號</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🖥️ 使用者帳號的必要性</div>
+        <p>Linux 屬於<strong>多人多工</strong>的作業系統，可讓不同使用者從本地端或遠端登入。無論本機或遠端登入，都必須在該主機上擁有帳號。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">🛡️ 帳號的三大功能</div>
+        <ul style="margin:0.5rem 0 0 1.2rem;padding-left:0;">
+          <li><strong>掌控使用者身份</strong>——區分不同使用者</li>
+          <li><strong>資源共享，不互相干擾</strong>——家目錄、檔案權限隔離</li>
+          <li><strong>權限管制，維護系統安全</strong>——防止未授權操作</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- S2: /etc/passwd -->
+    <section id="s2">
+      <h2>👤 2｜/etc/passwd 檔案</h2>
+      <div class="highlight-box">
+        <p>每個使用者帳號在 <code>/etc/passwd</code> 檔案中都有 <strong>7 個欄位</strong>。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>欄位</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1. 帳號名稱</td><td>使用者登入時的名稱</td></tr>
+          <tr><td>2. 使用者密碼</td><td>預設為 <code>x</code>（密碼移至 shadow 檔案）</td></tr>
+          <tr><td>3. UID（User ID）</td><td>使用者識別碼，root = 0</td></tr>
+          <tr><td>4. GID（Group ID）</td><td>主要群組識別碼</td></tr>
+          <tr><td>5. 使用者相關資訊</td><td>如姓名、电话等（可空白）</td></tr>
+          <tr><td>6. 使用者家目錄</td><td>如 <code>/home/lambert</code></td></tr>
+          <tr><td>7. 使用者環境</td><td>預設 Shell，如 <code>/bin/bash</code></td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>預設情況下，任何使用者都可以讀取 <code>/etc/passwd</code>（無法竊取密碼，因為密碼已移至 <code>/etc/shadow</code>）。若將權限改為 <code>rw-------</code>，則僅 root 可讀取。</p>
+      </div>
+    </section>
+
+    <!-- S3: /etc/shadow -->
+    <section id="s3">
+      <h2>👤 3｜/etc/shadow 檔案</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🔑 shadow 檔案的目的</div>
+        <p>將密碼雜湊值從 <code>/etc/passwd</code> 分離至 <code>/etc/shadow</code>，僅 root 可讀取，大幅提升安全性。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>欄位</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1. 帳號名稱</td><td>與 passwd 對應</td></tr>
+          <tr><td>2. 密碼</td><td>雜湊後的密碼（<code>$6$...</code> 格式）</td></tr>
+          <tr><td>3. 密碼最後變動時間</td><td>距離 1970-01-01 的天數</td></tr>
+          <tr><td>4. 密碼最小間隔</td><td>密碼變動後，需隔多久才能再改（天數）</td></tr>
+          <tr><td>5. 密碼最大有效期</td><td>密碼失效前必須更換的天數</td></tr>
+          <tr><td>6. 警告期</td><td>密碼即將過期前多少天開始警告</td></tr>
+          <tr><td>7. 停權期限</td><td>密碼過期後，帳號被停用的天數</td></tr>
+          <tr><td>8. 帳號使用期限</td><td>帳號本身的有效日期</td></tr>
+          <tr><td>9. 保留欄位</td><td>預設空白</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S4: useradd -->
+    <section id="s4">
+      <h2>👤 4｜建立帳號 useradd</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">useradd 新增</div>
+        <div class="layer-card-desc">執行 <code>useradd 帳號名稱</code>，系統自動更新 <code>/etc/passwd</code> 與 <code>/etc/shadow</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">passwd 設定密碼</div>
+        <div class="layer-card-desc">執行 <code>passwd 帳號名稱</code> 為新帳號設定密碼</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">預設值設定檔</div>
+        <div class="layer-card-desc">useradd 的預設值記錄在 <code>/etc/login.defs</code>，家目錄位置、環境、樣板目錄則在 <code>/etc/default/useradd</code></div>
+      </div>
+      <div class="highlight-box">
+        <p>帳號名稱必須<strong>唯一</strong>。若名稱已被佔用，系統會回報「使用者已存在」。可用以下三種方式事先查詢：</p>
+        <ul style="margin:0.3rem 0 0 1.2rem;padding-left:0;">
+          <li>建立資料庫自行查詢</li>
+          <li>直接查 <code>/etc/passwd</code> 檔案</li>
+          <li>執行 <code>finger 帳號</code>（需安裝）</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- S5: root 與 sudo -->
+    <section id="s5">
+      <h2>👤 5｜管理者 root 與 sudo</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">👑 root 帳號</div>
+        <p>Linux 安裝後即建立 root 帳號。root 為<strong>系統管理者</strong>，對系統擁有完全控制權，可做任何設定和修改。維護 root 帳號的安全便格外重要。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">🔐 sudo 機制</div>
+        <p>一般使用者可透過 <code>sudo 指令</code> 以 root 權限執行特定指令。若新建帳號無法使用 sudo，需將其加入 <code>/etc/group</code> 中的 sudo 或 wheel 群組。</p>
+      </div>
+      <div class="highlight-box">
+        <p><strong>緊急修復：重設 root 密碼</strong>（GRUB 開機選單 → 按 <code>Ctrl+x</code> 或 <code>F10</code> 進入單人模式 → <code>passwd root</code>）</p>
+        <p><strong>鎖定系統維護</strong>：在 <code>/etc</code> 目錄執行 <code>touch nologin</code>，可阻止一般使用者登入。</p>
+      </div>
+    </section>
+
+    <!-- S6: su -->
+    <section id="s6">
+      <h2>👤 6｜帳號切換 su</h2>
+      <div class="highlight-box">
+        <p><code>su</code>（switch user）指令可切換身份。例如 <code>su - lambert</code> 可切換至 lambert 帳號，並同時切換至該帳號的家目錄和環境變數。</p>
+        <ul style="margin:0.3rem 0 0 1.2rem;padding-left:0;">
+          <li><code>su 帳號</code>：僅切換身份，保留目前目錄</li>
+          <li><code>su - 帳號</code>：連同工作目錄和環境變數一起切換</li>
+          <li><code>exit</code>：切換回原帳號</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- S7: 停用與刪除帳號 -->
+    <section id="s7">
+      <h2>👤 7｜停用與刪除帳號</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">停用帳號（保留資料）</div>
+        <div class="layer-card-desc">編輯 <code>/etc/passwd</code>，將該帳號的 Shell 改為 <code>/sbin/nologin</code> 或在 shadow 中設定密碼過期</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">刪除前準備</div>
+        <div class="layer-card-desc">先刪除該使用者的程式（<code>ps -u uid</code> + <code>kill PID</code>）和排程工作（<code>sudo crontab -u 使用者名稱 -r</code>）</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">刪除帳號</div>
+        <div class="layer-card-desc">執行 <code>userdel -r 帳號名稱</code>（<code>-r</code> 同時刪除家目錄和郵件）</div>
+      </div>
+      <div class="highlight-box">
+        <p>常見情境：員工畢業、離職或逾期不繳費時，停用或刪除該帳號以阻止繼續登入系統。</p>
+      </div>
+    </section>
+
+    <!-- S8: 群組管理 -->
+    <section id="s8">
+      <h2>👤 8｜群組管理</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">👥 群組的目的</div>
+        <p>可依不同性質自行建立群組。當檔案或目錄隸屬於某群組時，該群組的使用者會受到群組權限的限制。一個使用者可同時隸屬於多個群組。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>/etc/group 欄位</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>群組名稱</td><td>如 <code>sudo</code>、<code>www-data</code></td></tr>
+          <tr><td>群組密碼</td><td>通常為空白或 <code>x</code></td></tr>
+          <tr><td>GID</td><td>群組識別碼</td></tr>
+          <tr><td>成員列表</td><td>隸屬此群組的帳號（以逗號分隔）</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>建立群組：<code>groupadd 群組名稱</code></p>
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>
