@@ -218,22 +218,30 @@
 
 ---
 
-## 七、大綱（concept-card grid）規範
+## 七、大綱（toc-grid）規範（2026-05-07 更新）
+
+> **CH10~12 為標準格式。CH1~9 已全部更新為 toc-grid（2026-05-07）。**
+
+大綱統一使用 `toc-grid` + `toc-item` + `toc-num`，**不是** `concept-card`：
 
 ```html
 <h2>📋 大綱</h2>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
-  <div class="concept-card">
-    <div class="concept-card-title">🌐 IPv4 簡介</div>
-    <div class="concept-card-desc">IP 位址結構、多版本、位址數量</div>
+<div class="toc-grid">
+  <div class="toc-item">
+    <span class="toc-num">1</span>
+    <span>🔷 標題 — 簡短描述</span>
+  </div>
+  <div class="toc-item">
+    <span class="toc-num">2</span>
+    <span>🔷 標題 — 簡短描述</span>
   </div>
 </div>
 ```
 
-- `grid-template-columns:1fr 1fr` 雙欄
-- `gap:1rem` 卡片間距
-- `concept-card-title` 放 Emoji + 標題
-- `concept-card-desc` 放一句話描述
+- 外層：`toc-grid`（雙欄格狀）
+- 每項：`toc-item`（flex，無子內容）
+- 編號：`toc-num`（藍色數字圓點）
+- `concept-card` 繼續用於**內文內容區塊**，大綱**不用**
 
 ---
 
