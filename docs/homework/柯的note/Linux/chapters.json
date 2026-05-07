@@ -1,0 +1,11 @@
+[
+  {"file": "ch1-linux.html",     "emoji": "🐧", "title": "CH1 — Linux 基礎認識",      "tag": "CH1"},
+  {"file": "ch3-shell.html",     "emoji": "💬", "title": "CH3 — Shell 基本操作",      "tag": "CH3"},
+  {"file": "ch4-filesystem.html","emoji": "📁", "title": "CH4 — 檔案系統",            "tag": "CH4"},
+  {"file": "ch5-disk.html",      "emoji": "💾", "title": "CH5 — 磁碟與檔案系統管理",  "tag": "CH5"},
+  {"file": "ch6-editor.html",    "emoji": "📝", "title": "CH6 — 文書編輯軟體",        "tag": "CH6"},
+  {"file": "ch7-account.html",   "emoji": "👤", "title": "CH7 — 使用者帳號管理",      "tag": "CH7"},
+  {"file": "ch8-network.html",   "emoji": "🌐", "title": "CH8 — 網路設定",            "tag": "CH8"},
+  {"file": "ch9-ssh.html",       "emoji": "🔐", "title": "CH9 — SSH 遠端登入",        "tag": "CH9"},
+  {"file": "ch10-process.html",  "emoji": "⚙️", "title": "CH10 — 系統管理程序",       "tag": "CH10"}
+]

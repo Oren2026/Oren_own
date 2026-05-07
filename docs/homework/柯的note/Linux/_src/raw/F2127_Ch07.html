@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 7.4.7.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-09T06:38:32"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Linux 屬於多人多工的作業系統 , 可讓不同的使用者從本地端登入</li>
+<li>無論是從本機或由遠端登入 , 使用者都必須在該台主機上擁有帳號才行</li>
+<li>本章會介紹系統的管理者與一般使用者的帳號 , 以及使用者的群組</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>想要使用 Linux 的使用者, 必須先取得一個合法的使用者帳號</li>
+<li>先來認識一下帳號的功能, 及系統管理者帳號與一般使用者帳號間的差別</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>掌控使用者身份</li>
+<li>資源共享, 不互相干擾</li>
+<li>權限管制, 維護系統安全</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>建立使用者帳號有許多種方法, 不管是要一次建立一個帳號, 或是想要一次建多個帳號, 本節都會告訴您如何操作</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在一個系統當中, 使用者的帳號名稱必須是唯一的</li>
+<li>假設要建立的帳號先被他人所佔用, 則會出現使用者已存在的訊息</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>解決使用者帳號管理問題,解決方法有 3 種</li>
+<ul>
+<li>管理者自己根據使用者的帳號來建立一份資料庫,可利用資料庫先查詢帳號存在與否</li>
+<li>檢查 /etc 目錄下的 passwd 檔案, 確認帳號是否已經存在</li>
+<li>執行 finger 帳號指令 (需另外安裝), 看看該帳號是否存在</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>passwd	檔案的內容格式</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>每個使用者帳號在 passwd 檔案中都有 7 個欄位</li>
+<ul>
+<li>1. 帳號名稱</li>
+<li>2. 使用者密碼</li>
+<li>3. 使用者識別碼 (UID, User ID)</li>
+<li>4. 群組識別碼 (GID, Group ID)</li>
+<li>5. 使用者相關資訊</li>
+<li>6. 使用者家目錄</li>
+<li>7. 使用者環境</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>預設的情況下, 任何使用者都可以讀取 /etc/passwd 檔案</li>
+<li>用ls 指令查看一下</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>示範更改 passwd 檔權限前後的差別</li>
+<li>更改前, 使用者 登入, 並執行 ls 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若管理者把 passwd 檔的權限更改為 &quot;rw------”</li>
+<li>只有 root 帳號方能讀取該檔案</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>用 useradd 指令建立使用者帳號</li>
+<li>系統更動 passwd 檔案</li>
+<li>同時修改 /etc/shadow 檔案</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<p> </p>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>每個帳號在 shadow 檔案中都有 9 個欄位</li>
+<ul>
+<li>1. 帳號名稱</li>
+<li>2. 使用者密碼</li>
+<li>3. 密碼最後變動的時間</li>
+<li>4. 密碼變動兩次之間, 至少需間隔的日數</li>
+<li>5. 密碼變動過後, 距離下次一定要更改密碼的日數</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>6. 離下次密碼必須變動日期前多少日, 就開始警告使用者</li>
+<li>7. 停權期限</li>
+<li>8. 帳號的使用期限</li>
+<li>9. 最後一個欄位為保留欄位</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>加入新的帳號記錄</li>
+<ul>
+<li>將新的使用者帳號加入 passwd 與 shadow 檔案</li>
+<li>存檔後接著編輯 shadow 檔案</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>最後請如下操作：</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>useradd	指令新增帳號時的基本設定</li>
+<ul>
+<li>這些設定都記錄在 /etc/login.defs 檔案中</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>在 /etc/default/useradd 檔案中也有家目錄位置、使用者環境、樣板目錄...等預設值的設定</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>安裝 Linux 之後, 系統預設即建立了 root 帳號</li>
+<li>此帳號為系統管理者, 對系統擁有完全的控制權, 可對系統做任何設定和修改 (甚至摧毀整個系統</li>
+<li>維護 root 帳號的安全便格外重要</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若建立的使用者帳號無法使用 sudo 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若想讓其他新建帳號也可以使用sudo  指令</li>
+<li>檢視 /etc/group 檔</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>切換帳號、變換身份</li>
+<li>若是想要同時更改工作目錄, 執行 su - 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可在 /etc 目錄中執行 touch nologin 指令</li>
+<li>產生一個檔名為 nologin 的檔案</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>重新設定密碼</li>
+<li>在開機顯示 GRUB 畫面時, 先按 Esc 或 Shift 鍵進入 GRUB 開機選單</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>修改完成後, 按 Ctrl + x 鍵啟動系統 (或按 F10 鍵), 即進入單人模式</li>
+<li>管理者若忘了 root 帳號的密碼, 可以先使用單人模式進入系統</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>當使用者畢業、離職或是逾期不繳費時, 我們可以考慮停用或是刪除使用者帳號, 以避免這些使用者繼續登入系統</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>停用帳號，但仍然保留其資料</li>
+<li>編輯 /etc/passwd 檔案</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>必須先刪除與該帳號相關的程式及工作排程</li>
+<li>刪除背景執行程式</li>
+<ul>
+<li>列出使用者 silent 執行的全部程式</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>要刪除這些程式, 可執行 kill 指令</li>
+</ul>
+<li>刪除排程工作</li>
+<ul>
+<li>執行下列指令檢查排程工作</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>使用者自行設定的排程工作還在系統中</li>
+<li>直接執行 sudo crontab -u 使用者名稱 -r 指令，刪除該使用者的排程設定檔案</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>刪除使用者的帳號與檔案</li>
+<ul>
+<li>使用 userdel 指令可以很方便地將使用者刪除</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>我們可依不同的性質自行建立群組, 視情況所需而分門別類</li>
+<li>當檔案或目錄隸屬於不同群組時, 群組的使用者也會受到群組權限的限制</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>許多群組, 詳細內容都記錄在 /etc/group 檔案中</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>檔案內的每一筆紀錄可分為 4 個欄位</li>
+<ul>
+<li>群組名稱</li>
+<li>密碼</li>
+<li>群組識別碼：就是 GID</li>
+<li>使用者帳號：隸屬此群組的使用者帳號, 一個使用者可同時隸屬於多個群組</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 groupadd 指令來建立群組</li>
+</ul>
+</body>
+</html>

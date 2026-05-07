@@ -1,0 +1,311 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 7.4.7.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-09T07:28:50"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>許多時候我們需要登入主機工作 , 卻偏偏分身乏術 , 無法坐在主機前面操作</li>
+<li>更多時候我們需要在兩台電腦間 傳送檔案資料 , 並且希望可以 “ 安全 &quot; 的傳送 , 不用擔心資料外洩</li>
+<li>上述需求,只要架設 SSH 伺服器都可以達成。</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>SSH (Secure SHell) 是指 SSH 通訊協定</li>
+<li>SSH 伺服器則是透過此協定, 來提供遠端登入及檔案傳輸的服務</li>
+<li>SSH 協定便在提供遠端登入及檔案傳輸服務時, 增加了將資料加密的機制</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>SSH 協定</li>
+<ul>
+<li>常用的是 SSH2, 其使用 22 號通訊埠, 具有以下 3 個優點</li>
+<li>可對傳輸中的資料加密</li>
+<li>可完全取代 Telnet、FTP 程式及 r 系列指令 (例如 rlogin、rsh、rcp...等)</li>
+<li>可轉送其他 X11 和 TCP/IP 的資料</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>支援 SSH 協定的程式，比較有名的有:</li>
+<ul>
+<li> SSH Communications Security 公司的 SSH (網址為 http://www.ssh.com/) </li>
+<li>OpenBSD 組織的 OpenSSH (網址為 http://www.openssh.org/)</li>
+</ul>
+<li>各 Linux 發行版所附的SSH 程式也是 OpenSSH</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以 sniffit 這個網管程式為例, 示範如何監測</li>
+<li>安裝好後請設定, 選擇要監測的網路介面</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>sniffit 會開始監測選定的網路介面</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> FTP 連線在傳輸過程中並沒有加密</li>
+<li>透過監測程式可以直接取得使用者傳送的所有資料 (包含使用者的帳號與密碼)</li>
+<li>要解決這個問題, 使用有加密的通訊協定是個不錯的選擇</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li><b>金鑰加密法 (Key Encryption)</b></li>
+<li>SSH 用金鑰來加密傳輸的資料, SSH 伺服器上存在著以下 2 種金鑰</li>
+<ul>
+<li>host key :私有金鑰、公開金鑰</li>
+<li>server key :預設每小時重新產生一次</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>成功建立連線後, sshd 會依下列的步驟處理：</li>
+<ul>
+<li>若從遠端的終端機視窗登入 SSH 伺服器, 並且成功建立連線後, 會顯示該使用者上一次登入伺服器的時間及 /etc/motd 公告訊息檔, 並記錄本次登入的時間</li>
+<li>檢查是否有 /etc/nologin 檔案的存在, 若有則結束連線</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>成功建立連線後, sshd 會依下列的步驟處理：</li>
+<ul>
+<li>切換到該使用者的權限</li>
+<li>設定基本的環境變數</li>
+<li>讀取使用者家目錄中的 .ssh/environment 檔 (預設沒有此檔案)</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>成功建立連線後, sshd 會依下列的步驟處理：</li>
+<ul>
+<li>切換到使用者家目錄</li>
+<li>若使用者家目錄中有 .ssh/rc 指令檔, 則執行此檔案, 否則執行 /etc/ssh/sshrc 指令檔</li>
+<li>執行使用者所指定的 shell 或命令</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>將 Linux 設置成 SSH 伺服器, 就能用其他</li>
+<p>	電腦遠端操作,先安裝openssh-server 套件</p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>將 Linux 設置成 SSH 伺服器, 就能用其他</li>
+<p>	電腦遠端操作,先安裝openssh-server 套件</p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可使用ssh 指令連接 SSH 伺服器,若使用 localhost 作為主機名稱, 就可以連線到自己</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可使用ssh 指令連接 SSH 伺服器,若使用 localhost 作為主機名稱, 就可以連線到自己</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>openssh-server 及 openssh-client 套件還安裝了9 個指令</li>
+<li>slogin 為 ssh 指令的符號連結</li>
+<ul>
+<li>scp：遠端複製檔案的程式 (secure copy)</li>
+<li>sftp：遠端傳輸檔案的程式,不過是以互動模式來上傳和下載檔案</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>ssh：此為 SSH 的用戶端程式, 主要用在遠端登入, 以管理主機</li>
+<li>ssh-keygen：管理、產生和轉換金鑰的程式</li>
+<li>ssh-agent：SSH 的認證代理程式</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>ssh-add：增加私有金鑰認證方式到代理程式上</li>
+<li>ssh-keyscan：收集別台主機 SSH 公開金鑰的指令</li>
+<li>sshd：SSH 的伺服端程式</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>  從 SSH 伺服器下載檔案</li>
+<ul>
+<li>A：執行 scp 指令</li>
+<li>B：指定 (伺服器上的) 使用者帳號、伺服器名稱及檔案路徑</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<p> </p>
+<ul>
+<ul>
+<li>C：若同時要下載多台機器上的檔案, 可在此加上其他伺服器的使用者帳號及檔案路徑</li>
+<li>D：在用戶端存放檔案的路徑, 如 /tmp</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以 tony 及 benny 帳號登入 SSH 伺服器</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>上傳檔案到 SSH 伺服端主機</li>
+<ul>
+<li>A：執行 scp 指令</li>
+<li>B：要上傳檔案的路徑</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>上傳檔案到 SSH 伺服端主機</li>
+<ul>
+<li>C：若有其他檔案要上傳請寫於此處</li>
+<li>D：指定帳號、伺服器名稱及檔案要儲存的路徑</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>上傳 tony 家目錄下的 myfile 及 result.txt 檔, 到伺服端benny 帳號的 /home/benny/ 目錄下</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>sftp 指令採用互動交談方式操作</li>
+<li>搭配 put、get 指令來上傳和下載檔案</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>認證方式有 3 種</li>
+<li>使用密碼認證方式登入</li>
+<li>使用金鑰認證方式登入</li>
+<li>透過代理程式登入</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用密碼認證方式登入</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>也可以直接使用指定帳號的方式登入</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>或</li>
+<li>執行 ssh 指令時, 指定登入遠端主機後要執行的指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>與遠端主機連線時出現錯誤訊息</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用金鑰認證方式登入</li>
+<li>以 ssh-keygen 指令產生金鑰</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>產生 RSA 加密的金鑰</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>先在用戶端上操作測試</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若輸入了錯誤的通行密碼</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>如果不想使用通行密碼, 則可依下列方式來產生不含通行密碼的金鑰</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>建立連線後會直接登入, 不會要求任何密碼</li>
+<li>本機登入確認無誤後, 就可以把 authorized _keys2 這個檔案複製到遠端的主機</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以用戶端主機上的 tony 帳號連線到 server 主機上的 sunny 帳號做測試</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>也可以使用 ECDSA 金鑰的方式來認證</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>也可以使用 ECDSA 金鑰的方式來認證</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>透過代理程式登入</li>
+<li>用 ssh-agent 指令來幫我們記憶通行密碼</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>結束代理程式</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>收集公開金鑰的指令：ssh-keyscan</li>
+<li>操作方式如下</li>
+<p> </p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>收集公開金鑰的指令：ssh-keyscan</li>
+<p> </p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>到 https://www.putty.org 網址下載 Windows 的 SSH 用戶端程式</li>
+<li>安裝好後按開始鈕</li>
+<li>執行『所有應用程式/PuTTY (64-bit)/ PuTTY』</li>
+<p> </p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> Windows 10 或 Windows 11 作業系統, 也可以使用內建的 SSH 用戶端程式</li>
+<li> 請按開始鈕</li>
+<li>搜尋 &quot;CMD&quot; 關鍵字</li>
+<li>開啟 CMD 視窗</li>
+<p> </p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若要傳輸檔案, 可到 <a href="https://winscp.net/eng/download.php"><u>https://winscp.net/eng/download.php</u></a> </li>
+<li>下載並安裝 WinSCP 程式</li>
+<li>安裝完畢後按開始鈕</li>
+<li>執行『所有應用程式/WinSCP』 </li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 Windows 10 或 Windows 11 內建的 SFTP 用戶端程式</li>
+<li>請按開始鈕, 搜尋 &quot;CMD&quot; 關鍵字</li>
+<li>開啟 CMD 視窗</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+</body>
+</html>

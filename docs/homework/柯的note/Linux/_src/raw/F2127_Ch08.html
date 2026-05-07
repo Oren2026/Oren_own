@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 7.4.7.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-09T07:09:06"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>本 章 將 為 讀 者 說 明 如 何 使 Linux 系 統 連 上 Internet</li>
+<li>安裝網路相關套件</li>
+<ul>
+<li>Ubuntu 預設沒有安裝 ifconfig 指令</li>
+<li>這個指令可以讓您檢視所有網路介面的狀態</li>
+<li>請如下安裝：</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>現在已經有許多人申請了 ADSL 或光纖, 享受不限時數的 xDSL 寬頻上網方式</li>
+<li>Linux 當然也可以使用 xDSL 上網</li>
+<li>本節主要是介紹如何使用非固定制 (或稱計時制、撥接制) 的寬頻上網</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>幫助設定撥接 xDSL</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>安裝好 pppoeconf 套件後, 就可以設定使用 xDSL 撥接上網了。請如下操作：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>您可如下檢查是否正常撥接連線成功：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可使用 sudo poff 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 sudo pondsl-provider 指令</li>
+<li>可在不重新開機的狀態下, 再次連上 xDSL</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>本節將介紹如何在文字模式下修改網路卡的設定值, 讓專線或固定制 的用戶連線上網</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>先執行 nmcli connection show 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>也可以執行 nmcli device status 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>假設要設定的 IP 位址為 10.10.10.100</li>
+<li>網路遮罩為 255.0.0.0 (可簡寫為 8)</li>
+<li>預設閘道位址為 10.10.10.1</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>假設要將 DNS 伺服器設為Google 提供的 8.8.8.8</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 ifconfig 及 route -n 指令</li>
+<li>檢查設定是否正確</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 nmcli device show 指令</li>
+<li>檢查設定是否正確</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若您是以固定 IP 的方式上網, 而想要改用 DHCP 的方式上網, 請如下操作：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>將 “enp3s0” 有線網路介面的網路設定</li>
+<li>由固定 IP 改為DHCP</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>現在很多地方都有提供無線上網的熱點 (HotSpot)</li>
+<li>因此收起主機後面的網路線, 讓 Linux 也能體驗無線網路的便利</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>檢查系統是否正確驅動無線網路卡</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>列出無線網路基地台列表</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>假設連接 &quot;Caffeine-MIX2&quot; 無線網路基地台</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>檢查是否有正常取得 IP 位址</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 ifconfig 指令, 確定網路卡有啟動且設定正確</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>如果網路卡沒有啟動, 可執行下列指令啟動網路服務</li>
+<li> 執行如下的指令也有相同的效果</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 ping 指令, 確定區域網路正常</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 route 指令, 確定閘道器 IP 位址設定正確</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>確定閘道器運作正常</li>
+<li>確定對外連線正常</li>
+<li>執行 ping 指令, 檢查是否可連結完整網域名稱</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>若無法使用完整網域名稱連結網路, 請檢查 DNS 伺服器的 IP 位址是否設定正確</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>若無法使用完整網域名稱連結網路, 請檢查 DNS 伺服器的 IP 位址是否設定正確</li>
+</ul>
+</ul>
+</body>
+</html>
