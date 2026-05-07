@@ -23,47 +23,55 @@
     <header class="note-header">
       <div class="note-date">2026 年 05 月 07 日</div>
       <h1 class="note-title">CH3 — Shell 基本操作</h1>
-      <div class="note-tags"><span class="note-tag">CH3</span><span class="note-tag">Linux</span></div>
+      <div class="note-tags">
+        <span class="note-tag">CH3</span>
+        <span class="note-tag">Linux</span>
+      </div>
     </header>
     <h2>📋 大綱</h2>
     <div class="toc-grid">
-      <div class="toc-item"><span class="toc-num">1</span><span>💬 💬 Shell 簡介</span></div>
-      <div class="toc-item"><span class="toc-num">2</span><span>💬 🖥️ 各 OS 的 Shell</span></div>
-      <div class="toc-item"><span class="toc-num">3</span><span>💬 ⌨️ 提示符號</span></div>
-      <div class="toc-item"><span class="toc-num">4</span><span>💬 🔄 檢視與更換 Shell</span></div>
-      <div class="toc-item"><span class="toc-num">5</span><span>💬 📜 Bash 歷程 (History)</span></div>
-      <div class="toc-item"><span class="toc-num">6</span><span>💬 📌 Bash 別名 (Alias)</span></div>
-      <div class="toc-item"><span class="toc-num">7</span><span>💬 ⇥ Bash 指令補全</span></div>
-      <div class="toc-item"><span class="toc-num">8</span><span>💬 ⚙️ 背景執行</span></div>
-      <div class="toc-item"><span class="toc-num">9</span><span>💬 🔀 重導與管線</span></div>
-      <div class="toc-item"><span class="toc-num">10</span><span>💬 🔣 Shell 特殊字元</span></div>
-      <div class="toc-item"><span class="toc-num">11</span><span>💬 🌐 環境變數與 PATH</span></div>
+      <div class="toc-item"><span class="toc-num">1</span><span>💬 Shell 簡介</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>💬 各 OS 的 Shell</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>💬 提示符號</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>💬 檢視與更換 Shell</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>💬 Bash 簡介</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>💬 指令歷程 (History)</span></div>
+      <div class="toc-item"><span class="toc-num">7</span><span>💬 別名 (Alias)</span></div>
+      <div class="toc-item"><span class="toc-num">8</span><span>💬 指令補全</span></div>
+      <div class="toc-item"><span class="toc-num">9</span><span>💬 背景執行 (fg / bg)</span></div>
+      <div class="toc-item"><span class="toc-num">10</span><span>💬 系統分析指令 (ps)</span></div>
+      <div class="toc-item"><span class="toc-num">11</span><span>💬 重導 (Redirect) 與 管線 (Pipe)</span></div>
+      <div class="toc-item"><span class="toc-num">12</span><span>💬 Shell 特殊字元</span></div>
+      <div class="toc-item"><span class="toc-num">13</span><span>💬 環境變數</span></div>
+      <div class="toc-item"><span class="toc-num">14</span><span>💬 PATH 環境變數</span></div>
     </div>
+
     <section id="s1">
-      <h2>💬 1｜💬 Shell 簡介</h2>
+      <h2>💬 1｜Shell 簡介</h2>
       <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
         <li>shell 的功能在於搭起使用者與作業系統間的溝通橋樑 , 提供基本的操作介面</li>
         <li>我們可將 shell 看成是一種使用者環境</li>
         <li>shell 負責使用者和作業系統兩者之間的</li>
         <li>shell也稱為指令解譯器</li>
-        <li>溝通</li>
-        <li>每一種作業系統都有其特定的 shell</li>
 
       </ul></div>
     </section>
+
     <section id="s2">
-      <h2>💬 2｜🖥️ 各 OS 的 Shell</h2>
+      <h2>💬 2｜各 OS 的 Shell</h2>
       <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
+        <li>每一種作業系統都有其特定的 shell</li>
         <li>MS DOS 的標準 shell 是 command.com</li>
         <li>Windows 的 shell 是 explorer.exe</li>
         <li>Unix 之類的作業系統, 其使用的 shell 各有不同</li>
-        <li>更換 shell 之前, 先認識提示符號並瞭解目前正在使用何種shell</li>
 
       </ul></div>
     </section>
+
     <section id="s3">
-      <h2>💬 3｜⌨️ 提示符號</h2>
+      <h2>💬 3｜提示符號</h2>
       <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
+        <li>更換 shell 之前, 先認識提示符號並瞭解目前正在使用何種shell</li>
         <li>指令提示符號</li>
         <li>一般是在使用者目前的目錄加上 $、%、# 或 > 符號</li>
         <li>用處是告訴使用者現在可以下達指令</li>
@@ -73,8 +81,9 @@
 
       </ul></div>
     </section>
+
     <section id="s4">
-      <h2>💬 4｜🔄 檢視與更換 Shell</h2>
+      <h2>💬 4｜檢視與更換 Shell</h2>
       <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
         <li>執行 sudo apt-get install finger 指令安裝工具，再執行 finger 使用者帳號 指令就能查詢使用者資料</li>
         <li>更換 shell :最簡單的方法就是直接執行該 shell 之名稱</li>
@@ -86,60 +95,87 @@
 
       </ul></div>
     </section>
+
     <section id="s5">
-      <h2>💬 5｜📜 Bash 歷程 (History)</h2>
+      <h2>💬 5｜Bash 簡介</h2>
+      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
+        <li>每一種 shell 都會有些許的不同</li>
+        <li>Ubuntu 的預設值是 bash</li>
+        <li>接下來讓我們一同看看 bash 的特色</li>
+
+      </ul></div>
+    </section>
+
+    <section id="s6">
+      <h2>💬 6｜指令歷程 (History)</h2>
       <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
         <li>指令歷程都記錄在使用者家目錄裡的 .bash_history 檔案內</li>
         <li>執行 history 指令可列出最近使用過的指令及其編號</li>
-        <li>除了直接指定編號之外, 也能根據 "減法" 原則執行指令</li>
+        <li>除了直接指定編號之外, 也能根據 &quot;減法&quot; 原則執行指令</li>
 
       </ul></div>
     </section>
-    <section id="s6">
-      <h2>💬 6｜📌 Bash 別名 (Alias)</h2>
+
+    <section id="s7">
+      <h2>💬 7｜別名 (Alias)</h2>
       <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
+        <li>別名的作用可讓使用者自訂新的指令名稱來替代原有的指令</li>
         <li>欲得知目前有多少指令被定義了別名, 可執行 alias 指令</li>
         <li>unalias 指令取消別名</li>
         <li>若希望每次登入時系統會自動設定別名,</li>
-        <li>請將 alias 指令加入該帳號家目錄下的 .bashrc 檔案裡</li>
 
       </ul></div>
     </section>
-    <section id="s7">
-      <h2>💬 7｜⇥ Bash 指令補全</h2>
+
+    <section id="s8">
+      <h2>💬 8｜指令補全</h2>
       <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
+        <li>指令補全</li>
         <li>假使輸入資料不足，此時再按一次 Tab 鍵, bash 就會把所有可能的指令都列出來</li>
 
       </ul></div>
     </section>
-    <section id="s8">
-      <h2>💬 8｜⚙️ 背景執行</h2>
+
+    <section id="s9">
+      <h2>💬 9｜背景執行 (fg / bg)</h2>
       <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
+        <li>有些時候我們所使用的程式或指令需要長時間執行</li>
         <li>有效的方法是：將程式或指令放到背景執行</li>
         <li>&指令</li>
         <li>bg指令</li>
+        <li>如果使用者目前有程序在背景執行中, 使用者可以下達 fg指令, 將它從背景中移到前景執行</li>
+        <li>再登入時, 可用 ps -aux 指令看到程序仍在背景中執行</li>
 
       </ul></div>
     </section>
-    <section id="s9">
-      <h2>💬 9｜🔀 重導與管線</h2>
+
+    <section id="s10">
+      <h2>💬 10｜系統分析指令 (ps)</h2>
       <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
         <li>Linux 系統管理很多時候都是在檢視與分析紀錄檔或是處理各種指令的輸出結果</li>
         <li>這會用到多個文字搜尋與處理的相關指令</li>
+
+      </ul></div>
+    </section>
+
+    <section id="s11">
+      <h2>💬 11｜重導 (Redirect) 與 管線 (Pipe)</h2>
+      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
         <li>重導 (redirect) 可將某指令的結果輸出到檔案中</li>
-        <li>它有兩種用法：">“ 和 ">>"</li>
-        <li>管線 (pipe) 指令的符號是 "|"</li>
+        <li>它有兩種用法：&quot;>“ 和 &quot;>>&quot;</li>
+        <li>管線 (pipe) 指令的符號是 &quot;|&quot;</li>
         <li>grep 指令可以搜尋特定字串並顯示出來, 一般用來過濾先前的結果, 避免顯示太多不必要的資訊</li>
         <li>若是使用一般權限的使用者執行, 上例的輸出結果會包含許多錯誤訊息</li>
         <li>因為沒有指定檔案的副檔名, 所以 s 開頭的目錄也會被搜尋, 您可使用 -s 參數消除</li>
         <li>透過管線，將 ls 指令的輸出結果傳給 grep 指令過濾</li>
+        <li>使用 tee 指令就可以在螢幕上顯示執行結果, 也可以將執行結果存成指定的檔案</li>
 
       </ul></div>
     </section>
-    <section id="s10">
-      <h2>💬 10｜🔣 Shell 特殊字元</h2>
+
+    <section id="s12">
+      <h2>💬 12｜Shell 特殊字元</h2>
       <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>使用 tee 指令就可以在螢幕上顯示執行結果, 也可以將執行結果存成指定的檔案</li>
         <li>shell 下有些特殊字元,補系統指令之不足</li>
         <li>#：標示註解, 這些說明不會被當成指令或程式執行</li>
         <li>&：背景方式執行,例如執行 sudo updatedb & 指令</li>
@@ -150,17 +186,18 @@
         <li>..：表示上一層的目錄</li>
         <li>;：可用它將多個指令分隔開來, 讓指令依序執行</li>
         <li>>：把執行結果輸入一個檔案中</li>
+        <li>>>：把執行結果附加到一個檔案後面</li>
+        <li>\：脫逸符號 (escape), 解除特殊字元的含意</li>
+        <li>|：建立管線, 將前一個指令的執行結果輸入給下一個指令使用</li>
+        <li>~：使用者登入後所在的目錄, 也就是使用者家目錄</li>
+        <li>[英文字母或數字]：對應括弧中任意範圍的字元</li>
 
       </ul></div>
     </section>
-    <section id="s11">
-      <h2>💬 11｜🌐 環境變數與 PATH</h2>
+
+    <section id="s13">
+      <h2>💬 13｜環境變數</h2>
       <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>[英文字母或數字]：對應括弧中任意範圍的字元</li>
-        <li>也可以指定字母的範圍</li>
-        <li>也可以指定數字的範圍</li>
-        <li>[!英文字母或數字]：排除括弧中任意範圍的字元</li>
-        <li>{英文字母或數字}：對應括弧中的任意字元</li>
         <li>shell 本身有一組用來儲存系統資訊的變數, 稱為環 境 變 數 (environment variables)</li>
         <li>環境變數依據 shell 種類的不同, 會有不一樣的變數及設定方法</li>
         <li>在 bash 下可用 set 指令查詢環境變數</li>
@@ -171,7 +208,20 @@
 
       </ul></div>
     </section>
-    <footer class="note-footer"><span>📖 柯的note — Linux</span></footer>
+
+    <section id="s14">
+      <h2>💬 14｜PATH 環境變數</h2>
+      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
+        <li>有時候執行某些程式時, 會出現指令找不到的情形</li>
+        <li>每個使用者的家目錄以及許多其他的目錄預設並沒放入 PATH 環境變數中, 可用下面的方式來執行現行目錄下的程式</li>
+        <li>或者是將現行目錄也加入 PATH 環境變數中</li>
+
+      </ul></div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
   </main>
   <script src="right-nav.js"></script>
 </body>
