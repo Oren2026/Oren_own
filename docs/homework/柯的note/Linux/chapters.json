@@ -64,5 +64,11 @@
     "emoji": "🌐",
     "title": "CH8 — 網路設定",
     "tag": "CH8"
+  },
+  {
+    "file": "ch9-ssh.html",
+    "emoji": "🔐",
+    "title": "CH9 — SSH 遠端登入",
+    "tag": "CH9"
   }
 ]

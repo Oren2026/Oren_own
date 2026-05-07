@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH9 — SSH 遠端登入 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH9 — SSH 遠端登入</h1>
+      <div class="note-tags"><span class="note-tag">CH9</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>🔐 SSH 簡介</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>🔐 SSH vs FTP 安全性</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>🔐 金鑰加密原理</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>🔐 sshd 連線流程</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>🔐 安裝與基本使用</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>🔐 scp 遠端複製</span></div>
+      <div class="toc-item"><span class="toc-num">7</span><span>🔐 sftp 互動模式</span></div>
+      <div class="toc-item"><span class="toc-num">8</span><span>🔐 密碼認證</span></div>
+      <div class="toc-item"><span class="toc-num">9</span><span>🔐 金鑰認證</span></div>
+      <div class="toc-item"><span class="toc-num">10</span><span>🔐 Windows 用戶端</span></div>
+    </div>
+
+    <!-- S1: SSH 簡介 -->
+    <section id="s1">
+      <h2>🔐 1｜SSH 簡介</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🌍 SSH 的用途</div>
+        <p>SSH（Secure SHell）可達成兩件事：<strong>遠端登入主機</strong>（解決分身乏術的問題）與<strong>安全傳送檔案</strong>（加密傳輸，不怕資料外洩）。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">✨ SSH2 的三大優點</div>
+        <ul style="margin:0.5rem 0 0 1.2rem;padding-left:0;">
+          <li>可對傳輸中的資料<strong>加密</strong></li>
+          <li>可完全取代 Telnet、FTP、r 系列指令（rlogin、rsh、rcp）</li>
+          <li>可轉送其他 X11 和 TCP/IP 的資料</li>
+        </ul>
+      </div>
+      <div class="highlight-box">
+        <p>SSH2 預設使用 <code>22</code> 號通訊埠。Linux 發行版附的 SSH 程式皆為 <strong>OpenSSH</strong>（http://www.openssh.org/）。</p>
+      </div>
+    </section>
+
+    <!-- S2: SSH vs FTP -->
+    <section id="s2">
+      <h2>🔐 2｜SSH vs FTP 安全性</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">⚠️ FTP 的安全問題</div>
+        <p>FTP 連線在傳輸過程中<strong>沒有加密</strong>，透過監測程式可直接取得使用者傳送的<strong>帳號與密碼</strong>。</p>
+      </div>
+      <div class="highlight-box">
+        <p>解決方案：使用有加密的通訊協定，例如 SSH（scp / sftp）或 HTTPS。</p>
+      </div>
+    </section>
+
+    <!-- S3: 金鑰加密 -->
+    <section id="s3">
+      <h2>🔐 3｜金鑰加密原理</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🔑 SSH 伺服器的兩種金鑰</div>
+        <p>SSH 伺服器上存在兩種金鑰，用於加密傳輸資料：</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>金鑰類型</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Host Key（主機金鑰）</td><td>包含私有金鑰與公開金鑰，伺服器身份驗證用</td></tr>
+          <tr><td>Server Key（伺服器金鑰）</td><td>預設每小時重新產生一次，提高安全性</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S4: sshd 連線流程 -->
+    <section id="s4">
+      <h2>🔐 4｜sshd 連線流程</h2>
+      <p>用戶端連線成功後，sshd 依序執行以下步驟：</p>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">登入紀錄</div>
+        <div class="layer-card-desc">顯示上次登入時間及 /etc/motd 公告訊息檔，並記錄本次登入時間</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">檢查停權</div>
+        <div class="layer-card-desc">檢查是否有 /etc/nologin 檔案，若有則立即結束連線</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">切換權限</div>
+        <div class="layer-card-desc">切換至該使用者的權限，設定基本環境變數，讀取 ~/.ssh/environment（若存在）</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">4</div>
+        <div class="layer-card-name">執行 shell</div>
+        <div class="layer-card-desc">切換至家目錄，若有 ~/.ssh/rc 則執行之，否則執行 /etc/ssh/sshrc，最後啟動使用者的 shell 或指定命令</div>
+      </div>
+    </section>
+
+    <!-- S5: 安裝與基本使用 -->
+    <section id="s5">
+      <h2>🔐 5｜安裝與基本使用</h2>
+      <div class="highlight-box">
+        <p>安裝 openssh-server：<code>sudo apt install openssh-server openssh-client</code></p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>用途</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>ssh 帳號@主機</code></td><td>遠端登入（slogin 為符號連結）</td></tr>
+          <tr><td><code>scp</code></td><td>遠端複製檔案（secure copy）</td></tr>
+          <tr><td><code>sftp</code></td><td>遠端傳輸檔案，互動模式上傳/下載</td></tr>
+          <tr><td><code>ssh-keygen</code></td><td>產生與管理 RSA/ECDSA 金鑰</td></tr>
+          <tr><td><code>ssh-agent</code></td><td>SSH 認證代理程式，記憶通行密碼</td></tr>
+          <tr><td><code>ssh-add</code></td><td>將私有金鑰加入代理程式</td></tr>
+          <tr><td><code>ssh-keyscan</code></td><td>收集別台主機的 SSH 公開金鑰</td></tr>
+          <tr><td><code>sshd</code></td><td>SSH 伺服端程式（ daemon）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S6: scp -->
+    <section id="s6">
+      <h2>🔐 6｜scp 遠端複製</h2>
+      <div class="highlight-box">
+        <p><strong>下載檔案：</strong></p>
+        <p><code>scp 帳號@伺服器:檔案路徑 本地路徑</code></p>
+        <p>範例：<code>scp tony@server:/home/tony/report.txt /tmp/</code></p>
+        <p><strong>上傳檔案：</strong></p>
+        <p><code>scp 本地檔案 帳號@伺服器:目標路徑</code></p>
+        <p>範例：<code>scp myfile.txt benny@server:/home/benny/</code></p>
+        <p>可一次指定多台伺服器，一次完成多點傳輸。</p>
+      </div>
+    </section>
+
+    <!-- S7: sftp -->
+    <section id="s7">
+      <h2>🔐 7｜sftp 互動模式</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📂 sftp 基本操作</div>
+        <p>sftp 採用互動交談方式，使用 <code>put</code> 和 <code>get</code> 指令上傳與下載檔案，連線全程加密。</p>
+      </div>
+      <div class="highlight-box">
+        <p><strong>Windows 內建 SFTP：</strong>Windows 10/11 可在 CMD 中直接使用 <code>sftp</code> 指令。</p>
+      </div>
+    </section>
+
+    <!-- S8: 密碼認證 -->
+    <section id="s8">
+      <h2>🔐 8｜密碼認證</h2>
+      <div class="highlight-box">
+        <p><strong>基本語法：</strong></p>
+        <p><code>ssh 帳號@主機</code>（互動式輸入密碼）</p>
+        <p><code>ssh 帳號@主機 指令</code>（直接執行遠端指令後斷線）</p>
+        <p>若出現錯誤訊息，檢查伺服器是否已啟動 sshd 且通訊埠 22 未被阻擋。</p>
+      </div>
+    </section>
+
+    <!-- S9: 金鑰認證 -->
+    <section id="s9">
+      <h2>🔐 9｜金鑰認證</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">產生金鑰</div>
+        <div class="layer-card-desc"><code>ssh-keygen -t rsa</code>（RSA 加密）或 <code>ssh-keygen -t ecdsa</code>（ECDSA）</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">本機測試</div>
+        <div class="layer-card-desc">本機先測試：<code>ssh-copy-id localhost</code> 將公鑰寫入 ~/.ssh/authorized_keys</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">複製到遠端</div>
+        <div class="layer-card-desc">將本機 ~/.ssh/id_rsa.pub 內容複製到遠端 ~/.ssh/authorized_keys</div>
+      </div>
+      <div class="highlight-box">
+        <p><strong>無密碼登入：</strong>若不想每次輸入密碼，可產生不含通行密碼的金鑰。建立連線後直接登入，不要求任何密碼。</p>
+        <p><strong>代理程式：</strong><code>ssh-agent</code> 可幫我們記憶通行密碼，<code>ssh-add</code> 將私有金鑰加入代理。</p>
+      </div>
+    </section>
+
+    <!-- S10: Windows 用戶端 -->
+    <section id="s10">
+      <h2>🔐 10｜Windows 用戶端</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>軟體</th><th>用途</th><th>下載</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>PuTTY</td><td>Windows SSH/Telnet/Rlogin 用戶端</td><td>https://www.putty.org</td></tr>
+          <tr><td>WinSCP</td><td>SFTP/SCP 圖形化檔案傳輸</td><td>https://winscp.net/eng/download.php</td></tr>
+          <tr><td>Windows 10/11 內建 SSH</td><td>CMD 中直接用 ssh/scp/sftp 指令</td><td>搜尋 CMD 即可</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>
