@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH6 — 文書編輯軟體 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <a href="ch1-linux.html" class="sidebar-link">🐧 CH1</a>
+    <a href="ch3-shell.html" class="sidebar-link">💬 CH3</a>
+    <a href="ch4-filesystem.html" class="sidebar-link">📁 CH4</a>
+    <a href="ch5-disk.html" class="sidebar-link">💾 CH5</a>
+    <a href="ch6-editor.html" class="sidebar-link active">📝 CH6</a>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH6 — 文書編輯軟體</h1>
+      <div class="note-tags"><span class="note-tag">CH6</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>📝 ✏️ nano 編輯器</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>📝 📝 vim 三種模式</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>📝 📂 vim 開啟與儲存檔案</span></div>
+    </div>
+    <section id="s1">
+      <h2>📝 1｜✏️ nano 編輯器</h2>
+      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
+        <li>Linux 提供了齊全的文書編輯軟體 , 讓使用者可以依照自己的喜好來作選擇</li>
+        <li>本章將為您介紹 nano 與 vim 這 2 個在文字模式下常用的文書編輯軟體</li>
+        <li>nano 是 Ubuntu 內建的文書編輯軟體, 使用者介面相當方便</li>
+        <li>即使是第一次使用的人都能夠很快熟悉</li>
+        <li>nano的編輯環境</li>
+        <li>執行 nano 指令或是執行 nano 檔案名稱 編輯一個檔案</li>
+        <li>執行 nano 指令或是執行 nano 檔案名稱 編輯一個檔案</li>
+        <li>顯示輔助說明 -- ^G</li>
+        <li>儲存檔案 -- ^O</li>
+        <li>插入檔案 -- ^R</li>
+        <li>捲動畫面 -- ^Y 、^V</li>
+        <li>剪下與貼上整行文字 -- ^K、^U</li>
+
+      </ul></div>
+    </section>
+    <section id="s2">
+      <h2>📝 2｜📝 vim 三種模式</h2>
+      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
+        <li>顯示目前游標位置 -- ^C</li>
+        <li>結束 nano -- ^X</li>
+        <li>執行 sudo apt install vim 指令安裝</li>
+        <li>在文字模式視窗或虛擬主控台中執行 vim 指令</li>
+        <li>啟動 vim 文書編輯軟體</li>
+        <li>vim 有 3 種主要的模式</li>
+        <li>normal mode：無法輸入任何文字, 不過可以利用按鍵指令來執行許多操作命令</li>
+        <li>insert mode：按 a、i 或 o 鍵, 即可進入,可以輸入文字內容</li>
+        <li>command-line mode：按 : 即會進入,可以搜尋字串、儲存檔案或結束編輯</li>
+
+      </ul></div>
+    </section>
+    <section id="s3">
+      <h2>📝 3｜📂 vim 開啟與儲存檔案</h2>
+      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
+        <li>執行 vim</li>
+        <li>在文字模式視窗或虛擬主控台中執行 vim 指令</li>
+        <li>或執行 vim 檔案名稱指定要編輯的檔案</li>
+        <li>用vim編寫文件: 按 i 鍵、 a 或 o 鍵切換到 insert mode</li>
+        <li>按 a 鍵：從目前游標所在位置的下一個字元開始輸入。</li>
+        <li>按 i 鍵：從游標所在位置插入新輸入的字元。</li>
+        <li>按 o 鍵：新增加一行, 並將游標移到下一行的開頭</li>
+        <li>按 Esc 鍵回到normal mode, 然後按 : 鍵進入 command-line mode</li>
+        <li>輸入 “w 檔案的路徑及名稱"</li>
+        <li>進入vim後 ,開啟既有文字檔</li>
+        <li>按 : 鍵進入 command-line mode</li>
+        <li>輸入 “e 檔案的路徑及名稱"</li>
+
+      </ul></div>
+    </section>
+    <footer class="note-footer"><span>📖 柯的note — Linux</span></footer>
+  </main>
+  <script src="right-nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 25.8.4.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-09T05:04:30"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 Linux 磁碟與檔案系統管理是日常會用到的技能</li>
+<li>本章將介紹如何掛載 USB 裝置、光碟 ( 或 ISO 檔 )、安裝第 2 顆硬碟、檢查磁碟的使用狀況及連結與符號連結的使用</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在 Linux 的文字模式下要使用 USB 裝置,使用者需要執行掛載的指令, 才可讀寫資料</li>
+<li>掛載, 就是將儲存媒體 (如光碟或硬碟) 指定成系統中的某個目錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 <b>sudo mount </b>指令以管理者權限執行</li>
+<li>將 USB 隨身碟掛載在 /media/usbdisk 目錄 , 但預設並沒有此目錄</li>
+<li>以<b> sudo mkdir /media/usbdisk</b>指令建立</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>如下操作查詢 USB 隨身碟的裝置名稱</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行掛載的 mount 指令, 將隨身碟掛載至系統中</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>透過存取該目錄, 來讀隨身碟上的資料</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>掛載外接式硬碟或讀卡機</li>
+<li>掛載之前, 必須先建立好對應的目錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>舉例 :有一個 2TB 的外接式硬碟, 其中又分成 2 個 1TB 的分割區</li>
+<li>先建立 /media/usbdisk、/media /usbdisk2 這 2 個目錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>卸載的umount指令</li>
+<li>無法成功卸載隨身碟</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 fuser -u /media/usbdisk/ 指令</li>
+<li>可以查出使用該目錄的程序與使用者</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Linux 預設只允許 root 使用者執行 mount 指令</li>
+<li>一般使用者執行上述指令, 則會出現錯誤訊息</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>開放一般使用者掛載隨身碟</li>
+<li>以 root 使用者執行 sudo vi /etc/sudoers 指令如下修改</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>掛載使用 sudo mount /dev/sdb1 /media/usbdisk</li>
+<li>卸載則是使用 sudo umount</li>
+<p>  /media/usbdisk</p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>一般使用者以 sudo 指令執行其他指令, 就會出現權限不夠的錯誤訊息</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在 Linux 下掛載光碟機</li>
+<li>使用完畢執行卸載的 umount 指令後, 才能取出光碟片</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>存取 ISO 檔中的檔案，可如下掛載 ISO 檔</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>有時覺得系統反應很慢, 除了可能有程序占用CPU、記憶體資源外, 若有程序或使用者持續讀寫磁碟也有可能影響系統效能</li>
+<li>本節將介紹查詢磁碟剩餘空間的 df 指令與監控磁碟讀寫狀況的dstat 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>查詢磁碟剩餘空間的df指令</li>
+<ul>
+<li>-h：會將數值除以 1024 以方便閱讀</li>
+<li>-T：顯示檔案系統的格式, 例如：ext3、ext4...</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>檢查磁碟空間的使用狀況</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>列出占用空間的 10大目錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>如下操作</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>dstat 指令也可以監看 CPU (使用 &quot;-c&quot; 參數) 與網路 (使用 &quot;-n“ 參數) 的讀寫狀態</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 iotop 指令來查看是哪個使用者或程式在使用</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若有懷疑的使用者, 可用 “-u“ 參數加上使用者名稱</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>本節將說明如何使用 ln (link) 指令建立檔案的硬連結與符號連結, 以及使用的時機</li>
+<li>執行 ls -l 指令列出檔案資訊時, 會看到類似下面這些內容：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在 Linux 的檔案系統中, 比較常見的是符號連結 (symbolic link)</li>
+<li>若有兩個 (或以上) 檔案使用相同的 inode, 稱之為硬連結(hard link)</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>硬連結、符號連結與複製檔案的差別</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>硬連結、符號連結與複製檔案的差別</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>單純的檔案複製方式, 會佔用磁碟空間</li>
+<li>建立<b>硬連結 (hard link)</b></li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 ls -l 指令, 看看複製的 LambertFile 與硬連結的 LambertLink 有甚麼不同</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 ls -i 指令</li>
+<li>硬連結的檔案，inode 編號一樣</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>用複製而非連結的方法, 便會是兩個不相干的檔案, 各自擁有其 inode 編號</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>ln - s 指令</li>
+<li>執行 ls -l 指令觀看 lambert 目錄的情形</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>符號連結本身也會佔用一個 inode</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>由於連結的方式不同, 硬連結與符號連結有著以下的差異</li>
+<ul>
+<li>當原檔刪除後, 符號連結將會失效, 硬連結則仍然可以繼續使用</li>
+<li>硬連結只能連結同一個分割區內的檔案, 而符號連結可以跨越不同分割區</li>
+<li>硬連結不能連結目錄,符號連結可以指向任何目錄</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>與版本相關的檔案, 一般會使用符號連結</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在 Windows 下可以使用 mklink 指令來建立硬連結與符號連結</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Linux 操作一段時間後, 隨著檔案的增加, 您可能會發現原來的硬碟不夠用了, 需要加裝一個新的硬碟才行</li>
+<li>接下來將介紹如何在 Linux 安裝第 2 顆硬碟</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以 fdisk 指令來分割一台連接於 /dev/sdb 的 1TB 硬碟為例</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>格式化硬碟</li>
+<ul>
+<li>執行 mkfs.ext4 指令</li>
+</ul>
+<li>掛載成某個目錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>開機時自動掛載</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Ubuntu 在安裝時若選擇讓系統自動分割硬碟, 系統並不會特別的建立一個獨立的 swap 分割區</li>
+<li>取而代之的是在系統的根目錄下建立一個名</li>
+<p>為 swapfile 的 swap 檔案</p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>利用 fdisk 指令，新增swap分割區</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>將分割區的檔案系統更改為swap	</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>格式化及啟動	swap分割區</li>
+<ul>
+<li>可以執行 swapon -s 指令檢查</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>也可以執行 free 指令檢查 swap 是否增加</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>開機時自動啟動新增的swap分割區</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>產生swap檔案</li>
+<ul>
+<li>要建立 swap 檔案, 請執行 dd 指令</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>執行 mkswap 指令, 將 myswap 檔案格式化成 swap 檔案系統, 系統才能使用</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>修改 /etc/fstab 檔即可在開機時自動掛載</li>
+</ul>
+</ul>
+</body>
+</html>

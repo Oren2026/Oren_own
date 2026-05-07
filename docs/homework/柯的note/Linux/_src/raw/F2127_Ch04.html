@@ -1,0 +1,316 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 25.8.4.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-07T06:54:01"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>檔案系統的優劣與否 , 和電腦的執行效率、穩定性以及可靠度息息相關</li>
+<li>在本章裡我們會說明各個系統目錄的用途、檔案系統的架構、檔案與目錄的權限設定</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>/：根目錄, 包含整個 Linux 系統的所有目錄和檔案</li>
+<li>/bin：此目錄放置操作系統時, 所需使用的各種指令程式</li>
+<li>/boot：系統啟動時必須讀取的檔案, 包括系統核心在內</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>/dev：存放周邊設備代號的檔案</li>
+<li>/etc：放置與系統設定、管理相關的檔案</li>
+<li>/etc/init.d：這個目錄包含了開機或關機時所執行的 script 檔案</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> /home：此目錄預設用來放置使用者帳號的家目錄</li>
+<li> /lib：放置一些共用的函式庫</li>
+<li>/lib/modules：存放系統核心的模組</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>  /lost+found：檔案系統發生問題時, Linux 會自動掃描磁碟試圖修正錯誤, 倘若找到遺失或錯誤的區段, 就會將這些區段轉成檔案存放於此目錄, 等候管理人員進一步處理</li>
+<li> /media：此目錄可用來做為光碟、隨身碟與其他分割區的自動掛載點</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> /mnt：此目錄可以做為手動掛載其他分割區的掛載點</li>
+<li> /proc：系統核心和執行程序之間的資訊, 比如說執行 ps、free 等指令時所看到的訊息, 就是從這裡讀取</li>
+<li>/root：系統管理者專用的目錄, 亦即 root 帳號的家目錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> /sbin：此目錄存放啟動系統需執行的程式</li>
+<li> /tmp：供全部使用者暫時放置檔案的目錄。是<b>暫存檔</b>的目錄。<b>此版 Linux 在每次開機時都會清空 /tmp 目錄, 所以記得重要的檔案不要暫存在 /tmp 目錄中。</b></li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> /usr：此目錄包括許多子目錄, 用來存放系統指令、程式等資訊</li>
+<li>/usr/bin：放置使用者可以執行的指令程式, 如 clear、find、free 等等。</li>
+<li>/usr/local：此目錄用來存放自行編譯的軟體, 以便與使用 DPKG 安裝的軟體互相區隔, 避免兩個套件系統發生衝突的情況。</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> /usr/share/doc：存放各種文件的目錄</li>
+<li>/usr/share/man：放置多種線上說明文件</li>
+<li>/usr/src：存放原始碼的地方, Linux 系統核心的原始碼就放在這裡</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> /var：系統執行時, 內容經常變動的資料或暫存檔, 都會放置在這個目錄裡。</li>
+<li>/var/tmp：前面介紹的 /tmp 目錄除了放置所有使用者暫時存放的檔案之外, 還提供程式產生的暫存檔使用。</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 du -sh 目錄名稱指令可以查詢該目錄所使用的硬碟空間</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Ubuntu 預設採用 ext4 檔案系統, ext4 是 ext3 的下一代, 而 ext3 則是 ext2 的下一代</li>
+<li>ext3 與 ext2 的相異處在於 ext3 是一個<b>日誌式檔案系統 (Journal File System)</b></li>
+<li>日誌式檔案系統最大的優點在於提供了更好的安全性</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 tune2fs 指令將 /dev/sdb1 的檔案系統由 ext3 轉換為 ext4，如下:</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>建立日誌之後, 請修改 /etc/fstab 檔：</li>
+<li>重新啟動後, 該分割區就開始使用 ext4 檔案系統了！</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>ext4使用的inode檔案結構</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>inode的內容</li>
+<ul>
+<li><b>檔案模式 (mode)</b>：inode 會描述其所對應的資料類型, 這些資料可以是一個檔案、目錄、符號連結 (symbolic link) 或周邊設備代號 (包括儲存設備的分割區編號) 等</li>
+<li> <b>擁有者資訊 (owner information)</b></li>
+<li><b>檔案大小 (size)</b>：單位以 byte 計算</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li><b>時間戳記 (timestamp)</b>：inode 對應之資料的最初建立時間與最後修改時間</li>
+<li><b>資料區塊位址 (address of data block)</b>：存放檔案必定會佔用資料區塊, 且每個資料區塊都有其存在的位址</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>一個 inode 能夠指向 12 個資料區塊, 如果 12 個資料區塊還放不下這個檔案, 它就會啟用<b>間接指向指標 (indirect pointer)</b></li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Linux 檔案系統中的目錄及檔案, 可依實際需要來設定讀取、寫入與執行等權限</li>
+<li>執行 ls –l 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 ls -l 或 ls -al 指令時, 第一欄共 10 個字元用來標示該檔案的屬性及權限：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>檔案屬性</li>
+<ul>
+<li> d：這是一個目錄</li>
+<li> -：這是一個普通的檔案</li>
+<li> l：這是一個符號連結的檔案, 實際上指向另一個檔案</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>檔案屬性</li>
+<ul>
+<li>b、c：分別代表區塊設備和其他的周邊設備, 是特殊型態的檔案</li>
+<li> s、p：這些檔案關係到系統的資料結構和管線, 通常很少見到</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>一般權限</li>
+<ul>
+<li>r (Read, 讀取)：對檔案而言, 使用者具有讀取檔案內容的權限；對目錄而言, 使用者擁有瀏覽目錄內容的權限</li>
+<li>w (Write, 寫入)：對檔案而言, 使用者具有修改檔案內容的權限；對目錄而言, 使用者具有刪除或移動目錄內檔案的權限</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>一般權限</li>
+<ul>
+<li>x (eXecute, 執行)：對檔案而言, 使用者具有執行檔案的權限；對目錄而言, 使用者具進入目錄的權限 (但不一定可以瀏覽目錄, 是否可瀏覽, 取決於該目錄的 &quot;r&quot; 讀取權限)</li>
+<li>-：表示不具有該項權限</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>-rwx------：檔案擁有者對檔案具有讀取、寫入與執行的權限</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>-rwx------：檔案擁有者對檔案具有讀取、寫入與執行的權限</li>
+<li> -rwxr--r--：檔案擁有者具有讀、寫與執行的權限, 同群組及其他使用者則具有讀取的權限</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li> -rw-rw-r--：檔案擁有者與同群組的使用者對檔案具有讀寫的權限, 而其他使用者僅具有讀取的權限</li>
+<li>drwx--x--x：目錄擁有者具有讀、寫與進入目錄的權限, 同群組及其他使用者僅能進入該目錄, 卻無法讀取檔案列表</li>
+<li> drwx------：除了目錄擁有者具有完整的權限之外, 同群組與其他使用者對該目錄沒有任何權限</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>每個使用者都擁有自己的家目錄, 這些目錄通常集中放置於 /home 目錄下, 這些家目錄的預設權限為 &quot;drwxr-x---&quot;</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>特殊權限</li>
+<ul>
+<li> SUID (Set UID)：可執行的檔案若搭配這個權限, 該檔案便能得到特權, 可以任意存取該檔案擁有者能使用的全部系統資源</li>
+<li>SGID (Set GID)：套用在檔案上面, 其效果和 SUID 相同, 只不過將範圍由檔案擁有者擴大成群組</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>特殊權限</li>
+<ul>
+<li>  T (Sticky)：4-1 節提到 /tmp 和 /var/tmp 兩個目錄, 開放供所有使用者暫時存放檔案, 亦即每位使用者皆擁有完整的權限進入該目錄, 去瀏覽、刪除與移動檔案</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>特殊權限 SUID、SGID、Sticky 佔用 x 的位置來表示, 假設同時開啟執行權限、SUID、SGID 與 Sticky, 則其權限標示型態如下：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用數字法更改權限</li>
+<ul>
+<li> r：對應數值為 4</li>
+<li>w：對應數值為 2</li>
+<li>x：對應數值為 1</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li> -rwx------：等於數字標示 700</li>
+<li>-rwxr--r--：等於數字標示 744</li>
+<li>-rw-rw-r-x：等於數字標示 665</li>
+<li>drwx--x--x：等於數字標示 711</li>
+<li>drwx------：等於數字標示 700</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>文字模式下可執行 chmod (change mode) 指令去改變檔案與目錄的權限, 我們先執行 ls -l 指令觀察目錄內的情況</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行下列指令去更改 nohup.out 檔案的權限：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>特殊權限的對應數值為：</li>
+<ul>
+<li> s 或 S (SUID)：對應數值為 4</li>
+<li>s 或 S (SGID)：對應數值為 2</li>
+<li>t 或 T：對應數值為 1</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>用同樣的方法去更改檔案權限即可：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用文字法更改權限</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>用 chmod 指令配合文字參數就能改變權限設定</li>
+<ul>
+<li>&quot;u+rw&quot;：為檔案擁有者加入讀取和寫入的權限</li>
+<li>&quot;g-x&quot;：將同群組使用者的執行權限取消</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>“g+x,o+rx”：為同群組使用者加入執行的權限, 並為其他使用者加入讀取與執行的權限</li>
+<li>“u+rwx,g-w,o-w”：加入檔案或目錄擁有者完整的權限, 並且取消同群組與其他使用者的寫入權限</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>&quot;o=rx&quot;：設定其他使用者具有讀取和執行的權限, 而沒有寫入權限</li>
+<li>“ugo+x” 或 “a+x”：同時為擁有者、同群組、其他使用者加入執行權限, &quot;ugo&quot; 可以合稱為 &quot;a“</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li> &quot;+x&quot;：和 &quot;ugo+x&quot;、&quot;a+x&quot; 的意義相同, 沒有指定 u、g、o 或 a 時, 即代表全部</li>
+<li>&quot;o+t&quot;：加入 Sticky 特殊權限</li>
+<li>&quot;u+s,g+s&quot;：加入 SUID 和 SGID 特殊權限。</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>實際練習</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>假如想一次更改某個目錄下的所有檔案權限, 包括其子目錄中的檔案權限也一併更改, 則請使用 &quot;-R&quot; 參數表示啟動遞迴處理</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>有無遞迴處理的差別在於：</li>
+<ul>
+<li>chmod 777 mydir：僅把 mydir 目錄的權限改為 &quot;rwxrwxrwx“</li>
+<li> chmod -R 777 mydir將整個 mydir 目錄、目錄中的檔案、子目錄和子目錄中檔案的權限, 統統改成 &quot;rwxrwxrwx&quot;</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 chown (change owner) 指令, 修改檔案或目錄的擁有者及所屬群組</li>
+<li>先執行 ls -l 指令看看目前的狀況</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行下面的指令可以使用 root 的權限把 nohup.out 檔案的所有權轉移給 mary</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>再執行 ls -l 指令觀看修改後的結果</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>假若使用者 lambert 屬於 cassia 群組, 其使用者家目錄 (/home/lambert) 的權限設為 &quot;rwxr-x---“</li>
+<li>其他使用者則無法進入此目錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>將 /etc 目錄下的 group 檔案內容做些修改,情況就不一樣了</li>
+</ul>
+</body>
+</html>
