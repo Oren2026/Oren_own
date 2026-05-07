@@ -23,100 +23,224 @@
     <header class="note-header">
       <div class="note-date">2026 年 05 月 07 日</div>
       <h1 class="note-title">CH4 — 檔案系統</h1>
-      <div class="note-tags"><span class="note-tag">CH4</span><span class="note-tag">Linux</span></div>
+      <div class="note-tags">
+        <span class="note-tag">CH4</span>
+        <span class="note-tag">Linux</span>
+      </div>
     </header>
     <h2>📋 大綱</h2>
     <div class="toc-grid">
-      <div class="toc-item"><span class="toc-num">1</span><span>📁 title</span></div>
-      <div class="toc-item"><span class="toc-num">2</span><span>📁 title</span></div>
-      <div class="toc-item"><span class="toc-num">3</span><span>📁 title</span></div>
-      <div class="toc-item"><span class="toc-num">4</span><span>📁 title</span></div>
-      <div class="toc-item"><span class="toc-num">5</span><span>📁 title</span></div>
-      <div class="toc-item"><span class="toc-num">6</span><span>📁 title</span></div>
-      <div class="toc-item"><span class="toc-num">7</span><span>📁 title</span></div>
-      <div class="toc-item"><span class="toc-num">8</span><span>📁 title</span></div>
+      <div class="toc-item"><span class="toc-num">1</span><span>📁 系統目錄架構 (FHS)</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>📁 ext 檔案系統</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>📁 inode 結構</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>📁 檔案與目錄權限</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>📁 數字法更改權限</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>📁 文字法更改權限</span></div>
+      <div class="toc-item"><span class="toc-num">7</span><span>📁 實際練習</span></div>
     </div>
+
+    <!-- S1: 系統目錄架構 -->
     <section id="s1">
-      <h2>📁 1｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>📁 1｜系統目錄架構 (FHS)</h2>
+      <div class="highlight-box">
+        <p>Linux 檔案系統採用樹狀目錄結構，所有目錄由此開頭。了解各目錄用途，是系統管理的基本功。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>目錄</th><th>用途說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>/</code></td><td>根目錄，容納整個 Linux 系統的所有目錄和檔案</td></tr>
+          <tr><td><code>/bin</code></td><td>放置操作系統時所需的各種指令程式</td></tr>
+          <tr><td><code>/boot</code></td><td>系統啟動時必須讀取的檔案，包括系統核心在內</td></tr>
+          <tr><td><code>/dev</code></td><td>存放周邊設備代號的檔案</td></tr>
+          <tr><td><code>/etc</code></td><td>放置與系統設定、管理相關的檔案</td></tr>
+          <tr><td><code>/etc/init.d</code></td><td>開機或關機時所執行的 script 檔案</td></tr>
+          <tr><td><code>/home</code></td><td>使用者帳號的家目錄</td></tr>
+          <tr><td><code>/lib</code></td><td>放置共用的函式庫</td></tr>
+          <tr><td><code>/lib/modules</code></td><td>存放系統核心的模組</td></tr>
+          <tr><td><code>/lost+found</code></td><td>檔案系統發生問題時，Linux 自動掃描並修正錯誤，遺失區段轉成檔案存放於此</td></tr>
+          <tr><td><code>/media</code></td><td>光碟、隨身碟與其他分割區的自動掛載點</td></tr>
+          <tr><td><code>/mnt</code></td><td>手動掛載其他分割區的掛載點</td></tr>
+          <tr><td><code>/proc</code></td><td>系統核心和執行程序之間的資訊（ps、free 等指令的資料來源）</td></tr>
+          <tr><td><code>/root</code></td><td>系統管理者（root）的家目錄</td></tr>
+          <tr><td><code>/sbin</code></td><td>存放啟動系統需執行的程式</td></tr>
+          <tr><td><code>/tmp</code></td><td>供全部使用者暫時放置檔案。<strong>每次開機都會清空，重要檔案勿存於此。</strong></td></tr>
+          <tr><td><code>/usr</code></td><td>包括許多子目錄，用來存放系統指令、程式等資訊</td></tr>
+          <tr><td><code>/usr/bin</code></td><td>放置使用者可以執行的指令（clear、find、free 等）</td></tr>
+          <tr><td><code>/usr/local</code></td><td>存放自行編譯的軟體，與 DPKG 安裝的軟體區隔</td></tr>
+          <tr><td><code>/usr/share/doc</code></td><td>存放各種文件</td></tr>
+          <tr><td><code>/usr/share/man</code></td><td>放置多種線上說明文件</td></tr>
+          <tr><td><code>/usr/src</code></td><td>存放原始碼，Linux 核心原始碼放在這裡</td></tr>
+          <tr><td><code>/var</code></td><td>執行時內容經常變動的資料或暫存檔</td></tr>
+          <tr><td><code>/var/tmp</code></td><td>提供程式產生的暫存檔使用</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>查詢目錄所佔硬碟空間：<code>du -sh 目錄名稱</code></p>
+      </div>
     </section>
+
+    <!-- S2: ext 檔案系統 -->
     <section id="s2">
-      <h2>📁 2｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>📁 2｜ext 檔案系統</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📀 ext2 / ext3 / ext4 演進</div>
+        <p>Ubuntu 預設採用 <strong>ext4</strong> 檔案系統。ext4 是 ext3 的下一代，ext3 則是 ext2 的下一代。</p>
+        <p>ext3 與 ext2 的關鍵差異：ext3 是<strong>日誌式檔案系統 (Journal File System)</strong>，提供更好的安全性——當系統突然斷電時，日誌式檔案系統可以快速回復到正常狀態。</p>
+      </div>
+      <div class="highlight-box">
+        <p><strong>ext3 → ext4 轉換（tune2fs）</strong>：使用 <code>tune2fs</code> 指令可將 ext3 分割區轉換為 ext4，並修改 <code>/etc/fstab</code> 檔，重啟後生效。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">💾 ext4 inode 結構</div>
+        <p>ext4 使用的 inode 結構，能指向 12 個資料區塊。若檔案超大則啟用<strong>間接指向指標 (indirect pointer)</strong>。</p>
+      </div>
     </section>
+
+    <!-- S3: inode 結構 -->
     <section id="s3">
-      <h2>📁 3｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>📁 3｜inode 結構</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📄 inode 的內容</div>
+        <p>inode（索引節點）是 Linux 用來描述檔案 metadata 的資料結構，每個檔案和目錄都有一個唯一的 inode 編號。</p>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">檔案模式 (mode)</div>
+        <div class="layer-card-desc">描述資料類型：普通檔案、目錄、符號連結、周邊設備代號等</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">擁有者資訊</div>
+        <div class="layer-card-desc">UID 與 GID，記錄誰擁有這個檔案</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">檔案大小 (size)</div>
+        <div class="layer-card-desc">單位為 byte</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">4</div>
+        <div class="layer-card-name">時間戳記 (timestamp)</div>
+        <div class="layer-card-desc">最初建立時間與最後修改時間</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">5</div>
+        <div class="layer-card-name">資料區塊位址</div>
+        <div class="layer-card-desc">存放檔案所佔用的資料區塊位址，ext4 inode 可指向 12 個直接區塊，超出時啟用間接指向指標</div>
+      </div>
     </section>
+
+    <!-- S4: 檔案與目錄的權限 -->
     <section id="s4">
-      <h2>📁 4｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>📁 4｜檔案與目錄的權限</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🔐 ls -l 權限欄位（10 字元）</div>
+        <p>執行 <code>ls -l</code> 或 <code>ls -al</code> 時，第一欄共 10 個字元用來標示該檔案的屬性及權限。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>字元</th><th>說明</th><th>備註</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>d</code></td><td>目錄</td><td>directory</td></tr>
+          <tr><td><code>-</code></td><td>普通檔案</td><td>regular file</td></tr>
+          <tr><td><code>l</code></td><td>符號連結檔案</td><td>指向另一個檔案</td></tr>
+          <tr><td><code>b</code></td><td>區塊設備檔案</td><td>如硬碟分割區</td></tr>
+          <tr><td><code>c</code></td><td>字元設備檔案</td><td>如終端機</td></tr>
+          <tr><td><code>s</code></td><td>特殊檔案（系統資料結構）</td><td>少見</td></tr>
+          <tr><td><code>p</code></td><td>管線檔案</td><td>少見</td></tr>
+        </tbody>
+      </table>
+      <table class="compare-table">
+        <thead>
+          <tr><th>權限</th><th>對檔案的意義</th><th>對目錄的意義</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>r</code> (Read, 4)</td><td>讀取檔案內容</td><td>瀏覽目錄內容（列出檔案）</td></tr>
+          <tr><td><code>w</code> (Write, 2)</td><td>修改檔案內容</td><td>刪除或移動目錄內的檔案</td></tr>
+          <tr><td><code>x</code> (eXecute, 1)</td><td>執行檔案</td><td>進入目錄（但不一定能瀏覽，視 r 權限而定）</td></tr>
+          <tr><td><code>-</code></td><td>不具該項權限</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p><strong>常見權限範例：</strong></p>
+        <ul style="margin:0.3rem 0 0 1.2rem;padding-left:0;">
+          <li><code>-rwx------</code>（700）：擁有者完整權限，其他人無權</li>
+          <li><code>-rwxr--r--</code>（744）：擁有者完整權限，群組與其他人僅讀取</li>
+          <li><code>-rw-rw-r--</code>（664）：擁有者與群組讀寫，其他人僅讀取</li>
+          <li><code>drwxr-x---</code>（750）：群組可讀寫，其他使用者無權</li>
+          <li>家目錄預設權限：<code>drwxr-x---</code>（750），只有擁有者能完整操作</li>
+        </ul>
+      </div>
     </section>
+
+    <!-- S5: 數字法 -->
     <section id="s5">
-      <h2>📁 5｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>📁 5｜數字法更改權限</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>權限</th><th>數值</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>r</code></td><td>4</td><td>讀取</td></tr>
+          <tr><td><code>w</code></td><td>2</td><td>寫入</td></tr>
+          <tr><td><code>x</code></td><td>1</td><td>執行</td></tr>
+          <tr><td colspan="3"><strong>特殊權限</strong></td></tr>
+          <tr><td><code>s</code> (SUID)</td><td>4</td><td>以擁有者身份執行</td></tr>
+          <tr><td><code>s</code> (SGID)</td><td>2</td><td>以群組身份執行</td></tr>
+          <tr><td><code>t</code> (Sticky)</td><td>1</td><td>僅擁有者可刪除目錄內檔案</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>使用 <code>chmod</code> 指令：<code>chmod 755 檔案</code>。範例：<code>-rwxr-xr-x</code> = 4+2+1 + 4+0+1 + 4+0+1 = <strong>755</strong></p>
+      </div>
     </section>
+
+    <!-- S6: 文字法 -->
     <section id="s6">
-      <h2>📁 6｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>📁 6｜文字法更改權限</h2>
+      <div class="highlight-box">
+        <p>文字法使用 <code>chmod</code> 配合身份（u/g/o/a）+ 運算（+/-/=）+ 權限（r/w/x）來設定。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>參數</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>u+rw</code></td><td>為擁有者加入讀取和寫入權限</td></tr>
+          <tr><td><code>g-x</code></td><td>取消同群組使用者的執行權限</td></tr>
+          <tr><td><code>o=rx</code></td><td>設定其他使用者僅有讀取和執行權限</td></tr>
+          <tr><td><code>ugo+x</code> 或 <code>a+x</code></td><td>為所有人加入執行權限</td></tr>
+          <tr><td><code>-R</code></td><td>遞迴處理，包括子目錄內所有檔案</td></tr>
+          <tr><td><code>u+s</code></td><td>設定 SUID 特殊權限</td></tr>
+          <tr><td><code>g+s</code></td><td>設定 SGID 特殊權限</td></tr>
+          <tr><td><code>o+t</code></td><td>設定 Sticky Bit（/tmp 目錄常見）</td></tr>
+        </tbody>
+      </table>
+      <div class="concept-card">
+        <div class="concept-card-title">👤 修改擁有者 (chown)</div>
+        <p>執行 <code>chown 使用者:群組 檔案</code> 指令，修改檔案或目錄的擁有者及所屬群組。例如：<code>sudo chown mary:users nohup.out</code></p>
+      </div>
     </section>
+
+    <!-- S7: 實際練習 -->
     <section id="s7">
-      <h2>📁 7｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>📁 7｜實際練習</h2>
+      <div class="highlight-box">
+        <ul style="margin:0;padding-left:1.2rem;">
+          <li>使用 <code>-R</code> 參數遞迴更改目錄下所有檔案權限：<code>chmod -R 777 mydir</code></li>
+          <li>無 <code>-R</code>：僅更改該目錄本身權限，不影響內部檔案</li>
+          <li>使用 <code>chown</code> 將檔案擁有者轉移給其他使用者（需 root 權限）</li>
+          <li>使用者和群組的關係記錄在 <code>/etc/group</code> 檔案中</li>
+        </ul>
+      </div>
     </section>
-    <section id="s8">
-      <h2>📁 8｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
 
-      </ul></div>
-    </section>
-    <footer class="note-footer"><span>📖 柯的note — Linux</span></footer>
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
   </main>
   <script src="right-nav.js"></script>
 </body>

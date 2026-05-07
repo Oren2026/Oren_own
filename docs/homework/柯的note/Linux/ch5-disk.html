@@ -23,100 +23,160 @@
     <header class="note-header">
       <div class="note-date">2026 年 05 月 07 日</div>
       <h1 class="note-title">CH5 — 磁碟與檔案系統管理</h1>
-      <div class="note-tags"><span class="note-tag">CH5</span><span class="note-tag">Linux</span></div>
+      <div class="note-tags">
+        <span class="note-tag">CH5</span>
+        <span class="note-tag">Linux</span>
+      </div>
     </header>
     <h2>📋 大綱</h2>
     <div class="toc-grid">
-      <div class="toc-item"><span class="toc-num">1</span><span>💾 title</span></div>
-      <div class="toc-item"><span class="toc-num">2</span><span>💾 title</span></div>
-      <div class="toc-item"><span class="toc-num">3</span><span>💾 title</span></div>
-      <div class="toc-item"><span class="toc-num">4</span><span>💾 title</span></div>
-      <div class="toc-item"><span class="toc-num">5</span><span>💾 title</span></div>
-      <div class="toc-item"><span class="toc-num">6</span><span>💾 title</span></div>
-      <div class="toc-item"><span class="toc-num">7</span><span>💾 title</span></div>
-      <div class="toc-item"><span class="toc-num">8</span><span>💾 title</span></div>
+      <div class="toc-item"><span class="toc-num">1</span><span>💾 掛載 USB 裝置</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>💾 掛載光碟與 ISO 檔</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>💾 檢查磁碟使用狀況</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>💾 連結與符號連結</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>💾 安裝第 2 顆硬碟</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>💾 Swap 分割區</span></div>
     </div>
+
+    <!-- S1: 掛載 USB 裝置 -->
     <section id="s1">
-      <h2>💾 1｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>💾 1｜掛載 USB 裝置</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🔌 掛載概念</div>
+        <p>掛載（mount）就是將儲存媒體（光碟、USB、硬碟）指定成系統中的某個目錄。此目錄稱為<strong>掛載點</strong>。</p>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">查詢 USB 裝置名稱</div>
+        <div class="layer-card-desc">先用 <code>fdisk -l</code> 或 <code>lsblk</code> 查詢 USB 的裝置代號（如 <code>/dev/sdb1</code>）</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">建立掛載點</div>
+        <div class="layer-card-desc"><code>sudo mkdir /media/usbdisk</code>（預設無此目錄，需自行建立）</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">掛載</div>
+        <div class="layer-card-desc"><code>sudo mount /dev/sdb1 /media/usbdisk</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">4</div>
+        <div class="layer-card-name">卸載</div>
+        <div class="layer-card-desc"><code>sudo umount /media/usbdisk</code>（卸載後才能拔出裝置）</div>
+      </div>
+      <div class="highlight-box">
+        <p><strong>一般使用者掛載權限</strong>：Linux 預設僅 root 可執行 mount。可編輯 <code>/etc/sudoers</code> 開放一般使用者。</p>
+        <p>若無法卸載：<code>fuser -u /media/usbdisk/</code> 可查出使用該目錄的程序與使用者。</p>
+      </div>
     </section>
+
+    <!-- S2: 掛載光碟與 ISO -->
     <section id="s2">
-      <h2>💾 2｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>💾 2｜掛載光碟與 ISO 檔</h2>
+      <div class="highlight-box">
+        <ul style="margin:0;padding-left:1.2rem;">
+          <li>掛載光碟機後，執行 <code>umount</code> 卸載後才能取出光碟片</li>
+          <li>直接存取 ISO 檔內容：使用 <code>mount -o loop image.iso /mnt/iso</code> 掛載 ISO 檔為目錄，無需解壓縮即可讀取內部檔案</li>
+        </ul>
+      </div>
     </section>
+
+    <!-- S3: 檢查磁碟使用狀況 -->
     <section id="s3">
-      <h2>💾 3｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>💾 3｜檢查磁碟使用狀況</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>用途</th><th>範例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>df -h</code></td><td>查詢磁碟剩餘空間（數值人性化）</td><td>Human-readable 顯示</td></tr>
+          <tr><td><code>df -T</code></td><td>顯示檔案系統格式</td><td>ext3、ext4、ntfs 等</td></tr>
+          <tr><td><code>dstat</code></td><td>監控磁碟讀寫狀況</td><td><code>dstat -c</code> CPU、<code>-n</code> 網路</td></tr>
+          <tr><td><code>iotop</code></td><td>查看哪個使用者/程式在使用磁碟 I/O</td><td><code>iotop -u username</code></td></tr>
+          <tr><td><code>du -sh</code></td><td>查詢目錄所佔硬碟空間</td><td><code>du -sh /var</code></td></tr>
+        </tbody>
+      </table>
     </section>
+
+    <!-- S4: 連結與符號連結 -->
     <section id="s4">
-      <h2>💾 4｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>💾 4｜連結與符號連結</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🔗 硬連結 vs 符號連結</div>
+        <p>在 Linux 中，有兩個（或以上）檔案使用相同 inode，稱為<strong>硬連結 (hard link)</strong>。而<strong>符號連結 (symbolic link / symlink)</strong> 則是儲存另一個檔案的路徑。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>特性</th><th>硬連結 (ln)</th><th>符號連結 (ln -s)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>inode</td><td>兩檔案使用相同 inode</td><td>各自擁有獨立的 inode</td></tr>
+          <tr><td>原檔刪除後</td><td><strong>仍可繼續使用</strong></td><td>失效（像斷掉的捷徑）</td></tr>
+          <tr><td>跨分割區</td><td><strong>不可</strong>（必須同一分割區）</td><td>可（可指向任何位置）</td></tr>
+          <tr><td>指向目錄</td><td><strong>不可</strong></td><td>可</td></tr>
+          <tr><td>佔用空間</td><td>幾乎不佔額外空間</td><td>佔用一個 inode</td></tr>
+          <tr><td>建立指令</td><td><code>ln 原始檔 連結名</code></td><td><code>ln -s 原始檔 連結名</code></td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p><strong>查詢 inode 編號</strong>：<code>ls -i</code> 指令可觀察檔案的 inode 編號。</p>
+        <p><strong>版本相關檔案</strong>（如 <code>/etc/nginx/sites-enabled</code> 指向 <code>sites-available</code>）通常使用符號連結。</p>
+        <p><strong>Windows</strong> 上可使用 <code>mklink</code> 指令建立連結。</p>
+      </div>
     </section>
+
+    <!-- S5: 安裝第 2 顆硬碟 -->
     <section id="s5">
-      <h2>💾 5｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>💾 5｜安裝第 2 顆硬碟</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">硬碟分割</div>
+        <div class="layer-card-desc">使用 <code>fdisk /dev/sdb</code> 指令分割新硬碟</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">格式化</div>
+        <div class="layer-card-desc"><code>mkfs.ext4 /dev/sdb1</code> 格式化為 ext4</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">掛載</div>
+        <div class="layer-card-desc"><code>mount /dev/sdb1 /mnt/newdisk</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">4</div>
+        <div class="layer-card-name">開機自動掛載</div>
+        <div class="layer-card-desc">修改 <code>/etc/fstab</code> 檔，加入開機時自動掛載</div>
+      </div>
     </section>
+
+    <!-- S6: Swap -->
     <section id="s6">
-      <h2>💾 6｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
+      <h2>💾 6｜Swap 分割區</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">💠 Swap 的角色</div>
+        <p>Swap（置換空間）是當實體記憶體不足時，系統用磁碟空間代替記憶體使用的機制。Ubuntu 安裝時若選擇自動分割，預設會在根目錄建立一個 <code>swapfile</code>（而非獨立分割區）。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>操作</th><th>指令</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>新增 Swap 分割區</td><td><code>fdisk</code> 新增分割區，設定類型為 swap</td></tr>
+          <tr><td>格式化 Swap</td><td><code>mkswap /dev/sdaX</code></td></tr>
+          <tr><td>啟動 Swap</td><td><code>swapon /dev/sdaX</code></td></tr>
+          <tr><td>檢查 Swap</td><td><code>swapon -s</code> 或 <code>free</code></td></tr>
+          <tr><td>關閉 Swap</td><td><code>swapoff /dev/sdaX</code></td></tr>
+          <tr><td>建立 Swap 檔案</td><td><code>dd if=/dev/zero of=myswap bs=1M count=1024</code></td></tr>
+          <tr><td>開機自動啟動</td><td>修改 <code>/etc/fstab</code> 加入 Swap 項目</td></tr>
+        </tbody>
+      </table>
     </section>
-    <section id="s7">
-      <h2>💾 7｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
 
-      </ul></div>
-    </section>
-    <section id="s8">
-      <h2>💾 8｜title</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>b</li>
-        <li>o</li>
-        <li>d</li>
-        <li>y</li>
-
-      </ul></div>
-    </section>
-    <footer class="note-footer"><span>📖 柯的note — Linux</span></footer>
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
   </main>
   <script src="right-nav.js"></script>
 </body>

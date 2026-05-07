@@ -23,66 +23,113 @@
     <header class="note-header">
       <div class="note-date">2026 年 05 月 07 日</div>
       <h1 class="note-title">CH6 — 文書編輯軟體</h1>
-      <div class="note-tags"><span class="note-tag">CH6</span><span class="note-tag">Linux</span></div>
+      <div class="note-tags">
+        <span class="note-tag">CH6</span>
+        <span class="note-tag">Linux</span>
+      </div>
     </header>
     <h2>📋 大綱</h2>
     <div class="toc-grid">
-      <div class="toc-item"><span class="toc-num">1</span><span>📝 ✏️ nano 編輯器</span></div>
-      <div class="toc-item"><span class="toc-num">2</span><span>📝 📝 vim 三種模式</span></div>
-      <div class="toc-item"><span class="toc-num">3</span><span>📝 📂 vim 開啟與儲存檔案</span></div>
+      <div class="toc-item"><span class="toc-num">1</span><span>📝 nano 編輯器</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>📝 vim 三種模式</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>📝 vim 開啟、編輯與儲存</span></div>
     </div>
+
+    <!-- S1: nano -->
     <section id="s1">
-      <h2>📝 1｜✏️ nano 編輯器</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>Linux 提供了齊全的文書編輯軟體 , 讓使用者可以依照自己的喜好來作選擇</li>
-        <li>本章將為您介紹 nano 與 vim 這 2 個在文字模式下常用的文書編輯軟體</li>
-        <li>nano 是 Ubuntu 內建的文書編輯軟體, 使用者介面相當方便</li>
-        <li>即使是第一次使用的人都能夠很快熟悉</li>
-        <li>nano的編輯環境</li>
-        <li>執行 nano 指令或是執行 nano 檔案名稱 編輯一個檔案</li>
-        <li>執行 nano 指令或是執行 nano 檔案名稱 編輯一個檔案</li>
-        <li>顯示輔助說明 -- ^G</li>
-        <li>儲存檔案 -- ^O</li>
-        <li>插入檔案 -- ^R</li>
-        <li>捲動畫面 -- ^Y 、^V</li>
-        <li>剪下與貼上整行文字 -- ^K、^U</li>
-
-      </ul></div>
+      <h2>📝 1｜nano 編輯器</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">✏️ nano 特色</div>
+        <p>nano 是 Ubuntu 內建的文書編輯軟體，使用者介面相當方便，即使是第一次使用的人都能很快熟悉。nano 的操作方式類似 GUI 編輯器，底部有常用操作的快速鍵提示。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>快速鍵</th><th>功能</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>^G</code>（Ctrl+G）</td><td>顯示輔助說明</td></tr>
+          <tr><td><code>^O</code></td><td>儲存檔案（WriteOut）</td></tr>
+          <tr><td><code>^R</code></td><td>插入其他檔案內容</td></tr>
+          <tr><td><code>^Y</code></td><td>向上一頁（PageUp）</td></tr>
+          <tr><td><code>^V</code></td><td>向下一頁（PageDown）</td></tr>
+          <tr><td><code>^K</code></td><td>剪下整行文字</td></tr>
+          <tr><td><code>^U</code></td><td>貼上（還原剪下）</td></tr>
+          <tr><td><code>^C</code></td><td>顯示目前游標位置</td></tr>
+          <tr><td><code>^X</code></td><td>結束 nano（若有未儲存修改，會提示）</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>啟動：<code>nano</code>（空白檔案）或 <code>nano 檔案名稱</code>（開啟指定檔案）</p>
+      </div>
     </section>
+
+    <!-- S2: vim 三種模式 -->
     <section id="s2">
-      <h2>📝 2｜📝 vim 三種模式</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>顯示目前游標位置 -- ^C</li>
-        <li>結束 nano -- ^X</li>
-        <li>執行 sudo apt install vim 指令安裝</li>
-        <li>在文字模式視窗或虛擬主控台中執行 vim 指令</li>
-        <li>啟動 vim 文書編輯軟體</li>
-        <li>vim 有 3 種主要的模式</li>
-        <li>normal mode：無法輸入任何文字, 不過可以利用按鍵指令來執行許多操作命令</li>
-        <li>insert mode：按 a、i 或 o 鍵, 即可進入,可以輸入文字內容</li>
-        <li>command-line mode：按 : 即會進入,可以搜尋字串、儲存檔案或結束編輯</li>
-
-      </ul></div>
+      <h2>📝 2｜vim 三種模式</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">💡 vim 簡介</div>
+        <p>vim（Vi IMproved）是功能強大的文字編輯器，安裝方式：<code>sudo apt install vim</code>。vim 的核心概念在於「模式」——不同模式下同一按鍵代表不同意義。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>模式</th><th>進入方式</th><th>可做什麼</th><th>離開方式</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Normal Mode</strong><br>（一般模式）</td>
+            <td>vim 啟動後預設模式</td>
+            <td>無法輸入文字，但可用按鍵指令執行<strong>刪除、複製、貼上、游標移動</strong>等操作</td>
+            <td>按 <code>i</code>、<code>a</code>、<code>o</code> 進入 Insert Mode；按 <code>:</code> 進入 Command-line Mode</td>
+          </tr>
+          <tr>
+            <td><strong>Insert Mode</strong><br>（插入模式）</td>
+            <td>在 Normal Mode 下按<br><code>i</code>（插入）、<code>a</code>（附加）、<code>o</code>（新增一行）</td>
+            <td>正常輸入文字內容</td>
+            <td>按 <code>Esc</code> 回到 Normal Mode</td>
+          </tr>
+          <tr>
+            <td><strong>Command-line Mode</strong><br>（命令列模式）</td>
+            <td>在 Normal Mode 下按 <code>:</code></td>
+            <td><strong>儲存、搜尋、取代、結束</strong>等高階操作</td>
+            <td>按 <code>Esc</code> 回到 Normal Mode</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p><strong>進入 Insert Mode 的三種方式：</strong></p>
+        <ul style="margin:0.3rem 0 0 1.2rem;padding-left:0;">
+          <li><code>i</code>：從游標所在位置插入新輸入的字元</li>
+          <li><code>a</code>：從游標所在位置的下一個字元開始輸入</li>
+          <li><code>o</code>：新增加一行，並將游標移到新行的開頭</li>
+        </ul>
+      </div>
     </section>
+
+    <!-- S3: vim 開啟、編輯與儲存 -->
     <section id="s3">
-      <h2>📝 3｜📂 vim 開啟與儲存檔案</h2>
-      <div class="highlight-box"><ul style="margin:0;padding-left:1.2rem;">
-        <li>執行 vim</li>
-        <li>在文字模式視窗或虛擬主控台中執行 vim 指令</li>
-        <li>或執行 vim 檔案名稱指定要編輯的檔案</li>
-        <li>用vim編寫文件: 按 i 鍵、 a 或 o 鍵切換到 insert mode</li>
-        <li>按 a 鍵：從目前游標所在位置的下一個字元開始輸入。</li>
-        <li>按 i 鍵：從游標所在位置插入新輸入的字元。</li>
-        <li>按 o 鍵：新增加一行, 並將游標移到下一行的開頭</li>
-        <li>按 Esc 鍵回到normal mode, 然後按 : 鍵進入 command-line mode</li>
-        <li>輸入 “w 檔案的路徑及名稱"</li>
-        <li>進入vim後 ,開啟既有文字檔</li>
-        <li>按 : 鍵進入 command-line mode</li>
-        <li>輸入 “e 檔案的路徑及名稱"</li>
-
-      </ul></div>
+      <h2>📝 3｜vim 開啟、編輯與儲存</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>動作</th><th>Command-line 指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>開啟 vim</td><td><code>vim</code></td><td>開啟空白編輯器</td></tr>
+          <tr><td>開啟檔案</td><td><code>vim 檔案名稱</code></td><td>開啟指定檔案，無此檔案則新建</td></tr>
+          <tr><td>儲存</td><td><code>:w 檔案路徑及名稱</code></td><td>寫入磁碟（可指定路徑）</td></tr>
+          <tr><td>開啟舊檔</td><td><code>:e 檔案路徑及名稱</code></td><td>在 vim 內開啟另一個檔案</td></tr>
+          <tr><td>結束</td><td><code>:q</code></td><td>離開（若有未儲存修改則失敗）</td></tr>
+          <tr><td>強制結束</td><td><code>:q!</code></td><td>強制離開，不儲存修改</td></tr>
+          <tr><td>儲存並離開</td><td><code>:wq</code> 或 <code>:x</code></td><td>寫入後關閉</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>標準工作流程：<code>vim 檔案</code> → 按 <code>i</code> 進入 Insert Mode 打字 → 按 <code>Esc</code> 回 Normal Mode → <code>:wq</code> 儲存離開。</p>
+      </div>
     </section>
-    <footer class="note-footer"><span>📖 柯的note — Linux</span></footer>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
   </main>
   <script src="right-nav.js"></script>
 </body>
