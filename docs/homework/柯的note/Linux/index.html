@@ -13,8 +13,8 @@
     <div class="sidebar-course">柯的note</div>
     <div class="sidebar-title">Linux</div>
     <div class="sidebar-divider"></div>
-    <div class="sidebar-section-label">所有筆記</div>
-    <a href="ch1-linux.html" class="sidebar-link active">🐧 CH1 Linux 基礎認識</a>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
   </nav>
 
   <main class="content">
@@ -23,22 +23,34 @@
       <h1 class="note-title">Linux 課程筆記</h1>
       <div class="note-tags">
         <span class="note-tag">Linux</span>
-        <span class="note-tag">作業系統</span>
+        <span class="note-tag">F2127</span>
       </div>
     </header>
 
     <div class="highlight-box">
-      本課程涵蓋 Linux 作業系統的基礎認識與操作，包含特色介紹、產業應用與文字模式操作。
+      本課程涵蓋 Linux 作業系統的基礎認識與操作，包含 Shell、檔案系統、網路、帳號管理、Shell Script、資料壓縮、套件管理、版本控制、Python 虛擬環境、Docker 容器及機器學習環境建置。
     </div>
 
     <section>
       <h2>📚 章節列表</h2>
       <div class="toc-grid">
-        <div class="toc-item"><span class="toc-num">1</span><a href="ch1-linux.html">🐧 CH1 Linux 基礎認識</a></div>
-        <div class="toc-item"><span class="toc-num">2</span><a href="ch3-shell.html">💬 CH3 Shell 基本操作</a></div>
-        <div class="toc-item"><span class="toc-num">3</span><a href="ch4-filesystem.html">📁 CH4 檔案系統</a></div>
-        <div class="toc-item"><span class="toc-num">4</span><a href="ch5-disk.html">💾 CH5 磁碟與檔案系統管理</a></div>
-        <div class="toc-item"><span class="toc-num">5</span><a href="ch6-editor.html">📝 CH6 文書編輯軟體</a></div>
+        <div class="toc-item"><span class="toc-num">1</span><a href="ch1-linux.html">🐧 CH1 — Linux 基礎認識</a></div>
+        <div class="toc-item"><span class="toc-num">2</span><a href="ch3-shell.html">💬 CH3 — Shell 基本操作</a></div>
+        <div class="toc-item"><span class="toc-num">3</span><a href="ch4-filesystem.html">📁 CH4 — 檔案系統</a></div>
+        <div class="toc-item"><span class="toc-num">4</span><a href="ch5-disk.html">💾 CH5 — 磁碟與檔案系統管理</a></div>
+        <div class="toc-item"><span class="toc-num">5</span><a href="ch6-editor.html">📝 CH6 — 文書編輯軟體</a></div>
+        <div class="toc-item"><span class="toc-num">6</span><a href="ch7-account.html">👤 CH7 — 使用者帳號管理</a></div>
+        <div class="toc-item"><span class="toc-num">7</span><a href="ch8-network.html">🌐 CH8 — 網路設定</a></div>
+        <div class="toc-item"><span class="toc-num">8</span><a href="ch9-ssh.html">🔐 CH9 — SSH 遠端登入</a></div>
+        <div class="toc-item"><span class="toc-num">9</span><a href="ch10-process.html">⚙️ CH10 — 系統管理程序</a></div>
+        <div class="toc-item"><span class="toc-num">10</span><a href="ch11-shell-script.html">📜 CH11 — Shell Script</a></div>
+        <div class="toc-item"><span class="toc-num">11</span><a href="ch12-cron.html">⏰ CH12 — 工作排程</a></div>
+        <div class="toc-item"><span class="toc-num">12</span><a href="ch13-compress.html">📦 CH13 — 打包與壓縮</a></div>
+        <div class="toc-item"><span class="toc-num">13</span><a href="ch14-package.html">🛠️ CH14 — 套件管理</a></div>
+        <div class="toc-item"><span class="toc-num">14</span><a href="ch15-git.html">🔀 CH15 — Git 版本控制</a></div>
+        <div class="toc-item"><span class="toc-num">15</span><a href="ch16-python-venv.html">🐍 CH16 — Python 虛擬環境</a></div>
+        <div class="toc-item"><span class="toc-num">16</span><a href="ch17-docker.html">🐳 CH17 — Docker 容器</a></div>
+        <div class="toc-item"><span class="toc-num">17</span><a href="ch18-ml.html">🤖 CH18 — 機器學習環境</a></div>
       </div>
     </section>
 
@@ -48,5 +60,6 @@
   </main>
 
   <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
 </body>
 </html>
