@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 25.8.4.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-10T05:27:08"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在 Linux 的世界中 , 大部分的程式都是以壓縮檔的形式散佈。所以我們常常會看到一些以 .tar.gz, .tgz, .gz 或 .bz2 為副檔名的檔案</li>
+<li>這一章中將介紹最常見到的打包、壓縮和解壓縮程式</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>tar 指令的參數繁多</li>
+<ul>
+<li>-c：建立一個新的 tar 檔</li>
+<li>-v：顯示運作過程的資訊</li>
+<li>-f：指定檔案名稱</li>
+<li>-z：呼叫 gzip 壓縮指令執行壓縮、解壓縮</li>
+<li>-j：呼叫 bzip2 壓縮指令執行壓縮、解壓縮</li>
+<li>-t：檢視壓縮檔案內容</li>
+<li>-x：解開 tar 檔</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 -z 參數呼叫 gzip 或 gunzip 指令</li>
+<li>解開最常見的 .tar.gz 檔案或建立 .tar.gz 檔案</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 -j 參數解開 tar.bz2 壓縮檔</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 -Z (大寫) 參數指定以 compress 指令壓縮</li>
+<li>或以 uncompress指令解壓縮 tar 檔 </li>
+<li>需要先執行 sudo apt-get install ncompress 指令安裝 ncompress 套件</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> --atime-preserve 參數可將解開後的檔案以原來的檔案時間存檔</li>
+<li> 使用 -h 參數指定打包檔案時, 若遇到符號連結時, 要儲存符號連結所連結的檔案</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>  使用 -k 參數解開 tar 檔案時, 不覆蓋已存在的檔案</li>
+<li>使用 --totals 參數可在打包完成後, 顯示寫入的 bytes 數</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 --delete 參數刪除 .tar 檔中的檔案</li>
+<li>使用 -r 參數將檔案附加到 tar 檔裡面</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 --remove-files 參數將檔案移入 tar 檔案中, 並移除原檔案</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在 Linux 中有許多不同的壓縮及解壓縮程式, 接下來介紹的是處理 .zip 檔的  zip 和 unzip 指令</li>
+<li>這 2 個指令位於 /usr/bin 目錄中</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>壓縮指定的檔案</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 -g 參數可壓縮指定的檔案, 並加入已存在的壓縮檔中</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 -j 參數壓縮時, 只會加入檔案的名稱及內容, 不會包含目錄結構</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 -r 參數, 可在壓縮時包含所有子目錄下的內容</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>解壓縮.zip檔的unzip指令</li>
+<li>將檔案全部解壓縮</li>
+<li>將檔案解壓縮至某個目錄下</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>要解壓縮時, 若原來的檔案已存在目錄中, 就不解壓縮；若不存在, 才解壓縮</li>
+<li>解壓縮時不要依照原來的目錄結構, 而將檔案置於目前目錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>目前大部分的壓縮檔大都是用 tar 將所有檔案包裝成一個檔案, 再用gzip 做壓縮, 所以當我們看到副檔名為 .tar.gz 或 .tgz 者, 大多就是這類型的檔案</li>
+<li>此處簡單說明 gzip 單獨使用的情形</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 gzip -h 可得到指令的參數及語法說明</li>
+<li> 壓縮及解壓縮</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>解壓縮時, 使用 -f 參數, 可強迫覆蓋輸出檔案, 不要提示詢問訊息</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>gunzip 的用法與 gzip 一樣, 擁有相同的指令列選項</li>
+<li>可以把 gunzip 視為 gzip -d 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>*.tar.bz2 的解壓縮方法如下</li>
+<li>bzip2 與 bunzip2 在功能、參數的用法上與 gzip 幾乎一樣</li>
+</ul>
+</body>
+</html>

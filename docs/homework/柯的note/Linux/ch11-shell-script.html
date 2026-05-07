@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH11 — Shell Script | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH11 — Shell Script</h1>
+      <div class="note-tags"><span class="note-tag">CH11</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>📜 Shell Script 簡介</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>📜 建立與執行 script</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>📜 變數設定與取用</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>📜 環境變數與 read 輸入</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>📜 test 指令與運算子</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>📜 流程控制 if / case</span></div>
+      <div class="toc-item"><span class="toc-num">7</span><span>📜 迴圈 for / while / until</span></div>
+      <div class="toc-item"><span class="toc-num">8</span><span>📜 shift 參數移位</span></div>
+      <div class="toc-item"><span class="toc-num">9</span><span>📜 函式定義</span></div>
+      <div class="toc-item"><span class="toc-num">10</span><span>📜 export 與 source</span></div>
+    </div>
+
+    <!-- S1: 簡介 -->
+    <section id="s1">
+      <h2>📜 1｜Shell Script 簡介</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🐚 Shell Script 的定義</div>
+        <p>Shell Script 是利用 bash 等 Shell 所提供的語法撰寫的腳本，具備<strong>接受指令列參數、使用者輸入、輸出訊息及設定變數</strong>的能力。</p>
+      </div>
+      <div class="highlight-box">
+        <p>本章以 <strong>bash shell script</strong> 為主。Script 中的指令可分為：</p>
+        <ul style="margin:0.3rem 0 0 1.2rem;padding-left:0;">
+          <li><strong>Linux 指令</strong>：如 <code>ls</code>、<code>cp</code>、<code>grep</code></li>
+          <li><strong>Shell 指令</strong>：如 <code>if</code>、<code>for</code>、<code>while</code>、<code>read</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- S2: 建立與執行 -->
+    <section id="s2">
+      <h2>📜 2｜建立與執行 script</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">方法一：傳給 shell 程式</div>
+        <div class="layer-card-desc"><code>bash script檔名</code> 或 <code>sh script檔名</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">方法二：直接執行</div>
+        <div class="layer-card-desc">設定執行權限：<code>chmod +x script檔名</code>，再直接輸入檔名執行</div>
+      </div>
+      <div class="highlight-box">
+        <p>⚠️ 若直接執行出現「找不到指令」錯誤，執行 <code>export PATH=$PATH:.</code> 或將路徑加入 <code>~/.bash_profile</code>。</p>
+      </div>
+    </section>
+
+    <!-- S3: 變數 -->
+    <section id="s3">
+      <h2>📜 3｜變數設定與取用</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🔤 變數基本操作</div>
+        <ul style="margin:0.5rem 0 0 1.2rem;padding-left:0;">
+          <li>設定變數：<code>VAR=value</code>（等號兩側不能有空格）</li>
+          <li>取用變數：<code>$VAR</code> 或 <code>${VAR}</code></li>
+          <li>顯示脫逸 <code>$</code>：使用 <code>\$</code> 或單引號包圍</li>
+        </ul>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">🔄 指令置換</div>
+        <p>將指令輸出結果設為變數值，有兩種語法：</p>
+        <ul style="margin:0.3rem 0 0 1.2rem;padding-left:0;">
+          <li>反引號：<code>VAR=\`command\`</code></li>
+          <li>$( )：<code>VAR=$(command)</code>（推薦，語意更清晰）</li>
+        </ul>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">🔢 指令列參數</div>
+        <p>執行時傳入參數，script 內以 <code>$1</code>、<code>$2</code>... 取用，<code>$#</code> 為參數總數，<code>$*</code> 或 <code>$@</code> 為所有參數。</p>
+      </div>
+    </section>
+
+    <!-- S4: 環境變數與 read -->
+    <section id="s4">
+      <h2>📜 4｜環境變數與 read 輸入</h2>
+      <div class="highlight-box">
+        <p>系統中有許多內建環境變數可直接取用，如 <code>$HOME</code>、<code>$PATH</code>、<code>$USER</code>、<code>$PWD</code>。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">⌨️ read 互動輸入</div>
+        <p>使用 <code>read 變數名稱</code> 可暫停 script 執行，等待使用者輸入並存入變數。</p>
+      </div>
+    </section>
+
+    <!-- S5: test 運算子 -->
+    <section id="s5">
+      <h2>📜 5｜test 指令與運算子</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">✅ test 的用途</div>
+        <p>test 用來判斷運算式的真假，常用於 if、while 等流程控制的條件測試。另一種等價寫法：<code>[ 運算式 ]</code></p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>類型</th><th>運算子</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td rowspan="5">字串</td><td><code>=</code> / <code>==</code></td><td>兩字串相等</td></tr>
+          <tr><td><code>!=</code></td><td>兩字串不相等</td></tr>
+          <tr><td><code>-z</code></td><td>字串為空</td></tr>
+          <tr><td><code>-n</code></td><td>字串不為空</td></tr>
+          <tr><td><code>-n</code></td><td>字串存在且長度 > 0</td></tr>
+          <tr><td rowspan="4">數值</td><td><code>-eq</code></td><td>相等</td></tr>
+          <tr><td><code>-ne</code></td><td>不相等</td></tr>
+          <tr><td><code>-lt / -le</code></td><td>小於 / 小於等於</td></tr>
+          <tr><td><code>-gt / -ge</code></td><td>大於 / 大於等於</td></tr>
+          <tr><td rowspan="6">檔案</td><td><code>-e</code></td><td>檔案存在</td></tr>
+          <tr><td><code>-f</code></td><td>一般檔案存在</td></tr>
+          <tr><td><code>-d</code></td><td>目錄存在</td></tr>
+          <tr><td><code>-r / -w / -x</code></td><td>可讀 / 可寫 / 可執行</td></tr>
+          <tr><td><code>-L</code></td><td>為符號連結</td></tr>
+          <tr><td><code>-s</code></td><td>檔案存在且不為空</td></tr>
+          <tr><td rowspan="3">邏輯</td><td><code>-a</code></td><td>AND（兩者皆真）</td></tr>
+          <tr><td><code>-o</code></td><td>OR（兩者之一為真）</td></tr>
+          <tr><td><code>!</code></td><td>NOT（取反）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S6: if / case -->
+    <section id="s6">
+      <h2>📜 6｜流程控制 if / case</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🔀 if 敘述</div>
+        <p>根據條件真假決定執行的程式段落。結構：<code>if ... then ... elif ... then ... else ... fi</code></p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">🔀 case 敘述</div>
+        <p>從多個條件中選擇第一個符合的執行，適合字串比對。<code>;;</code> 為結束符號，<code>*)</code> 為預設執行。</p>
+      </div>
+      <div class="highlight-box">
+        <p>⚠️ 使用萬用字元作為測試條件時，請勿於字串兩側加上雙引號。</p>
+      </div>
+    </section>
+
+    <!-- S7: 迴圈 -->
+    <section id="s7">
+      <h2>📜 7｜迴圈 for / while / until</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>類型</th><th>語法</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>for（串列）</td><td><code>for VAR in 串列; do ... done</code></td><td>對串列中每個元素執行一次</td></tr>
+          <tr><td>for（C風格）</td><td><code>for ((i=0; i&lt;10; i++)); do ... done</code></td><td>類C語法，支援數值運算</td></tr>
+          <tr><td>while</td><td><code>while [ 條件 ]; do ... done</code></td><td>條件為「真」時重複執行</td></tr>
+          <tr><td>until</td><td><code>until [ 條件 ]; do ... done</code></td><td>條件為「假」時重複執行</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p><code>break</code>：中斷迴圈；<code>continue</code>：跳過本次迭代。可加數字參數跳脫多層迴圈。</p>
+      </div>
+    </section>
+
+    <!-- S8: shift -->
+    <section id="s8">
+      <h2>📜 8｜shift 參數移位</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">⬅️ shift 的作用</div>
+        <p>shift 將指令列參數向左移動一位，使 <code>$2</code> 變成 <code>$1</code>、<code>$3</code> 變成 <code>$2</code>，常用於逐一處理未知數量的參數。</p>
+      </div>
+      <div class="highlight-box">
+        <p><code>shift</code>（預設左移1位）、<code>shift 2</code>（左移2位）。常與 while 迴圈合用：<code>while [ "$#" -gt 0 ]; do ...; shift; done</code></p>
+      </div>
+    </section>
+
+    <!-- S9: 函式 -->
+    <section id="s9">
+      <h2>📜 9｜函式定義</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🧩 函式語法</div>
+        <p>當 script 變大時，可將常用指令寫成函式以便重複呼叫。</p>
+      </div>
+      <div class="highlight-box">
+        <p>取用函式回傳值：直接取用全域變數（如 <code>$maxvalue</code>），或使用 <code>return</code> 搭配 <code>$?</code>。</p>
+      </div>
+    </section>
+
+    <!-- S10: export/source -->
+    <section id="s10">
+      <h2>📜 10｜export 與 source</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>bash script.sh</code></td><td>系統產生新的 shell 執行，script 內的變數不會影響目前 shell</td></tr>
+          <tr><td><code>source script.sh</code></td><td>以目前 shell 環境執行，script 內的變數會保留下來（相當於 <code>.</code> 指令）</td></tr>
+          <tr><td><code>export VAR</code></td><td>將變數輸出為環境變數，供其他程式使用</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>💡 若要讓 script 中的設定永久生效，使用 <code>source</code> 而非直接執行。</p>
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

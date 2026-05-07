@@ -70,5 +70,23 @@
     "emoji": "🔐",
     "title": "CH9 — SSH 遠端登入",
     "tag": "CH9"
+  },
+  {
+    "file": "ch11-shell-script.html",
+    "emoji": "📜",
+    "title": "CH11 — Shell Script",
+    "tag": "CH11"
+  },
+  {
+    "file": "ch12-cron.html",
+    "emoji": "⏰",
+    "title": "CH12 — 工作排程",
+    "tag": "CH12"
+  },
+  {
+    "file": "ch13-compress.html",
+    "emoji": "📦",
+    "title": "CH13 — 打包與壓縮",
+    "tag": "CH13"
   }
 ]

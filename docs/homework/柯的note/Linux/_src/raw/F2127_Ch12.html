@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 25.8.4.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-10T05:05:57"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>電腦有很多程式需要自動啟動或是週期性地被執行 , 例如清理硬碟中不要的暫存檔、備份系統資料 ... 等</li>
+<li>對於這些重複性或是需要指定時間的工作 , 可利用本章所介紹的指令 , 輕輕鬆鬆完成想要執行的工作</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>cron : Linux 用來定期執行程式的常駐指令</li>
+<li>Linux 所排程的工作主要分成以下 2 類：</li>
+<ul>
+<li>系統執行的工作</li>
+<li>個人執行的工作</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>格式如下：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>指定每小時的第 1 分鐘執行 <b>program -a -b - c</b> 指令</li>
+<li>指定每天的 4 點 20 分執行 <b>program</b> 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>指定每年9 月 8 日 0 點 1 分執行 <b>program</b> 指令</li>
+<li>指定每星期日4 點 9 分執行 <b>program </b>指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>同時指定多個不連續的時間, 則可在時間跟時間之間用 &quot;,“ 區隔開來</li>
+<li>指定每月 1 日及 15 日的 2 點 20 分執行 </li>
+<p>   <b>program</b> 指令</p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>指定連續的時間, 則可用 &quot;-&quot; 連接兩段時間</li>
+<li>指定每天 1 點至 4 點的第 25 分鐘執行 <b>program</b> 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若要指定週期性的時間, 則可用 &quot;/&quot; 加上 &quot;時間間隔&quot; 指定</li>
+<li>指定每隔 10 分鐘執行一次 program 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>指定每月隔 10 天的 5 點 35 分執行一次 program 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>/etc/crontab 檔是 Linux 系統工作的排程設定檔, 可如下設定</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>除了上述排程的系統工作以外, 所有使用者則可利用 crontab 指令, 自行設定要定期執行的工作</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li><b>crontab -e</b> 指令</li>
+<li>文書編輯器建議選擇nano</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>每天的 14 點 55 分執行 tar czvf backup/backup.tar.gz work/* 指令</li>
+<li><b>cron </b>指令會將執行的結果以 E-mail 寄送給該使用者</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>tony 使用者所收到執行結果錯誤郵件的內容</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用者檢視目前排程的工作</li>
+<li><b>crontab -l </b>指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li><b>crontab -r 指令</b></li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>系統管理者也可執行 sudo crontab -l -u benny 指令列出 benny 使用者目前排程的工作</li>
+<li>執行 sudo crontab -r -u benny 指令刪除 benny 使用者所有排程的工作</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>被儲存在 /var/spool/cron/crontabs </li>
+<p>   目錄下</p>
+<li>以帳號名稱為檔名</li>
+<li>此目錄只允許 root 系統管理者讀寫</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>將執行結果導向到一個記錄檔</li>
+<li>將執行結果及錯誤訊息, 全部導向指定的記錄檔</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>不會儲存所有執行結果及錯誤訊息</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>設定排程工作，例如指定關機日期</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>at 指令所設定排程的 atq 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可以刪除排程的atrm 指令</li>
+<li>atq 及 atrm 指令, 也可以分別用 at -l 及 at -d 來代替</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>用 root 權限 執行 systemctl 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>用 root 權限 執行 systemctl 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>讓 console-getty.service 服務開機時自動啟動</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>將要執行的程式寫入 /etc/rc.local 檔案</li>
+<li>以 root 權限用文書編輯器編輯</li>
+<li>存檔後, 執行 chmod 755 /etc/rc.local 指令讓設定生效</li>
+</ul>
+</body>
+</html>

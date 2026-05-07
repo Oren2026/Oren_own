@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH13 — 打包與壓縮 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH13 — 打包與壓縮</h1>
+      <div class="note-tags"><span class="note-tag">CH13</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>📦 打包壓縮簡介</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>📦 tar 指令</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>📦 tar 進階操作</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>📦 zip / unzip</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>📦 gzip / gunzip</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>📦 bzip2 / bunzip2</span></div>
+    </div>
+
+    <!-- S1: 簡介 -->
+    <section id="s1">
+      <h2>📦 1｜打包壓縮簡介</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🗜️ 為什麼要打包壓縮？</div>
+        <p>Linux 大部分程式以壓縮檔形式散佈，常見副檔名包括 <code>.tar.gz</code>、<code>.tgz</code>、<code>.gz</code>、<code>.bz2</code>、<code>.zip</code>。</p>
+      </div>
+      <div class="highlight-box">
+        <p>流程：<strong>打包（tar）</strong>先將多個檔案合併為一個 → <strong>壓縮</strong>再縮小體積。</p>
+      </div>
+    </section>
+
+    <!-- S2: tar -->
+    <section id="s2">
+      <h2>📦 2｜tar 指令</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>參數</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>-c</code></td><td>建立新的 tar 檔（create）</td></tr>
+          <tr><td><code>-x</code></td><td>解開 tar 檔（extract）</td></tr>
+          <tr><td><code>-t</code></td><td>檢視壓縮檔內容（list）</td></tr>
+          <tr><td><code>-v</code></td><td>顯示運作過程資訊（verbose）</td></tr>
+          <tr><td><code>-f 檔名</code></td><td>指定檔案名稱</td></tr>
+          <tr><td><code>-z</code></td><td>呼叫 gzip 壓縮/解壓（.tar.gz）</td></tr>
+          <tr><td><code>-j</code></td><td>呼叫 bzip2 壓縮/解壓（.tar.bz2）</td></tr>
+          <tr><td><code>-Z</code></td><td>呼叫 compress 壓縮/解壓（.tar.Z）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S3: tar 進階 -->
+    <section id="s3">
+      <h2>📦 3｜tar 進階操作</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>參數</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--atime-preserve</code></td><td>解開時保留原始檔案時間</td></tr>
+          <tr><td><code>-h</code></td><td>打包時保留符號連結所指向的檔案</td></tr>
+          <tr><td><code>-k</code></td><td>解開時不覆蓋已存在的檔案</td></tr>
+          <tr><td><code>--totals</code></td><td>打包完成後顯示寫入的位元組數</td></tr>
+          <tr><td><code>--delete</code></td><td>刪除 tar 檔內的特定檔案</td></tr>
+          <tr><td><code>-r</code></td><td>將檔案附加到現有 tar 檔</td></tr>
+          <tr><td><code>--remove-files</code></td><td>打包後移除原始檔案</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p><strong>常見用法：</strong></p>
+        <p>解開 .tar.gz：<code>tar -xzvf 檔案.tar.gz</code></p>
+        <p>建立 .tar.gz：<code>tar -czvf 檔案.tar.gz 目錄/</code></p>
+        <p>解開 .tar.bz2：<code>tar -xjvf 檔案.tar.bz2</code></p>
+      </div>
+    </section>
+
+    <!-- S4: zip/unzip -->
+    <section id="s4">
+      <h2>📦 4｜zip / unzip</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>zip 檔名.zip 檔案...</code></td><td>壓縮指定檔案</td></tr>
+          <tr><td><code>zip -g 檔名.zip 檔案</code></td><td>將檔案加入已存在的 zip 檔</td></tr>
+          <tr><td><code>zip -j 檔名.zip 檔案</code></td><td>只儲存檔案名稱，不含目錄結構</td></tr>
+          <tr><td><code>zip -r 檔名.zip 目錄</code></td><td>遞迴壓縮，包含所有子目錄</td></tr>
+          <tr><td><code>unzip 檔名.zip</code></td><td>全部解壓縮至目前目錄</td></tr>
+          <tr><td><code>unzip 檔名.zip -d 目錄</code></td><td>解壓縮至指定目錄</td></tr>
+          <tr><td><code>unzip -o 檔名.zip</code></td><td>若檔案已存在則覆蓋</td></tr>
+          <tr><td><code>unzip -n 檔名.zip</code></td><td>僅解壓縮不存在的檔案</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S5: gzip -->
+    <section id="s5">
+      <h2>📦 5｜gzip / gunzip</h2>
+      <div class="highlight-box">
+        <p>gzip 只能壓縮<strong>單一檔案</strong>，無法處理目錄（需先以 tar 打包）。</p>
+        <p><strong>常用指令：</strong></p>
+        <p><code>gzip -h</code>：顯示說明</p>
+        <p><code>gzip 檔案</code>：壓縮（自動產生 .gz 檔，原始檔案刪除）</p>
+        <p><code>gunzip 檔案.gz</code> 或 <code>gzip -d 檔案.gz</code>：解壓縮</p>
+        <p><code>gzip -f</code>：強迫覆蓋已存在的輸出檔，不詢問</p>
+      </div>
+    </section>
+
+    <!-- S6: bzip2 -->
+    <section id="s6">
+      <h2>📦 6｜bzip2 / bunzip2</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🗜️ bzip2 的特性</div>
+        <p>bzip2 與 bunzip2 在功能與參數用法上與 gzip 幾乎相同，但壓縮率通常比 gzip 更高，適合需要節省空間的場景。</p>
+      </div>
+      <div class="highlight-box">
+        <p>解開 .tar.bz2：<code>tar -xjvf 檔案.tar.bz2</code></p>
+        <p>或分開處理：<code>bzip2 -d 檔案.tar.bz2</code> → <code>tar -xf 檔案.tar</code></p>
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

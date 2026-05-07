@@ -1,0 +1,339 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 25.8.4.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-06T05:04:15"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>shell script, 是指利用使用者環境 shell ( 例如 bash) 所提供的語法撰寫的 script。</li>
+<li>shell script 具有接受指令列參數、使用者輸入/輸出及設定變數的能力。其指令可分為 Linux 指令和 shell 指令</li>
+<li>本章介紹以 bash shell script 為主</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>建立 shell script</li>
+<li>並存檔為 showinfo</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>echo 指令用來顯示提示訊息</li>
+<li>參數 –neE 意義如下：</li>
+<li>-n：在顯示訊息時不自動換行 (預設會自動換行)</li>
+<li>-e：顯示訊息時使用脫逸 (Escape) 字元</li>
+<li>-E：顯示訊息時不使用脫逸字元</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>第 6 行 `whoami` <b>字串左右的反引號 (`) </b>是用做指令置換, 也就是將它所<b>括起來的字串視為指令執行</b>, 並將其輸出字串在原地展開</li>
+<li>第 7 行 &quot;echo -e....\c&quot; 亦表示此行輸出後不換行, 故下一行的 <b>pwd</b> 指令執行結果就會接在 &quot;Your current directory is:&quot; 之後</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>除了使用反引號外, 還可以使用$(command) 作為指令置換</li>
+<li>底下兩個用法的功用是相同的</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 shell script的方式有 2 種, 一種是執行 shell 程式, 並將該 script 當作參數傳給它</li>
+<li>另一種方式是在指令列下直接輸入 script 檔名執行</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>設定檔案擁有者本身執行的權限</li>
+<li>修改剛剛建立的 showinfo 檔的權限</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>直接執行 shell script 時, 比較常出現的問題是找不到指令, 其錯誤訊息類似下面這樣</li>
+<li>出現此訊息的原因多半是沒有正確設定路徑 , 請執行<b> export PATH=$PATH:. </b>指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>或者在 ~/.bash_profile 檔中增加執行路徑</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li><b>所謂變數, 就是可存放資料的識別符號</b></li>
+<li>在 shell script 中設定與取用變數的方法</li>
+<ul>
+<li>直接設定變數值</li>
+<li>由指令置換取得</li>
+<li>由指令列參數取得</li>
+<li>由環境變數取得</li>
+<li>由使用者輸入</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>設定變數, 只要直接指定其值即可</li>
+<li>要取用變數值的時候, 則應於變數名稱前加上 &quot;$&quot; 符號</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>如果想在顯示的數字前加上 &quot;$&quot;, 則必須使用脫逸字元</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li><b>把指令執行結果設定為某一個變數的變數值</b></li>
+<li>反引號 (`) 及 $(command) 可用來將指令的輸出視為字串</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 script 檔時, 可以加上一些參數傳入 script 中運算</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>用文書編輯軟體 將這段會顯示所有參數及其總數的程式存為 showarg 檔</li>
+<li>執行 chmod +x showarg 指令改為可執行</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>系統中有許多內定的環境變數可直接取用</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 read 指令可以撰寫互動式的 shell script</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>將內容存為 read-input 並修改檔案權限後即可執行</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>shell script 具有條件測試、流程控制及自訂函數等功能 </li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>test 指令用來判斷運算式的真假 (True 或 False)</li>
+<li>test 指令常用於 if 及 while 敘述等迴圈結束條件的測試</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>test 指令還有另外一種表達方式，如 &quot;[ 運算式 ]&quot;</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>字串運算子</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>以下為執行範例</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>數值運算子</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>將數值運算子用於一般字串, 將得到錯誤訊息</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>檔案運算子</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>以下為執行範例</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>邏輯運算子</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>以下為執行範例</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>if 敘述：根據運算式的真偽值, 決定要執行的程式段落</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>fi 是 if 敘述的結束符號 ,必須與 if 成對出現</li>
+<li>elif 是 else if 的意思, 當 if 的運算式不成立時, 才會接著測試 elif 的運算式</li>
+<li>如果 if 及 elif 的測試條件皆不成立, 最後才會執行 else 子句內的指令</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>判斷目錄內是否有 readme 檔案</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>case 敘述：從許多的測試條件中選擇第 1 個符合的條件執行, 後面的條件就算符合也不會執行</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>case 敘述適用於字串的比較</li>
+<li><b>雙分號 (;;) 為測試條件的結束符號</b></li>
+<li>使用萬用字元作為測試條件時, 請勿於字串左右加上雙引號 (&quot;&quot;)</li>
+<li>*) 之後的指令可視為case 敘述預設的執行指令</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>利用 shell script 的 case 敘述</li>
+<li>寫個簡單安裝程式, 將檔名取為 install</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>以 root 權限執行</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>迴圈：設定在符合指定的條件下重複執行某段程式</li>
+<ul>
+<li>for、while 與 until 敘述都可以達到迴圈的功能</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>for 敘述：對串列中的每一個元素執行相同的指令，串列就是由空白符號所分隔的字串</li>
+<ul>
+<li>for 敘述語法1：</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>for 敘述語法2：</li>
+<li>底下兩個敘述的功用是相同的</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>此範例程式會顯示目錄中所有 .txt 的文字檔案名稱及內容</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>while 敘述及 until 敘述，語法結構和用途類似</li>
+<ul>
+<li>while 敘述在測試條件為「真」時重複執行</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>until 敘述在測試條件為「假」時重複執行</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>break 子句及 continue 子句</li>
+<ul>
+<li>break 子句用於中斷迴圈的執行, 將程式流程移至迴圈敘述結束之後的下一個指令</li>
+<li>continue 子句則在忽略子句之後的指令, 將程式流程移至迴圈開始的地方</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>break 子句及 continue 子句都可加上數字參數, 以指示要跳脫的迴圈數目</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>以下為範例程式：</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>(接上頁)</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>修改檔案權限後, 即可於指令列輸入 bash jobcontrol 指令自行測試</li>
+<li>上述範例 if 敘述，也可以使用 case 敘述改寫</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>shift 指令用來將指令列參數向左移</li>
+<li>假設指令列的 3 個參數如下</li>
+<li>執行 shift 指令之後, 其值會變成</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可以指定參數向左移的次數</li>
+<li>例如左移兩次</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>shift 指令常與 while 敘述或 until 敘述合用</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>tr 指令會讀取 -i 參數所設定的檔案, 轉換字元後寫到 -0 參數所設的檔案</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>當 script 檔案變得很大時, 可以將 script 檔案中常用的指令程序寫成函式</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>將指令列輸入的數字傳入函式, 並顯示最大的數值</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在上例中使用了 $? 及 return 指令</li>
+<li>常用的作法是直接取用 $maxvalue 的值</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>export 指令及 source 指令：將 script 檔中的自訂變數輸出成環境變數</li>
+<li>export 指令能將 script 檔內的變數輸出給其他的指令使用</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行 script 時, 系統會產生一個新的 shell 程式</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>要使環境變數存留於目前的 shell 中, 則必須使用 source 指令執行該 script</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以 source 指令執行 script 程式時, 系統以目前的 shell 環境來執行</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在 bash 中可以使用 . 指令來取代 source 指令, 以下兩個指令的功能相同</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH12 — 工作排程 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH12 — 工作排程</h1>
+      <div class="note-tags"><span class="note-tag">CH12</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>⏰ 工作排程簡介</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>⏰ cron 排程格式</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>⏰ crontab 指令</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>⏰ 輸出導向</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>⏰ at 一次性排程</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>⏰ 開機啟動服務</span></div>
+    </div>
+
+    <!-- S1: 簡介 -->
+    <section id="s1">
+      <h2>⏰ 1｜工作排程簡介</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🔄 為什麼需要排程？</div>
+        <p>電腦有許多程式需要自動啟動或週期性執行，如清理暫存檔、備份系統資料等。本章介紹 Linux 中定期執行工作的方法。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">📂 cron 的兩大類工作</div>
+        <ul style="margin:0.5rem 0 0 1.2rem;padding-left:0;">
+          <li><strong>系統執行的工作</strong>：由 root 管理，記錄在 <code>/etc/crontab</code></li>
+          <li><strong>個人執行的工作</strong>：由一般使用者設定，透過 <code>crontab</code> 指令管理</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- S2: cron 格式 -->
+    <section id="s2">
+      <h2>⏰ 2｜cron 排程格式</h2>
+      <div class="highlight-box">
+        <p>cron 格式：<code>分 時 日 月 週 命令</code></p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>欄位</th><th>範圍</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>分</td><td>0–59</td></tr>
+          <tr><td>時</td><td>0–23</td></tr>
+          <tr><td>日</td><td>1–31</td></tr>
+          <tr><td>月</td><td>1–12</td></tr>
+          <tr><td>週</td><td>0–6（0 = 星期日）</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p><strong>時間範例：</strong></p>
+        <ul style="margin:0.3rem 0 0 1.2rem;padding-left:0;">
+          <li>每小時第 1 分：<code>1 * * * * command</code></li>
+          <li>每天 04:20：<code>20 4 * * * command</code></li>
+          <li>每年 9/8 00:01：<code>1 0 8 9 * command</code></li>
+          <li>每週日 04:09：<code>9 4 * * 0 command</code></li>
+          <li>每月 1、15 日 02:20：<code>20 2 1,15 * * command</code></li>
+          <li>每天 01:00–04:00 每 25 分：<code>25 1-4 * * * command</code></li>
+          <li>每 10 分鐘執行一次：<code>*/10 * * * * command</code></li>
+          <li>每 10 天（1、11、21、31日）05:35：<code>35 5 */10 * * command</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- S3: crontab -->
+    <section id="s3">
+      <h2>⏰ 3｜crontab 指令</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>crontab -e</code></td><td>編輯使用者的 crontab 排程（建議選 nano 作為編輯器）</td></tr>
+          <tr><td><code>crontab -l</code></td><td>列出目前所有的排程工作</td></tr>
+          <tr><td><code>crontab -r</code></td><td>刪除使用者所有的排程工作</td></tr>
+          <tr><td><code>sudo crontab -l -u benny</code></td><td>系統管理者查看指定使用者的排程</td></tr>
+          <tr><td><code>sudo crontab -r -u benny</code></td><td>系統管理者刪除指定使用者的排程</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>使用者的 crontab 檔案儲存在 <code>/var/spool/cron/crontabs/</code>（以帳號名稱為檔名），僅 root 可讀寫。</p>
+        <p>預設執行結果會以 E-mail 寄送給使用者。可透過輸出導向改為寫入紀錄檔。</p>
+      </div>
+    </section>
+
+    <!-- S4: 輸出導向 -->
+    <section id="s4">
+      <h2>⏰ 4｜輸出導向</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📝 cron 輸出設定</div>
+        <p>cron 執行結果預設以 E-mail 寄送。可依需求改為寫入紀錄檔或完全不輸出：</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>寫法</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>command &gt; /path/log.txt</code></td><td>將標準輸出導向檔案（覆寫）</td></tr>
+          <tr><td><code>command &gt;&gt; /path/log.txt</code></td><td>將標準輸出附加到檔案（累加）</td></tr>
+          <tr><td><code>command &gt;&amp; /path/log.txt</code></td><td>將標準輸出與錯誤訊息全部導向檔案</td></tr>
+          <tr><td><code>command &gt;/dev/null 2&gt;&amp;1</code></td><td>不儲存任何執行結果及錯誤訊息</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S5: at -->
+    <section id="s5">
+      <h2>⏰ 5｜at 一次性排程</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🎯 at 的用途</div>
+        <p>at 用於設定<strong>一次性</strong>的排程工作，適合「只在某個時間點執行一次」的情境，如關機前執行備份。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>at 時間</code></td><td>設定一次性排程（進入互動模式輸入命令）</td></tr>
+          <tr><td><code>atq</code> 或 <code>at -l</code></td><td>查詢目前排程的 at 工作</td></tr>
+          <tr><td><code>atrm ID</code> 或 <code>at -d ID</code></td><td>刪除指定的 at 工作</td></tr>
+          <tr><td><code>sudo systemctl start atd</code></td><td>啟動 atd 服務（at 需此 daemon）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S6: 開機啟動 -->
+    <section id="s6">
+      <h2>⏰ 6｜開機啟動服務</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">systemctl（現代方式）</div>
+        <div class="layer-card-desc"><code>systemctl enable 服務名稱</code> 讓服務開機時自動啟動；<code>systemctl disable 服務名稱</code> 取消</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">rc.local（傳統方式）</div>
+        <div class="layer-card-desc">將要執行的程式寫入 <code>/etc/rc.local</code>，再執行 <code>chmod 755 /etc/rc.local</code> 即可</div>
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

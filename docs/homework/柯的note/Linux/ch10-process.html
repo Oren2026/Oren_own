@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH10 — 系統管理程序 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH10 — 系統管理程序</h1>
+      <div class="note-tags"><span class="note-tag">CH10</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>⚙️ w 指令：查看登入使用者</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>⚙️ who 指令</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>⚙️ top 程序監視</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>⚙️ ps 指令</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>⚙️ kill 刪除程序</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>⚙️ 踢出使用者</span></div>
+    </div>
+
+    <!-- S1: w 指令 -->
+    <section id="s1">
+      <h2>⚙️ 1｜w 指令：查看登入使用者</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">👥 w 指令的功能</div>
+        <p>了解每位使用者的一舉一動，對系統管理者非常重要。w 指令可顯示目前登入的所有使用者及其正在執行的程式。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>欄位</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>A</td><td>系統目前的時間</td></tr>
+          <tr><td>up</td><td>系統開機到現在經過的時間</td></tr>
+          <tr><td>C</td><td>目前登入此系統的使用者總數</td></tr>
+          <tr><td>D</td><td>系統平均負載指示（load average）</td></tr>
+          <tr><td>USER</td><td>登入的使用者帳號名稱</td></tr>
+          <tr><td>TTY</td><td>該使用者登入的終端機代號</td></tr>
+          <tr><td>FROM</td><td>使用者從何處登入（IP 或終端機）</td></tr>
+          <tr><td>LOGIN@</td><td>使用者登入系統的時間</td></tr>
+          <tr><td>IDLE</td><td>使用者閒置的時間</td></tr>
+          <tr><td>JCPU</td><td>該終端機所有相關程序消耗的 CPU 時間</td></tr>
+          <tr><td>PCPU</td><td>CPU 執行目前程式（WHAT欄）所耗費的時間</td></tr>
+          <tr><td>WHAT</td><td>使用者正在執行的程式</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S2: who -->
+    <section id="s2">
+      <h2>⚙️ 2｜who 指令</h2>
+      <div class="highlight-box">
+        <p><code>who</code> 指令可查詢目前有哪些使用者登入系統。</p>
+        <ul style="margin:0.3rem 0 0 1.2rem;padding-left:0;">
+          <li><code>who -H</code>：顯示標題列</li>
+          <li><code>who -u</code>：顯示閒置時間和 PID</li>
+          <li><code>who 帳號</code>：查詢特定使用者的登入狀況</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- S3: top -->
+    <section id="s3">
+      <h2>⚙️ 3｜top 程序監視</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📊 top 的用途</div>
+        <p>top 指令可即時監視系統資源的使用狀況，顯示所有程序佔用的 CPU、記憶體等資源。</p>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">基本操作</div>
+        <div class="layer-card-desc">執行 <code>top</code> 即可進入監視畫面</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">篩選使用者</div>
+        <div class="layer-card-desc">按下 <code>u</code> 鍵，輸入帳號名稱，可只看特定使用者的程序</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">刪除程序</div>
+        <div class="layer-card-desc">在 top 畫面中直接按下 <code>k</code>，輸入 PID，即可結束該程序</div>
+      </div>
+    </section>
+
+    <!-- S4: ps -->
+    <section id="s4">
+      <h2>⚙️ 4｜ps 指令</h2>
+      <div class="highlight-box">
+        <p>ps（process status）指令用於報告執行中的程序狀態。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>ps</code></td><td>僅顯示目前終端機的程序</td></tr>
+          <tr><td><code>ps -l</code> 或 <code>ps u</code></td><td>顯示較詳細的資訊（含 PID、狀態、CPU/記憶體使用等）</td></tr>
+          <tr><td><code>ps -Al</code></td><td>觀察所有使用者的程序</td></tr>
+          <tr><td><code>ps aux</code></td><td>查看所有背景執行的程序（含無終端機者）</td></tr>
+          <tr><td><code>ps --sort %cpu</code></td><td>按 CPU 使用率排序程序清單</td></tr>
+          <tr><td><code>ps aux | grep 關鍵字</code></td><td>查詢特定程式</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S5: kill -->
+    <section id="s5">
+      <h2>⚙️ 5｜kill 刪除程序</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🛑 kill 的用途</div>
+        <p>kill 指令用於刪除執行中的程序，通常搭配 ps 指令先查出 PID 再使用。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>訊號</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>kill PID</code></td><td>正常終止程序（預設 SIGTERM）</td></tr>
+          <tr><td><code>kill -9 PID</code></td><td>強制刪除（SIGKILL，無法攔截）</td></tr>
+          <tr><td><code>kill -15 PID</code></td><td>優雅終止（SIGTERM，可被程式攔截）</td></tr>
+          <tr><td><code>kill -STOP PID</code></td><td>暫停程序（相當於 Ctrl+Z）</td></tr>
+          <tr><td><code>kill -CONT PID</code></td><td>繼續執行已暫停的程序</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>若遇到無法順利刪除的程序，加上 <code>-9</code> 參數強制刪除。</p>
+      </div>
+    </section>
+
+    <!-- S6: 踢出使用者 -->
+    <section id="s6">
+      <h2>⚙️ 6｜踢出使用者</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">查出終端機代號</div>
+        <div class="layer-card-desc"><code>who</code> 指令查出該使用者（如 benny）登入的終端機代號（如 pts/0）</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">查出 PID</div>
+        <div class="layer-card-desc"><code>ps aux | grep pts/0</code> 找出該終端機正在執行程序的 PID（取 PID 最小者，即為該使用者的 shell）</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">踢出</div>
+        <div class="layer-card-desc"><code>sudo kill -9 PID</code> 強制終止該程序即可將使用者踢出系統</div>
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>
