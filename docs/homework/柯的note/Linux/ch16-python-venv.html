@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH16 — Python 虛擬環境 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH16 — Python 虛擬環境</h1>
+      <div class="note-tags"><span class="note-tag">CH16</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>🐍 虛擬環境簡介</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>🐍 建立虛擬環境</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>🐍 啟動與管理環境</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>🐍 pip 套件管理</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>🐍 匯出與複製環境</span></div>
+    </div>
+
+    <!-- S1: 簡介 -->
+    <section id="s1">
+      <h2>🐍 1｜虛擬環境簡介</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🔧 為什麼需要虛擬環境？</div>
+        <p>Python 虛擬環境可以建立<strong>多個獨立的 Python 環境</strong>，每個環境中可安裝不同的 Python 版本與不同的套件，彼此互不影響。</p>
+      </div>
+      <div class="highlight-box">
+        <p>常見情境：不同專案依賴不同版本的同一套件（如 A 專案需要 TensorFlow 1.x，B 專案需要 2.x），虛擬環境可以完美隔離。</p>
+      </div>
+    </section>
+
+    <!-- S2: 建立環境 -->
+    <section id="s2">
+      <h2>🐍 2｜建立虛擬環境</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">安裝 venv 套件</div>
+        <div class="layer-card-desc"><code>sudo apt-get install python3-venv</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">建立虛擬環境目錄</div>
+        <div class="layer-card-desc"><code>python3 -m venv 目錄名稱</code>（如 <code>python3 -m venv python-venv-ffn</code>）</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">檢視目錄架構</div>
+        <div class="layer-card-desc">可用 <code>tree 目錄名</code> 查看（需先 <code>sudo apt-get install tree</code>）</div>
+      </div>
+    </section>
+
+    <!-- S3: 啟動與管理 -->
+    <section id="s3">
+      <h2>🐍 3｜啟動與管理環境</h2>
+      <div class="highlight-box">
+        <p><strong>啟動虛擬環境：</strong></p>
+        <p><code>source 目錄名/bin/activate</code></p>
+        <p>啟動後提示符號會變成 <code>(目錄名) 帳號@主機名:~$</code>，表示目前在該虛擬環境中。</p>
+      </div>
+      <div class="highlight-box">
+        <p><strong>離開虛擬環境：</strong></p>
+        <p><code>deactivate</code></p>
+      </div>
+    </section>
+
+    <!-- S4: pip -->
+    <section id="s4">
+      <h2>🐍 4｜pip 套件管理</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>pip install 套件名</code></td><td>安裝套件（如 <code>pip install ffn</code>）</td></tr>
+          <tr><td><code>pip list</code></td><td>列出目前環境中所有已安裝的套件</td></tr>
+          <tr><td><code>pip freeze</code></td><td>輸出所有套件名稱及版本（供 requirements.txt 使用）</td></tr>
+          <tr><td><code>pip install -r requirements.txt</code></td><td>根據 requirements.txt 安裝所有套件</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S5: 匯出複製 -->
+    <section id="s5">
+      <h2>🐍 5｜匯出與複製環境</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">匯出環境套件</div>
+        <div class="layer-card-desc"><code>pip freeze > requirements.txt</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">在其他機器建立環境</div>
+        <div class="layer-card-desc"><code>python3 -m venv 新目錄</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">還原套件環境</div>
+        <div class="layer-card-desc"><code>source 新目錄/bin/activate && pip install -r requirements.txt</code></div>
+      </div>
+      <div class="highlight-box">
+        <p>💡 這樣可確保不同機器上的 Python 環境完全一致，執行結果也相同。</p>
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

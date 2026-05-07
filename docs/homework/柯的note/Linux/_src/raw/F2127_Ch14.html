@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 25.8.4.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-10T06:15:29"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> Ubuntu 的軟體管理核心是一個開放原始碼的套件管理系統 DPKG (Debian Package Management System)</li>
+<li>它的資料庫記錄了套件安裝、移除、升級的相依性, 也提供一個文字介面的套件管理工具 APT </li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> DPKG 套件管理系統最早是用在 Debian Linux 發行版上的套件管理系統, 而 Ubuntu Linux 發行版是由 Debian Linux 發行版改良而來, 因此也繼承了 Debian 的套件管理系統</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>管理 DPKG 套件管理系統的程式稱為 apt-get 程式或 apt-get 指令</li>
+<li>能夠被 apt-get 程式處理的安裝套件稱為 DEB 套件</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用 DPKG 套件管理系統具有下列優點:</li>
+<p>1.易於安裝、升級與移除套件</p>
+<p>2.有強大的查詢功能</p>
+<p>3.能夠進行套件驗證</p>
+<p>4.支援套件以原始碼形式發行</p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> DEB 套件通常以xxx.deb的格式命名</li>
+<li>與套件管理相關的指令很多, 常用的有 apt-get、apt-cache 與 dpkg，都已內建於系統中</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>更新套件儲藏庫</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用apt-cache搜尋套件儲藏庫</li>
+<li>以搜尋 16 進位編輯器為例</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>用 apt-cache 指令找到想安裝的套件後, 可用 apt-get 指令安裝</li>
+<li>ghex 套件可如下以 root 的權限安裝</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用dpkg安裝下載的DEB套件</li>
+<li>dpkg 指令加上參數 –I</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以安裝下載的Dropbox為例</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以安裝下載的Dropbox為例</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以安裝下載的Dropbox為例</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以安裝下載的Dropbox為例</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以安裝下載的Dropbox為例</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用dpkg檢視已安裝的套件</li>
+<li>加上參數 -l </li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用dpkg檢視已安裝套件的內容</li>
+<li>加上參數 –L</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>檢視前面安裝的 Dropbox 套件安裝了哪些檔案到電腦中</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用apt-get移除套件，加上 remove 參數</li>
+<li>移除系統預設安裝的 cups 列印伺服器套件</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>檢查剛才移除的 cups 套件的狀態</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>移除套件時想要連設定檔都移除, 可用 purge 參數</li>
+<li>想移除 cups 套件且不留下來設定檔</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>完整的移除套件及其設定檔</li>
+<li>使用dpkg尋找檔案屬於哪個套件</li>
+<li>用 --search 參數來查詢</li>
+<li>也可以使用簡寫的 -S (大寫) 參數</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>2 個大型的軟體開發專案網站</li>
+<ul>
+<li>https://sourceforge.net/ </li>
+<li>https://osdn.net/ </li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若您下載的是 Tarball 格式, 請注意檔案解開之後, 有下列 2 種檔案格式：</li>
+<ul>
+<li>原始碼格式：軟體以原始碼方式散播, 通常以 C 或 C++ 等程式語言寫成</li>
+<li>執行檔格式：軟體以執行檔 (二進位) 的方式散播, 下載時請注意您的作業系統版本及 CPU 種類</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<ul>
+<li>安裝的方式, 請參考該程式目錄下的說明檔。您可如下檢視 CPU 類型</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>本版 Linux 您可直接搜尋與安裝 “build-essential” 套件, 即可安裝好編譯原始碼所需的環境</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以下載 Zeek (一個網路頻寬分析軟體) 的原始碼為例</li>
+<li>首先請到 https://zeek.org/get-zeek/ 下載程式的原始碼</li>
+<li>下載完成之後, 請切換到檔案所在位置操作</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>瀏覽 README 說明檔之後, 我們得知編譯及安裝步驟分為下列 3部分</li>
+<ul>
+<li>1../configure：執行程式目錄下的指令稿, 偵測目前系統的環境, 及產生編譯程式時所需相關設定檔</li>
+<li>2.make：編譯程式</li>
+<li>3.make	install：安裝編譯好的程式, 需以 root 身份執行</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>執行以下指令編譯及安裝 Zeek</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Zeek 的功能很多, 其中也有自己的 script 程式。您可建立名為 hello.zeek 的檔案</li>
+<li>存檔後如下驗證是否安裝成功</li>
+</ul>
+</body>
+</html>

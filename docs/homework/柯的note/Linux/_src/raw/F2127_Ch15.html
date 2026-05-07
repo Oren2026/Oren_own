@@ -1,0 +1,284 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 25.8.4.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-11T06:56:40"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>本章將介紹何謂版本控制 , 同時以 Git 為例來說明如何進行版本控制</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若不借助任何軟體, 只是將原始碼壓縮成單一的壓縮檔,這種做法很難知道每個版本間的差異</li>
+<li>搭配版本控制系統 (Version Control System) 來管理原始碼</li>
+<li>版本控制系統是幫助我們管理原始碼差異的</li>
+<p>  工具軟體</p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>早期比較多人使用的有 CVS (Concurrent Versioning System) 與 SVN (Subversion) </li>
+<li>最近最多人使用的則是 Git</li>
+<li>版本控制系統大致可分為兩種類型：主從式管理與分散式管理</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>CVS 與 SVN 就是屬於主從式管理</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Git 就屬於分散式管理的版本控制系統</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Git 就屬於分散式管理的版本控制系統</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Git 是以目錄為基礎來進行版本控制, 該目錄下的檔案、子目錄都會在版本控管的範圍</li>
+<li>使用 Git (包含其他版本控制系統) 好處是可以讓您將資料還原到任何一個有紀錄的時間</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>版本控制的檔案會有 3 種狀態, 像 3 個虛擬的 &quot;區域“</li>
+<ul>
+<li> 工作目錄 (working directory)：存放原始碼、圖片或文件的目錄</li>
+<li>暫存區 (staging area)：您在工作目錄所做的修改要先加入暫存區, 然後才可以加入儲存庫</li>
+<li>儲存庫 (repository)：工作目錄裡所做修改的差異最終就是儲存在儲存庫中 (由暫存區加入)</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可以建立一個空的目錄來進行版本控制, 也可以在已有內容的目錄下進行版本控制</li>
+<li>使用前要設定使用者的 Email 與名字</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可以建立一個空的目錄來進行版本控制, 也可以在已有內容的目錄下進行版本控制</li>
+<li>使用前要設定使用者的 Email 與名字</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>設定好後請初始化您要進行版本控制的目錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>設定好後請初始化您要進行版本控制的目錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>設定好後請初始化您要進行版本控制的目錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可如下檢視 .git 的目錄架構：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可如下檢視 .git 的目錄架構：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>開始使用 Git 版本控制系統後, 有 4 個 Git 相關的指令是您會一直重複使用的：</li>
+<ul>
+<li>git status：告訴您自從上一次提交修改後, 您工作目錄 (working directory) 下有做過新增、刪除與修改的檔案</li>
+<li>git add：將工作目錄 (working directory) 中做過新增、刪除與修改的檔案加入暫存區 (staging area), 以便之後可以加入儲存庫 (repository) 中</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>開始使用 Git 版本控制系統後, 有 4 個 Git 相關的指令是您會一直重複使用的：</li>
+<ul>
+<li>git commit：將交到暫存區 (staging area) 中的檔案寫到儲存庫 (repository) 中</li>
+<li>git log：查詢工作目錄所有提交過的修改</li>
+</ul>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>這時系統預設會開啟 nano 文字編輯器</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>存檔後就完成我們的第一筆 Git 提交修改了, 接著如下查詢提交紀錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Git 的第一個分支會以 &quot;master&quot; 命名, 原則上不需要更改</li>
+<li>若您想改成容易理解的名稱, 可如下操作</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可以在提交紀錄時使用 &quot;-m&quot; 參數直接輸入提交紀錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可以在提交紀錄時使用 &quot;-m&quot; 參數直接輸入提交紀錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>再依下列的說明跟著練習</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若有使用中文檔名, 在提交修改時可能會發現部分訊息出現亂碼</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>如下修改環境變數, 解決亂碼的問題</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>刪除這兩個測試用的中文檔名</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若想讓工作目錄的內容回到某個時間點的版本, 可如下操作</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>此時檢視提交紀錄, 會發現回到最原始的狀態了</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>目前看起來好像之前的提交紀錄都不見了, 其實這些提交紀錄都還存在 .git 目錄中</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若您有記下提交紀錄的 SHA 值, 可使用 git checkout SHA 值指令還原到任一個時間點</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可以使用 git checkout 分支名稱指令將工作目錄還原到最新的提交紀錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可以使用 git checkout 分支名稱指令將工作目錄還原到最新的提交紀錄</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>只是將某個檔案改壞了,可以如下還原單一檔案：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>只是將某個檔案改壞了,可以如下還原單一檔案：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>只是將某個檔案改壞了,可以如下還原單一檔案：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>不影響原本分支內容,可如下建立新的分支：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>不影響原本分支內容,可如下建立新的分支：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可以在原本分支的基礎上新增功能, 而不會影響原本的分支：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若您要在不同的分支間切換, 一樣是使用 git checkout 分支名稱指令即可</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>GitHub (https://github.com/) 是有名的線上 Git 服務, 可以讓您將儲存庫放到網路上</li>
+<li>多人共同維護這份資料或原始碼</li>
+<li>在多台電腦間同步您的資料或原始碼</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可先申請 GitHub 帳號, 然後建立儲存庫</li>
+<li>將本機的 Git 提交紀錄同步到 GitHub 上 (下頁以 Windows 畫面示範)</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用者須使用令牌認證方式才能正常存取</li>
+<li>可將個人訪問令牌想像為較安全的密碼。同時可設定多組個人訪問令牌(personal access token), 每組有不同的存取權限</li>
+<li>請登入 GitHub 後如下頁設定</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>設定如何將本機的儲存庫推送到 GitHub 上, 首先需增加遠端的節點：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>增加好遠端節點後, 就可以將本機的儲存庫推送到 GitHub 上了</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>推送成功後, 您可在 GitHub 上看到新增的檔案</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>假設有其他人想要和您共同維護 GitHub 的資料, 或是您的其他電腦尚未有全部的資料</li>
+<li>使用 git clone 指令直接由 GitHub 複製</li>
+<li>若GitHub 儲存庫將權限設為Public, 不需要帳號密碼就可以查看儲存庫內容, 但預設沒有人可以提交修改</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>想允許特定的使用者提交修改, 請如下設定</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>登入 Github 後會收到通知, 允許後就可提交修改</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以 Sunny 為例來說明：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>新增一個檔案, 提交修改後推送到 GitHub </li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在 GitHub 上可以看到新的推送</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>使用者 Sunny 推送新的修改紀錄到 GitHub 上, 而 Tony 如何將這些資料跟本機的資料同步呢？ 使用 git pull 指令</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH15 — Git 版本控制 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH15 — Git 版本控制</h1>
+      <div class="note-tags"><span class="note-tag">CH15</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>🔀 版本控制簡介</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>🔀 Git 三種狀態</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>🔀 初始設定與初始化</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>🔀 四大核心指令</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>🔀 還原與版本退回</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>🔀 分支操作</span></div>
+      <div class="toc-item"><span class="toc-num">7</span><span>🔀 GitHub 與推送 push</span></div>
+      <div class="toc-item"><span class="toc-num">8</span><span>🔀 複製 clone 與同步 pull</span></div>
+    </div>
+
+    <!-- S1: 版本控制簡介 -->
+    <section id="s1">
+      <h2>🔀 1｜版本控制簡介</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📋 為什麼需要版本控制？</div>
+        <p>將原始碼壓縮成單一壓縮檔很難知道每個版本間的差異。版本控制系統（VCS）能幫助管理原始碼的版本變遷。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">🔀 兩種版本控制架構</div>
+        <ul style="margin:0.5rem 0 0 1.2rem;padding-left:0;">
+          <li><strong>主從式（CVS / SVN）</strong>：所有資料集中在中央伺服器</li>
+          <li><strong>分散式（Git）</strong>：每個開發者都有完整的本地儲存庫，無網路也能運作</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- S2: Git 三種狀態 -->
+    <section id="s2">
+      <h2>🔀 2｜Git 三種狀態</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🗂️ 工作目錄（Working Directory）</div>
+        <p>存放原始碼、圖片或文件的目錄，即專案資料夾。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">📝 暫存區（Staging Area）</div>
+        <p>工作目錄的修改要先加入暫存區，才可以提交到儲存庫。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">🗃️ 儲存庫（Repository）</div>
+        <p>工作目錄的修改差異最終儲存在儲存庫中（由暫存區加入）。</p>
+      </div>
+    </section>
+
+    <!-- S3: 初始設定 -->
+    <section id="s3">
+      <h2>🔀 3｜初始設定與初始化</h2>
+      <div class="highlight-box">
+        <p><strong>初次使用 Git 前，須先設定使用者身份：</strong></p>
+        <p><code>git config --global user.name "您的名字"</code></p>
+        <p><code>git config --global user.email "您的Email"</code></p>
+      </div>
+      <div class="highlight-box">
+        <p><strong>初始化版本控制目錄：</strong></p>
+        <p><code>git init</code></p>
+        <p>Git 會在目錄下建立 <code>.git</code> 子目錄用於存放所有版本記錄。</p>
+      </div>
+      <div class="highlight-box">
+        <p><strong>解決中文檔名亂碼：</strong></p>
+        <p><code>git config --global core.quotepath false</code></p>
+      </div>
+    </section>
+
+    <!-- S4: 四大核心指令 -->
+    <section id="s4">
+      <h2>🔀 4｜四大核心指令</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>用途</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>git status</code></td><td>查看工作目錄自上次提交後的新增、刪除、修改檔案</td></tr>
+          <tr><td><code>git add 檔案</code></td><td>將工作目錄的變更加入暫存區</td></tr>
+          <tr><td><code>git commit -m "訊息"</code></td><td>將暫存區的變更寫入儲存庫</td></tr>
+          <tr><td><code>git log</code></td><td>查詢所有提交過的修改記錄</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S5: 還原 -->
+    <section id="s5">
+      <h2>🔀 5｜還原與版本退回</h2>
+      <div class="highlight-box">
+        <p><strong>還原工作目錄到某個時間點：</strong></p>
+        <p><code>git checkout SHA值</code> 或 <code>git checkout 分支名稱</code></p>
+        <p><strong>還原單一檔案：</strong></p>
+        <p><code>git checkout -- 檔案名稱</code></p>
+      </div>
+      <div class="highlight-box">
+        <p>⚠️ 退回舊版本後，原本的提交紀錄仍存在 <code>.git</code> 目錄中，Git 不會真正刪除任何歷史。</p>
+      </div>
+    </section>
+
+    <!-- S6: 分支 -->
+    <section id="s6">
+      <h2>🔀 6｜分支操作</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>git branch</code></td><td>查看目前所有分支</td></tr>
+          <tr><td><code>git branch 新分支名</code></td><td>建立新分支（不影響當前分支）</td></tr>
+          <tr><td><code>git checkout 分支名</code></td><td>切換到指定分支</td></tr>
+          <tr><td><code>git checkout -b 新分支名</code></td><td>建立並立即切換到新分支</td></tr>
+          <tr><td><code>git merge 分支名</code></td><td>將指定分支合併進來</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S7: GitHub push -->
+    <section id="s7">
+      <h2>🔀 7｜GitHub 與推送 push</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🐙 GitHub 的用途</div>
+        <ul style="margin:0.5rem 0 0 1.2rem;padding-left:0;">
+          <li>多人共同維護同一份資料或原始碼</li>
+          <li>在多台電腦間同步資料</li>
+        </ul>
+      </div>
+      <div class="highlight-box">
+        <p><strong>新增遠端節點：</strong></p>
+        <p><code>git remote add origin https://github.com/使用者/儲存庫.git</code></p>
+        <p><strong>推送至 GitHub：</strong></p>
+        <p><code>git push -u origin master</code></p>
+      </div>
+      <div class="highlight-box">
+        <p>⚠️ GitHub 現已要求使用<strong>個人訪問令牌（Personal Access Token）</strong>取代密碼進行驗證。</p>
+      </div>
+    </section>
+
+    <!-- S8: clone / pull -->
+    <section id="s8">
+      <h2>🔀 8｜複製 clone 與同步 pull</h2>
+      <div class="highlight-box">
+        <p><strong>從 GitHub 複製儲存庫到本機：</strong></p>
+        <p><code>git clone https://github.com/使用者/儲存庫.git</code></p>
+        <p>若權限為 Public，不需帳號密碼即可複製；若要提交修改則需設定權限。</p>
+      </div>
+      <div class="highlight-box">
+        <p><strong>從遠端同步更新到本機：</strong></p>
+        <p><code>git pull origin master</code></p>
+        <p>多人協作時，其他人推送了新內容後，使用 pull 將遠端更新同步到本機。</p>
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

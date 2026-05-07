@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH17 — Docker 容器 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH17 — Docker 容器</h1>
+      <div class="note-tags"><span class="note-tag">CH17</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>🐳 Docker 簡介</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>🐳 安裝 Docker</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>🐳 Docker Hub 映像檔倉庫</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>🐳 下載與啟動容器</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>🐳 容器管理</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>🐳 映像檔管理</span></div>
+      <div class="toc-item"><span class="toc-num">7</span><span>🐳 修改與自訂映像檔</span></div>
+    </div>
+
+    <!-- S1: 簡介 -->
+    <section id="s1">
+      <h2>🐳 1｜Docker 簡介</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📦 Docker 的定位</div>
+        <p>Docker 是用來準備應用程式執行所需環境（<strong>映像檔 image</strong>）的工具，其餘硬體需求由原本的作業系統分配。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">🐳 Docker vs 虛擬機器</div>
+        <ul style="margin:0.5rem 0 0 1.2rem;padding-left:0;">
+          <li><strong>虛擬機器（VM）</strong>：自帶完整 OS，資源佔用大、啟動慢</li>
+          <li><strong>Docker</strong>：共享主機 OS，效能更好、啟動更快</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- S2: 安裝 -->
+    <section id="s2">
+      <h2>🐳 2｜安裝 Docker</h2>
+      <div class="highlight-box">
+        <p><strong>使用官方腳本自動安裝：</strong></p>
+        <p>1. 先安裝 curl：<code>sudo apt-get install curl</code></p>
+        <p>2. 下載並執行安裝腳本：<code>curl -fsSL https://get.docker.com | sudo sh</code></p>
+      </div>
+      <div class="highlight-box">
+        <p><strong>將使用者加入 docker 群組（免 root 執行）：</strong></p>
+        <p><code>sudo usermod -aG docker 您的帳號</code></p>
+        <p>加入後需重新登入，執行 Docker 時才擁有相關權限。</p>
+      </div>
+    </section>
+
+    <!-- S3: Docker Hub -->
+    <section id="s3">
+      <h2>🐳 3｜Docker Hub 映像檔倉庫</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📚 Docker Hub（https://hub.docker.com/）</div>
+        <p>Docker Hub 是 Docker 官方維護的映像檔倉庫，收錄了數萬種常用軟體的映像檔（如 httpd、nginx、mysql、python 等），可線上搜尋並下載使用。</p>
+      </div>
+      <div class="highlight-box">
+        <p>搜尋到喜歡的映像檔後，可用 <code>docker pull 映像檔名</code> 下載到本機。</p>
+      </div>
+    </section>
+
+    <!-- S4: 下載啟動 -->
+    <section id="s4">
+      <h2>🐳 4｜下載與啟動容器</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">下載映像檔</div>
+        <div class="layer-card-desc"><code>docker pull httpd:2.4.54</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">建立網頁目錄</div>
+        <div class="layer-card-desc">在家目錄建立 <code>public_html/</code> 並放入 <code>index.html</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">啟動容器</div>
+        <div class="layer-card-desc"><code>docker run -d -p 8080:80 -v ~/public_html:/usr/local/apache2/htdocs httpd:2.4.54</code></div>
+      </div>
+    </section>
+
+    <!-- S5: 容器管理 -->
+    <section id="s5">
+      <h2>🐳 5｜容器管理</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>docker ps</code></td><td>查看執行中的容器</td></tr>
+          <tr><td><code>docker ps -a</code></td><td>查看所有容器（含已停止）</td></tr>
+          <tr><td><code>docker stop 容器ID</code></td><td>正常停止容器</td></tr>
+          <tr><td><code>docker start 容器ID</code></td><td>啟動已停止的容器</td></tr>
+          <tr><td><code>docker rm 容器ID</code></td><td>刪除容器（需先停止）</td></tr>
+          <tr><td><code>docker rm -f 容器ID</code></td><td>強制刪除執行中的容器</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S6: 映像檔管理 -->
+    <section id="s6">
+      <h2>🐳 6｜映像檔管理</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>docker images</code></td><td>查看本機所有已下載的映像檔</td></tr>
+          <tr><td><code>docker rmi 映像檔ID</code></td><td>刪除指定映像檔</td></tr>
+          <tr><td><code>docker pull 映像檔名</code></td><td>下載映像檔</td></tr>
+          <tr><td><code>docker inspect 映像檔名</code></td><td>查看映像檔詳細資訊</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S7: 修改與 commit -->
+    <section id="s7">
+      <h2>🐳 7｜修改與自訂映像檔</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">以互動模式進入容器</div>
+        <div class="layer-card-desc"><code>docker run -it httpd:2.4.54 /bin/bash</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">安裝工具並修改設定</div>
+        <div class="layer-card-desc">如修改 <code>/usr/local/apache2/htdocs/index.html</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">另存為新映像檔</div>
+        <div class="layer-card-desc"><code>docker commit -m "說明" 容器ID 新映像檔名</code></div>
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

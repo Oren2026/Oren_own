@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH14 — 套件管理 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH14 — 套件管理</h1>
+      <div class="note-tags"><span class="note-tag">CH14</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>📦 DPKG 套件管理系統</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>📦 apt-get / apt-cache 安裝</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>📦 dpkg 安裝本地 DEB 檔</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>📦 dpkg 查詢已安裝套件</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>📦 移除與清除套件</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>📦 Tarball 原始碼編譯</span></div>
+    </div>
+
+    <!-- S1: DPKG -->
+    <section id="s1">
+      <h2>📦 1｜DPKG 套件管理系統</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🔧 DPKG 的定位</div>
+        <p>Ubuntu 的軟體管理核心是 <strong>DPKG</strong>（Debian Package Management System），最早用於 Debian 發行版，Ubuntu 繼承了這套系統。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">✨ DPKG 的四大優點</div>
+        <ul style="margin:0.5rem 0 0 1.2rem;padding-left:0;">
+          <li>易於安裝、升級與移除套件</li>
+          <li>強大的查詢功能</li>
+          <li>能夠進行套件驗證</li>
+          <li>支援以原始碼形式發行</li>
+        </ul>
+      </div>
+      <div class="highlight-box">
+        <p>能被 apt-get 處理的安裝套件稱為 <strong>DEB 套件</strong>（副檔名 <code>.deb</code>）。</p>
+      </div>
+    </section>
+
+    <!-- S2: apt-get/apt-cache -->
+    <section id="s2">
+      <h2>📦 2｜apt-get / apt-cache 安裝</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">更新套件庫</div>
+        <div class="layer-card-desc"><code>sudo apt update</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">搜尋套件</div>
+        <div class="layer-card-desc"><code>apt-cache search 關鍵字</code>（如 <code>apt-cache search hex editor</code>）</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">安裝套件</div>
+        <div class="layer-card-desc"><code>sudo apt-get install 套件名稱</code></div>
+      </div>
+    </section>
+
+    <!-- S3: dpkg -->
+    <section id="s3">
+      <h2>📦 3｜dpkg 安裝本地 DEB 檔</h2>
+      <div class="highlight-box">
+        <p>若已從網站下載 <code>.deb</code> 檔案，可用 dpkg 直接安裝：</p>
+        <p><code>sudo dpkg -i 套件檔.deb</code></p>
+      </div>
+      <div class="highlight-box">
+        <p>查詢 DEB 套件資訊：<code>dpkg -I 套件檔.deb</code></p>
+      </div>
+    </section>
+
+    <!-- S4: dpkg 查詢 -->
+    <section id="s4">
+      <h2>📦 4｜dpkg 查詢已安裝套件</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>dpkg -l</code></td><td>列出所有已安裝的套件</td></tr>
+          <tr><td><code>dpkg -L 套件名</code></td><td>查詢某套件安裝了哪些檔案到系統中</td></tr>
+          <tr><td><code>dpkg --search 檔案路徑</code></td><td>查某檔案屬於哪個套件（可簡寫為 <code>dpkg -S</code>）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S5: 移除 -->
+    <section id="s5">
+      <h2>📦 5｜移除與清除套件</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>sudo apt-get remove 套件名</code></td><td>移除套件（保留設定檔）</td></tr>
+          <tr><td><code>sudo apt-get purge 套件名</code></td><td>移除套件並刪除設定檔</td></tr>
+          <tr><td><code>sudo apt-get autoremove</code></td><td>自動移除不再需要的相依套件</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S6: Tarball -->
+    <section id="s6">
+      <h2>📦 6｜Tarball 原始碼編譯</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📦 Tarball 的兩種格式</div>
+        <ul style="margin:0.5rem 0 0 1.2rem;padding-left:0;">
+          <li><strong>原始碼格式</strong>：以 C/C++ 等程式語言寫成，需編譯</li>
+          <li><strong>執行檔格式</strong>：二進位檔，下載時需注意 OS 版本與 CPU 架構</li>
+        </ul>
+      </div>
+      <div class="highlight-box">
+        <p>建議先安裝編譯環境：<code>sudo apt install build-essential</code></p>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">./configure</div>
+        <div class="layer-card-desc">偵測系統環境，產生編譯所需設定檔</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">make</div>
+        <div class="layer-card-desc">編譯程式</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">make install</div>
+        <div class="layer-card-desc">安裝編譯好的程式（需 root 權限）</div>
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

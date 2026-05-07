@@ -70,5 +70,35 @@
     "emoji": "📦",
     "title": "CH13 — 打包與壓縮",
     "tag": "CH13"
+  },
+  {
+    "file": "ch14-package.html",
+    "emoji": "🛠️",
+    "title": "CH14 — 套件管理",
+    "tag": "CH14"
+  },
+  {
+    "file": "ch15-git.html",
+    "emoji": "🔀",
+    "title": "CH15 — Git 版本控制",
+    "tag": "CH15"
+  },
+  {
+    "file": "ch16-python-venv.html",
+    "emoji": "🐍",
+    "title": "CH16 — Python 虛擬環境",
+    "tag": "CH16"
+  },
+  {
+    "file": "ch17-docker.html",
+    "emoji": "🐳",
+    "title": "CH17 — Docker 容器",
+    "tag": "CH17"
+  },
+  {
+    "file": "ch18-ml.html",
+    "emoji": "🤖",
+    "title": "CH18 — 機器學習環境",
+    "tag": "CH18"
   }
 ]

@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 25.8.4.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-13T05:01:53"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>本章將以 Google 公司開發的TensorFlow 與 Meta 公司開發的 PyTorch 兩套Framework 為例 , 說明如何設定開發環境</li>
+<li>因為機器學習大多會使用到GPU 的運算能力 , 因此也會說明如何安裝 Nvidia 顯示卡的驅動程式及設定 CUDA 開發環境</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>CUDA（Compute Unified Device Architecture, 統一計算架構）是 Nvidia 公司的技術, 而 CUDA 開發套件可以讓一般使用者開發程式使用 GPU 用於圖形以外的計算</li>
+<li>cuDNN 用於深度學習 (Deep Learning), 它是機器學習的延伸, 一般會和 CUDA 開發套件一起安裝</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>只要增加顯示卡驅動程式的套件儲藏庫即可</li>
+<li>請如下新增套件儲藏庫：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>增加顯示卡驅動程式的套件儲藏庫後, 就可以找到 Nvidia 的官方驅動程式</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>增加顯示卡驅動程式的套件儲藏庫後, 就可以找到 Nvidia 的官方驅動程式</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>找到要安裝的驅動程式版本後, 請如下安裝：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>登入系統後, 您可執行 nvidia-settings 指令檢查是否正確安裝驅動程式：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>安裝好 Nvidia 顯示卡的驅動程式後, 接著我們要安裝 CUDA 開發套件</li>
+<li>請到https://developer.nvidia.com/cuda-downloads 下載</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>安裝好 Nvidia 顯示卡的驅動程式後, 接著我們要安裝 CUDA 開發套件</li>
+<li>請到https://developer.nvidia.com/cuda-downloads 下載</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>請依提示下載 CUDA 開發套件：</li>
+<li>接著安裝 freeglut3-dev、libxi-dev 與 libxmu-dev 三個執行 CUDA 測試程式時所需的相依性套件</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>相依性套件安裝好後, 請如下安裝 CUDA 開發套件：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>有些環境變數設定需手動操作：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>如下設定環境變數</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li> 請 輸 入 sudo vi /etc/profile 或 sudo nano /etc/profile 指令編輯 /etc/profile 設定檔讓環境變數在開機時自動生效</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>接著輸入 sudo vi /etc/ld.so.conf 或 sudo nano /etc/ld.so.conf 指令, 加入如下內容：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>修改完 /etc/ld.so.conf 設定檔後, 需執行 sudo ldconfig 指令更新函式庫的連結與快取資訊。更新好後, 您可以執行 CUDA 的測試程式確認所有的設定是否正確：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Nvidia 提供了 nvidia-smi 指令讓您可以監看有哪些程式使用了GPU 的資源：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>請到 https://developer. nvidia.com/</li>
+<p>   cudnn 申請與下載</p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>剛才安裝的套件會額外安裝 3 個 deb 套件到 /var/cudnn-local-repo-ubuntu2004-8.4.1.50 目錄, 這 3 個套件要安裝才可使用</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>將 cuDNN 的範例複製一份到家目錄中, 編譯並執行看是否正確：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Anaconda 上面有很多機器學習、科學運算預測分析...等 Python 相關套件</li>
+<li>https://www.anaconda.com/products/distribution 下載 Anaconda</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>下載好後請如下安裝：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>下載好後請如下安裝：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>安裝好後請重新登入或開啟新的終端機視窗</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Anaconda 建立 Python 虛擬目錄的指令為 <b>conda create -n 目錄名稱 python=3.9</b></li>
+<li>每次登入或開啟新的終端機視窗時, 預設都會啟動 Anaconda 的 base 虛擬環境。若您不習慣, 可如下關閉此設定：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>TensorFlow 與 PyTorch 都是機器學習的框架 (framework)</li>
+<li>可以幫助程式開發人員快速的建立與部署機器學習的模型</li>
+<li>本節將使用 Anaconda 建立 Python 虛擬環境並安裝 TensorFlow 與 PyTorch 機器學習框架</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>先建立一個名為 TensorFlow 的 Python 虛擬環境, 並在裡面安裝 TensorFlow</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>虛擬環境建好後, 接著要安裝 TensorFlow</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>先到 https://pypi.org/search/?q=</li>
+<p>   tensorflow-gpu 或https://pypi.org/</p>
+<p>   Search/?q=tensorflow 查詢目前最新的 TensorFlow 版本</p>
+<li>其中 tensorflow-gpu 是支援 GPU的版本而 tensorflow 是使用 CPU 運算的版本</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>先到 https://pypi.org/search/?q=</li>
+<p>   tensorflow-gpu 或https://pypi.org/</p>
+<p>   Search/?q=tensorflow 查詢目前最新的 TensorFlow 版本</p>
+<li>其中 tensorflow-gpu 是支援 GPU的版本而 tensorflow 是使用 CPU 運算的版本</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以 2.9.1 版的 tensorflow-gpu 為例來說明</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>安裝好 TensorFlow 後, 可如下測試是否安裝正確</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>替 PyTorch 建立一個新的虛擬環境, 以便跟原本的 TensorFlow 虛擬環境分開避免互相干擾</li>
+<li>PyTorch 貼心的替使用者設計了互動介面, 讓您查詢使用 GPU 或 CPU 該使用什麼指令來安裝</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>有安裝 Nvidia 顯示卡的使用者可如下查詢</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若要使用 CPU 運算, 可如下查詢：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若要支援 GPU 運算, 安裝指令為 conda install pytorch torchvision torchaudio cudatoolkit=11.6 -c pytorch -c conda-forge</li>
+<li>若要使用 CPU 運算, 安裝指令為 conda install pytorch torchvision torchaudio cpuonly -c pytorch</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>先為 PyTorch 建立一個新的虛擬環境</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>PyTorch 虛擬環境建好後, 就可以安裝 PyTorch 框架了, 以支援 GPU 運算來說明 </li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>安裝好後, 可以如下驗證安裝是否正確</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>安裝好後, 可以如下驗證安裝是否正確</li>
+</ul>
+</body>
+</html>

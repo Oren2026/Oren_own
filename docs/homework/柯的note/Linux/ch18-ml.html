@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH18 — 機器學習環境 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 05 月 07 日</div>
+      <h1 class="note-title">CH18 — 機器學習環境</h1>
+      <div class="note-tags"><span class="note-tag">CH18</span><span class="note-tag">Linux</span></div>
+    </header>
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>🤖 機器學習環境簡介</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>🤖 CUDA / cuDNN 安裝</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>🤖 Nvidia 驅動與環境設定</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>🤖 Anaconda 安裝</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>🤖 conda 環境管理</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>🤖 TensorFlow 安裝</span></div>
+      <div class="toc-item"><span class="toc-num">7</span><span>🤖 PyTorch 安裝</span></div>
+    </div>
+
+    <!-- S1: 簡介 -->
+    <section id="s1">
+      <h2>🤖 1｜機器學習環境簡介</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🧠 機器學習 Framework</div>
+        <p>TensorFlow（Google）和 PyTorch（Meta）是目前最主流的機器學習框架，能幫助開發者快速建立與部署 ML 模型。</p>
+      </div>
+      <div class="concept-card">
+        <div class="concept-card-title">⚡ GPU 加速的需求</div>
+        <p>機器學習通常需要 GPU 的運算能力，因此需安裝 Nvidia 顯示卡驅動程式及設定 CUDA 開發環境。</p>
+      </div>
+    </section>
+
+    <!-- S2: CUDA -->
+    <section id="s2">
+      <h2>🤖 2｜CUDA / cuDNN 安裝</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">🔧 CUDA 是什麼</div>
+        <p>CUDA（Compute Unified Device Architecture）是 Nvidia 的平行運算平台，讓開發者能用 GPU 進行圖形以外的通用計算。cuDNN 則是專為深度學習設計的 GPU 加速庫。</p>
+      </div>
+      <div class="highlight-box">
+        <p><strong>CUDA 下載：</strong>https://developer.nvidia.com/cuda-downloads</p>
+        <p><strong>cuDNN 下載：</strong>https://developer.nvidia.com/cudnn</p>
+      </div>
+    </section>
+
+    <!-- S3: 驅動與環境 -->
+    <section id="s3">
+      <h2>🤖 3｜Nvidia 驅動與環境設定</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>步驟</th><th>指令 / 動作</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>新增驅動儲藏庫</td><td>新增 PPA 後以 apt 安裝 Nvidia 驅動</td></tr>
+          <tr><td>驗證驅動</td><td><code>nvidia-settings</code> 或 <code>nvidia-smi</code></td></tr>
+          <tr><td>設定環境變數</td><td>於 <code>/etc/profile</code> 加入 CUDA 路徑</td></tr>
+          <tr><td>設定函式庫路徑</td><td>於 <code>/etc/ld.so.conf</code> 加入 CUDA lib，執行 <code>sudo ldconfig</code></td></tr>
+          <tr><td>驗證 CUDA</td><td>編譯並執行 CUDA 範例（如 <code>deviceQuery</code>）</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>cuDNN 安裝後，額外的 deb 套件會放在 <code>/var/cudnn-local-repo-*</code> 目錄，需手動以 <code>dpkg -i</code> 安裝。</p>
+      </div>
+    </section>
+
+    <!-- S4: Anaconda -->
+    <section id="s4">
+      <h2>🤖 4｜Anaconda 安裝</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📦 Anaconda 的用途</div>
+        <p>Anaconda 內建數百個機器學習、科學運算相關的 Python 套件，是管理 ML 環境的最佳工具。</p>
+      </div>
+      <div class="highlight-box">
+        <p><strong>下載：</strong>https://www.anaconda.com/products/distribution</p>
+        <p><strong>安裝：</strong><code>bash Anaconda3-版本.sh</code></p>
+        <p>安裝完成後需重新登入或開啟新終端機，Anaconda 的 base 環境會自動啟動。</p>
+      </div>
+    </section>
+
+    <!-- S5: conda 環境 -->
+    <section id="s5">
+      <h2>🤖 5｜conda 環境管理</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>conda create -n 名稱 python=版本</code></td><td>建立虛擬環境（如 <code>conda create -n TensorFlow python=3.9</code>）</td></tr>
+          <tr><td><code>conda activate 名稱</code></td><td>啟動環境</td></tr>
+          <tr><td><code>conda deactivate</code></td><td>離開環境</td></tr>
+          <tr><td><code>conda env list</code></td><td>列出所有環境</td></tr>
+          <tr><td><code>conda config --set auto_activate_base false</code></td><td>關閉開機自動啟動 base 環境</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S6: TensorFlow -->
+    <section id="s6">
+      <h2>🤖 6｜TensorFlow 安裝</h2>
+      <div class="layer-card">
+        <div class="layer-card-num">1</div>
+        <div class="layer-card-name">建立環境</div>
+        <div class="layer-card-desc"><code>conda create -n TensorFlow python=3.9 && conda activate TensorFlow</code></div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">2</div>
+        <div class="layer-card-name">安裝 TensorFlow</div>
+        <div class="layer-card-desc"><code>pip install tensorflow-gpu==2.9.1</code>（GPU 版）或 <code>pip install tensorflow</code>（CPU 版）</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-card-num">3</div>
+        <div class="layer-card-name">驗證安裝</div>
+        <div class="layer-card-desc">以 Python 測試 <code>import tensorflow as tf; print(tf.__version__)</code></div>
+      </div>
+    </section>
+
+    <!-- S7: PyTorch -->
+    <section id="s7">
+      <h2>🤖 7｜PyTorch 安裝</h2>
+      <div class="highlight-box">
+        <p>PyTorch 官網提供互動式安裝指令產生器，可根據 GPU/CPU 版本給出正確指令。</p>
+        <p><strong>GPU 版：</strong><code>conda install pytorch torchvision torchaudio cudatoolkit=11.6 -c pytorch -c conda-forge</code></p>
+        <p><strong>CPU 版：</strong><code>conda install pytorch torchvision torchaudio cpuonly -c pytorch</code></p>
+      </div>
+      <div class="highlight-box">
+        <p>驗證：<code>import torch; print(torch.cuda.is_available())</code>（若輸出 <code>True</code> 表示 GPU 版安裝成功）</p>
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

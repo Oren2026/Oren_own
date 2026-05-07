@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 25.8.4.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-12T06:21:46"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Docker 是準備應用程式執行時所需的環境 ( 映像檔 ), 剩下的硬體需求則是直接由原本的作業系統來分配</li>
+<li>效能會比安裝在虛擬機器上的作業系統好</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Docker 在系統上的示意圖</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>虛擬機器在系統上的示意圖</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>先安裝 curl 套件, 它可讓我們由 Docker 的網站下載 Docker 並自動安裝</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>帳號在執行 Docker 時, 將會擁有 root 的權限</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Docker 大多是使用在雲端、網頁伺服器等環境</li>
+<li>主要是因為這類的網路應用程式通常會有函式庫的相依性</li>
+<li>現在前幾大的雲端服務商像是亞馬遜的 AWS、微軟的 Azure、Google 的 Google Cloud...等都支援 Docker</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>先使用 Docker 網站上的映像檔來修改</li>
+<li>待熟悉 Docker 的使用後再自行從無到有製作映像檔</li>
+<li>開啟瀏覽器連上 https://hub.docker.com/</li>
+<p>   search 檢視有哪些映像檔可以下載</p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>找到要安裝的映像檔後, 以 httpd (Apache) 2.4.54 版為例說明如何下載：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>找到要安裝的映像檔後, 以 httpd (Apache) 2.4.54 版為例說明如何下載：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>請在您的家目錄下建立一個 index.html 檔, 內容如下：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>將它放在家目錄下的 public_html 目錄, 接著如下啟動與使用httpd Docker 映像檔, 映像檔會以 Docker 容器的方式啟動：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在本機開啟瀏覽器來確認 httpd 網頁伺服器的 Docker 容器是否正常執行：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在本機可以看到執行的結果後, 請在其他的電腦測試：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在執行多個 Docker 容器後, 您可如下管理 Docker 容器</li>
+<li>以刪除前述 ID 為 57dfc9a875b4 的Docker 容器 (hello-world) 為例來說明</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>若要刪除正在執行的 Docker 容器, 建議您先將它正常停止以避免未儲存的資料遺失：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可以如下檢視系統中已下載的 Docker 映像檔：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以刪除 Docker 映像檔為例來說明如何查詢 Docker 指令的使用方式</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以下將說明如何修改Docker 映像檔, 並將修改的設定儲存為另一個 Docker 映像檔</li>
+<li>以之前下載的 httpd:2.4.54 映像檔為例</li>
+<li>在此映像檔裡安裝 vim 與nano 文字編輯器, 同時修改映像檔裡預設的網頁內容, 這樣可以驗證設定是否生效</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>接著請用剛才安裝的 vim 或 nano 文字編輯器開啟 /usr/local/apache2/htdocs/</li>
+<p>   index.html 檔如下修改：</p>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>存檔後如下將映像檔另外存檔：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以 Docker 容器來開啟剛才修改過的映像檔</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Docker 容器啟動後, 請開啟瀏覽器測試：</li>
+</ul>
+</body>
+</html>

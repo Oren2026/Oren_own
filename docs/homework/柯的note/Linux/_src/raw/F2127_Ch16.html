@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/transitional.dtd">
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <title>PowerPoint 簡報</title>
+  <meta name="generator" content="LibreOffice 25.8.4.2 (Linux)"/>
+  <meta name="author" content="Seditor"/>
+  <meta name="created" content="2018-10-17T11:07:16"/>
+  <meta name="changedby" content="Admin"/>
+  <meta name="changed" content="2023-01-12T04:59:20"/>
+</head>
+<body>
+<h1></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Python 本身提供了虛擬環境的功能, 讓使用者可以建立多個虛擬環境</li>
+<li>在不同的虛擬環境裡您可以安裝不同的 Python 版本與不同的套件</li>
+<li>本章將介紹如何使用 Python 的虛擬環境功能</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Ubuntu 安裝時預設會安裝 Python3, 可如下檢視：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>缺乏虛擬環境套件 python3-venv, 如下安裝：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>安裝好 python3-venv 虛擬環境套件後, 可以建立程式所需的虛擬環境 與安裝第三方套件</li>
+<li>以安裝 ffn 第三方套件為例來說明, ffn 是一個可以從 Yahoo! Finance 抓取各國股票資訊的第三方套件</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>假設要建立一個名為 python-venv-ffn 的目錄, 並將執行 Python 所需的模組、函式庫...等檔案複製到此目錄。請如下操作：</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可用 tree 指令 (需額外使用 sudo apt-get install tree 安裝) 檢視剛才建好的 python-venv-ffn 目錄架構</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>啟動 Python 虛擬環境才能在裡面安裝第三方套件、升級套件、移除套件或是執行 Python 程式</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在虛擬環境中使用 pip 指令安裝 ffn 套件 (pip 是 Python 中管理套件的工具)</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>設定好 Python 虛擬環境後, 寫個簡單的 Python 程式來測試環境是否生效</li>
+<li>一般為了方便管理程式, 不會將程式放在 Python 虛擬環境目錄中。</li>
+<li>在家目錄下建立一個 stocks.py 檔</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在家目錄下建立一個 stocks.py 檔</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>stocks.py 檔的內容如下, 其中 &quot;#&quot; 起始的行數為註解</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>stocks.py 檔的內容如下, 其中 &quot;#&quot; 起始的行數為註解</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Python 程式寫好之後, 執行的結果如下</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Python 程式寫好之後, 執行的結果如下</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>在非虛擬環境中執行 stocks.py </li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>可將虛擬環境中所使用的套件和版本匯出成文字檔, 再交給其他人</li>
+<li> 他們就可以使用 Python 的 pip 指令, 在虛擬環境中安裝, 確保虛擬環境完全一樣</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>先將虛擬環境裡的套件匯出</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以Sunny 為例, 當他拿到 ffn.txt 與stocks.py 後可如下建立 Python 虛擬環境</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>以Sunny 為例, 當他拿到 ffn.txt 與stocks.py 後可如下建立 Python 虛擬環境</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Python 環境與 Tony 一樣, Python 程式的執行結果自然也會一樣</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Python 環境與 Tony 一樣, Python 程式的執行結果自然也會一樣</li>
+</ul>
+<h1 style="page-break-before:always; "></h1>
+<ul>
+<li>Python 環境與 Tony 一樣, Python 程式的執行結果自然也會一樣</li>
+</ul>
+</body>
+</html>
