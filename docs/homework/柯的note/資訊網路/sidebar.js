@@ -7,7 +7,6 @@
   fetch('chapters.json')
     .then(function (r) { return r.json(); })
     .then(function (chapters) {
-      // 取得目前頁面檔名
       var current = window.location.pathname.split('/').pop();
 
       // 回到柯的note 首頁
@@ -26,7 +25,7 @@
         var a = document.createElement('a');
         a.href = ch.file;
         a.className = 'sidebar-link' + (ch.file === current ? ' active' : '');
-        a.textContent = ch.emoji + ' ' + ch.title;
+        a.textContent = ch.title;
         sidebar.appendChild(a);
       });
     })
