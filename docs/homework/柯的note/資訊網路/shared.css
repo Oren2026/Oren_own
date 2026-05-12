@@ -2014,3 +2014,481 @@ span.formula {
   font-weight: 400;
   margin-top: 0.1rem;
 }
+
+/* ── CIA 三大目標（CH12）── */
+.cia-triple {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.cia-item {
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 2px solid;
+  text-align: center;
+}
+.cia-item.confidentiality {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+.cia-item.integrity {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+.cia-item.availability {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+.cia-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+.cia-item.confidentiality .cia-name { color: #dc2626; }
+.cia-item.integrity .cia-name { color: #15803d; }
+.cia-item.availability .cia-name { color: #1d4ed8; }
+.cia-en { font-size: 0.75rem; color: #6b7280; margin-bottom: 0.4rem; }
+.cia-desc { font-size: 0.8rem; color: #4b5563; }
+
+/* ── 威脅來源視覺化（CH12）── */
+.threat-level-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.threat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  background: #fef2f2;
+  border: 1.5px solid #ef4444;
+  font-size: 0.82rem;
+}
+.threat-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.threat-name { color: #991b1b; font-weight: 600; }
+
+/* ── 安全五大領域（CH12）── */
+.security-domain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.sec-domain {
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  border: 1.5px solid;
+  background: var(--surface);
+}
+.sec-domain.physical { border-color: #6b7280; }
+.sec-domain.software { border-color: #8b5cf6; }
+.sec-domain.data { border-color: #f59e0b; }
+.sec-domain.system { border-color: #3b82f6; }
+.sec-domain.network { border-color: #22c55e; }
+.sec-domain-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-bottom: 0.25rem;
+}
+.sec-domain.physical .sec-domain-name { color: #6b7280; }
+.sec-domain.software .sec-domain-name { color: #7c3aed; }
+.sec-domain.data .sec-domain-name { color: #d97706; }
+.sec-domain.system .sec-domain-name { color: #1d4ed8; }
+.sec-domain.network .sec-domain-name { color: #15803d; }
+.sec-domain-desc { font-size: 0.78rem; color: #6b7280; }
+
+/* ── 防火牆類型比較（CH12）── */
+.firewall-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.fw-card {
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 2px solid;
+}
+.fw-card.packet {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+.fw-card.app {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+.fw-card-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+.fw-card.packet .fw-card-title { color: #1d4ed8; }
+.fw-card.app .fw-card-title { color: #15803d; }
+.fw-card-layer {
+  font-size: 0.78rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+.fw-card-points {
+  font-size: 0.82rem;
+  color: #374151;
+}
+
+/* ── 金鑰比較（對稱vs非對稱）（CH12）── */
+.key-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.key-sym-card, .key-asym-card {
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 2px solid;
+}
+.key-sym-card {
+  background: #fffbeb;
+  border-color: #f59e0b;
+}
+.key-asym-card {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+.key-card-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+.key-sym-card .key-card-title { color: #d97706; }
+.key-asym-card .key-card-title { color: #15803d; }
+.key-card-prop {
+  display: flex;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  margin-bottom: 0.3rem;
+  align-items: baseline;
+}
+.key-sym-card .key-card-prop { color: #92400e; }
+.key-asym-card .key-card-prop { color: #166534; }
+
+/* ── 金鑰數量視覺化（CH12）── */
+.key-count-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+.kcb-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.kcb-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  min-width: 5rem;
+  color: var(--text);
+}
+.kcb-bar-bg {
+  flex: 1;
+  height: 20px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.kcb-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding-left: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+}
+.kcb-bar-fill.sym { background: #f59e0b; }
+.kcb-bar-fill.asym { background: #22c55e; }
+.kcb-count {
+  font-size: 0.82rem;
+  font-weight: 700;
+  min-width: 3rem;
+  text-align: right;
+}
+
+/* ── 雜湊演算法比較（CH12）── */
+.hash-compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.hash-item {
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  border: 1.5px solid;
+}
+.hash-item.weak {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+.hash-item.md5 {
+  background: #fffbeb;
+  border-color: #f59e0b;
+}
+.hash-item.sha {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+.hash-name {
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-bottom: 0.25rem;
+}
+.hash-item.weak .hash-name { color: #dc2626; }
+.hash-item.md5 .hash-name { color: #d97706; }
+.hash-item.sha .hash-name { color: #15803d; }
+.hash-bits {
+  font-size: 0.78rem;
+  color: #6b7280;
+  margin-bottom: 0.2rem;
+}
+.hash-status {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.hash-item.weak .hash-status { color: #dc2626; }
+.hash-item.md5 .hash-status { color: #d97706; }
+.hash-item.sha .hash-status { color: #15803d; }
+
+/* ── IDS 類型比較（CH12）── */
+.ids-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.ids-card {
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 2px solid;
+}
+.ids-card.host {
+  background: #f5f3ff;
+  border-color: #8b5cf6;
+}
+.ids-card.network {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+.ids-card-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+.ids-card.host .ids-card-title { color: #6d28d9; }
+.ids-card.network .ids-card-title { color: #1d4ed8; }
+.ids-card-type {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+.ids-card-points { font-size: 0.82rem; }
+.ids-card.host .ids-card-points { color: #5b21b6; }
+.ids-card.network .ids-card-points { color: #1e40af; }
+
+/* ── IDS 三大功能流程（CH12）── */
+.ids-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 1rem 0;
+}
+.ids-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  min-height: 40px;
+}
+.ids-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #8b5cf6;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ids-content {
+  flex: 1;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius);
+  background: #f5f3ff;
+  border: 1.5px solid #8b5cf6;
+  font-size: 0.85rem;
+}
+.ids-content strong { color: #6d28d9; }
+
+/* ── 惡意軟體威脅等級（CH12）── */
+.malware-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.malware-item {
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  border: 1.5px solid;
+}
+.malware-item.virus {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+.malware-item.worm {
+  background: #fff7ed;
+  border-color: #f97316;
+}
+.malware-item.trojan {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+.malware-item.spyware {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+.malware-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-bottom: 0.2rem;
+}
+.malware-item.virus .malware-name { color: #dc2626; }
+.malware-item.worm .malware-name { color: #c2410c; }
+.malware-item.trojan .malware-name { color: #d97706; }
+.malware-item.spyware .malware-name { color: #1d4ed8; }
+.malware-en { font-size: 0.72rem; color: #6b7280; margin-bottom: 0.3rem; }
+.malware-trait {
+  font-size: 0.75rem;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.malware-trait::before { content: '•'; }
+
+/* ── 威脅方法視覺化（CH12）── */
+.threat-method-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.threat-method-item {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  border: 1.5px solid;
+  background: var(--surface);
+}
+.threat-method-item.high {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+.threat-method-item.medium {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+.threat-method-item.low {
+  border-color: #6b7280;
+  background: #f9fafb;
+}
+.tm-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #9ca3af;
+  margin-bottom: 0.15rem;
+}
+.tm-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 0.15rem;
+}
+.threat-method-item.high .tm-name { color: #dc2626; }
+.threat-method-item.medium .tm-name { color: #d97706; }
+.threat-method-item.low .tm-name { color: #6b7280; }
+.tm-desc { font-size: 0.75rem; color: #6b7280; }
+
+/* ── 數位簽章流程（CH12）── */
+.ds-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 1rem 0;
+}
+.ds-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  min-height: 40px;
+}
+.ds-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #22c55e;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ds-content {
+  flex: 1;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius);
+  background: #f0fdf4;
+  border: 1.5px solid #22c55e;
+  font-size: 0.85rem;
+}
+.ds-content strong { color: #15803d; }
+
+/* ── concept-card p 樣式（通用）── */
+.concept-card p {
+  margin: 0.5rem 0 0.5rem 0;
+  font-size: 0.88rem;
+}
+
+.fw-card-sub {
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+.kcb-fill-full { width: 100%; }
+.kcb-fill-44 { width: 44%; }
+.kcb-count-warn { color: #d97706; }
+.kcb-count-ok { color: #15803d; }
+
+
