@@ -37,14 +37,14 @@
     <!-- 大綱 -->
     <h2>📋 大綱</h2>
     <div class="toc-grid">
-      <div class="toc-item"><span class="toc-num">1</span><span>傳輸層角色 — 在網路層之上、會議層之下，TCP vs UDP 的定位</span></div>
-      <div class="toc-item"><span class="toc-num">2</span><span>埠編號 — Well-known / 註冊 / 動態 Port，常用服務對照</span></div>
-      <div class="toc-item"><span class="toc-num">3</span><span>UDP 協定 — 非可靠性、標頭 4 欄位、虛擬標頭 Checksum 運算</span></div>
-      <div class="toc-item"><span class="toc-num">4</span><span>TCP 序列與回應號碼 — 以位元組為單位的累積序號，雙向傳輸範例</span></div>
-      <div class="toc-item"><span class="toc-num">5</span><span>滑動訊窗 — 緩衝區概念、Window 欄位、傳輸單位（封包數 vs 位元組數）</span></div>
-      <div class="toc-item"><span class="toc-num">6</span><span>TCP 標頭欄位 — 20 Bytes + 選項，6 個控制旗標詳細說明</span></div>
-      <div class="toc-item"><span class="toc-num">7</span><span>TCP 連線管理 — 三向交握建立連線，四向終止結束連線</span></div>
-      <div class="toc-item"><span class="toc-num">8</span><span>TCP 選擇項 — MSS、SACK Permitted、SACK 區塊格式</span></div>
+      <div class="toc-item"><span class="toc-num">1</span><span>傳輸層角色 — TCP vs UDP 定位</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>埠編號 — Well-known / 註冊 / 動態 Port</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>UDP 協定 — 標頭 4 欄位、虛擬標頭 Checksum</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>TCP 序列與回應號碼 — 雙向傳輸範例</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>滑動訊窗 — 緩衝區、Window 欄位</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>TCP 標頭欄位 — 20 Bytes + 6 個控制旗標</span></div>
+      <div class="toc-item"><span class="toc-num">7</span><span>TCP 連線管理 — 三向交握、四向終止</span></div>
+      <div class="toc-item"><span class="toc-num">8</span><span>TCP 選擇項 — MSS、SACK</span></div>
     </div>
 
     <!-- ══════════════════════════════════════
@@ -55,28 +55,32 @@
 
       <div class="layer-card">
         <div class="layer-card-num">傳輸層位置</div>
-        <div class="layer-card-desc">
-          位於網路層與會議層之間。TCP/IP 架構下有兩大協定：
-          <ul>
-            <li><strong>TCP</strong> — Transmission Control Protocol，傳輸控制協定</li>
-            <li><strong>UDP</strong> — User Datagram Protocol，使用者資料報協定（Protocol = 17）</li>
-          </ul>
+        <div class="layer-card-desc">位於網路層與會議層之間。TCP/IP 架構下有兩大協定：TCP（傳輸控制協定）與 UDP（使用者資料報協定）。</div>
+      </div>
+
+      <h3>TCP vs UDP 比較</h3>
+      <div class="tcp-udp-compare">
+        <div class="tcp-card">
+          <div class="tcp-card-title">TCP — 傳輸控制協定</div>
+          <div class="tcp-card-prop"><span class="prop-label">特性</span><span class="prop-val">高可靠度、連接導向</span></div>
+          <div class="tcp-card-prop"><span class="prop-label">標頭</span><span class="prop-val">20~60 Bytes（豐富控制功能）</span></div>
+          <div class="tcp-card-prop"><span class="prop-label">傳輸</span><span class="prop-val">位元組為單位、序列與回應機制</span></div>
+          <div class="tcp-card-prop"><span class="prop-label">流量</span><span class="prop-val">滑動訊窗、擁塞控制</span></div>
+          <div class="tcp-card-apps">常見應用：<span class="tcp-apps-list">FTP、Telnet、SMTP、POP3、HTTP</span></div>
+        </div>
+        <div class="udp-card">
+          <div class="udp-card-title">UDP — 使用者資料報協定</div>
+          <div class="udp-card-prop"><span class="prop-label">特性</span><span class="prop-val">非可靠性、無連接導向</span></div>
+          <div class="udp-card-prop"><span class="prop-label">標頭</span><span class="prop-val">8 Bytes（簡單輕量）</span></div>
+          <div class="udp-card-prop"><span class="prop-label">傳輸</span><span class="prop-val">不檢測是否成功送達</span></div>
+          <div class="udp-card-prop"><span class="prop-label">流量</span><span class="prop-val">無流量/擁塞控制機制</span></div>
+          <div class="udp-card-apps">常見應用：<span class="udp-apps-list">DNS、TFTP、SNMP、NFS、BOOTP</span></div>
         </div>
       </div>
 
       <div class="highlight-box">
-        <strong>TCP vs UDP 應用實例</strong>
-        <p><strong>TCP：</strong>FTP、Telnet、SMTP、POP3</p>
-        <p><strong>UDP：</strong>TFTP、DNS、SNMP、NFS、BOOTP</p>
-        <p>TCP 特性：高可靠度、複雜標頭豐富控制功能</p>
-        <p>UDP 特性：非可靠性、不檢測是否成功送達、簡單輕量</p>
-      </div>
-
-      <div class="highlight-box">
         <strong>TCP 可靠性示意</strong>
-        <p>發送端：「Are you ready?」</p>
-        <p>接收端：「Yes, I am ready.」</p>
-        <p>發送端：收到回覆，確認連線建立，開始傳送</p>
+        <p>發送端：「Are you ready?」→ 接收端：「Yes, I am ready.」→ 發送端：收到回覆，確認連線建立，開始傳送。</p>
       </div>
     </section>
 
@@ -86,75 +90,53 @@
     <section id="s2">
       <h2>📌 2｜埠編號（Port Number）</h2>
 
-      <p>在網路層定址（IP）之外，定義額外參數，用以識別同一節點上不同通訊服務。</p>
+      <p>在網路層定址（IP）之外，定義額外參數，用以識別同一節點上不同通訊服務。IANA 將 Port 分為三類：</p>
 
-      <div class="layer-card">
-        <div class="layer-card-num">IANA 管轄</div>
-        <div class="layer-card-desc">
-          埠編號由 ICANN 的 IANA（Internet Corporation for Assigned Names and Numbers）管轄，分為三類：
-          <table class="compare-table">
-            <thead>
-              <tr>
-                <th>類型</th>
-                <th>範圍</th>
-                <th>說明</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>公認知埠（Well-known）</td>
-                <td>0 ~ 1023</td>
-                <td>公共、授權單位使用，常用服務應用程式</td>
-              </tr>
-              <tr>
-                <td>註冊埠（Registered）</td>
-                <td>1024 ~ 49151</td>
-                <td>一般應用服務程式向 IANA 註冊後使用</td>
-              </tr>
-              <tr>
-                <td>動態埠（Dynamic）</td>
-                <td>49152 ~ 65535</td>
-                <td>不被註冊，自由運用（客戶端隨機產生）</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="port-type-grid">
+        <div class="port-type-card well-known">
+          <div class="port-type-name">公認知埠</div>
+          <div class="port-type-range">0 ~ 1023</div>
+          <div class="port-type-desc">公共、授權單位使用，常用服務應用程式</div>
+        </div>
+        <div class="port-type-card registered">
+          <div class="port-type-name">註冊埠</div>
+          <div class="port-type-range">1024 ~ 49151</div>
+          <div class="port-type-desc">一般應用程式向 IANA 註冊後使用</div>
+        </div>
+        <div class="port-type-card dynamic">
+          <div class="port-type-name">動態埠</div>
+          <div class="port-type-range">49152 ~ 65535</div>
+          <div class="port-type-desc">不被註冊，自由運用（客戶端隨機產生）</div>
         </div>
       </div>
 
+      <h3>常用服務埠號</h3>
       <div class="layer-card">
-        <div class="layer-card-num">常用服務埠號</div>
         <table class="compare-table">
           <thead>
-            <tr>
-              <th>Port</th>
-              <th>服務</th>
-              <th>類型</th>
-              <th>說明</th>
-            </tr>
+            <tr><th>Port</th><th>服務</th><th>協定</th><th>說明</th></tr>
           </thead>
           <tbody>
-            <tr><td>20</td><td>FTP-Data</td><td>TCP</td><td>檔案傳輸（資料埠）</td></tr>
-            <tr><td>21</td><td>FTP</td><td>TCP</td><td>檔案傳輸（控制埠）</td></tr>
-            <tr><td>23</td><td>Telnet</td><td>TCP</td><td>遠端登錄</td></tr>
-            <tr><td>25</td><td>SMTP</td><td>TCP</td><td>簡易郵件傳輸</td></tr>
-            <tr><td>53</td><td>DNS</td><td>TCP/UDP</td><td>網域名稱伺服器</td></tr>
-            <tr><td>69</td><td>TFTP</td><td>UDP</td><td>簡單檔案傳輸</td></tr>
-            <tr><td>80</td><td>HTTP</td><td>TCP</td><td>超文件傳送</td></tr>
-            <tr><td>110</td><td>POP3</td><td>TCP</td><td>郵局協定</td></tr>
-            <tr><td>179</td><td>BGP</td><td>TCP</td><td>邊界閘道協定</td></tr>
-            <tr><td>520</td><td>RIPng</td><td>UDP</td><td>下一代尋徑資訊</td></tr>
-            <tr><td>1194</td><td>OpenVPN</td><td>UDP</td><td>開放虛擬私有網路</td></tr>
-            <tr><td>2483</td><td>Oracle DB</td><td>TCP/UDP</td><td>甲骨文資料庫</td></tr>
-            <tr><td>5004</td><td>RTP</td><td>UDP</td><td>即時傳輸協定</td></tr>
-            <tr><td>5060</td><td>SIP</td><td>TCP/UDP</td><td>會議啟動協定</td></tr>
+            <tr><td>20</td><td>FTP-Data</td><td><span class="proto-badge tcp">TCP</span></td><td>檔案傳輸（資料埠）</td></tr>
+            <tr><td>21</td><td>FTP</td><td><span class="proto-badge tcp">TCP</span></td><td>檔案傳輸（控制埠）</td></tr>
+            <tr><td>23</td><td>Telnet</td><td><span class="proto-badge tcp">TCP</span></td><td>遠端登錄</td></tr>
+            <tr><td>25</td><td>SMTP</td><td><span class="proto-badge tcp">TCP</span></td><td>簡易郵件傳輸</td></tr>
+            <tr><td>53</td><td>DNS</td><td><span class="proto-badge both">TCP/UDP</span></td><td>網域名稱伺服器</td></tr>
+            <tr><td>69</td><td>TFTP</td><td><span class="proto-badge udp">UDP</span></td><td>簡單檔案傳輸</td></tr>
+            <tr><td>80</td><td>HTTP</td><td><span class="proto-badge tcp">TCP</span></td><td>超文件傳送</td></tr>
+            <tr><td>110</td><td>POP3</td><td><span class="proto-badge tcp">TCP</span></td><td>郵局協定</td></tr>
+            <tr><td>179</td><td>BGP</td><td><span class="proto-badge tcp">TCP</span></td><td>邊界閘道協定</td></tr>
+            <tr><td>520</td><td>RIPng</td><td><span class="proto-badge udp">UDP</span></td><td>下一代尋徑資訊</td></tr>
+            <tr><td>1194</td><td>OpenVPN</td><td><span class="proto-badge udp">UDP</span></td><td>開放虛擬私有網路</td></tr>
+            <tr><td>2483</td><td>Oracle DB</td><td><span class="proto-badge both">TCP/UDP</span></td><td>甲骨文資料庫</td></tr>
+            <tr><td>5004</td><td>RTP</td><td><span class="proto-badge udp">UDP</span></td><td>即時傳輸協定</td></tr>
+            <tr><td>5060</td><td>SIP</td><td><span class="proto-badge both">TCP/UDP</span></td><td>會議啟動協定</td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="highlight-box">
-        <strong>客戶端 vs 伺服端埠號</strong>
-        <p>IANA 規範的埠號是針對<strong>伺服端</strong>。客戶端埠號與伺服端分開設定：</p>
-        <p>→ 隨機產生，常設在 1024 ~ 4096 範圍內</p>
+        <strong>客戶端 vs 伺服端埠號</strong>：IANA 規範的埠號是針對<strong>伺服端</strong>。客戶端埠號隨機產生，常設在 1024 ~ 4096 範圍內。
       </div>
     </section>
 
@@ -165,12 +147,11 @@
       <h2>📌 3｜UDP 協定</h2>
 
       <div class="highlight-box">
-        <strong>UDP 特性</strong>
-        <p>一種非可靠性的傳輸模式，不會檢測是否已成功將資料傳送給對方。</p>
+        一種<strong>非可靠性</strong>的傳輸模式，不會檢測是否已成功將資料傳送給對方。適用於即時性要求高、少量傳輸的場景。
       </div>
 
+      <h3>UDP 標頭格式（8 Bytes）</h3>
       <div class="layer-card">
-        <div class="layer-card-num">UDP 標頭格式（8 Bytes）</div>
         <div class="header-box-grid">
           <div class="header-box-item">
             <div class="field-label">來源埠（16 bits）</div>
@@ -195,25 +176,33 @@
         </ul>
       </div>
 
+      <h3>虛擬標頭（pseudo-header）</h3>
       <div class="layer-card">
-        <div class="layer-card-num">虛擬標頭（pseudo-header）</div>
-        <div class="layer-card-desc">
-          Checksum 運算時，會加入<strong>虛擬標頭</strong>一起計算：
-          <table class="compare-table">
-            <thead>
-              <tr><th>欄位</th><th>長度</th><th>說明</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>來源端 IP 位址</td><td>32 bits</td><td>發送端 IP</td></tr>
-              <tr><td>目的端 IP 位址</td><td>32 bits</td><td>接收端 IP</td></tr>
-              <tr><td>00000000</td><td>8 bits</td><td>固定值</td></tr>
-              <tr><td>Protocol = 17</td><td>8 bits</td><td>UDP 協定編號</td></tr>
-              <tr><td>UDP 訊息長度</td><td>16 bits</td><td>Length 欄位值</td></tr>
-            </tbody>
-          </table>
+        <div class="layer-card-desc">Checksum 運算時，會加入虛擬標頭一起計算，目的是對網路層再次檢測：</div>
+        <div class="pseudo-header-grid">
+          <div class="pseudo-header-item">
+            <div class="ph-name">來源端 IP</div>
+            <div class="ph-meta">32 bits · 發送端 IP</div>
+          </div>
+          <div class="pseudo-header-item">
+            <div class="ph-name">目的端 IP</div>
+            <div class="ph-meta">32 bits · 接收端 IP</div>
+          </div>
+          <div class="pseudo-header-item">
+            <div class="ph-name">00000000</div>
+            <div class="ph-meta">8 bits · 固定值</div>
+          </div>
+          <div class="pseudo-header-item">
+            <div class="ph-name">Protocol = 17</div>
+            <div class="ph-meta">8 bits · UDP 協定編號</div>
+          </div>
+          <div class="pseudo-header-item">
+            <div class="ph-name">UDP 訊息長度</div>
+            <div class="ph-meta">16 bits · Length 欄位值</div>
+          </div>
         </div>
         <div class="highlight-box">
-          對網路層再次檢測，也破壞各層級各自負責的原則——好壞見仁見智。
+          對網路層再次檢測，破壞了各層級各自負責的原則——好壞見仁見智。
         </div>
       </div>
     </section>
@@ -226,48 +215,24 @@
 
       <div class="layer-card">
         <div class="layer-card-num">序列號碼（Sequence Number）</div>
-        <div class="layer-card-desc">
-          <ul>
-            <li>記錄傳送資料過程的累積序號</li>
-            <li>早期以「封包數」為單位；現已改為「<strong>位元組數</strong>」為單位</li>
-            <li>對 100 Mbps 系統，序號循環約 328 秒一次（比 IP TTL 的 255 秒長）</li>
-            <li>網路越快，循環時間越短，但遇上相同序號機率仍相當微小</li>
-          </ul>
-        </div>
+        <div class="layer-card-desc">記錄傳送資料過程的累積序號，以<strong>位元組數</strong>為單位（早期以封包數為單位）。對 100 Mbps 系統，序號循環約 328 秒一次（比 IP TTL 的 255 秒長）。</div>
       </div>
 
       <div class="layer-card">
         <div class="layer-card-num">回應號碼（Acknowledge Number）</div>
-        <div class="layer-card-desc">
-          與序列號碼一起運作：
-          <ul>
-            <li>告知對方資料已順利收到</li>
-            <li>象徵期望下次收到對方來信的<strong>下一個序列號碼</strong></li>
-          </ul>
-        </div>
+        <div class="layer-card-desc">告知對方資料已順利收到，象徵期望下次收到對方的<strong>下一個序列號碼</strong>。</div>
       </div>
 
-      <div class="highlight-box">
-        <strong>單向資料傳送範例</strong>
-        <pre class="code-diagram">
-甲（發送端）                          乙（接收端）
+      <h3>單向資料傳送範例</h3>
+      <pre class="code-diagram">甲（發送端）                          乙（接收端）
 Seq: X, Data: a Bytes      ──────▶
                                Seq: Y, Ack: X+a
       ◀──────────────────────
 Seq: X+a, Data: b Bytes    ──────▶
-                               Seq: Y, Ack: X+a+b
-        </pre>
-      </div>
+                               Seq: Y, Ack: X+a+b</pre>
 
       <div class="highlight-box">
-        <strong>雙向資料傳送範例</strong>
-        <p>雙向傳輸時，雙方同時維護自己的 Seq 與 Ack，搭配計時器與重傳機制，實現全雙工通訊。</p>
-      </div>
-
-      <div class="highlight-box">
-        <strong>緩衝區（Buffer）</strong>
-        <p>接收端使用緩衝區暫存資料。Window 欄位記錄「剩餘可用緩衝區空間」。</p>
-        <p>若 Window = 0，表示緩衝區已滿，發送端須停止傳送，等待更新。</p>
+        <strong>緩衝區（Buffer）</strong>：接收端使用緩衝區暫存資料。Window 欄位記錄「剩餘可用緩衝區空間」。若 Window = 0，表示緩衝區已滿，發送端須停止傳送，等待更新。
       </div>
     </section>
 
@@ -278,27 +243,16 @@ Seq: X+a, Data: b Bytes    ──────▶
       <h2>📌 5｜滑動訊窗（Sliding Window）</h2>
 
       <div class="highlight-box">
-        <strong>訊窗概念</strong>
-        <p>緩衝區也稱為「訊窗」（Windows）。訊窗大小由各項參數調整：</p>
-        <ul>
-          <li><strong>封包數量：</strong>HDLC、X.25</li>
-          <li><strong>位元組數：</strong>TCP</li>
-        </ul>
-        <p>整體可用訊窗大小固定，剩餘容量記錄在 TCP 標頭的 <code>Window</code> 欄位。</p>
+        <strong>訊窗概念</strong>：緩衝區也稱為「訊窗」（Windows）。訊窗大小由各項參數調整：HDLC、X.25 以<strong>封包數量</strong>為單位；TCP 以<strong>位元組數</strong>為單位。整體可用訊窗大小固定，剩餘容量記錄在 TCP 標頭的 <code>Window</code> 欄位。
       </div>
 
       <div class="highlight-box">
-        <strong>滑動訊窗運作</strong>
-        <p>發送端一次可發送多個封包（不需等待每個 ACK），但不能超過接收端公告的 Window 大小。</p>
-        <p>隨著 ACK 到來，訊窗「向前滑動」，允許發送新的資料。</p>
+        <strong>滑動訊窗運作</strong>：發送端一次可發送多個封包（不需等待每個 ACK），但不能超過接收端公告的 Window 大小。隨著 ACK 到來，訊窗「向前滑動」，允許發送新的資料。
       </div>
 
       <div class="layer-card">
         <div class="layer-card-num">合併回應（Piggybacking）</div>
-        <div class="layer-card-desc">
-          當接收端要回傳資料給發送端時，可以把 ACK 合併在攜帶資料的封包中一起傳送，
-          不必另外發送一個純 ACK 封包，節省網路資源。
-        </div>
+        <div class="layer-card-desc">當接收端要回傳資料給發送端時，可以把 ACK 合併在攜帶資料的封包中一起傳送，不必另外發送一個純 ACK 封包，節省網路資源。</div>
       </div>
     </section>
 
@@ -329,8 +283,8 @@ Seq: X+a, Data: b Bytes    ──────▶
         </pre>
       </div>
 
+      <h3>各欄位說明</h3>
       <div class="layer-card">
-        <div class="layer-card-num">各欄位說明</div>
         <div class="header-field">
           <span class="header-field-name">Src Port</span>
           <span class="header-field-desc">來源埠編號（16 bits）</span>
@@ -373,66 +327,43 @@ Seq: X+a, Data: b Bytes    ──────▶
         </div>
       </div>
 
-      <div class="layer-card">
-        <div class="layer-card-num">控制旗標（Code Bits / Control Flags）— 6 個</div>
-        <table class="compare-table">
-          <thead>
-            <tr><th>旗標</th><th>名稱</th><th>值</th><th>說明</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>CWR</code></td>
-              <td>Congestion Window Reduced</td>
-              <td>1</td>
-              <td>發送端已降低擁塞視窗（ECN 機制）</td>
-            </tr>
-            <tr>
-              <td><code>ECE</code></td>
-              <td>ECN Echo</td>
-              <td>1</td>
-              <td>明確擁塞通知回聲</td>
-            </tr>
-            <tr>
-              <td><code>URG</code></td>
-              <td>Urgent</td>
-              <td>1</td>
-              <td>緊急資料，需立即處理（例：Ctrl-C），位置由 Urgent Pointer 描述</td>
-            </tr>
-            <tr>
-              <td><code>ACK</code></td>
-              <td>Acknowledgement</td>
-              <td>1</td>
-              <td>帶有有效的回應確認訊息（一般 TCP 封包通常為 1）</td>
-            </tr>
-            <tr>
-              <td><code>PSH</code></td>
-              <td>Push</td>
-              <td>1</td>
-              <td>直接送往上層應用程式，不經 TCP 緩衝處理（例：Enter 鍵）</td>
-            </tr>
-            <tr>
-              <td><code>RST</code></td>
-              <td>Reset</td>
-              <td>1</td>
-              <td>重新設定連線</td>
-            </tr>
-            <tr>
-              <td><code>SYN</code></td>
-              <td>Synchronize</td>
-              <td>1</td>
-              <td>進行雙方同步溝通，連線建立時必備</td>
-            </tr>
-            <tr>
-              <td><code>FIN</code></td>
-              <td>Final</td>
-              <td>1</td>
-              <td>連線結束訊息</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="highlight-box">
-          常見組合：SYN（連線建立）、ACK+SYN（回應並同步）、FIN（結束連線）
+      <h3>控制旗標（Code Bits / Control Flags）— 6 個</h3>
+      <div class="flag-grid">
+        <div class="flag-item established">
+          <span class="flag-abbr">ACK</span>
+          <span class="flag-name">Acknowledgement — 回應確認</span>
         </div>
+        <div class="flag-item established">
+          <span class="flag-abbr">SYN</span>
+          <span class="flag-name">Synchronize — 同步連線</span>
+        </div>
+        <div class="flag-item">
+          <span class="flag-abbr">FIN</span>
+          <span class="flag-name">Final — 結束連線</span>
+        </div>
+        <div class="flag-item">
+          <span class="flag-abbr">RST</span>
+          <span class="flag-name">Reset — 重新設定連線</span>
+        </div>
+        <div class="flag-item">
+          <span class="flag-abbr">PSH</span>
+          <span class="flag-name">Push — 不經緩衝直接送達</span>
+        </div>
+        <div class="flag-item">
+          <span class="flag-abbr">URG</span>
+          <span class="flag-name">Urgent — 緊急資料標記</span>
+        </div>
+        <div class="flag-item">
+          <span class="flag-abbr">CWR</span>
+          <span class="flag-name">Congestion Window Reduced</span>
+        </div>
+        <div class="flag-item">
+          <span class="flag-abbr">ECE</span>
+          <span class="flag-name">ECN Echo — 明確擁塞通知</span>
+        </div>
+      </div>
+      <div class="highlight-box">
+        常見組合：<strong>SYN</strong>（連線建立）、<strong>ACK+SYN</strong>（回應並同步）、<strong>FIN</strong>（結束連線）
       </div>
     </section>
 
@@ -442,51 +373,43 @@ Seq: X+a, Data: b Bytes    ──────▶
     <section id="s7">
       <h2>📌 7｜TCP 連線啟動與結束</h2>
 
+      <h3>三向交握（Three-way Handshake）— 建立連線</h3>
       <div class="layer-card">
-        <div class="layer-card-num">三向交握（Three-way Handshake）— 建立連線</div>
         <pre class="code-diagram">
  發送端（Client）                      接收端（Server）
       │                                     │
-      │  ──── ① SYN, Seq=X  ──────────▶   │
-      │        （請求同步）                    │
+      │  ──── ① SYN, Seq=X  ──────────▶   │  請求同步
       │                                     │
-      │  ◀─── ② SYN+ACK, Seq=Y, Ack=X+1 ──  │
-      │        （同步 + 確認收到）              │
+      │  ◀─── ② SYN+ACK, Seq=Y, Ack=X+1 ── │  同步 + 確認
       │                                     │
-      │  ──── ③ ACK, Seq=X+1, Ack=Y+1 ──▶  │
-      │        （確認收到伺服端回應）            │
+      │  ──── ③ ACK, Seq=X+1, Ack=Y+1 ──▶  │  確認完成
       │                                     │
-      │         連線建立完成                   │
+      │         連線建立完成                 │
         </pre>
         <ul>
-          <li>① SYN 封包：攜帶初始序列號碼 Seq=X</li>
-          <li>② SYN+ACK：伺服端回傳自己的序列號碼 Seq=Y，並 Ack=X+1 表示期待下一個封包</li>
+          <li>① SYN 封包：攜帶初始序列號碼 <code>Seq=X</code></li>
+          <li>② SYN+ACK：伺服端回傳 <code>Seq=Y</code>，並 <code>Ack=X+1</code> 表示期待下一個封包</li>
           <li>③ ACK：客戶端確認收到，完成連線建立</li>
         </ul>
       </div>
 
+      <h3>四向終止（Four-way Termination）— 結束連線</h3>
       <div class="layer-card">
-        <div class="layer-card-num">四向終止（Four-way Termination）— 結束連線</div>
         <pre class="code-diagram">
  發送端（Client）                      接收端（Server）
       │                                     │
-      │  ──── ① FIN  ──────────────────▶   │
-      │        （請求結束）                    │
+      │  ──── ① FIN  ──────────────────▶   │  請求結束
       │                                     │
-      │  ◀─── ② ACK  ────────────────────  │
-      │        （確認收到結束請求）              │
+      │  ◀─── ② ACK  ────────────────────  │  確認收到
       │                                     │
-      │  ◀─── ③ FIN  ────────────────────  │
-      │        （伺服端也準備結束）              │
+      │  ◀─── ③ FIN  ────────────────────  │  伺服端也準備結束
       │                                     │
-      │  ──── ④ ACK  ──────────────────▶   │
-      │        （客戶端最後確認）               │
+      │  ──── ④ ACK  ──────────────────▶   │  最後確認
       │                                     │
-      │         連線關閉                       │
+      │         連線關閉                     │
         </pre>
         <div class="highlight-box">
-          注意：連線終止需要<strong>四個封包</strong>（雙方各提出一次 FIN，並各自回覆一個 ACK），
-          而非四次來回。雙方都可主動發出 FIN。
+          注意：連線終止需要<strong>四個封包</strong>（雙方各提出一次 FIN，並各自回覆一個 ACK），而非四次來回。雙方都可主動發出 FIN。
         </div>
       </div>
     </section>
@@ -499,50 +422,40 @@ Seq: X+a, Data: b Bytes    ──────▶
 
       <div class="highlight-box">
         <strong>選擇項基本格式</strong>
-        <pre class="code-diagram">
- Kind (1 Byte)  |  Length (1 Byte)  |  Data (可變)
-        </pre>
+        <pre class="code-diagram"> Kind (1 Byte)  |  Length (1 Byte)  |  Data (可變)</pre>
         <p>各選擇項長度不固定，但整體長度必須是 <strong>32 位元整數倍</strong>，不足以 Padding 補齊。</p>
       </div>
 
-      <table class="compare-table">
-        <thead>
-          <tr><th>Kind</th><th>Length</th><th>名稱</th><th>說明</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>0</td><td>1</td><td>End of Option List</td><td>宣告選擇項結束，僅 Kind 欄位</td></tr>
-          <tr><td>1</td><td>1</td><td>No-operation（NOP）</td><td>佔 1 Byte，用於對齊/填充，常放在選項之前</td></tr>
-          <tr><td>2</td><td>4</td><td>MSS（Maximum Segment Size）</td><td>告知對方允許的最大資料片段大小</td></tr>
-          <tr><td>4</td><td>2</td><td>SACK Permitted</td><td>宣告雙方支援 SACK 機制</td></tr>
-          <tr><td>5</td><td>可變</td><td>SACK</td><td>選擇性回應，告知已收到的連續區塊</td></tr>
-        </tbody>
-      </table>
-
       <div class="layer-card">
-        <div class="layer-card-num">MSS — 最大資料片段大小</div>
-        <div class="layer-card-desc">
-          <p>由客戶端向伺服器提出，告知自己允許的最大片段值。常在 TCP 連線建立時出現。</p>
-          <p><strong>乙太網路 MSS = 1460 Bytes</strong></p>
-          <p>（1500 - 20 Bytes IP 標頭 - 20 Bytes TCP 標頭 = 1460）</p>
-        </div>
+        <table class="compare-table">
+          <thead>
+            <tr><th>Kind</th><th>Length</th><th>名稱</th><th>說明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>0</td><td>1</td><td>End of Option List</td><td>宣告選擇項結束，僅 Kind 欄位</td></tr>
+            <tr><td>1</td><td>1</td><td>No-operation（NOP）</td><td>佔 1 Byte，用於對齊/填充，常放在選項之前</td></tr>
+            <tr><td>2</td><td>4</td><td>MSS（Maximum Segment Size）</td><td>告知對方允許的最大資料片段大小</td></tr>
+            <tr><td>4</td><td>2</td><td>SACK Permitted</td><td>宣告雙方支援 SACK 機制</td></tr>
+            <tr><td>5</td><td>可變</td><td>SACK</td><td>選擇性回應，告知已收到的連續區塊</td></tr>
+          </tbody>
+        </table>
       </div>
 
+      <h3>MSS — 最大資料片段大小</h3>
       <div class="layer-card">
-        <div class="layer-card-num">SACK — 選擇性回應</div>
-        <div class="layer-card-desc">
-          <p><strong>SACK Permitted：</strong>佔 2 Bytes（Kind=4, Length=2），連線建立時宣告支援 SACK。</p>
-          <p><strong>SACK 訊息格式：</strong></p>
-        </div>
-        <pre class="code-diagram">
- Kind=5  |  Length  |  Left Edge 1  |  Right Edge 1  |  Left Edge n  |  Right Edge n
-        </pre>
-        <div class="layer-card-desc">
-          <ul>
-            <li><strong>Left Edge：</strong>區塊第一個已收到的位元組序號</li>
-            <li><strong>Right Edge：</strong>區塊最後一個已收到的位元組 + 1</li>
-          </ul>
-          <p>接收端告知傳送端「哪些區塊已收到」，傳送端只需重傳確實遺失的區塊，大幅提升傳輸效率。</p>
-        </div>
+        <div class="layer-card-num">乙太網路 MSS = 1460 Bytes</div>
+        <div class="layer-card-desc">由客戶端向伺服器提出，告知自己允許的最大片段值。<code>1500 - 20(IP) - 20(TCP) = 1460</code></div>
+      </div>
+
+      <h3>SACK — 選擇性回應</h3>
+      <div class="layer-card">
+        <div class="layer-card-num">SACK 訊息格式</div>
+        <pre class="code-diagram">Kind=5 | Length | Left Edge 1 | Right Edge 1 | Left Edge n | Right Edge n</pre>
+        <ul>
+          <li><strong>Left Edge：</strong>區塊第一個已收到的位元組序號</li>
+          <li><strong>Right Edge：</strong>區塊最後一個已收到的位元組 + 1</li>
+        </ul>
+        <p>接收端告知傳送端「哪些區塊已收到」，傳送端只需重傳確實遺失的區塊，大幅提升傳輸效率。</p>
       </div>
     </section>
 
