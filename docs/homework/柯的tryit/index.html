@@ -99,8 +99,52 @@
       font-size: 18px;
     }
     .skin-btn.selected { border-color: #ffd700; transform: scale(1.15); }
-    .skin-btn.locked { opacity: 0.4; filter: grayscale(1); cursor: not-allowed; }
+    .skin-btn.locked { opacity: 0.5; cursor: not-allowed; }
     .skin-btn.unlocked { cursor: pointer; }
+    .skin-btn .lock-icon { position: absolute; font-size: 10px; bottom: 1px; right: 2px; }
+    .skin-btn .unlock-req { font-size: 8px; color: #888; position: absolute; bottom: -14px; white-space: nowrap; }
+    #overlay .stats-panel {
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 16px 24px;
+      margin: 12px 0 20px;
+      min-width: 200px;
+      text-align: center;
+    }
+    #overlay .stats-panel .stat-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      font-size: 14px;
+      color: #ccc;
+      margin: 4px 0;
+    }
+    #overlay .stats-panel .stat-row span:last-child { color: #fff; font-weight: 600; }
+    #overlay .unlock-notify {
+      font-size: 13px;
+      color: #ffd700;
+      margin-top: 8px;
+      animation: pop 0.4s ease;
+    }
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    #overlay .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    #overlay .btn-row button {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    #overlay .btn-row button.primary { background: #2ecc71; border-color: #2ecc71; }
   </style>
 </head>
 <body>
@@ -116,8 +160,17 @@
       <div class="final-score" id="final-score-text">0</div>
       <div class="high-score" id="high-score-text">歷史最高: 0</div>
     </div>
+    <div id="stats-panel" class="stats-panel" style="display:none;">
+      <div class="stat-row"><span>本局分數</span><span id="stat-score">0</span></div>
+      <div class="stat-row"><span>歷史最高</span><span id="stat-hs">0</span></div>
+      <div class="stat-row"><span>已解鎖造型</span><span id="stat-skins">1/5</span></div>
+    </div>
+    <div id="unlock-notify" class="unlock-notify" style="display:none;"></div>
+    <div class="btn-row">
+      <button id="btn-restart" class="primary">再玩一次</button>
+      <button id="btn-menu">造型總覽</button>
+    </div>
     <div id="start-hint">點擊開始</div>
-    <div class="tap-hint" id="tap-hint"></div>
   </div>
   <div id="skin-bar"></div>
 
@@ -454,14 +507,45 @@
     el.classList.toggle('active', active);
   }
 
+  function showStartScreen() {
+    const overlay = document.getElementById('overlay');
+    document.getElementById('final-info').style.display = 'none';
+    document.getElementById('stats-panel').style.display = 'none';
+    document.getElementById('unlock-notify').style.display = 'none';
+    document.getElementById('start-hint').textContent = '點擊開始';
+    document.querySelector('.btn-row').style.display = 'none';
+    overlay.classList.remove('hidden');
+    overlay.onclick = null;
+  }
+
   function showGameOver() {
     const overlay = document.getElementById('overlay');
+    const newUnlocks = checkSkinUnlocks();
+
     document.getElementById('final-info').style.display = 'block';
     document.getElementById('final-score-text').textContent = score;
     document.getElementById('high-score-text').textContent = `歷史最高: ${LS.highScore}`;
-    document.getElementById('start-hint').textContent = '點擊重新開始';
-    document.getElementById('tap-hint').textContent = '';
+
+    // Stats panel
+    document.getElementById('stats-panel').style.display = 'block';
+    document.getElementById('stat-score').textContent = score;
+    document.getElementById('stat-hs').textContent = LS.highScore;
+    document.getElementById('stat-skins').textContent = `${LS.unlockedSkins.length}/${SKINS.length}`;
+
+    // Unlock notification
+    const notify = document.getElementById('unlock-notify');
+    if (newUnlocks.length > 0) {
+      notify.textContent = `🎉 解鎖了：${newUnlocks.map(s => s.name).join('、')}`;
+      notify.style.display = 'block';
+    } else {
+      notify.style.display = 'none';
+    }
+
+    document.getElementById('start-hint').textContent = '';
+    document.querySelector('.btn-row').style.display = 'flex';
+    overlay.onclick = null;
     overlay.classList.remove('hidden');
+    buildSkinBar();
   }
 
   function showStartScreen() {
@@ -477,14 +561,15 @@
   // ─────────────────────────────────────────────
   function checkSkinUnlocks() {
     const unlocked = LS.unlockedSkins;
-    let changed = false;
+    const newUnlocks = [];
     SKINS.forEach(s => {
       if (score >= s.unlock && !unlocked.includes(s.id)) {
         unlocked.push(s.id);
-        changed = true;
+        newUnlocks.push(s);
       }
     });
-    if (changed) LS.unlockedSkins = unlocked;
+    if (newUnlocks.length > 0) LS.unlockedSkins = unlocked;
+    return newUnlocks;
   }
 
   function buildSkinBar() {
@@ -497,9 +582,10 @@
       const btn = document.createElement('div');
       btn.className = 'skin-btn';
       btn.textContent = '🐍';
-      btn.title = s.name + (s.unlock > 0 ? ` (${s.unlock}分解鎖)` : ' (預設)');
+      btn.style.position = 'relative';
 
       if (unlocked.includes(s.id)) {
+        btn.title = s.name;
         if (s.id === LS.selectedSkin) btn.classList.add('selected');
         btn.classList.add('unlocked');
         btn.addEventListener('click', () => {
@@ -509,7 +595,12 @@
         });
       } else {
         btn.classList.add('locked');
-        btn.title = `🔒 ${s.name} (需 ${s.unlock} 分)`;
+        btn.title = `${s.name} (需 ${s.unlock} 分)`;
+        // Show unlock requirement below button
+        const req = document.createElement('span');
+        req.className = 'unlock-req';
+        req.textContent = `${s.unlock}`;
+        btn.appendChild(req);
       }
 
       bar.appendChild(btn);
@@ -583,10 +674,41 @@
     }
   });
 
-  // Overlay click to start/restart
+  // Overlay click to start only (waiting state only)
   document.getElementById('overlay').addEventListener('click', () => {
-    if (state === 'waiting' || state === 'gameover') startGame();
+    if (state === 'waiting') startGame();
   });
+
+  // Restart button
+  document.getElementById('btn-restart').addEventListener('click', e => {
+    e.stopPropagation();
+    if (state === 'gameover') startGame();
+  });
+
+  // Skin menu button
+  document.getElementById('btn-menu').addEventListener('click', e => {
+    e.stopPropagation();
+    showSkinMenu();
+  });
+
+  function showSkinMenu() {
+    const overlay = document.getElementById('overlay');
+    const statsPanel = document.getElementById('stats-panel');
+    const finalInfo = document.getElementById('final-info');
+    const notify = document.getElementById('unlock-notify');
+
+    // Hide game over info, show skin grid
+    finalInfo.style.display = 'none';
+    statsPanel.style.display = 'none';
+    notify.style.display = 'none';
+    document.getElementById('start-hint').textContent = '點擊返回';
+
+    overlay.onclick = () => {
+      // Return to game over screen
+      overlay.onclick = null;
+      if (state === 'gameover') showGameOver();
+    };
+  }
 
   // ─────────────────────────────────────────────
   // RESIZE
