@@ -76,7 +76,7 @@
       <h3>密實體位址與邏輯位址</h3>
       <div class="concept-card">
         <div class="concept-card-title">兩種位址的差異</div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th></th><th>實體位址（MAC）</th><th>邏輯位址（IP）</th></tr>
           <tr><td>持久性</td><td>燒錄在網卡，全域唯一</td><td>可由管理員或 DHCP 動態分配</td></tr>
           <tr><td>管理單位</td><td>IEEE</td><td>ICANN / 區域註冊機構</td></tr>
@@ -99,7 +99,7 @@
       <div class="layer-card">
         <div class="layer-card-num">範例</div>
         <div class="layer-card-name">主機 A（140.134.36.56）要和主機 B（140.134.36.110）通訊</div>
-        <ul style="margin-top:0.5rem;">
+        <ul>
           <li>主機 A 先查自己的 ARP Cache，找不到 140.134.36.110</li>
           <li>主機 A 廣播 <strong>ARP 請求</strong>（目標 MAC 為 FF-FF-FF-FF-FF-FF）</li>
           <li>所有主機收到，但只有 140.134.36.110 回覆 <strong>ARP 回應</strong></li>
@@ -110,7 +110,7 @@
       <h3>訊息封裝結構</h3>
       <div class="concept-card">
         <div class="concept-card-title">ARP 請求與回覆的三層封裝</div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th>資料連結層標頭</th><th>網路層標頭</th><th>訊息內容</th></tr>
           <tr><td>含目標 MAC（廣播：FF-FF-FF...）</td><td>含發送端 IP</td><td>ARP 請求/回覆資料</td></tr>
         </table>
@@ -137,7 +137,7 @@
       <h3>RARP 與 ARP 比較</h3>
       <div class="concept-card">
         <div class="concept-card-title">兩者比較</div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th></th><th>ARP</th><th>RARP</th></tr>
           <tr><td>查詢方向</td><td>IP → MAC</td><td>MAC → IP</td></tr>
           <tr><td>已知條件</td><td>已知 IP，查 MAC</td><td>已知 MAC，查 IP</td></tr>
@@ -160,7 +160,7 @@
       <h3>9 欄位格式</h3>
       <div class="concept-card">
         <div class="concept-card-title">標頭欄位</div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th>欄位</th><th>長度</th><th>說明</th></tr>
           <tr><td>Hardware Type</td><td>16 位元</td><td>硬體類型，如 Ethernet = 1（0001ₕ）</td></tr>
           <tr><td>Protocol Type</td><td>16 位元</td><td>協定類型，如 IP = 0800ₕ</td></tr>
@@ -218,7 +218,7 @@
       <h3>訊息類型一覽</h3>
       <div class="concept-card">
         <div class="concept-card-title">ICMP Type 總表</div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th>Type</th><th>類型名稱</th><th>類別</th></tr>
           <tr><td>0</td><td>回聲回覆（Echo Reply）</td><td>查詢</td></tr>
           <tr><td>3</td><td>目的端無法抵達（Destination Unreachable）</td><td>錯誤</td></tr>
@@ -257,7 +257,7 @@
       <h3>查詢訊息標頭格式</h3>
       <div class="layer-card">
         <div class="layer-card-num">32 位元</div>
-        <div class="header-diagram" style="margin:0.75rem 0;">
+        <div class="header-diagram">
 <span class="field">Type (8)</span>　<span class="field">Code (8)</span>　<span class="field">Checksum (16)</span>
 <span class="field">Identifier (16)</span>　　　<span class="field">Sequence Number (16)</span>
 <span class="note">（附加資料，選擇性）</span>
@@ -271,7 +271,7 @@
       <h3>錯誤訊息標頭格式</h3>
       <div class="layer-card">
         <div class="layer-card-num">32 位元</div>
-        <div class="header-diagram" style="margin:0.75rem 0;">
+        <div class="header-diagram">
 <span class="field">Type (8)</span>　<span class="field">Code (8)</span>　<span class="field">Checksum (16)</span>
 <span class="field">未定義或其他 (32)</span>
 <span class="note">IP 標頭 + 64 位元的原始資料</span>
@@ -301,7 +301,7 @@
       <h3>Echo 訊息格式</h3>
       <div class="layer-card">
         <div class="layer-card-num">32 位元</div>
-        <div class="header-diagram" style="margin:0.75rem 0;">
+        <div class="header-diagram">
 <span class="field">類型 (8)</span>　<span class="field">代碼 (8)</span>　<span class="field">檢驗和 (16)</span>
 <span class="field">識別碼 (16)</span>　　　　<span class="field">序列碼 (16)</span>
 <span class="note">附加資料（選擇性）</span>
@@ -309,7 +309,7 @@
       </div>
 
       <h3>ping 輸出範例</h3>
-      <pre>Pinging 204.71.200.243 with 32 bytes of data:
+      <pre class="code-diagram">Pinging 204.71.200.243 with 32 bytes of data:
 
 Reply from 204.71.200.243: bytes=32 time=945ms TTL=242
 Reply from 204.71.200.243: bytes=32 time=964ms TTL=242
@@ -321,7 +321,7 @@ Ping statistics for 204.71.200.243:
   Minimum = 840ms</pre>
 
       <h3>traceroute 輸出範例</h3>
-      <pre>Tracing route to yahoo.com [204.71.200.245]
+      <pre class="code-diagram">Tracing route to yahoo.com [204.71.200.245]
 over a maximum of 30 hops:
 
  1    4 ms   12 ms    8 ms  140.134.37.254
@@ -334,7 +334,7 @@ Trace complete.</pre>
       <h3>時戳請求與回覆（Type 13/14）</h3>
       <div class="layer-card">
         <div class="layer-card-num">32 位元</div>
-        <div class="header-diagram" style="margin:0.75rem 0;">
+        <div class="header-diagram">
 <span class="field">類型 (8)</span>　<span class="field">代碼 (8)</span>　<span class="field">檢驗和 (16)</span>
 <span class="field">識別碼 (16)</span>　　　<span class="field">序列碼 (16)</span>
 <span class="field">原始時戳 (32)</span>
@@ -389,7 +389,7 @@ Trace complete.</pre>
           <li>功能：修正網路資料傳送量，有效控制網路傳輸</li>
           <li>Code 欄位值：0</li>
         </ul>
-        <div class="header-diagram" style="margin:0.75rem 0;">
+        <div class="header-diagram">
 <span class="field">類型 (8)</span>　<span class="field">代碼 (8)</span>　<span class="field">檢驗和 (16)</span>
 <span class="field">未定義 (32)：0</span>
 <span class="note">IP 標頭 + 64 位元的原始資料</span>
@@ -399,12 +399,12 @@ Trace complete.</pre>
       <h3>路徑重新定向（Redirect）— Type 5</h3>
       <div class="layer-card">
         <div class="layer-card-num">錯誤訊息</div>
-        <div class="header-diagram" style="margin:0.75rem 0;">
+        <div class="header-diagram">
 <span class="field">類型 (8)</span>　<span class="field">代碼 (8)</span>　<span class="field">檢驗和 (16)</span>
 <span class="field">Gateway IP 位址 (32)</span>
 <span class="note">IP 標頭 + 64 位元的原始資料</span>
         </div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th>Code</th><th>意義</th></tr>
           <tr><td>0</td><td>因網路變動而更改傳輸路徑</td></tr>
           <tr><td>1</td><td>因主機變動而更改傳輸路徑</td></tr>
@@ -417,7 +417,7 @@ Trace complete.</pre>
       <div class="layer-card">
         <div class="layer-card-num">錯誤訊息</div>
         <div class="layer-card-name">可藉 IP 標頭 TTL 欄位值判斷</div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th>Code</th><th>意義</th></tr>
           <tr><td>0</td><td>因迴圈問題造成逾時傳輸（TTL=0）</td></tr>
           <tr><td>1</td><td>因封包重組超過設定時間而造成逾時傳輸</td></tr>
@@ -427,7 +427,7 @@ Trace complete.</pre>
       <h3>參數問題（Parameter Problem）— Type 12</h3>
       <div class="layer-card">
         <div class="layer-card-num">錯誤訊息</div>
-        <div class="header-diagram" style="margin:0.75rem 0;">
+        <div class="header-diagram">
 <span class="field">類型 (8)</span>　<span class="field">代碼 (8)</span>　<span class="field">檢驗和 (16)</span>
 <span class="field">指標 (8)</span>　<span class="field">未定義 (24)：0</span>
 <span class="note">IP 標頭 + 64 位元的原始資料</span>
@@ -442,7 +442,7 @@ Trace complete.</pre>
       <div class="layer-card">
         <div class="layer-card-num">查詢訊息</div>
         <div class="layer-card-name">向閘道查詢子網路遮罩位址（Subnet Mask）</div>
-        <div class="header-diagram" style="margin:0.75rem 0;">
+        <div class="header-diagram">
 <span class="field">類型 (8)</span>　<span class="field">代碼 (8)</span>　<span class="field">檢驗和 (16)</span>
 <span class="field">識別碼 (16)</span>　　　<span class="field">序列碼 (16)</span>
 <span class="field">子網路遮罩位址 (32)</span>

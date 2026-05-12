@@ -208,6 +208,9 @@ strong { font-weight: 700; color: var(--text); }
   line-height: 1.55;
 }
 .concept-card li:last-child { margin-bottom: 0; }
+.concept-card table {
+  margin-top: 0.5rem;
+}
 .concept-card p:last-child { margin-bottom: 0; }
 
 /* ── Protocol/Header Card ── */
@@ -254,8 +257,15 @@ strong { font-weight: 700; color: var(--text); }
 .layer-card pre {
   margin: 0.75rem 0;
 }
+.layer-card ul {
+  margin: 0.5rem 0 0.5rem 1.25rem;
+}
+.layer-card li {
+  margin-bottom: 0.3rem;
+  line-height: 1.55;
+}
 
-/* ── UDP / TCP 標頭格子元件 ── */
+ /* ── UDP / TCP 標頭格子元件 ── */
 .header-box-grid {
   display: flex;
   gap: 0.5rem;
@@ -518,7 +528,7 @@ pre code {
 .ip-block.ipv4 { background: var(--ipv4-bg); color: var(--ipv4-color); }
 .ip-block.ipv6 { background: var(--ipv6-bg); color: var(--ipv6-color); }
 
-/* ── Header Diagram（CH8/CH9 深色程式碼區塊）── */
+/* ── Header Diagram（CH8/CH9/CH10 深色程式碼區塊）── */
 .header-diagram {
   background: #1e2530;
   color: #c9d1d9;
@@ -527,7 +537,7 @@ pre code {
   font-family: 'Courier New', monospace;
   font-size: 0.8rem;
   line-height: 1.8;
-  margin: 1rem 0;
+  margin: 0.75rem 0;
   overflow-x: auto;
 }
 .header-diagram .field { color: #79c0ff; }
