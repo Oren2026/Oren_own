@@ -1750,3 +1750,267 @@ span.formula {
   color: #6b7280;
   font-size: 0.75rem;
 }
+
+/* ── 尋徑流程圖（CH11）── */
+.routing-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 1rem 0;
+}
+.rf-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  min-height: 40px;
+}
+.rf-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.rf-content {
+  flex: 1;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+}
+.rf-content strong { color: var(--primary); }
+.rf-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-2);
+  font-size: 1rem;
+  padding-left: 0.75rem;
+}
+
+/* ── 尋徑類型彩色分類（CH11）── */
+.routing-type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.rt-item {
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  border: 2px solid;
+}
+.rt-item.static {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+.rt-item.dynamic {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+.rt-item.dv {
+  background: #fffbeb;
+  border-color: #f59e0b;
+}
+.rt-item.ls {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+.rt-item.hybrid {
+  background: #fdf4ff;
+  border-color: #a855f7;
+}
+.rt-name {
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-bottom: 0.3rem;
+}
+.rt-item.static .rt-name { color: #6b7280; }
+.rt-item.dynamic .rt-name { color: #1d4ed8; }
+.rt-item.dv .rt-name { color: #d97706; }
+.rt-item.ls .rt-name { color: #15803d; }
+.rt-item.hybrid .rt-name { color: #7e22ce; }
+.rt-desc { font-size: 0.78rem; color: #6b7280; }
+.rt-example {
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.rt-item.dv .rt-example { color: #d97706; }
+.rt-item.ls .rt-example { color: #15803d; }
+.rt-item.hybrid .rt-example { color: #7e22ce; }
+
+/* ── DV vs LS 對比卡片（CH11）── */
+.dv-ls-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.dv-card, .ls-card {
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 2px solid;
+}
+.dv-card {
+  background: #fffbeb;
+  border-color: #f59e0b;
+}
+.ls-card {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+.dv-card-title, .ls-card-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+.dv-card-title { color: #d97706; }
+.ls-card-title { color: #15803d; }
+.dv-card-prop, .ls-card-prop {
+  display: flex;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  margin-bottom: 0.3rem;
+  align-items: baseline;
+}
+.dv-card-prop { color: #92400e; }
+.ls-card-prop { color: #166534; }
+
+/* ── RIP 定時器時間軸（CH11）── */
+.rip-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  position: relative;
+  padding-left: 1.5rem;
+}
+.rip-timeline::before {
+  content: '';
+  position: absolute;
+  left: 0.35rem;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, #3b82f6 33%, #f59e0b 33% 66%, #ef4444 66%);
+  border-radius: 2px;
+}
+.rip-timer-item {
+  position: relative;
+  font-size: 0.82rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+}
+.rip-timer-item::before {
+  content: '';
+  position: absolute;
+  left: -1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.rip-timer-item.update::before { background: #3b82f6; }
+.rip-timer-item.invalid::before { background: #f59e0b; }
+.rip-timer-item.flush::before { background: #ef4444; }
+.timer-name { font-weight: 700; margin-bottom: 0.1rem; }
+.timer-sec { font-size: 0.78rem; color: var(--muted); }
+
+/* ── 內外尋徑對比（CH11）── */
+.igp-egp-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.igp-card, .egp-card {
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 2px solid;
+}
+.igp-card {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+.egp-card {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+.igp-card-title, .egp-card-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+.igp-card-title { color: #1d4ed8; }
+.egp-card-title { color: #d97706; }
+.igp-card-name, .egp-card-name {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.igp-card-examples, .egp-card-examples {
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.igp-card-examples { color: #1d4ed8; }
+.egp-card-examples { color: #d97706; }
+
+/* ── AS 三大問題彩色分類（CH11）── */
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.problem-card {
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  border: 1.5px solid;
+}
+.problem-card.loop {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+.problem-card.count {
+  background: #fffbeb;
+  border-color: #f59e0b;
+}
+.problem-card.timer {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+.problem-card.delay {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+.problem-card-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+}
+.problem-card.loop .problem-card-title { color: #dc2626; }
+.problem-card.count .problem-card-title { color: #d97706; }
+.problem-card.timer .problem-card-title { color: #1d4ed8; }
+.problem-card.delay .problem-card-title { color: #15803d; }
+.problem-card-solution {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+.problem-card-sub {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 400;
+  margin-top: 0.1rem;
+}
