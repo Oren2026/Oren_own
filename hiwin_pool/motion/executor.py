@@ -30,13 +30,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# 讀取設定
 from config.arm_config import SAFE_Z_HEIGHT as SAFE_Z, Z_MIN, Z_MAX, SAFE_VELOCITY
-from config.strike_config import FORCE_LEVELS
-
-# 驗證 force 範圍
-FORCE_MIN = 1
-FORCE_MAX = 12
+from config.strike_config import FORCE_MIN, FORCE_MAX, linear_interpolate
 
 # 預設起始位置（可依硬體調整）
 DEFAULT_HOME_POS = {"x": 0.0, "y": 300.0, "z": SAFE_Z, "a": 0.0, "b": 0.0, "c": 0.0}
@@ -95,9 +90,9 @@ def execute_strike(strategy_output: Dict[str, Any], hiwin_arm, arduino) -> Dict[
         return result
 
     strike_point = strategy_output["strike_point"]
-    force = int(strategy_output["force"])
+    force = float(strategy_output["force"])
 
-    # 驗證力道範圍
+    # 驗證力道範圍（0.0 ~ 1.0）
     if not (FORCE_MIN <= force <= FORCE_MAX):
         logger.error(f"力道 {force} 超出範圍 ({FORCE_MIN}-{FORCE_MAX})")
         result["error"] = f"Force {force} out of range ({FORCE_MIN}-{FORCE_MAX})"
@@ -174,9 +169,10 @@ def execute_strike(strategy_output: Dict[str, Any], hiwin_arm, arduino) -> Dict[
     # ── Step 3: 擊球 ─────────────────────────────────────────
     step_start = time.time()
     try:
-        logger.info(f"[Step 3/4] 擊球 (force={force})")
-        strike_params = FORCE_LEVELS.get(force, {})
-        hold_time = strike_params.get("hold_time", 0.3)
+        logger.info(f"[Step 3/4] 擊球 (force={force:.2f})")
+        # 線性力道 → 實際物理參數
+        strike_params = linear_interpolate(force)
+        hold_time = strike_params["hold_time"]
 
         # 擊球前短暫等待穩定
         time.sleep(0.05)

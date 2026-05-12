@@ -59,18 +59,18 @@ class ArduinoController:
             print(f"[Arduino] 傳送失敗: {e}")
             return ""
 
-    def trigger_strike(self, force_level):
+    def trigger_strike(self, force: float):
         """
         發送擊球指令
         Args:
-            force_level: int  # 1-12
+            force: float 0.0 ~ 1.0
         Returns:
             dict: {"sent": bool, "complete": bool, "error": str}
         """
-        if not (1 <= force_level <= 12):
-            return {"sent": False, "complete": False, "error": "Invalid force level (need 1-12)"}
+        if not (0.0 <= force <= 1.0):
+            return {"sent": False, "complete": False, "error": f"Invalid force {force} (need 0.0~1.0)"}
 
-        response = self._send(f"S{force_level}")
+        response = self._send(f"S{force:.2f}")
         return {
             "sent": True,
             "complete": "OK" in response or response == "OK",

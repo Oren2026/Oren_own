@@ -169,6 +169,34 @@
         ▶ 採 CRC-32（Cyclic Redundancy Check）方式運算<br>
         ▶ 一般以硬體線路進行處理以免延誤傳輸時程
       </div>
+
+      <h3>Ethernet 2.0 vs IEEE 802.3 訊框差異</h3>
+      <table class="compare-table">
+<thead><tr><th>項目</th><th>Ethernet 2.0</th><th>IEEE 802.3</th></tr></thead>
+<tbody>
+  <tr><td><strong>Preamble</strong></td><td>8 Bytes</td><td>7 Bytes + 1 Byte SFD</td></tr>
+  <tr><td><strong>第三欄位</strong></td><td>EtherType（類型）</td><td>Length（長度）≤1500，後相容 EtherType</td></tr>
+  <tr><td><strong>發展時間</strong></td><td>1980（DIX 1.0）</td><td>1983（IEEE 802.3）</td></tr>
+  <tr><td><strong>實務</strong></td><td>較廣泛使用</td><td>兩者互通</td></tr>
+</tbody>
+</table>
+
+      <h3>訊框大小規範（老師版本）</h3>
+      <div class="highlight-box" style="background:#fff3e0;border-left:4px solid #e65100;">
+        <strong>不含 Preamble 的 frame 總大小：64 ~ 1518 Bytes</strong><br><br>
+        ▶ <strong>最小 64 Bytes</strong>：6 + 6 + 2 + 46 + 4 = 64 Bytes（正好，Data 最少 46 Bytes）<br>
+        &nbsp;&nbsp;&nbsp;目的：確保碰撞偵測有足夠時間（512 位元傳送時間 = slot time）<br>
+        ▶ <strong>最大 1518 Bytes</strong>：6 + 6 + 2 + 1500 + 4 = 1518<br>
+        &nbsp;&nbsp;&nbsp;Data 最大 1500 Bytes（這就是乙太網路 MTU）
+      </div>
+
+      <h3>IPv4 封包大小</h3>
+      <div class="highlight-box" style="background:#e8f5e9;border-left:4px solid #2e7d32;">
+        ▶ <strong>最小</strong>：20 Bytes（只有 IP header，無資料）<br>
+        ▶ <strong>最大</strong>：65,535 Bytes（16-bit Total Length 欄位）<br>
+        ▶ <strong>實務 MTU</strong>：~1500 Bytes（乙太網路限制）<br>
+        &nbsp;&nbsp;&nbsp;→ 最大內容約 1480 Bytes（扣掉 20 Bytes IP header）
+      </div>
     </section>
 
     <!-- 交換式乙太網路 -->

@@ -1,37 +1,53 @@
 # config/strike_config.py
-# 擊球力道參數
-
-# 12 段力道設定（擴充版）
-# velocity: 擊球初速（m/s）
-# pullback: 蓄力距離（mm）— 馬達拉桿後退的距離
-# hold_time: 蓄力時間（秒）
-FORCE_LEVELS = {
-    1:  {"velocity": 0.25, "pullback": 3,  "hold_time": 0.05},
-    2:  {"velocity": 0.50, "pullback": 5,  "hold_time": 0.10},
-    3:  {"velocity": 0.75, "pullback": 8,  "hold_time": 0.15},
-    4:  {"velocity": 1.00, "pullback": 10, "hold_time": 0.20},
-    5:  {"velocity": 1.25, "pullback": 13, "hold_time": 0.25},
-    6:  {"velocity": 1.50, "pullback": 15, "hold_time": 0.30},
-    7:  {"velocity": 1.75, "pullback": 18, "hold_time": 0.35},
-    8:  {"velocity": 2.00, "pullback": 20, "hold_time": 0.40},
-    9:  {"velocity": 2.25, "pullback": 23, "hold_time": 0.45},
-    10: {"velocity": 2.50, "pullback": 25, "hold_time": 0.50},
-    11: {"velocity": 2.75, "pullback": 28, "hold_time": 0.55},
-    12: {"velocity": 3.00, "pullback": 30, "hold_time": 0.60},
-}
-
-# 力道分組（用於 UI 顯示）
-FORCE_GROUPS = {
-    "弱": [1, 2, 3, 4],
-    "中": [5, 6, 7, 8],
-    "強": [9, 10, 11, 12],
-}
+# 擊球力道參數 — 線性力道 0.0 ~ 1.0
 
 # Arduino 序列設定
 # Windows: COM3, COM4 等
 # macOS/Linux: /dev/cu.usbmodem14101
 ARDUINO_COM = "COM3"   # TODO: 確認
 BAUD_RATE = 115200
+
+# 線性力道參數
+# 軟體層輸出 0.0 ~ 1.0，Arduino 端做插值
+FORCE_MIN = 0.0
+FORCE_MAX = 1.0
+
+# 力道對應的實際物理量（Arduino 端參考用）
+# velocity: 擊球初速 (m/s)
+# pullback: 蓄力距離 (mm)
+# hold_time: 蓄力時間 (s)
+LINEAR_FORCE_PARAMS = {
+    "min_velocity": 0.25,   # force=0.0 對應 0.25 m/s
+    "max_velocity": 3.00,   # force=1.0 對應 3.00 m/s
+    "min_pullback": 3,       # force=0.0 對應 3mm
+    "max_pullback": 30,     # force=1.0 對應 30mm
+    "min_hold_time": 0.05,  # force=0.0
+    "max_hold_time": 0.60,  # force=1.0
+}
+
+
+def linear_interpolate(force: float) -> dict:
+    """
+    根據線性力道輸出實際物理參數
+
+    Args:
+        force: float 0.0 ~ 1.0
+    Returns:
+        dict: {"velocity": float, "pullback": float, "hold_time": float}
+    """
+    force = max(FORCE_MIN, min(FORCE_MAX, force))
+
+    p = LINEAR_FORCE_PARAMS
+    velocity = p["min_velocity"] + force * (p["max_velocity"] - p["min_velocity"])
+    pullback = p["min_pullback"] + force * (p["max_pullback"] - p["min_pullback"])
+    hold_time = p["min_hold_time"] + force * (p["max_hold_time"] - p["min_hold_time"])
+
+    return {
+        "velocity": round(velocity, 3),
+        "pullback": round(pullback, 1),
+        "hold_time": round(hold_time, 3),
+    }
+
 
 # 桿弟機構參數
 CUE_LENGTH = 250        # 桿長（mm）

@@ -4,7 +4,7 @@
 import time
 from comm.hiwin_arm import HIWINArm
 from comm.arduino_serial import ArduinoController
-from config.strike_config import FORCE_LEVELS, BALL_SETTLE_TIME
+from config.strike_config import BALL_SETTLE_TIME, FORCE_MIN, FORCE_MAX, linear_interpolate
 
 
 class StrikeController:
@@ -14,29 +14,30 @@ class StrikeController:
         self.arm = arm
         self.arduino = arduino
 
-    def execute(self, force_level, ball_x, ball_y, pocket_x, pocket_y):
+    def execute(self, force: float, ball_x, ball_y, pocket_x, pocket_y):
         """
         執行擊球
 
         Args:
-            force_level: int      # 1-6 力道段
-            ball_x: float         # 球桌面座標 X（mm）
-            ball_y: float         # 球桌面座標 Y（mm）
-            pocket_x: float        # 目標袋口座標 X（mm）
-            pocket_y: float        # 目標袋口座標 Y（mm）
+            force: float       # 0.0 ~ 1.0 線性力道
+            ball_x: float      # 球桌面座標 X（mm）
+            ball_y: float      # 球桌面座標 Y（mm）
+            pocket_x: float    # 目標袋口座標 X（mm）
+            pocket_y: float    # 目標袋口座標 Y（mm）
 
         Returns:
             dict: {
                 "strike_done": bool,
-                "actual_velocity": float,
+                "velocity": float,
+                "pullback": float,
                 "reset_complete": bool,
                 "error": str
             }
         """
-        if force_level not in FORCE_LEVELS:
-            return {"strike_done": False, "actual_velocity": 0, "reset_complete": False, "error": "Invalid force level"}
+        if not (FORCE_MIN <= force <= FORCE_MAX):
+            return {"strike_done": False, "velocity": 0, "pullback": 0, "reset_complete": False, "error": f"Invalid force {force} (need 0.0~1.0)"}
 
-        params = FORCE_LEVELS[force_level]
+        strike_params = linear_interpolate(force)
 
         # 1. 手臂移動到定桿位置（球後方）
         strike_pos = self._calculate_strike_position(ball_x, ball_y, pocket_x, pocket_y)
@@ -45,8 +46,8 @@ class StrikeController:
             return {"strike_done": False, "actual_velocity": 0, "reset_complete": False, "error": result["error"]}
 
         # 2. 觸發蓄力
-        self.arduino.trigger_strike(force_level)
-        time.sleep(params["hold_time"])
+        self.arduino.trigger_strike(force)
+        time.sleep(strike_params["hold_time"])
 
         # 3. 擊球（Arduino 端處理時序）
         # 4. 等待球停止
@@ -57,7 +58,8 @@ class StrikeController:
 
         return {
             "strike_done": True,
-            "actual_velocity": params["velocity"],
+            "velocity": strike_params["velocity"],
+            "pullback": strike_params["pullback"],
             "reset_complete": reset_result["complete"],
             "error": ""
         }

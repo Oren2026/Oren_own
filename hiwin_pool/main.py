@@ -1,102 +1,108 @@
 # main.py
-"""上銀撞球 — 主程式"""
+"""
+上銀撞球 — 主程式（Plugin + EventBus 架構）
+
+職責：
+  - 建立 EventBus
+  - 实例化所有 Plugin 並注册
+  - 執行主循環
+  - 處理quit命令
+
+不再包含任何業務邏輯。
+"""
 
 import sys
 import time
-import cv2
-
-from config import *
-from vision import BallDetector, CueAligner, TableTransform
-from comm import HIWINArm, ArduinoController
-from motion import StrikeController, TrajectoryPlanner, SafetyMonitor
-from analysis import ShotLogger, TrajectoryModel, Calibrator
-from ui import Dashboard, TunePanel
+from event_bus import EventBus
+from vision_plugin import VisionPlugin
+from comm_plugin import CommPlugin
+from motion_plugin import MotionPlugin
+from ui_plugin import UIPlugin
 
 
 def main():
     print("=== 上銀撞球程式啟動 ===\n")
 
-    # 初始化元件
-    print("[1/5] 初始化視覺模組...")
-    ball_detector = BallDetector()
-    cue_aligner = CueAligner()
-    table_transform = TableTransform()
-    print("  完成\n")
+    # 1. 建立 EventBus
+    bus = EventBus()
 
-    print("[2/5] 初始化通訊模組...")
-    arm = HIWINArm()
-    arduino = ArduinoController()
+    # 2. 实例化所有 Plugin（被動註冊）
+    plugins = [
+        ("vision", VisionPlugin(bus, camera_id=0)),
+        ("comm",   CommPlugin(bus)),
+        ("motion", MotionPlugin(bus)),
+        ("ui",     UIPlugin(bus)),
+    ]
 
-    # 嘗試連線（失敗不影響啟動）
-    if arm.connect():
-        print("  手臂連線成功")
-    else:
-        print("  手臂連線失敗（確認 IP 設定）")
+    # 3. 向 bus 註冊每個 plugin
+    print("[Setup] 注册 Plugin 到 EventBus...")
+    for name, plugin in plugins:
+        plugin.register(bus)
+        print(f"  - {name}: ✓")
 
-    if arduino.connect():
-        print("  Arduino 連線成功")
-    else:
-        print("  Arduino 連線失敗（確認 COM port）")
-    print()
+    # 4. 初始化每個 plugin
+    print("\n[Init] 初始化 Plugin...")
+    failed = []
+    for name, plugin in plugins:
+        if not plugin.init():
+            failed.append(name)
+            print(f"  - {name}: ✗ 初始化失敗")
+        else:
+            print(f"  - {name}: ✓")
 
-    print("[3/5] 初始化運動模組...")
-    strike_ctrl = StrikeController(arm, arduino)
-    planner = TrajectoryPlanner()
-    safety = SafetyMonitor(arm)
-    print("  完成\n")
+    if failed:
+        print(f"\n!!! 以下 Plugin 初始化失敗: {failed}")
+        print("    程式將繼續運行（取決於 failed 模組是否關鍵）")
 
-    print("[4/5] 初始化分析模組...")
-    logger = ShotLogger()
-    trajectory_model = TrajectoryModel()
-    calibrator = Calibrator(trajectory_model)
-    print("  完成\n")
+    # 5. 啟動所有 plugin
+    print("\n[Start] 啟動主循環...")
+    for name, plugin in plugins:
+        plugin.start()
 
-    print("[5/5] 初始化 UI...")
-    dashboard = Dashboard()
-    tune_panel = TunePanel()
-    print("  完成\n")
+    print("\n執行中，按 Q 結束\n")
 
-    #  webcam 測試
-    print("開啟 webcam 測試（按 q 結束）...")
-    cap = cv2.VideoCapture(CAM_GLOBAL)
-    
-    shot_count = 0
-
+    # 6. 主循環
     try:
         while True:
-            ret, frame = cap.read()
-            if not ret:
-                print(" webcam 讀取失敗")
+            # 6a. UI 先更新（接收按鍵）
+            ui = next((p for n, p in plugins if n == "ui"), None)
+            if ui:
+                ui.update()
+
+            # 6b. 檢查 quit 命令
+            # （實際由 UI 的按鍵觸發，這裡做最後把關）
+            if ui and not ui.is_running:
+                print("[Main] 收到 quit 命令")
                 break
 
-            # 球偵測
-            ball_info = ball_detector.detect(frame)
-            
-            # 更新狀態
-            status = {
-                "ball_found": ball_info["found"],
-                "ball_x": ball_info["ball_x"],
-                "ball_y": ball_info["ball_y"],
-                "arm_position": arm.get_position(),
-                "arduino_ready": arduino.connected,
-                "force_level": tune_panel.current_force
-            }
+            # 6c. Vision 更新（讀 webcam，發佈 frame）
+            vision = next((n, p) for n, p in plugins if n == "vision")
+            _, vision_plugin = vision
+            vision_plugin.update()
 
-            # 顯示 webcam + 狀態疊加
-            dashboard.show(status)
+            # 6d. Motion / Comm 在被事件觸發時被動更新
+            # （目前架構下，update() 是 stub，
+            #   真實邏輯在 on_event() 裡，Bus 自動分派）
+            for name, plugin in plugins:
+                if name not in ("vision", "ui"):
+                    plugin.update()
 
-            key = cv2.waitKey(1) & 0xFF
-            if key == ord('q'):
-                print("使用者按下 q，結束")
-                break
-            elif key == ord('t'):
-                tune_panel.select_force_level()
+            # 小延遲，防止過度佔用 CPU
+            time.sleep(0.001)
+
+    except KeyboardInterrupt:
+        print("\n[Main] 收到 Ctrl+C")
 
     finally:
-        cap.release()
-        cv2.destroyAllWindows()
-        arm.disconnect()
-        arduino.disconnect()
+        # 7. 關閉所有 plugin（倒序）
+        print("\n[Shutdown] 關閉所有 Plugin...")
+        for name, plugin in reversed(plugins):
+            try:
+                plugin.shutdown()
+                print(f"  - {name}: ✓")
+            except Exception as e:
+                print(f"  - {name}: ✗ {e}")
+
         print("\n程式結束")
 
 
