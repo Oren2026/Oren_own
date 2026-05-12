@@ -182,7 +182,7 @@
 </table>
 
       <h3>訊框大小規範（老師版本）</h3>
-      <div class="highlight-box" style="background:#fff3e0;border-left:4px solid #e65100;">
+      <div class="highlight-box">
         <strong>不含 Preamble 的 frame 總大小：64 ~ 1518 Bytes</strong><br><br>
         ▶ <strong>最小 64 Bytes</strong>：6 + 6 + 2 + 46 + 4 = 64 Bytes（正好，Data 最少 46 Bytes）<br>
         &nbsp;&nbsp;&nbsp;目的：確保碰撞偵測有足夠時間（512 位元傳送時間 = slot time）<br>
@@ -190,12 +190,20 @@
         &nbsp;&nbsp;&nbsp;Data 最大 1500 Bytes（這就是乙太網路 MTU）
       </div>
 
-      <h3>IPv4 封包大小</h3>
-      <div class="highlight-box" style="background:#e8f5e9;border-left:4px solid #2e7d32;">
-        ▶ <strong>最小</strong>：20 Bytes（只有 IP header，無資料）<br>
-        ▶ <strong>最大</strong>：65,535 Bytes（16-bit Total Length 欄位）<br>
-        ▶ <strong>實務 MTU</strong>：~1500 Bytes（乙太網路限制）<br>
-        &nbsp;&nbsp;&nbsp;→ 最大內容約 1480 Bytes（扣掉 20 Bytes IP header）
+      <h3>IPv4 vs IPv6 封包大小</h3>
+      <table class="compare-table">
+<thead><tr><th>項目</th><th>IPv4</th><th>IPv6</th></tr></thead>
+<tbody>
+  <tr><td><strong>Header 大小</strong></td><td>最小 20 Bytes（無 options）</td><td>固定 40 Bytes</td></tr>
+  <tr><td><strong>最大封包</strong></td><td>65,535 Bytes（16-bit Total Length）</td><td>65,535 Bytes（16-bit Payload Length）</td></tr>
+  <tr><td><strong>實務 MTU</strong></td><td>~1500 Bytes</td><td>~1500 Bytes（受乙太網路限制）</td></tr>
+  <tr><td><strong>最小內容</strong></td><td>46 Bytes（配合 CSMA/CD）</td><td>無嚴格要求（header 已 40B）</td></tr>
+</tbody>
+</table>
+      <div class="highlight-box">
+        <strong>為何 IPv4 有 46 Bytes 最小內容限制？</strong><br>
+        ▶ IPv4 的 46 Bytes 最小內容是為了配合 CSMA/CD 碰撞偵測（512 位元傳送時間）<br>
+        ▶ IPv6 設計時已不需要相容古老硬體限制，因此無此要求
       </div>
     </section>
 
