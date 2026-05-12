@@ -659,6 +659,8 @@
   // INPUT
   // ─────────────────────────────────────────────
   let touchStartX = 0, touchStartY = 0;
+  let touchActive = false;
+  const SWIPE_THRESHOLD = 10; // pixels to register a swipe
   const DIR_MAP = {
     'up':    { dx: 0, dy: -1, idx: 3 },
     'down':  { dx: 0, dy:  1, idx: 1 },
@@ -676,7 +678,7 @@
   function handleSwipe(dx, dy) {
     if (state !== 'playing') return;
     const absX = Math.abs(dx), absY = Math.abs(dy);
-    if (absX < 10 && absY < 10) return; // too small
+    if (absX < SWIPE_THRESHOLD && absY < SWIPE_THRESHOLD) return; // too small
 
     if (absX > absY) {
       changeDir(dx > 0 ? 0 : 2); // right : left
@@ -689,13 +691,27 @@
     e.preventDefault();
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
+    touchActive = true;
+  }, {passive: false});
+
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (!touchActive) return;
+    const dx = e.touches[0].clientX - touchStartX;
+    const dy = e.touches[0].clientY - touchStartY;
+    handleSwipe(dx, dy);
+    // Reset origin so next move is relative to current position
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
   }, {passive: false});
 
   canvas.addEventListener('touchend', e => {
     e.preventDefault();
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    const dy = e.changedTouches[0].clientY - touchStartY;
-    handleSwipe(dx, dy);
+    touchActive = false;
+  }, {passive: false});
+
+  canvas.addEventListener('touchcancel', e => {
+    touchActive = false;
   }, {passive: false});
 
   // Mouse for desktop testing
