@@ -893,6 +893,284 @@ span.formula {
   .dns-flow { flex-direction: column; }
   .dns-arrow { transform: rotate(90deg); }
   .and-visual { font-size: 0.78rem; }
+  .subsystem-grid { grid-template-columns: 1fr 1fr; }
+  .mdf-idf-diagram { flex-direction: column; }
+  .backbone-type-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ══════════════════════════════════════════
+   CH6 — 網路規劃設計 專用元件
+   ══════════════════════════════════════════ */
+
+/* ── 六大子系統視覺化卡片（.subsystem-grid）── */
+.subsystem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 1.25rem 0;
+}
+.subsystem-card {
+  border-radius: var(--radius);
+  padding: 14px 12px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--card-shadow);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.subsystem-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.subsystem-card.sys1::before { background: #316cf4; }
+.subsystem-card.sys2::before { background: #0891b2; }
+.subsystem-card.sys3::before { background: #059669; }
+.subsystem-card.sys4::before { background: #f59e0b; }
+.subsystem-card.sys5::before { background: #7c3aed; }
+.subsystem-card.sys6::before { background: #dc2626; }
+.subsystem-icon {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+  display: block;
+}
+.subsystem-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.subsystem-sub {
+  font-size: 0.72rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.subsystem-desc {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* ── 纜線長度比例圖（.cable-length-bar）── */
+.cable-length-bar {
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 48px;
+  border: 1px solid var(--border);
+  margin: 1rem 0;
+}
+.cable-segment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  line-height: 1.3;
+}
+.cable-segment span { font-weight: 400; font-size: 0.65rem; opacity: 0.85; display: block; }
+.cable-segment.horizontal { background: #316cf4; flex: 90; }
+.cable-segment.work { background: #7bb5f0; flex: 3; }
+.cable-segment.patch { background: #5b9fe8; flex: 3; }
+.cable-total {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent-text);
+  padding: 0.4rem;
+  background: var(--accent-dim);
+  border-radius: 6px;
+}
+
+/* ── MDF/IDF 架構圖（.mdf-idf-diagram）── */
+.mdf-idf-diagram {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+  padding: 4px 0;
+}
+.mdf-box {
+  background: linear-gradient(135deg, #dbeafe, #eff6ff);
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 12px 16px;
+  text-align: center;
+  min-width: 120px;
+  box-shadow: var(--card-shadow);
+}
+.mdf-box-name { font-size: 0.95rem; font-weight: 800; color: var(--accent); margin-bottom: 2px; }
+.mdf-box-sub { font-size: 0.72rem; color: var(--muted-2); font-weight: 600; }
+.mdf-box-desc { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+.idf-box {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+  min-width: 100px;
+  box-shadow: var(--card-shadow);
+}
+.idf-box-name { font-size: 0.9rem; font-weight: 700; color: #0891b2; margin-bottom: 2px; }
+.idf-box-sub { font-size: 0.7rem; color: var(--muted-2); font-weight: 600; }
+.idf-box-desc { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+.diagram-arrow {
+  font-size: 1.4rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.diagram-label {
+  font-size: 0.72rem;
+  color: var(--muted-2);
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+.diagram-label.vertical { writing-mode: vertical-lr; transform: rotate(180deg); }
+
+/* ── Rack Unit 視覺圖（.rack-visual）── */
+.rack-visual {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0.75rem 0;
+  font-family: 'Courier New', monospace;
+}
+.rack-slot {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--muted-2);
+}
+.rack-slot.filled { background: var(--accent-dim); border-color: var(--accent); color: var(--accent-text); }
+.rack-label { font-size: 0.8rem; color: var(--muted); }
+.rack-label strong { color: var(--accent); }
+
+/* ── 骨幹佈線四大型態（.backbone-type-grid）── */
+.backbone-type-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 1rem 0;
+}
+.backbone-type-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+}
+.backbone-type-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+.backbone-type-text {}
+.backbone-type-title { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.backbone-type-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+
+/* ── 規劃流程視覺圖（.planning-flow）── */
+.planning-flow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 1rem 0;
+}
+.planning-step {
+  text-align: center;
+  padding: 14px 10px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  position: relative;
+}
+.planning-step::after {
+  content: '→';
+  position: absolute;
+  right: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+.planning-step:last-child::after { display: none; }
+.planning-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+}
+.planning-step-icon { font-size: 1.6rem; display: block; margin-bottom: 6px; }
+.planning-step-title { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.planning-step-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+
+/* ── 校園網路架構圖（.campus-network-diagram）── */
+.campus-network-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 1rem 0;
+  padding: 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+}
+.campus-layer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.campus-layer-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 50px;
+}
+.campus-node {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+}
+.campus-node.pop { background: var(--accent-dim); color: var(--accent-text); border: 1.5px solid var(--accent); }
+.campus-node.mdf { background: #dbeafe; color: #1e40af; border: 1.5px solid #316cf4; }
+.campus-node.idf { background: #ecfeff; color: #0e7490; border: 1.5px solid #0e7490; }
+.campus-node.work { background: var(--surface); color: var(--muted); border: 1.5px solid var(--border); }
+.campus-connector {
+  width: 2px;
+  height: 20px;
+  background: var(--border);
+  margin-left: 24px;
 }
 
 

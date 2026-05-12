@@ -14,7 +14,8 @@
     <div class="sidebar-title">資訊網路</div>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section-label">所有章節</div>
-    <div id="sidebar-links"></div>  </nav>
+    <div id="sidebar-links"></div>
+  </nav>
 
   <!-- Main Content -->
   <main class="content">
@@ -23,271 +24,482 @@
       <div class="note-date">2026 年 05 月 06 日</div>
       <h1 class="note-title">CH6 — 網路規劃設計</h1>
       <div class="note-tags">
-        <span class="note-tag">CH6</span>
         <span class="note-tag">TIA/EIA</span>
         <span class="note-tag">結構化佈線</span>
         <span class="note-tag">MDF/IDF</span>
         <span class="note-tag">骨幹佈線</span>
+        <span class="note-tag">Cat 5e/6</span>
+        <span class="note-tag">19吋機櫃</span>
       </div>
     </header>
 
-    <!-- 大綱 -->
+    <!-- ══════════════════════════════════════
+         大綱（TOC）
+    ══════════════════════════════════════ -->
     <h2>📋 大綱</h2>
     <div class="toc-grid">
       <div class="toc-item"><span class="toc-num">1</span><span>🔷 前言 — 「架設」→「規劃」的延伸學習</span></div>
-      <div class="toc-item"><span class="toc-num">2</span><span>🏗️ TIA/EIA 結構化佈線標準 — 六大子系統：出入口、機房、骨幹、配線、水平纜線、工作區</span></div>
-      <div class="toc-item"><span class="toc-num">3</span><span>📏 水平佈線規範 — 90m / 3m / 6m 規範、纜線管理</span></div>
-      <div class="toc-item"><span class="toc-num">4</span><span>🗄️ 機房室佈置與規範 — MDF、IDF、UPS、發電系統、配置選擇</span></div>
-      <div class="toc-item"><span class="toc-num">5</span><span>🔗 骨幹佈線規範 — 垂直/水平、集中式/分散式、接地、防火</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>🏗️ TIA/EIA 結構化佈線標準 — 六大子系統</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>📏 水平佈線規範 — 90m / 3m / 6m 纜線限制</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>🗄️ 機房室佈置與規範 — MDF、IDF、UPS、發電系統</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>🔗 骨幹佈線規範 — 垂直/水平、集中式/分散式</span></div>
       <div class="toc-item"><span class="toc-num">6</span><span>📐 網路規劃步驟 — 研究→配備選擇→施工→管理</span></div>
     </div>
 
-    <!-- 前言 -->
+    <!-- ══════════════════════════════════════
+         1｜前言
+    ══════════════════════════════════════ -->
     <section id="intro">
       <h2>🔷 1｜前言</h2>
-      <div class="highlight-box">第五章「架設」的延伸，進入第六章「規劃」的學習。</div>
+      <div class="highlight-box">
+        第五章「架設」的延伸，進入第六章「規劃」的學習。<br>
+        <strong>從「怎麼做」升級到「為什麼這樣做」</strong> — 了解TIA/EIA 標準背後的原理，才能設計出符合國際規範的網路架構。
+      </div>
+
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 為什麼要有標準？</div>
+        <p>沒有統一的標準時，每家廠商、每個師傅都用自己的方式架設網路。一旦需要擴充、維修、或遷移到新大樓，就會面臨「線路看不懂、資料找不到」的困境。TIA/EIA 568 就是為了讓網路建設變成<strong>可預測、可複製、可擴充</strong>的工程。</p>
+      </div>
     </section>
 
-    <!-- TIA/EIA 結構化佈線標準 -->
+    <!-- ══════════════════════════════════════
+         2｜TIA/EIA 結構化佈線標準
+    ══════════════════════════════════════ -->
     <section id="standard">
       <h2>🏗️ 2｜TIA/EIA 結構化佈線標準</h2>
 
-      <h3>六大子系統</h3>
-      <div class="two-col-grid">
-        <div class="concept-card">
-          <div class="concept-card-title">1｜出入口設施</div>
-          <div class="concept-card-desc">Entrance Facilities：外部配線與內部主幹間連線，POD 連接點</div>
+      <div class="concept-card">
+        <div class="concept-card-title">什麼是 TIA/EIA？</div>
+        <ul>
+          <li><strong>TIA</strong>（Telecommunications Industry Association）：美國電信工業協會，制定硬體標準</li>
+          <li><strong>EIA</strong>（Electronic Industries Alliance）：美國電子工業協會，負責整體標準框架</li>
+          <li>現今 TIA 與 EIA 已合併為 <strong>ANSI/TIA</strong> 568 系列標準</li>
+          <li>台灣則沿用 CNS 國家標準對應 ISO/IEC 11801 國際標準</li>
+        </ul>
+      </div>
+
+      <!-- 六大子系統視覺化卡片 -->
+      <div class="subsystem-grid">
+        <div class="subsystem-card sys1">
+          <span class="subsystem-icon">🚪</span>
+          <div class="subsystem-title">出入口設施</div>
+          <div class="subsystem-sub">Entrance Facilities</div>
+          <div class="subsystem-desc">外部配線與內部主幹間的連線樞紐，包含 POP 連接點</div>
         </div>
-        <div class="concept-card">
-          <div class="concept-card-title">2｜機房室</div>
-          <div class="concept-card-desc">Equipment Room：機架櫃、數據機、交換器、路由器所在</div>
+        <div class="subsystem-card sys2">
+          <span class="subsystem-icon">🗄️</span>
+          <div class="subsystem-title">機房室</div>
+          <div class="subsystem-sub">Equipment Room</div>
+          <div class="subsystem-desc">機架櫃、數據機、交換器、路由器所在的核心區域</div>
         </div>
-        <div class="concept-card">
-          <div class="concept-card-title">3｜骨幹纜線</div>
-          <div class="concept-card-desc">Backbone Cabling：不同建築物間、不同樓層間垂直纜線</div>
+        <div class="subsystem-card sys3">
+          <span class="subsystem-icon">🔗</span>
+          <div class="subsystem-title">骨幹纜線</div>
+          <div class="subsystem-sub">Backbone Cabling</div>
+          <div class="subsystem-desc">不同建築物間、不同樓層間的垂直纜線傳輸骨幹</div>
         </div>
-        <div class="concept-card">
-          <div class="concept-card-title">4｜配線機櫃</div>
-          <div class="concept-card-desc">Telecom Closet：區間服務連接中心，配線盤、集線器等</div>
+        <div class="subsystem-card sys4">
+          <span class="subsystem-icon">📦</span>
+          <div class="subsystem-title">配線機櫃</div>
+          <div class="subsystem-sub">Telecom Closet</div>
+          <div class="subsystem-desc">區間服務連接中心，放置配線盤與集線設備</div>
         </div>
-        <div class="concept-card">
-          <div class="concept-card-title">5｜水平纜線</div>
-          <div class="concept-card-desc">Horizontal Cabling：配線盤到資訊插座間的連接纜線</div>
+        <div class="subsystem-card sys5">
+          <span class="subsystem-icon">↔️</span>
+          <div class="subsystem-title">水平纜線</div>
+          <div class="subsystem-sub">Horizontal Cabling</div>
+          <div class="subsystem-desc">從配線盤到資訊插座的水平區段，是佈線總長度最長的部分</div>
         </div>
-        <div class="concept-card">
-          <div class="concept-card-title">6｜工作區間</div>
-          <div class="concept-card-desc">Work Area：資訊插座到工作電腦平台間連線</div>
+        <div class="subsystem-card sys6">
+          <span class="subsystem-icon">💻</span>
+          <div class="subsystem-title">工作區間</div>
+          <div class="subsystem-sub">Work Area</div>
+          <div class="subsystem-desc">資訊插座到工作電腦之間的最后階段連線</div>
         </div>
       </div>
 
-      <h3>1｜出入口設施 (Entrance Facilities)</h3>
+      <h3>出入口設施（Entrance Facilities）</h3>
       <div class="concept-card">
         <div class="concept-card-title">🚪 POP 連接點</div>
         <ul>
-          <li>外部配線與內部主幹間的連線</li>
-          <li>電信公司的紅線連接點</li>
-          <li>POP (Point of Presence)：整體連接架構的重心</li>
+          <li><strong>POP（Point of Presence）</strong>：電信公司與客戶網路的交界點</li>
+          <li>外部網路（如中華電信 HiLink）光纖入線到此</li>
+          <li>需考虑防雷擊、防突波保護</li>
+          <li>通常位於建築物的最底層或地下室</li>
         </ul>
       </div>
 
-      <h3>2｜機房室 (Equipment Room)</h3>
+      <h3>機房室（Equipment Room）</h3>
       <div class="concept-card">
-        <div class="concept-card-title">🗄️ 機房設備</div>
+        <div class="concept-card-title">🗄️ 機房設備配置</div>
         <ul>
-          <li>重要設備：機架櫃、數據機、交換器、路由器等</li>
-          <li>機房室大小依服務區間大小而異，小型建築物一棟樓只配備一個機房</li>
+          <li>19 吋標準機架櫃（寬度統一，支援各種設備）</li>
+          <li>高度以 <strong>1U = 1.75 吋</strong> 為單位計算</li>
+          <li>1U 空間 = 標準機架上一個設備插槽</li>
+          <li>機房大小依服務區間大小而異，小型建築物一棟樓只配備一個機房</li>
         </ul>
       </div>
 
-      <h3>3｜骨幹纜線 (Backbone Cabling)</h3>
+      <!-- Rack Unit 視覺圖 -->
+      <div class="rack-visual">
+        <div class="rack-label"><strong>1U</strong> = 1.75 吋</div>
+        <div class="rack-slot filled">1U</div>
+        <div class="rack-slot filled">1U</div>
+        <div class="rack-slot filled">1U</div>
+        <div class="rack-slot">1U</div>
+        <div class="rack-slot">1U</div>
+        <div class="rack-slot">1U</div>
+        <div class="rack-slot filled">1U</div>
+        <div class="rack-slot">1U</div>
+        <div class="rack-slot filled">1U</div>
+        <div class="rack-label">← 已安裝設備　未安裝插槽 →</div>
+      </div>
+
+      <h3>骨幹纜線（Backbone Cabling）</h3>
       <div class="concept-card">
-        <div class="concept-card-title">🔗 垂直纜線</div>
+        <div class="concept-card-title">🔗 垂直纜線設計原則</div>
         <ul>
-          <li>又稱「垂直纜線」(Vertical Cabling)</li>
-          <li>用於：入口設施與機房室、不同建築物間、不同樓層間</li>
-          <li>屬於重要的連線架構，一般採用較好材質纜線</li>
+          <li>又稱「垂直纜線」（Vertical Cabling），連接不同樓層的骨幹</li>
+          <li>屬於重要的連線架構，一般採用較好的材質（光纖優先）</li>
+          <li>需考慮未來 10–15 年的頻寬需求</li>
         </ul>
       </div>
 
-      <h3>4｜配線機架櫃</h3>
-      <div class="concept-card">
-        <div class="concept-card-title">📦 19 吋標準</div>
-        <ul>
-          <li>1940 年代後，機櫃常採用 19 吋寬度作標準</li>
-          <li>高度以 1.75 吋為一個單位 (1U)</li>
-          <li>常見設備：配線盤 (Patch Panel)、集線器等</li>
-        </ul>
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 19 吋標準從何而來？</div>
+        <p>19 吋機櫃標準起源於 1940 年代，當時 Bell Labs 與 AT&T 為統一電話交換設備的機架尺寸而制訂。這是全球最廣泛採用的機櫃標準，讓不同廠商的設備可以安裝在同一個機櫃中，業界代代相傳至今。</p>
       </div>
 
-      <h3>5｜水平纜線 (Horizontal Cabling)</h3>
-      <p>配線盤到資訊插座間的連接纜線。打線工具用於切線、切斷、切齊。</p>
-
-      <h3>6｜工作區間 (Work Area)</h3>
-      <div class="concept-card">
-        <div class="concept-card-title">💻 工作區間</div>
-        <ul>
-          <li>資訊插座到工作電腦平台間連線</li>
-          <li>可運用現成纜線連接，省去製作纜線的工作</li>
-        </ul>
-      </div>
-
-      <h3>結構化設計規劃的優點</h3>
-      <div class="concept-card">
-        <div class="concept-card-title">✅ 結構化佈線的價值</div>
-        <ul>
-          <li>為每個部分作明確的定義</li>
-          <li>對整體架構設計相當重要</li>
-          <li>提供規劃一個依循的準則</li>
-        </ul>
+      <h3>結構化設計的優點</h3>
+      <div class="step-flow">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>標準化</strong> — 為每個部分作明確的定義，跨廠商設備可互通</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>模組化</strong> — 各子系統相對獨立，可單獨升級不影響整體</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>文件化</strong> — 提供規劃與維護一個依循的準則</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>擴充性</strong> — 新增設備或調整時，無需重新佈線</div>
+        </div>
       </div>
     </section>
 
-    <!-- 水平佈線規範 -->
+    <!-- ══════════════════════════════════════
+         3｜水平佈線規範
+    ══════════════════════════════════════ -->
     <section id="horizontal">
-      <h2>📏 1｜水平佈線規範</h2>
+      <h2>📏 3｜水平佈線規範</h2>
 
-      <h3>纜線架設方式</h3>
       <div class="concept-card">
-        <div class="concept-card-title">🔧 TIA/EIA 90m / 3m / 6m 規範</div>
-        <p>直接由工作電腦平台連接一條纜線與集線器相連，是比較偷懶的方式。依循 TIA/EIA 規範需區隔成三個部分：</p>
-        <ul>
-          <li><strong>水平纜線：</strong>不超過 90 公尺</li>
-          <li><strong>工作區間：</strong>不超過 3 公尺</li>
-          <li><strong>合計（水平+工作區間+電信連接）：</strong>不超過 6 公尺</li>
-        </ul>
+        <div class="concept-card-title">🔧 TIA/EIA 568 纜線長度限制</div>
+        <p>依循 TIA/EIA 規範，水平佈線系統（HCS）從工作區域到配線盤的整體路徑分為三段，總長度不得超過 <strong>100 公尺</strong>。</p>
+      </div>
+
+      <!-- 纜線長度比例視覺圖 -->
+      <div class="cable-length-bar">
+        <div class="cable-segment horizontal">水平纜線<br><span>≤ 90m</span></div>
+        <div class="cable-segment work">工作區間<br><span>≤ 3m</span></div>
+        <div class="cable-segment patch">電信跳線<br><span>≤ 6m</span></div>
+      </div>
+      <div class="cable-total">🔑 關鍵限制：水平纜線（90m）＋ 工作區間（3m）＋ 電信連接（6m） ≤ 100m</div>
+
+      <div class="two-col-grid">
+        <div class="concept-card">
+          <div class="concept-card-title">⚠️ 不符合規範的做法</div>
+          <div class="concept-card-desc">
+            直接由工作電腦平台連接一條纜線與集線器（或交換器）相連，沒有經過配線盤管理。<br>
+            問題：無法追蹤纜線歸屬、無法快速排除故障、擴充困難。
+          </div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-card-title">✅ 符合規範的做法</div>
+          <div class="concept-card-desc">
+            水平纜線（90m）→ 配線盤 → 工作區間跳線（3m）。<br>
+            每一條纜線都有明確的起點與終點記錄，所有連接皆可追溯。
+          </div>
+        </div>
       </div>
 
       <h3>纜線管理</h3>
       <div class="concept-card">
-        <div class="concept-card-title">🏷️ 纜線標記與管理</div>
+        <div class="concept-card-title">🏷️ 纜線標記系統</div>
         <ul>
-          <li>小架構可運用連接頭護套顏色做管理</li>
-          <li>以合宜的連接點編號作標記（房間號碼等具意義序號較理想）</li>
+          <li><strong>小架構</strong>：運用連接頭護套顏色做管理（每種顏色代表一種用途）</li>
+          <li><strong>大型架構</strong>：以合宜的連接點編號作標記（房間號碼 + 連接埠編號）</li>
+          <li>例：<code>B1-F3-IDF02-P07</code> = 建築物1 / 3樓 / 2號IDF / 連接埠07</li>
+          <li>每一條纜線的兩端都必須有相同編號的標籤</li>
         </ul>
+      </div>
+
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 為何水平纜線限制 90m 而不是 100m？</div>
+        <p>因為從配線盤到工作區的跳線（patch cord）本身也佔長度。標準規定：<strong>水平纜線本體不超過 90m</strong>，加上兩端各 5m 的跳線，總長度恰好等於 100m。這是留給設備端和用戶端跳線的彈性空間。</p>
+      </div>
+
+      <h3>纜線類型比較</h3>
+      <table class="compare-table">
+        <thead><tr><th>類型</th><th>最大頻寬</th><th>傳輸距離</th><th>價格</th><th>適用場景</th></tr></thead>
+        <tbody>
+          <tr><td>Cat 5e</td><td>1 Gbps</td><td>100m</td><td>低</td><td>一般辦公室（目前最少用）</td></tr>
+          <tr><td>Cat 6</td><td>10 Gbps</td><td>55m（10G）</td><td>中</td><td>中小型網路、骨幹</td></tr>
+          <tr><td>Cat 6a</td><td>10 Gbps</td><td>100m</td><td>中高</td><td>高速園區、資料中心</td></tr>
+          <tr><td>Cat 7/7a</td><td>25–40 Gbps</td><td>100m</td><td>高</td><td>資料中心、伺服器機房</td></tr>
+          <tr><td>Cat 8</td><td>40 Gbps</td><td>30m</td><td>很高</td><td>資料中心機櫃內部</td></tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>實務建議</strong><br>
+        新建案從 Cat 6a 起跳（10Gbps 需求是基本門檻）。Cat 5e 已不建議使用——它的 1Gbps 在現代辦公室已經不夠用，且與 Cat 6a 價差僅約 10–15%。
       </div>
     </section>
 
-    <!-- 機房室佈置與規範 -->
+    <!-- ══════════════════════════════════════
+         4｜機房室佈置與規範
+    ══════════════════════════════════════ -->
     <section id="dataroom">
-      <h2>🗄️ 2｜機房室的佈置與規範</h2>
+      <h2>🗄️ 4｜機房室的佈置與規範</h2>
 
-      <h3>機房設備</h3>
-      <div class="concept-card">
-        <div class="concept-card-title">⚙️ 機房必備元件</div>
-        <ul>
-          <li>網路通訊器材、機架櫃</li>
-          <li>不斷電系統 (UPS；Uninterruptible Power Supply)</li>
-          <li>配線架、集線器、交換器、路由器</li>
-          <li>必要的管理文件與資料</li>
-        </ul>
-      </div>
-
-      <h3>MDF 與 IDF</h3>
-      <div class="layer-card">
-        <div class="layer-card-num">主機房與中介機房</div>
-        <div class="layer-card-name">MDF 與 IDF 的差異</div>
-        <div class="layer-card-desc">
-          <ul>
-            <li><strong>MDF</strong> (Main Distribution Facility)：主機房室</li>
-            <li><strong>IDF</strong> (Intermediate Distribution Facility)：中介機房室</li>
-          </ul>
+      <h3>MDF 與 IDF 架構圖</h3>
+      <!-- MDF/IDF 架構圖 -->
+      <div class="mdf-idf-diagram">
+        <div class="mdf-box">
+          <div class="mdf-box-name">POP / MDF</div>
+          <div class="mdf-box-sub">主機房</div>
+          <div class="mdf-box-desc">電信進線、骨幹交換、核心路由</div>
+        </div>
+        <div class="diagram-arrow">→</div>
+        <div class="diagram-label">垂直骨幹<br>光纖</div>
+        <div class="diagram-arrow">→</div>
+        <div class="idf-box">
+          <div class="idf-box-name">IDF #1</div>
+          <div class="idf-box-sub">1F 中介機房</div>
+          <div class="idf-box-desc">水平纜線匯集</div>
+        </div>
+        <div class="diagram-arrow">→</div>
+        <div class="idf-box">
+          <div class="idf-box-name">IDF #2</div>
+          <div class="idf-box-sub">2F 中介機房</div>
+          <div class="idf-box-desc">水平纜線匯集</div>
+        </div>
+        <div class="diagram-arrow">→</div>
+        <div class="idf-box">
+          <div class="idf-box-name">IDF #3</div>
+          <div class="idf-box-sub">3F 中介機房</div>
+          <div class="idf-box-desc">水平纜線匯集</div>
         </div>
       </div>
 
-      <h3>主機房室 (MDF) 位置選擇</h3>
+      <div class="two-col-grid">
+        <div class="concept-card">
+          <div class="concept-card-title">🏢 MDF（Main Distribution Facility）</div>
+          <div class="concept-card-desc">
+            <strong>主機房</strong>，通常只有一個。<br>
+            功能：電信公司進線點、骨幹交換核心、匯聚所有 IDF 的垂直纜線。<br>
+            通常位於建築物較低樓層，靠近 POP 入口。
+          </div>
+        </div>
+        <div class="concept-card">
+          <div class="concept-card-title">📦 IDF（Intermediate Distribution Facility）</div>
+          <div class="concept-card-desc">
+            <strong>中介機房</strong>，每個樓層至少一個。<br>
+            功能：匯聚該樓層所有水平纜線，連接該樓層所有設備。<br>
+            規模參考：每 <strong>1000 平方公尺</strong> 設置一間 IDF。
+          </div>
+        </div>
+      </div>
+
+      <h3>MDF 位置選擇原則</h3>
+      <div class="step-flow">
+        <div class="step-item">
+          <div class="step-num">A</div>
+          <div class="step-text"><strong>單棟建築</strong>：選在較底層，方便與 POP 一起運作</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">B</div>
+          <div class="step-text"><strong>高樓層建築</strong>：考慮配置在中間樓層位置，減少垂直纜線長度差距</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">C</div>
+          <div class="step-text"><strong>多棟建築</strong>：選擇在中間位置的大樓作 MDF，減少跨棟骨幹長度</div>
+        </div>
+      </div>
+
+      <h3>機房必備元件</h3>
       <div class="concept-card">
-        <div class="concept-card-title">📍 MDF 選址原則</div>
+        <div class="concept-card-title">⚙️ 機房元素檢查清單</div>
         <ul>
-          <li>同棟建築物：選在較底層，方便與 POP 一起運作</li>
-          <li>高樓層建築：考慮配置在中間樓層位置</li>
-          <li>數棟建築物：選擇在中間位置的大樓作架構</li>
+          <li><strong>19 吋標準機架櫃</strong> — 寬度統一，支撐各種設備</li>
+          <li><strong>不斷電系統 (UPS)</strong> — 斷電時保護伺服器與網路設備不受突然關機傷害</li>
+          <li><strong>發電系統 / 緊急發電機</strong> — 長時間停电時維持機房運作</li>
+          <li><strong>配線架 (Patch Panel)</strong> — 水平纜線的終點，同時連接交換器</li>
+          <li><strong>交換器 / 路由器</strong> — 網路的心臟</li>
+          <li><strong>環境監控</strong> — 溫度、濕度、火災偵測、門禁</li>
         </ul>
       </div>
 
-      <h3>中介機房室 (IDF)</h3>
-      <div class="concept-card">
-        <div class="concept-card-title">🔄 IDF 設置要點</div>
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 UPS 的種類：在线式 vs 离线式</div>
+        <p><strong>离线式（Standby）UPS</strong>：正常時由市電直接供電，斷電時才切換到 UPS。切換時間約 2–10ms，可能造成敏感設備重啟。<br><br>
+        <strong>在线式（Online/Double-Conversion）UPS</strong>：市電先轉直流、再轉交流，始终由 UPS 供電。零切換時間，適合伺服器、網路設備、醫療設備。成本較高，但可靠性也更高。</p>
+      </div>
+
+      <div class="highlight-box">
+        <strong>機房設計注意事項</strong>
         <ul>
-          <li>主要透過水平纜線與工作節點作連接</li>
-          <li>每層樓有主機房或至少一間中介機房</li>
-          <li>每 1000 平方公尺考慮配置一間中介機房</li>
+          <li>地板承重：每平方公尺至少 750kg</li>
+          <li>散熱：冷通道 / 熱通道分離設計</li>
+          <li>防静电地板（ESD）：機房地板通常使用高架地板</li>
+          <li>纜線入線槽：與電力纜線通道分開，避免電磁干擾</li>
         </ul>
+      </div>
+
+      <h3>ICC / MCC / HCC 跳線配接</h3>
+      <div class="layer-card">
+        <div class="layer-card-num">跳線配接層次</div>
+        <div class="layer-card-name">Cross-Connect 三層架構</div>
+        <div class="layer-card-desc">
+          <ul>
+            <li><strong>MCC（Main Cross-Connect）</strong> — 主跳線配接，位於 MDF，連接所有骨幹</li>
+            <li><strong>ICC（Intermediate Cross-Connect）</strong> — 中介跳線配接，位於 IDF，連接 MDF 與水平佈線</li>
+            <li><strong>HCC（Horizontal Cross-Connect）</strong> — 水平跳線配接，連接個別設備與配線盤</li>
+          </ul>
+        </div>
       </div>
     </section>
 
-    <!-- 骨幹佈線規範 -->
+    <!-- ══════════════════════════════════════
+         5｜骨幹佈線規範
+    ══════════════════════════════════════ -->
     <section id="backbone">
-      <h2>🔗 3｜骨幹佈線規範</h2>
+      <h2>🔗 5｜骨幹佈線規範</h2>
 
       <h3>骨幹佈線四大型態</h3>
-      <div class="concept-card">
-        <div class="concept-card-title">🔗 骨幹佈線類型</div>
-        <ul>
-          <li>大樓樓層間的垂直纜線佈置 (Vertical Cabling)</li>
-          <li>大樓與大樓之間的連線</li>
-          <li>機房室與機房室之間的連線</li>
-          <li>跳線配線連接</li>
-        </ul>
-        <p>佈線材料：以單模光纖、多模光纖、UTP 與 STP 為主；同軸電纜也可用，但 TIA/EIA 標準不推薦。</p>
-      </div>
-
-      <h3>不同建築物間的骨幹佈置</h3>
-      <div class="concept-card">
-        <div class="concept-card-title">🏢 跨建築骨幹考量</div>
-        <ul>
-          <li>以光纖建置居多（距離較遠）</li>
-          <li>不同的接地參考點</li>
-          <li>防雷擊、防電磁干擾、防潮以及防竊取</li>
-        </ul>
-      </div>
-
-      <h3>中介跳線配接 (ICC)</h3>
-      <div class="layer-card">
-        <div class="layer-card-num">跳線配接類型</div>
-        <div class="layer-card-name">ICC / MCC / HCC</div>
-        <div class="layer-card-desc">
-          <ul>
-            <li><strong>ICC</strong> (Intermediate Cross-Connect)</li>
-            <li><strong>MCC</strong> (Main Cross-Connect)：主跳線配接</li>
-            <li><strong>HCC</strong> (Horizontal Cross-Connect)：水平跳線配接</li>
-          </ul>
+      <div class="backbone-type-grid">
+        <div class="backbone-type-card">
+          <div class="backbone-type-icon">🏢</div>
+          <div class="backbone-type-text">
+            <div class="backbone-type-title">大樓樓層間垂直纜線</div>
+            <div class="backbone-type-desc">垂直骨幹（Vertical Cabling），連接 MDF 與各樓層 IDF，通常使用光纖</div>
+          </div>
+        </div>
+        <div class="backbone-type-card">
+          <div class="backbone-type-icon">🏗️</div>
+          <div class="backbone-type-text">
+            <div class="backbone-type-title">大樓與大樓之間連線</div>
+            <div class="backbone-type-desc">園區骨幹，跨建築物中繼，使用單模光纖最為常見</div>
+          </div>
+        </div>
+        <div class="backbone-type-card">
+          <div class="backbone-type-icon">🗄️</div>
+          <div class="backbone-type-text">
+            <div class="backbone-type-title">機房室與機房室之間</div>
+            <div class="backbone-type-desc">機房互連（Data Center Interconnect），高速骨幹，頻寬需求最高</div>
+          </div>
+        </div>
+        <div class="backbone-type-card">
+          <div class="backbone-type-icon">🔀</div>
+          <div class="backbone-type-text">
+            <div class="backbone-type-title">跳線與配線連接</div>
+            <div class="backbone-type-desc">ICC/MCC/HCC 的實體跳接線，管理網路邏輯連線</div>
+          </div>
         </div>
       </div>
+
+      <h3>佈線材料選擇</h3>
+      <table class="compare-table">
+        <thead><tr><th>材料</th><th>頻寬</th><th>傳輸距離</th><th>優點</th><th>缺點</th></tr></thead>
+        <tbody>
+          <tr><td>單模光纖 (SMF)</td><td>10/40/100 Gbps</td><td>數十公里</td><td>極高頻寬、低延遲、抗 EMI</td><td>成本高、熔接需專業設備</td></tr>
+          <tr><td>多模光纖 (MMF)</td><td>1/10 Gbps</td><td>300–600m</td><td>成本適中、安裝較簡單</td><td>距離限制明顯</td></tr>
+          <tr><td>Cat 6a / Cat 7 銅纜</td><td>10 Gbps</td><td>100m</td><td>成本適中、相容性高</td><td>距離 100m、易受 EMI 干擾</td></tr>
+          <tr><td>STP（屏蔽雙絞線）</td><td>依類別</td><td>100m</td><td>抗電磁干擾能力強</td><td>昂貴、安裝困難</td></tr>
+          <tr><td>同軸電纜</td><td>—</td><td>—</td><td>—</td><td>TIA/EIA 標準不推薦</td></tr>
+        </tbody>
+      </table>
 
       <h3>集中式 vs 分散式佈線</h3>
       <div class="two-col-grid">
         <div class="concept-card">
           <div class="concept-card-title">🏠 集中式佈線</div>
-          <div class="concept-card-desc">所有纜線集中由中央機房向外佈署，適合小型或中等規模建築</div>
+          <div class="concept-card-desc">
+            所有纜線集中由中央機房（MDF）向外佈署。<br><br>
+            <strong>優點</strong>：管理簡單、設備集中、維護成本低。<br>
+            <strong>缺點</strong>：垂直纜線長度長、適用於小型或中等規模建築。
+          </div>
         </div>
         <div class="concept-card">
           <div class="concept-card-title">🏬 分散式佈線</div>
-          <div class="concept-card-desc">各樓層/區域有自己的 IDF，適合大型或多棟建築物</div>
+          <div class="concept-card-desc">
+            各樓層/區域有自己的 IDF，骨幹分散到多個 MDF。<br><br>
+            <strong>優點</strong>：縮短水平纜線距離、彈性高、擴充性佳。<br>
+            <strong>缺點</strong>：需要更多 IDF 空間與設備、管理複雜度較高。
+          </div>
         </div>
+      </div>
+
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 單模光纖 vs 多模光纖：怎麼選？</div>
+        <p><strong>單模光纖（SMF）</strong>：核心直徑 8–10μm，光訊號直線傳播，適合長距離（>2km）。常用於園區骨幹、ISP 電信線路、數據中心互連。<br><br>
+        <strong>多模光纖（MMF）</strong>：核心直徑 50–62.5μm，光訊號有多種反射路徑，距離受限（OM3=300m / OM4=400m）。適合建築物內部骨幹、機房內短距離。</p>
+      </div>
+
+      <h3>跨建築物骨幹的特殊考量</h3>
+      <div class="concept-card">
+        <div class="concept-card-title">🏢 跨建築施工重點</div>
+        <ul>
+          <li><strong>防雷擊</strong>：室外光纖需裝避雷接地，光纖金屬外層必須接地</li>
+          <li><strong>防EMI</strong>：高壓電力線、電機設備會產生电磁干擾，光纖不受影響但銅纜需注意</li>
+          <li><strong>防潮</strong>：地下管線需有排水設計，防止積水滲透</li>
+          <li><strong>防竊取</strong>：室外纜線是最脆弱的一環，需加強實體保護</li>
+        </ul>
       </div>
     </section>
 
-    <!-- 網路規劃步驟 -->
+    <!-- ══════════════════════════════════════
+         6｜網路規劃步驟
+    ══════════════════════════════════════ -->
     <section id="planning">
-      <h2>📐 4｜網路的規劃與步驟</h2>
+      <h2>📐 6｜網路的規劃與步驟</h2>
 
       <h3>規劃四大階段</h3>
-      <div class="two-col-grid">
-        <div class="concept-card">
-          <div class="concept-card-title">📋 設計前研究</div>
-          <div class="concept-card-desc">人、時，事、地、物的週全規劃</div>
+      <!-- 規劃流程視覺圖 -->
+      <div class="planning-flow">
+        <div class="planning-step">
+          <div class="planning-step-num">1</div>
+          <span class="planning-step-icon">📋</span>
+          <div class="planning-step-title">設計前研究</div>
+          <div class="planning-step-desc">人、時，事、地、物的週全規劃</div>
         </div>
-        <div class="concept-card">
-          <div class="concept-card-title">⚙️ 配備選擇與架構設計</div>
-          <div class="concept-card-desc">頻寬需求、軟體需求、未來擴充性</div>
+        <div class="planning-step">
+          <div class="planning-step-num">2</div>
+          <span class="planning-step-icon">⚙️</span>
+          <div class="planning-step-title">配備選擇與架構設計</div>
+          <div class="planning-step-desc">頻寬需求、軟體需求、未來擴充性</div>
         </div>
-        <div class="concept-card">
-          <div class="concept-card-title">🔧 網路系統施工</div>
-          <div class="concept-card-desc">依規範架設纜線與設備</div>
+        <div class="planning-step">
+          <div class="planning-step-num">3</div>
+          <span class="planning-step-icon">🔧</span>
+          <div class="planning-step-title">網路系統施工</div>
+          <div class="planning-step-desc">依規範架設纜線與設備</div>
         </div>
-        <div class="concept-card">
-          <div class="concept-card-title">🖥️ 系統運作與管理</div>
-          <div class="concept-card-desc">持續監控、維護與優化</div>
+        <div class="planning-step">
+          <div class="planning-step-num">4</div>
+          <span class="planning-step-icon">🖥️</span>
+          <div class="planning-step-title">系統運作與管理</div>
+          <div class="planning-step-desc">持續監控、維護與優化</div>
         </div>
       </div>
 
@@ -295,46 +507,76 @@
       <div class="concept-card">
         <div class="concept-card-title">❓ 規劃前自檢清單</div>
         <ul>
-          <li>頻寬的需求有多大？</li>
-          <li>使用者需要什麼樣的軟體？</li>
-          <li>未來幾年內需求是否會變更？</li>
-          <li>網路架設需要遵守何種規定？</li>
-          <li>架設在單一建築中亦或連接多棟建築物？距離多遠？</li>
-          <li>採用何種網路媒介？</li>
-          <li>是否已有舊的投資設備可供使用？</li>
+          <li><strong>頻寬需求</strong>：現在需要多少？3 年後預估多少？</li>
+          <li><strong>軟體需求</strong>：哪些應用需要高頻寬？（視訊會議、大量傳輸等）</li>
+          <li><strong>擴充性</strong>：未來 5–10 年是否會增加新建築物或新用戶？</li>
+          <li><strong>法規要求</strong>：是否有特殊行業的法規限制？（醫療、金融、學校）</li>
+          <li><strong>建築規模</strong>：單一建築亦或連接多棟建築物？距離多遠？</li>
+          <li><strong>網路媒介</strong>：光纖 or 銅纜？戶外 or 室內？</li>
+          <li><strong>現有投資</strong>：是否已有舊設備可供使用？需評估整合成本</li>
         </ul>
       </div>
-    </section>
 
-    <!-- 實例研討 -->
-    <section id="example">
-      <h2>🏫 5｜實例研討 — 校園網路骨幹配置</h2>
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 網路規劃的「十年原則」</div>
+        <p>結構化佈線系統的設計壽命通常為 <strong>10–15 年</strong>。因此在選擇骨幹纜線時，至少要滿足未來 10 年的頻寬需求。<br><br>
+        以太網路頻寬演進：10Mbps（1990s）→ 100Mbps（2000s）→ 1Gbps（2010s）→ 10Gbps（2015s）→ 25/40/100Gbps（2020s）。<br><br>
+        <strong>實務建議</strong>：新建案的垂直骨幹最少使用 OM4 多模光纖（10Gbps）或直接上單模光纖。銅纜方面 Cat 6a 是基本門檻。</p>
+      </div>
 
-      <h3>設施對照表</h3>
-      <table class="compare-table">
-        <thead>
-          <tr><th>符號</th><th>設施</th><th>說明</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>POP/MDF</td><td>主機房配置架</td><td>電信進線與骨幹交換</td></tr>
-          <tr><td>@</td><td>資訊盒</td><td>水平纜線終點</td></tr>
-          <tr><td>Hub</td><td>集線器</td><td>各樓層骨幹節點</td></tr>
-        </tbody>
-      </table>
+      <h3>校園網路架構示意</h3>
+      <!-- 校園網路架構圖 -->
+      <div class="campus-network-diagram">
+        <div class="campus-layer">
+          <span class="campus-layer-label">第0層</span>
+          <div class="campus-node pop">POP 電信進線</div>
+          <div class="diagram-arrow" style="font-size:1.2rem;margin:0 4px;">→</div>
+          <div class="campus-node mdf">MDF 主機房</div>
+        </div>
+        <div class="campus-connector"></div>
+        <div class="campus-layer">
+          <span class="campus-layer-label">第1層</span>
+          <div class="campus-node idf">IDF 1F</div>
+          <div class="campus-node idf">IDF 2F</div>
+          <div class="campus-node idf">IDF 3F</div>
+          <div class="campus-node idf">IDF B1</div>
+        </div>
+        <div class="campus-connector"></div>
+        <div class="campus-layer">
+          <span class="campus-layer-label">第2層</span>
+          <div class="campus-node work">資訊插座 @101</div>
+          <div class="campus-node work">資訊插座 @102</div>
+          <div class="campus-node work">資訊插座 @201</div>
+          <div class="campus-node work">資訊插座 @301</div>
+          <div class="campus-node work">⋯⋯</div>
+        </div>
+      </div>
 
-      <h3>校園設施範例</h3>
       <div class="concept-card">
-        <div class="concept-card-title">🏫 校園設施分布</div>
+        <div class="concept-card-title">🏫 實例：校園設施分布</div>
         <ul>
-          <li>地下一樓：撞球場、藝術中庭、圖書館</li>
-          <li>迎賓大廳、車道出入口</li>
-          <li>藝術流泉</li>
-          <li>社區管委會</li>
+          <li><strong>B1（地下一樓）</strong>：撞球場、藝術中庭、圖書館</li>
+          <li><strong>1F（地面層）</strong>：迎賓大廳、車道出入口</li>
+          <li><strong>2F</strong>：藝術流泉、觀景平台</li>
+          <li><strong>3F</strong>：社區管委會、會議室</li>
+        </ul>
+      </div>
+
+      <div class="highlight-box">
+        <strong>規劃時的常見錯誤</strong>
+        <ul>
+          <li><strong>低估未來需求</strong>：使用 Cat 5e 而非 Cat 6a，3 年後必須全部更換</li>
+          <li><strong>忽略跳線長度</strong>：只算水平纜線，忘記兩端跳線，導致實際超出 100m</li>
+          <li><strong>MDF 位置不佳</strong>：放在角落，導致某些樓層的垂直纜線過長</li>
+          <li><strong>無文件管理</strong>：沒有建立纜線標記系統，維護時大海撈針</li>
         </ul>
       </div>
     </section>
 
-    <!-- 問題與討論 -->
+    <!-- ══════════════════════════════════════
+         問題與討論
+    ══════════════════════════════════════ -->
     <div class="question-section">
       <h2>📝 問題與討論</h2>
       <p>關鍵字｜填充題｜選擇題｜問答題</p>
