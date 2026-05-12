@@ -696,18 +696,57 @@
     const statsPanel = document.getElementById('stats-panel');
     const finalInfo = document.getElementById('final-info');
     const notify = document.getElementById('unlock-notify');
+    const btnRow = document.querySelector('.btn-row');
 
-    // Hide game over info, show skin grid
+    // Hide game over info
     finalInfo.style.display = 'none';
     statsPanel.style.display = 'none';
     notify.style.display = 'none';
-    document.getElementById('start-hint').textContent = '點擊返回';
+    btnRow.style.display = 'none';
+    document.getElementById('high-score-text').style.display = 'none';
 
-    overlay.onclick = () => {
-      // Return to game over screen
-      overlay.onclick = null;
-      if (state === 'gameover') showGameOver();
-    };
+    // Build and show skin menu inside overlay
+    let menuHTML = '<div style="text-align:center; margin-bottom:16px;"><div style="font-size:14px;color:#aaa;margin-bottom:8px;">已解鎖: ' + LS.unlockedSkins.length + '/' + SKINS.length + '</div><div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;" id="skin-grid"></div></div>';
+    // Insert menu before start-hint
+    document.getElementById('start-hint').insertAdjacentHTML('beforebegin', menuHTML);
+
+    // Populate skin grid
+    const grid = document.getElementById('skin-grid');
+    SKINS.forEach(s => {
+      const isUnlocked = LS.unlockedSkins.includes(s.id);
+      const isSelected = LS.selectedSkin === s.id;
+      const div = document.createElement('div');
+      div.style.cssText = 'width:52px;height:52px;border-radius:10px;border:2px solid ' + (isSelected ? '#ffd700' : 'rgba(255,255,255,0.2)') + ';display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:' + (isUnlocked ? 'pointer' : 'not-allowed') + ';opacity:' + (isUnlocked ? '1' : '0.45') + ';background:rgba(255,255,255,0.06);font-size:11px;color:#ccc;';
+      div.innerHTML = '<span style="font-size:22px;">🐍</span><span style="font-size:10px;">' + s.name + '</span>' + (isUnlocked ? '' : '<span style="font-size:9px;color:#888;"> ' + s.unlock + '分</span>');
+      if (!isUnlocked) {
+        div.title = '需 ' + s.unlock + ' 分解鎖';
+      }
+      if (isUnlocked) {
+        div.onclick = () => {
+          LS.selectedSkin = s.id;
+          selectedSkin = s;
+          showSkinMenu(); // refresh
+        };
+      }
+      grid.appendChild(div);
+    });
+
+    document.getElementById('start-hint').textContent = '點擊返回';
+    document.getElementById('tap-hint-remove') && (document.getElementById('tap-hint-remove').textContent = '');
+
+    overlay.onclick = null;
+    overlay.addEventListener('click', returnFromSkinMenu);
+  }
+
+  function returnFromSkinMenu() {
+    const overlay = document.getElementById('overlay');
+    overlay.removeEventListener('click', returnFromSkinMenu);
+    // Remove dynamically inserted skin menu
+    const menuDiv = document.querySelector('#overlay > div[style*="text-align:center"]');
+    if (menuDiv) menuDiv.remove();
+    document.getElementById('high-score-text').style.display = '';
+    if (state === 'gameover') showGameOver();
+    else showStartScreen();
   }
 
   // ─────────────────────────────────────────────
