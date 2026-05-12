@@ -300,12 +300,12 @@
   // INIT
   // ─────────────────────────────────────────────
   function resize() {
-    const maxW = window.innerWidth;
-    const maxH = window.innerHeight - 80; // account for top/bottom UI
+    const maxW = document.documentElement.clientWidth;
+    const maxH = document.documentElement.clientHeight - 80; // account for top/bottom UI
     const sz = Math.floor(Math.min(maxW, maxH) / GRID);
-    cellSize = sz;
-    canvas.width = sz * GRID;
-    canvas.height = sz * GRID;
+    cellSize = sz < 1 ? 1 : sz;
+    canvas.width = cellSize * GRID;
+    canvas.height = cellSize * GRID;
   }
 
   function initGame() {
@@ -547,14 +547,6 @@
     overlay.onclick = null;
     overlay.classList.remove('hidden');
     buildSkinBar();
-  }
-
-  function showStartScreen() {
-    const overlay = document.getElementById('overlay');
-    document.getElementById('final-info').style.display = 'none';
-    document.getElementById('start-hint').textContent = '點擊開始';
-    document.getElementById('tap-hint').textContent = '滑動控制方向';
-    overlay.classList.remove('hidden');
   }
 
   // ─────────────────────────────────────────────
