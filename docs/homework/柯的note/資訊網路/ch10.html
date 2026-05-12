@@ -96,15 +96,28 @@
       </div>
 
       <h3>運作流程</h3>
-      <div class="layer-card">
-        <div class="layer-card-num">範例</div>
-        <div class="layer-card-name">主機 A（140.134.36.56）要和主機 B（140.134.36.110）通訊</div>
-        <ul>
-          <li>主機 A 先查自己的 ARP Cache，找不到 140.134.36.110</li>
-          <li>主機 A 廣播 <strong>ARP 請求</strong>（目標 MAC 為 FF-FF-FF-FF-FF-FF）</li>
-          <li>所有主機收到，但只有 140.134.36.110 回覆 <strong>ARP 回應</strong></li>
-          <li>主機 A 收到回覆後，將 140.134.36.110 與其 MAC 位址寫入 ARP Cache</li>
-        </ul>
+      <p class="arp-flow-context">主機 A（140.134.36.56）要和主機 B（140.134.36.110）通訊</p>
+
+      <div class="arp-flow">
+        <div class="arp-step">
+          <div class="arp-step-num">1</div>
+          <div>主機 A 查自己的 <strong>ARP Cache</strong>，找不到 140.134.36.110</div>
+        </div>
+        <div class="arp-step-arrow">↓</div>
+        <div class="arp-step arp-step-broadcast">
+          <div class="arp-step-num">2</div>
+          <div>主機 A 廣播 <strong>ARP 請求</strong>（目標 MAC = <code>FF-FF-FF-FF-FF-FF</code>）</div>
+        </div>
+        <div class="arp-step-arrow">↓</div>
+        <div class="arp-step">
+          <div class="arp-step-num">3</div>
+          <div>所有主機收到，但<strong>只有 140.134.36.110 回覆</strong> <strong>ARP 回應</strong></div>
+        </div>
+        <div class="arp-step-arrow">↓</div>
+        <div class="arp-step arp-step-success">
+          <div class="arp-step-num">✓</div>
+          <div>主機 A 將 <code>140.134.36.110 ↔ MAC 位址</code> 寫入 ARP Cache，通訊開始</div>
+        </div>
       </div>
 
       <h3>訊息封裝結構</h3>
@@ -135,15 +148,24 @@
       </div>
 
       <h3>RARP 與 ARP 比較</h3>
-      <div class="concept-card">
-        <div class="concept-card-title">兩者比較</div>
-        <table class="compare-table">
-          <tr><th></th><th>ARP</th><th>RARP</th></tr>
-          <tr><td>查詢方向</td><td>IP → MAC</td><td>MAC → IP</td></tr>
-          <tr><td>已知條件</td><td>已知 IP，查 MAC</td><td>已知 MAC，查 IP</td></tr>
-          <tr><td>伺服器需求</td><td>不需要</td><td>需要 RARP 伺服器</td></tr>
-          <tr><td>常見用途</td><td>一般主機通訊前解析</td><td>無碟主機開機取得 IP</td></tr>
-        </table>
+      <div class="arp-compare">
+        <div class="arp-compare-card arp">
+          <div class="arp-compare-title">ARP — 已知 IP，查 MAC</div>
+          <div class="arp-compare-row"><span class="arp-compare-label">方向</span><span class="arp-compare-val">IP → MAC</span></div>
+          <div class="arp-compare-row"><span class="arp-compare-label">已知</span><span class="arp-compare-val">IP 位址</span></div>
+          <div class="arp-compare-row"><span class="arp-compare-label">目的</span><span class="arp-compare-val">得到 MAC 位址</span></div>
+          <div class="arp-compare-row"><span class="arp-compare-label">伺服器</span><span class="arp-compare-val">不需要</span></div>
+          <div class="arp-compare-row"><span class="arp-compare-label">用途</span><span class="arp-compare-val">一般主機通訊前解析</span></div>
+        </div>
+        <div class="arp-compare-icon">↔</div>
+        <div class="arp-compare-card rarp">
+          <div class="arp-compare-title">RARP — 已知 MAC，查 IP</div>
+          <div class="arp-compare-row"><span class="arp-compare-label">方向</span><span class="arp-compare-val">MAC → IP</span></div>
+          <div class="arp-compare-row"><span class="arp-compare-label">已知</span><span class="arp-compare-val">MAC 位址</span></div>
+          <div class="arp-compare-row"><span class="arp-compare-label">目的</span><span class="arp-compare-val">得到 IP 位址</span></div>
+          <div class="arp-compare-row"><span class="arp-compare-label">伺服器</span><span class="arp-compare-val">需要 RARP 伺服器</span></div>
+          <div class="arp-compare-row"><span class="arp-compare-label">用途</span><span class="arp-compare-val">無碟主機開機取得 IP</span></div>
+        </div>
       </div>
     </section>
 
@@ -158,21 +180,45 @@
       </div>
 
       <h3>9 欄位格式</h3>
-      <div class="concept-card">
-        <div class="concept-card-title">標頭欄位</div>
-        <table class="compare-table">
-          <tr><th>欄位</th><th>長度</th><th>說明</th></tr>
-          <tr><td>Hardware Type</td><td>16 位元</td><td>硬體類型，如 Ethernet = 1（0001ₕ）</td></tr>
-          <tr><td>Protocol Type</td><td>16 位元</td><td>協定類型，如 IP = 0800ₕ</td></tr>
-          <tr><td>HLEN</td><td>8 位元</td><td>硬體位址長度（位元組），如 Ethernet = 6</td></tr>
-          <tr><td>PLEN</td><td>8 位元</td><td>網路協定位址長度（位元組），如 IP = 4</td></tr>
-          <tr><td>Operation</td><td>16 位元</td><td>操作型態（見下表）</td></tr>
-          <tr><td>Sender HA</td><td>可變</td><td>發送端硬體位址（MAC）</td></tr>
-          <tr><td>Sender IP</td><td>可變</td><td>發送端邏輯位址（IP）</td></tr>
-          <tr><td>Target HA</td><td>可變</td><td>目的端硬體位址（MAC）</td></tr>
-          <tr><td>Target IP</td><td>可變</td><td>目的端邏輯位址（IP）</td></tr>
-        </table>
+      <div class="arp-9field">
+        <div class="arp-9field-item fixed">
+          <div class="arp-9field-name">Hardware Type</div>
+          <div class="arp-9field-meta">16 位元 · Ethernet = 1</div>
+        </div>
+        <div class="arp-9field-item fixed">
+          <div class="arp-9field-name">Protocol Type</div>
+          <div class="arp-9field-meta">16 位元 · IP = 0800ₕ</div>
+        </div>
+        <div class="arp-9field-item fixed">
+          <div class="arp-9field-name">HLEN</div>
+          <div class="arp-9field-meta">8 位元 · Ethernet = 6</div>
+        </div>
+        <div class="arp-9field-item fixed">
+          <div class="arp-9field-name">PLEN</div>
+          <div class="arp-9field-meta">8 位元 · IP = 4</div>
+        </div>
+        <div class="arp-9field-item operation">
+          <div class="arp-9field-name">Operation</div>
+          <div class="arp-9field-meta">16 位元 · 1~4（見下表）</div>
+        </div>
+        <div class="arp-9field-item variable">
+          <div class="arp-9field-name">Sender HA</div>
+          <div class="arp-9field-meta">發送端 MAC（可變）</div>
+        </div>
+        <div class="arp-9field-item variable">
+          <div class="arp-9field-name">Sender IP</div>
+          <div class="arp-9field-meta">發送端 IP（可變）</div>
+        </div>
+        <div class="arp-9field-item variable">
+          <div class="arp-9field-name">Target HA</div>
+          <div class="arp-9field-meta">目的端 MAC（可變）</div>
+        </div>
+        <div class="arp-9field-item variable">
+          <div class="arp-9field-name">Target IP</div>
+          <div class="arp-9field-meta">目的端 IP（可變）</div>
+        </div>
       </div>
+      <p class="arp-9field-legend">🔵 藍色 = 固定長度　🟢 綠色 = 可變長度　🟡 黃色 = Operation（操作碼）</p>
 
       <h3>Operation 欄位值</h3>
       <div class="concept-card">
@@ -216,21 +262,23 @@
       </div>
 
       <h3>訊息類型一覽</h3>
-      <div class="concept-card">
-        <div class="concept-card-title">ICMP Type 總表</div>
-        <table class="compare-table">
-          <tr><th>Type</th><th>類型名稱</th><th>類別</th></tr>
-          <tr><td>0</td><td>回聲回覆（Echo Reply）</td><td>查詢</td></tr>
-          <tr><td>3</td><td>目的端無法抵達（Destination Unreachable）</td><td>錯誤</td></tr>
-          <tr><td>4</td><td>來源端抑制（Source Quench）</td><td>錯誤</td></tr>
-          <tr><td>5</td><td>路徑重新定向（Redirect）</td><td>錯誤</td></tr>
-          <tr><td>8</td><td>回聲請求（Echo Request）</td><td>查詢</td></tr>
-          <tr><td>11</td><td>傳輸逾時（Time Exceeded）</td><td>錯誤</td></tr>
-          <tr><td>12</td><td>參數問題（Parameter Problem）</td><td>錯誤</td></tr>
-          <tr><td>13/14</td><td>時戳請求/回覆（Timestamp Request/Reply）</td><td>查詢</td></tr>
-          <tr><td>15/16</td><td>網路位址資訊請求/回覆（Information Request/Reply）</td><td>查詢</td></tr>
-          <tr><td>17/18</td><td>網路遮罩請求/回覆（Address Mask Request/Reply）</td><td>查詢</td></tr>
-        </table>
+      <div class="icmp-type-grid">
+        <div class="icmp-type-card error">
+          <div class="icmp-type-card-title">🔴 錯誤訊息（Error）</div>
+          <div class="icmp-type-item"><span class="icmp-type-num">3</span><span class="icmp-type-name">目的端無法抵達</span></div>
+          <div class="icmp-type-item"><span class="icmp-type-num">4</span><span class="icmp-type-name">來源端抑制</span></div>
+          <div class="icmp-type-item"><span class="icmp-type-num">5</span><span class="icmp-type-name">路徑重新定向</span></div>
+          <div class="icmp-type-item"><span class="icmp-type-num">11</span><span class="icmp-type-name">傳輸逾時</span></div>
+          <div class="icmp-type-item"><span class="icmp-type-num">12</span><span class="icmp-type-name">參數問題</span></div>
+        </div>
+        <div class="icmp-type-card query">
+          <div class="icmp-type-card-title">🟢 查詢訊息（Query）</div>
+          <div class="icmp-type-item"><span class="icmp-type-num">0</span><span class="icmp-type-name">回聲回覆（Echo Reply）</span></div>
+          <div class="icmp-type-item"><span class="icmp-type-num">8</span><span class="icmp-type-name">回聲請求（Echo Request）</span></div>
+          <div class="icmp-type-item"><span class="icmp-type-num">13/14</span><span class="icmp-type-name">時戳請求/回覆</span></div>
+          <div class="icmp-type-item"><span class="icmp-type-num">15/16</span><span class="icmp-type-name">網路位址資訊請求/回覆</span></div>
+          <div class="icmp-type-item"><span class="icmp-type-num">17/18</span><span class="icmp-type-name">網路遮罩請求/回覆</span></div>
+        </div>
       </div>
     </section>
 
@@ -360,18 +408,23 @@ Trace complete.</pre>
       </div>
 
       <h3>Code 欄位說明</h3>
-      <div class="concept-card">
-        <table class="compare-table">
-          <tr><th>Code</th><th>原因</th><th>Code</th><th>原因</th></tr>
-          <tr><td>0</td><td>目的端網路無法連接</td><td>8</td><td>來源端主機被隔離</td></tr>
-          <tr><td>1</td><td>目的端主機無法連接</td><td>9</td><td>禁止與目的端網路通訊</td></tr>
-          <tr><td>2</td><td>指定的通訊協定不存在</td><td>10</td><td>禁止與目的端主機通訊</td></tr>
-          <tr><td>3</td><td>指定的連接埠不存在</td><td>11</td><td>拒絕此網路服務類型</td></tr>
-          <tr><td>4</td><td>資料需被分割並設定不可分割位元</td><td>12</td><td>拒絕此主機服務類型</td></tr>
-          <tr><td>5</td><td>來源選擇路徑失敗</td><td>13</td><td>被過濾禁止通訊</td></tr>
-          <tr><td>6</td><td>目的端網路無法辨識</td><td>14</td><td>違反主機優先權</td></tr>
-          <tr><td>7</td><td>目的端主機無法辨識</td><td>15</td><td>優先權實行中斷</td></tr>
-        </table>
+      <div class="dest-grid">
+        <div class="dest-item"><span class="dest-code">0</span><span class="dest-reason">目的端網路無法連接</span></div>
+        <div class="dest-item"><span class="dest-code">1</span><span class="dest-reason">目的端主機無法連接</span></div>
+        <div class="dest-item"><span class="dest-code">2</span><span class="dest-reason">指定的通訊協定不存在</span></div>
+        <div class="dest-item"><span class="dest-code">3</span><span class="dest-reason">指定的連接埠不存在</span></div>
+        <div class="dest-item"><span class="dest-code">4</span><span class="dest-reason">資料需被分割並設定不可分割位元</span></div>
+        <div class="dest-item"><span class="dest-code">5</span><span class="dest-reason">來源選擇路徑失敗</span></div>
+        <div class="dest-item"><span class="dest-code">6</span><span class="dest-reason">目的端網路無法辨識</span></div>
+        <div class="dest-item"><span class="dest-code">7</span><span class="dest-reason">目的端主機無法辨識</span></div>
+        <div class="dest-item"><span class="dest-code">8</span><span class="dest-reason">來源端主機被隔離</span></div>
+        <div class="dest-item"><span class="dest-code">9</span><span class="dest-reason">禁止與目的端網路通訊</span></div>
+        <div class="dest-item"><span class="dest-code">10</span><span class="dest-reason">禁止與目的端主機通訊</span></div>
+        <div class="dest-item"><span class="dest-code">11</span><span class="dest-reason">拒絕此網路服務類型</span></div>
+        <div class="dest-item"><span class="dest-code">12</span><span class="dest-reason">拒絕此主機服務類型</span></div>
+        <div class="dest-item"><span class="dest-code">13</span><span class="dest-reason">被過濾禁止通訊</span></div>
+        <div class="dest-item"><span class="dest-code">14</span><span class="dest-reason">違反主機優先權</span></div>
+        <div class="dest-item"><span class="dest-code">15</span><span class="dest-reason">優先權實行中斷</span></div>
       </div>
     </section>
 

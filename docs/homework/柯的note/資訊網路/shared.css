@@ -393,6 +393,226 @@ pre code {
   margin-bottom: 1.5rem;
 }
 
+/* ── ARP Flow（CH10 步驟流程圖）── */
+.arp-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.arp-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.88rem;
+}
+.arp-step-num {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.arp-step-arrow {
+  text-align: center;
+  color: var(--primary);
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 0.1rem 0;
+}
+.arp-step-success {
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
+.arp-step-success .arp-step-num {
+  background: #22c55e;
+}
+.arp-step-broadcast {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+.arp-step-broadcast .arp-step-num {
+  background: #f59e0b;
+}
+
+/* ── ICMP Type 雙欄分類卡片（CH10）── */
+.icmp-type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.icmp-type-card {
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius);
+  border: 1.5px solid;
+}
+.icmp-type-card.error {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+.icmp-type-card.query {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+.icmp-type-card-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.6rem;
+}
+.icmp-type-card.error .icmp-type-card-title { color: #dc2626; }
+.icmp-type-card.query .icmp-type-card-title { color: #16a34a; }
+.icmp-type-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.85rem;
+}
+.icmp-type-item:last-child { margin-bottom: 0; }
+.icmp-type-num {
+  font-weight: 700;
+  color: var(--primary);
+  min-width: 2.5rem;
+}
+.icmp-type-name { color: var(--text); }
+
+/* ── ARP/RARP 比較左右卡片（CH10）── */
+.arp-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.arp-compare-card {
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 2px solid;
+}
+.arp-compare-card.arp {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+.arp-compare-card.rarp {
+  background: #faf5ff;
+  border-color: #a855f7;
+}
+.arp-compare-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.arp-compare-card.arp .arp-compare-title { color: #1d4ed8; }
+.arp-compare-card.rarp .arp-compare-title { color: #7e22ce; }
+.arp-compare-row {
+  display: flex;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.35rem;
+  align-items: baseline;
+}
+.arp-compare-label {
+  color: #6b7280;
+  min-width: 4rem;
+}
+.arp-compare-val { font-weight: 600; color: var(--text); }
+.arp-compare-arrow {
+  font-size: 1.1rem;
+  text-align: center;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 1.5rem;
+}
+
+/* ── ARP 9欄位視覺化（CH10）── */
+.arp-9field {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.arp-9field-item {
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  border: 1.5px solid;
+}
+.arp-9field-item.fixed {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+.arp-9field-item.variable {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+.arp-9field-item.operation {
+  background: #fef9c3;
+  border-color: #eab308;
+}
+.arp-9field-name {
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+.arp-9field-meta {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+.arp-9field-legend {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+.arp-flow-context {
+  margin-bottom: 0.5rem;
+  font-size: 0.88rem;
+  color: #6b7280;
+}
+.arp-compare-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #6b7280;
+}
+
+/* ── Destination Unreachable 分群（CH10）── */
+.dest-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1.5rem;
+  margin: 1rem 0;
+}
+.dest-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.dest-item:last-child { border-bottom: none; }
+.dest-code {
+  font-weight: 700;
+  color: var(--primary);
+  min-width: 2.5rem;
+}
+.dest-reason { color: var(--text); }
+
 /* ── Question Section ── */
 .question-section {
   text-align: center;
