@@ -219,32 +219,86 @@
     },
     {
       id: 'neon-purple', name: '霓虹紫', unlock: 50,
-      draw: (ctx, x, y, sz, isHead) => {
+      draw: (ctx, x, y, sz, isHead, dir) => {
         ctx.shadowBlur = isHead ? 12 : 6;
         ctx.shadowColor = '#9b59b6';
         ctx.fillStyle = '#8e44ad';
         ctx.fillRect(x+1, y+1, sz-2, sz-2);
         ctx.shadowBlur = 0;
+        if (isHead) {
+          ctx.fillStyle = '#1a1a2e';
+          const cx = x+sz/2, cy = y+sz/2;
+          const eye = sz*0.18;
+          if (dir === 0) {
+            ctx.fillRect(cx+eye, cy-eye, eye, eye);
+            ctx.fillRect(cx+eye, cy+2, eye, eye);
+          } else if (dir === 1) {
+            ctx.fillRect(cx-eye, cy+eye, eye, eye);
+            ctx.fillRect(cx+2, cy+eye, eye, eye);
+          } else if (dir === 2) {
+            ctx.fillRect(cx-eye*2, cy-eye, eye, eye);
+            ctx.fillRect(cx-eye*2, cy+2, eye, eye);
+          } else {
+            ctx.fillRect(cx-eye, cy-eye*2, eye, eye);
+            ctx.fillRect(cx+2, cy-eye*2, eye, eye);
+          }
+        }
       }
     },
     {
       id: 'lava-orange', name: '熔岩橙', unlock: 150,
-      draw: (ctx, x, y, sz, isHead) => {
+      draw: (ctx, x, y, sz, isHead, dir) => {
         const g = ctx.createLinearGradient(x, y, x+sz, y+sz);
         g.addColorStop(0, '#e74c3c'); g.addColorStop(0.5, '#e67e22'); g.addColorStop(1, '#e74c3c');
         ctx.fillStyle = g;
         ctx.fillRect(x+1, y+1, sz-2, sz-2);
+        if (isHead) {
+          ctx.fillStyle = '#1a1a2e';
+          const cx = x+sz/2, cy = y+sz/2;
+          const eye = sz*0.18;
+          if (dir === 0) {
+            ctx.fillRect(cx+eye, cy-eye, eye, eye);
+            ctx.fillRect(cx+eye, cy+2, eye, eye);
+          } else if (dir === 1) {
+            ctx.fillRect(cx-eye, cy+eye, eye, eye);
+            ctx.fillRect(cx+2, cy+eye, eye, eye);
+          } else if (dir === 2) {
+            ctx.fillRect(cx-eye*2, cy-eye, eye, eye);
+            ctx.fillRect(cx-eye*2, cy+2, eye, eye);
+          } else {
+            ctx.fillRect(cx-eye, cy-eye*2, eye, eye);
+            ctx.fillRect(cx+2, cy-eye*2, eye, eye);
+          }
+        }
       }
     },
     {
       id: 'ice-blue', name: '冰晶藍', unlock: 300,
-      draw: (ctx, x, y, sz, isHead) => {
+      draw: (ctx, x, y, sz, isHead, dir) => {
         ctx.globalAlpha = 0.75;
         const g = ctx.createLinearGradient(x, y, x+sz, y+sz);
         g.addColorStop(0, '#5dade2'); g.addColorStop(1, '#3498db');
         ctx.fillStyle = g;
         ctx.fillRect(x+1, y+1, sz-2, sz-2);
         ctx.globalAlpha = 1;
+        if (isHead) {
+          ctx.fillStyle = '#1a1a2e';
+          const cx = x+sz/2, cy = y+sz/2;
+          const eye = sz*0.18;
+          if (dir === 0) {
+            ctx.fillRect(cx+eye, cy-eye, eye, eye);
+            ctx.fillRect(cx+eye, cy+2, eye, eye);
+          } else if (dir === 1) {
+            ctx.fillRect(cx-eye, cy+eye, eye, eye);
+            ctx.fillRect(cx+2, cy+eye, eye, eye);
+          } else if (dir === 2) {
+            ctx.fillRect(cx-eye*2, cy-eye, eye, eye);
+            ctx.fillRect(cx-eye*2, cy+2, eye, eye);
+          } else {
+            ctx.fillRect(cx-eye, cy-eye*2, eye, eye);
+            ctx.fillRect(cx+2, cy-eye*2, eye, eye);
+          }
+        }
       }
     },
     {
