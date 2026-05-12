@@ -21,8 +21,8 @@
 
 | 參數 | 值 |
 |------|-----|
-| 基礎速度 | 每 120ms 移動一格 |
-| 加速模式 | 每 60ms 移動一格（加速果 15 秒） |
+| 基礎速度 | 每 130ms 移動一格 |
+| 加速模式 | 每 65ms 移動一格（加速果 15 秒） |
 | 插值平滑 | 視覺上每幀漸進移動，碰撞邏輯基於格子座標 |
 
 - **方向**：上、下、左、右
@@ -37,7 +37,7 @@
 |------|------|---------|------|
 | 普通食物 | 🍎 | 永久 | 吃後蛇長度 +1，分數 +10 |
 | 金幣 | 🪙 | 單次 | 吃到後該次分數×2（當下立即結算） |
-| 加速果 | ⚡ | 15 秒 | 速度加倍（移動週期 60ms），分數不變 |
+| 加速果 | ⚡ | 15 秒 | 速度加倍（移動週期 65ms），分數不變 |
 
 **生成規則：**
 - 地圖初始：1 個食物
@@ -69,14 +69,10 @@
 | 冰晶藍 | 300 | 冰藍色半透明蛇 |
 | 黃金龍 | 500 | 金色龍形蛇 |
 
-**儲存格式（localStorage）：**
-```json
-{
-  "snakeHighScore": 0,
-  "snakeUnlockedSkins": ["classic-green"],
-  "snakeSelectedSkin": "classic-green"
-}
-```
+**localStorage Key：**
+- `snakeHS` - 歷史最高分
+- `snakeUS` - 已解鎖造型陣列
+- `snakeSS` - 目前選中造型 ID
 
 ---
 
@@ -99,8 +95,9 @@
 ## 9. PWA 規格
 
 - **manifest.json**：name, short_name, icons (192×192, 512×512), theme_color, background_color, display: standalone
-- **Service Worker**：快取 index.html, 離線可玩
+- **Service Worker**：快取 index.html + icons，離線可玩
 - **Viewport**：不縮放，user-scalable=no
+- **apple-touch-icon**：iOS 安裝需要
 
 ---
 
