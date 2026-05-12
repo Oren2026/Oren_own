@@ -238,6 +238,80 @@ strong { font-weight: 700; color: var(--text); }
   color: var(--muted);
   margin-bottom: 0.5rem;
 }
+.layer-card-desc ul,
+.layer-card-desc ol {
+  margin: 0.5rem 0 0.5rem 1.25rem;
+  padding-left: 0.25rem;
+}
+.layer-card-desc li {
+  margin-bottom: 0.3rem;
+  line-height: 1.55;
+}
+.layer-card-desc li:last-child { margin-bottom: 0; }
+.layer-card table {
+  margin-top: 0.75rem;
+}
+.layer-card pre {
+  margin: 0.75rem 0;
+}
+
+/* ── UDP / TCP 標頭格子元件 ── */
+.header-box-grid {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+.header-box-item {
+  flex: 1;
+  min-width: 120px;
+  background: var(--accent-dim);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+}
+.header-box-item .field-label {
+  font-size: 0.72rem;
+  color: var(--muted-2);
+}
+.header-box-item .field-name {
+  font-weight: 700;
+  color: var(--accent-text);
+}
+
+/* ── ASCII 流程圖 <pre> 統一樣式 ── */
+.code-diagram {
+  margin: 0.75rem 0;
+  background: #1e2530;
+  color: #c9d1d9;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+/* ── 頁尾 ── */
+.note-footer a {
+  color: var(--accent);
+}
+
+/* ── Header Field Row（名稱: 值 橫排）── */
+.header-field {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  padding: 0.2rem 0;
+  border-bottom: 1px dashed var(--border);
+}
+.header-field:last-child { border-bottom: none; }
+.header-field-name {
+  font-weight: 700;
+  color: var(--accent-text);
+  min-width: 90px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+}
+.header-field-desc { color: var(--muted); }
+
 /* ── Code / Inline ── */
 code {
   font-family: 'Courier New', Courier, monospace;
