@@ -130,17 +130,44 @@
       <div class="highlight-box" style="background:#e8f0fe;border-left:4px solid #316cf4;">📖 本章內容對應老師投影片，請參考 Net7_07LAN.pptx</div>
 
       <h3>訊框組成（Ethernet 2.0）</h3>
-      <table class="compare-table">
-<thead><tr><th>欄位</th><th>大小</th><th>說明</th></tr></thead>
-<tbody>
-  <tr><td>Preamble</td><td>8 Bytes</td><td>同步時脈（Ethernet 2.0）</td></tr>
-  <tr><td>Destination MAC</td><td>6 Bytes</td><td>目的地 MAC 位址</td></tr>
-  <tr><td>Source MAC</td><td>6 Bytes</td><td>來源 MAC 位址</td></tr>
-  <tr><td>EtherType</td><td>2 Bytes</td><td>上層協定類型（>0600 為 EtherType）</td></tr>
-  <tr><td>Data</td><td>46~1500 Bytes</td><td>資料（不足補 0 做 Padding）</td></tr>
-  <tr><td>FCS</td><td>4 Bytes</td><td>Frame Check Sequence，CRC-32</td></tr>
-</tbody>
-</table>
+
+      <!-- 視覺化結構圖 -->
+      <div class="frame-structure">
+        <div class="frame-label">Ethernet Frame（不含 Preamble）</div>
+        <div class="frame-bar">
+          <div class="frame-segment" style="flex:6;">Preamble<br><span>8B</span></div>
+          <div class="frame-segment" style="flex:6;">Dest MAC<br><span>6B</span></div>
+          <div class="frame-segment" style="flex:6;">Src MAC<br><span>6B</span></div>
+          <div class="frame-segment" style="flex:2;">EtherType<br><span>2B</span></div>
+          <div class="frame-segment data" style="flex:46;">Data<br><span>46~1500B</span></div>
+          <div class="frame-segment" style="flex:4;">FCS<br><span>4B</span></div>
+        </div>
+        <div class="frame-total">64 Bytes ≤ Frame ≤ 1518 Bytes</div>
+      </div>
+
+      <!-- 各欄位說明卡片 -->
+      <div class="field-cards">
+        <div class="field-card">
+          <div class="field-card-name">Preamble</div>
+          <div class="field-card-size">8 Bytes</div>
+          <div class="field-card-desc">同步時脈（Ethernet 2.0）<br>IEEE 802.3：7B + 1B SFD</div>
+        </div>
+        <div class="field-card">
+          <div class="field-card-name">Dest / Src MAC</div>
+          <div class="field-card-size">6B + 6B</div>
+          <div class="field-card-desc">48 位元 MAC 位址<br>廣播：FF-FF-FF-FF-FF-FF</div>
+        </div>
+        <div class="field-card">
+          <div class="field-card-name">EtherType</div>
+          <div class="field-card-size">2 Bytes</div>
+          <div class="field-card-desc">0800=IP、0806=ARP<br>≤1500 為 Length（802.3）</div>
+        </div>
+        <div class="field-card">
+          <div class="field-card-name">FCS</div>
+          <div class="field-card-size">4 Bytes</div>
+          <div class="field-card-desc">CRC-32 錯誤檢查<br>硬體線路處理</div>
+        </div>
+      </div>
 
       <h3>Preamble（前序）</h3>
       <div class="highlight-box">
