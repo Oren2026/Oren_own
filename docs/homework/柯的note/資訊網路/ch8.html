@@ -6,87 +6,6 @@
   <title>CH8 — IP 協定 | 柯的note</title>
   <link rel="stylesheet" href="shared.css">
   <link rel="stylesheet" href="right-nav.css">
-  <style>
-    /* ── 本頁專用 overrides ── */
-    :root {
-      --ipv4-color: #1a56db;
-      --ipv4-bg: #eff6ff;
-      --ipv6-color: #0e7490;
-      --ipv6-bg: #ecfeff;
-    }
-
-    /* 色塊標題 */
-    .ip-block {
-      border-radius: var(--radius);
-      padding: 0.5rem 1rem;
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-block;
-      margin-bottom: 0.25rem;
-    }
-    .ip-block.ipv4 { background: var(--ipv4-bg); color: var(--ipv4-color); }
-    .ip-block.ipv6 { background: var(--ipv6-bg); color: var(--ipv6-color); }
-
-    /* TOC */
-    .toc-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.6rem 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .toc-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      font-size: 0.88rem;
-      color: var(--muted);
-      padding: 0.3rem 0;
-      border-bottom: 1px dashed var(--border);
-    }
-    .toc-num {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--accent);
-      min-width: 1.5rem;
-    }
-
-    /* IP 分类表 */
-    .ip-class-table th.col-class { background: var(--ipv4-color) !important; }
-    .ip-class-table th.col-class,
-    .ip-class-table td:first-child { color: var(--ipv4-color); font-weight: 700; }
-
-    /* IP 標頭 */
-    .header-diagram {
-      background: #1e2530;
-      color: #c9d1d9;
-      border-radius: var(--radius);
-      padding: 1.25rem 1.5rem;
-      font-family: 'Courier New', monospace;
-      font-size: 0.8rem;
-      line-height: 1.8;
-      margin: 1rem 0;
-      overflow-x: auto;
-    }
-    .header-diagram .field { color: #79c0ff; }
-    .header-diagram .bits { color: #8b949e; }
-    .header-diagram .note { color: #7ee787; }
-
-    /* IPv6 區塊 */
-    .ipv6-section { border-left: 4px solid var(--ipv6-color); padding-left: 1rem; margin-left: 0.5rem; }
-
-    /* 保留位址表 */
-    .reserved-table th:first-child { background: var(--accent) !important; color: #fff; }
-
-    /* 公式樣式 */
-    code.formula, span.formula {
-      font-family: 'Courier New', monospace;
-      background: var(--code-bg);
-      padding: 0.1em 0.35em;
-      border-radius: 4px;
-      font-size: 0.88em;
-      color: var(--accent-text);
-    }
-  </style>
 </head>
 <body>
   <!-- Sidebar -->
@@ -95,7 +14,8 @@
     <div class="sidebar-title">資訊網路</div>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section-label">所有章節</div>
-    <div id="sidebar-links"></div>  </nav>
+    <div id="sidebar-links"></div>
+  </nav>
 
   <!-- Main Content -->
   <main class="content">
@@ -142,7 +62,7 @@
       <h2 id="s2">📌 2｜IPv4 簡介 <span class="ip-block ipv4">IPv4</span></h2>
 
       <div class="concept-card">
-        <div class="concept-card-title">IP 位址版本</div>
+        <div class="concept-card-title">IP 位址版本演進</div>
         <ul>
           <li><strong>IPv4</strong>（第四版）：目前主要版本，<strong>盡力傳送</strong>（Best Effort）、<strong>非連接導向</strong>（Connectionless）</li>
           <li><strong>IPv5</strong>（第五版）：實驗協定，連接導向，未廣泛部署</li>
@@ -162,6 +82,12 @@
         </table>
       </div>
 
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 為何需要 IPv6？</div>
+        <p>43 億看起來很多，但 IPv4 位址於 2011 年 2 月已正式分配完畢。IoT 時代：手機、家電、水電錶、紅綠燈、貨品包裝都需要 IP。IPv6 的 2¹²⁸ ≈ 340 兆兆兆個位址，每平方公尺約 665×10²⁴ 個。</p>
+      </div>
+
       <div class="highlight-box">
         <strong>位址分配機構：ICANN</strong><br>
         Internet Corporation for Assigned Names and Numbers — 負責分配網路位元（Network bits）給全球各區域。
@@ -174,58 +100,59 @@
     <section>
       <h2 id="s3">📌 3｜IP 位址分類（A / B / C / D / E）</h2>
 
-      <table class="compare-table ip-class-table">
-        <thead>
-          <tr>
-            <th class="col-class">類別</th>
-            <th>首碼</th>
-            <th>第一位元組範圍</th>
-            <th>網路/主機位元</th>
-            <th>可用主機數</th>
-            <th>用途</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>A</td>
-            <td><code>0</code></td>
-            <td>0 ~ 127</td>
-            <td>8 / 24</td>
-            <td>16,777,214</td>
-            <td>大型組織</td>
-          </tr>
-          <tr>
-            <td>B</td>
-            <td><code>10</code></td>
-            <td>128 ~ 191</td>
-            <td>16 / 16</td>
-            <td>65,534</td>
-            <td>中型組織</td>
-          </tr>
-          <tr>
-            <td>C</td>
-            <td><code>110</code></td>
-            <td>192 ~ 223</td>
-            <td>24 / 8</td>
-            <td>254</td>
-            <td>小型網路</td>
-          </tr>
-          <tr>
-            <td>D</td>
-            <td><code>1110</code></td>
-            <td>224 ~ 239</td>
-            <td colspan="2">—</td>
-            <td>群播（Multicast）</td>
-          </tr>
-          <tr>
-            <td>E</td>
-            <td><code>1111</code></td>
-            <td>240 ~ 255</td>
-            <td colspan="2">—</td>
-            <td>實驗預留</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- IP Class 視覺化卡片 -->
+      <div class="ip-class-grid">
+        <div class="ip-class-card class-a">
+          <div class="ip-class-name">A</div>
+          <div class="ip-class-range">0 ~ 127</div>
+          <div class="ip-class-hosts">16,777,214 主機</div>
+          <div class="ip-class-badge badge-unicast">單點傳播</div>
+        </div>
+        <div class="ip-class-card class-b">
+          <div class="ip-class-name">B</div>
+          <div class="ip-class-range">128 ~ 191</div>
+          <div class="ip-class-hosts">65,534 主機</div>
+          <div class="ip-class-badge badge-unicast">單點傳播</div>
+        </div>
+        <div class="ip-class-card class-c">
+          <div class="ip-class-name">C</div>
+          <div class="ip-class-range">192 ~ 223</div>
+          <div class="ip-class-hosts">254 主機</div>
+          <div class="ip-class-badge badge-unicast">單點傳播</div>
+        </div>
+        <div class="ip-class-card class-d">
+          <div class="ip-class-name">D</div>
+          <div class="ip-class-range">224 ~ 239</div>
+          <div class="ip-class-hosts">—</div>
+          <div class="ip-class-badge badge-multicast">群播</div>
+        </div>
+        <div class="ip-class-card class-e">
+          <div class="ip-class-name">E</div>
+          <div class="ip-class-range">240 ~ 255</div>
+          <div class="ip-class-hosts">—</div>
+          <div class="ip-class-badge badge-reserved">實驗預留</div>
+        </div>
+      </div>
+
+      <!-- 首碼說明 -->
+      <div class="concept-card">
+        <div class="concept-card-title">如何用首碼快速判斷類別？</div>
+        <div class="ip-header-bar" style="margin-top:10px;">
+          <div class="ip-header-segment" style="background:#9ca3af;flex:1;">0<span>bit</span></div>
+          <div class="ip-header-segment" style="background:var(--ipv4-color);flex:1;">0<span>A</span></div>
+          <div class="ip-header-segment" style="background:#5b9fe8;flex:1;">10<span>B</span></div>
+          <div class="ip-header-segment" style="background:#7bb5f0;flex:1;">110<span>C</span></div>
+          <div class="ip-header-segment" style="background:#9090a0;flex:1;">1110<span>D</span></div>
+          <div class="ip-header-segment" style="background:#6b7280;flex:1;">1111<span>E</span></div>
+        </div>
+        <ul style="margin-top:0.5rem;">
+          <li><strong>A 類</strong>：第一位元為 <code>0</code> → 範圍 0~127</li>
+          <li><strong>B 類</strong>：前兩位元為 <code>10</code> → 範圍 128~191</li>
+          <li><strong>C 類</strong>：前三位元為 <code>110</code> → 範圍 192~223</li>
+          <li><strong>D 類</strong>：前四位元為 <code>1110</code> → 群播</li>
+          <li><strong>E 類</strong>：前四位元為 <code>1111</code> → 實驗預留</li>
+        </ul>
+      </div>
 
       <div class="concept-card">
         <div class="concept-card-title">網域位址 vs 廣播位址</div>
@@ -241,6 +168,12 @@
             <tr><td>C 類</td><td>X.Y.Z.0</td><td>X.Y.Z.255</td></tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 127.0.0.1 不是 A 類？</div>
+        <p>127.x.x.x 明明首位元是 127（≤127），但它是<strong>迴路位址（Loopback）</strong>，不屬於任何一般分類。這個範圍保留作本機測試用，資料不會離開本機。127.0.0.1 是最常見的迴路測試位址。</p>
       </div>
     </section>
 
@@ -272,13 +205,65 @@
         </table>
       </div>
 
-      <div class="highlight-box">
-        <strong>如何判斷兩台主機是否同網域？</strong><br>
-        將 IP 位址與網路遮罩做 <strong>AND 運算</strong>，結果相同 → 同一網域，可直接通訊。
-        <ul style="margin-top:0.5rem;margin-bottom:0;">
-          <li>例：<code>140.134.36.19 AND 255.255.255.0 = 140.134.36.0</code></li>
-          <li>例：<code>140.134.36.254 AND 255.255.255.0 = 140.134.36.0</code> → ✅ 同網域</li>
-        </ul>
+      <h3>如何判斷兩台主機是否同網域？</h3>
+      <p>將 IP 位址與網路遮罩做 <strong>AND 運算</strong>，結果相同 → 同一網域，可直接通訊。</p>
+
+      <!-- AND 運算視覺圖 -->
+      <div class="and-visual">
+        <div class="and-row label">
+          <span class="and-label">IP</span>
+          <span>140.134.36.19</span>
+        </div>
+        <div class="and-row mask">
+          <span class="and-label">AND</span>
+          <span>255.255.255.0</span>
+        </div>
+        <div class="and-row label">
+          <span class="and-label">遮罩</span>
+          <div class="and-operator">=</div>
+        </div>
+        <div class="and-row result">
+          <span class="and-label">結果</span>
+          <span>140.134.36.0 → <strong>網域 A</strong></span>
+        </div>
+        <div class="and-row label" style="margin-top:4px;">
+          <span class="and-label">IP</span>
+          <span>140.134.36.254</span>
+        </div>
+        <div class="and-row mask">
+          <span class="and-label">AND</span>
+          <span>255.255.255.0</span>
+        </div>
+        <div class="and-row label">
+          <span class="and-label">遮罩</span>
+          <div class="and-operator">=</div>
+        </div>
+        <div class="and-row result">
+          <span class="and-label">結果</span>
+          <span>140.134.36.0 → <strong>網域 A ✅</strong>（兩台同網域，可直接通訊）</span>
+        </div>
+        <div class="and-row ip" style="margin-top:4px; border-color: #f59e0b;">
+          <span class="and-label">IP</span>
+          <span>140.134.78.19</span>
+        </div>
+        <div class="and-row mask">
+          <span class="and-label">AND</span>
+          <span>255.255.255.0</span>
+        </div>
+        <div class="and-row label">
+          <span class="and-label">遮罩</span>
+          <div class="and-operator">=</div>
+        </div>
+        <div class="and-row result" style="background:#fef3c7; border-color:#f59e0b; color:#92400e;">
+          <span class="and-label">結果</span>
+          <span>140.134.78.0 → <strong>網域 B ✗</strong>（不同網域，需透過路由器）</span>
+        </div>
+      </div>
+
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 為何遮罩要用連續的 1 再連續的 0？</div>
+        <p>網路遮罩的功能是「把 IP 切成兩段」：前面是網路部分，後面是主機部分。如果 1 和 0 交錯，就無法明確切割。例如 <code>255.255.192.0</code>（/18）= <code>11111111.11111111.11000000.00000000</code>，前面的 18 位元是網路位元，後面 14 位元是主機位元。</p>
       </div>
     </section>
 
@@ -318,7 +303,7 @@
       </table>
 
       <h3>子網路遮罩速查表（B 類借位）</h3>
-      <table class="compare-table">
+      <table class="compare-table dense-table">
         <thead><tr><th>借位元數</th><th>子網路遮罩</th><th>/n</th><th>子網路數</th><th>每網路主機數</th></tr></thead>
         <tbody>
           <tr><td>1</td><td><code>255.255.128.0</code></td><td>/17</td><td>2</td><td>32,766</td></tr>
@@ -338,6 +323,12 @@
           <tr><td>15–16</td><td colspan="2">不合用</td><td colspan="2">—</td></tr>
         </tbody>
       </table>
+
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 /30 為何只剩 2 個可用 IP？</div>
+        <p>一個 /30 網段共有 4 個 IP（如 192.168.1.0/30）：<code>192.168.1.0</code> 是網域位址、<code>192.168.1.3</code> 是廣播位址，兩者都不能給主機用，所以只剩 <code>192.168.1.1</code> 和 <code>192.168.1.2</code> 兩個可用。這常用在點對點連結（如兩台路由器直連）。</p>
+      </div>
     </section>
 
     <!-- ══════════════════════════════════════
@@ -387,17 +378,17 @@
     <section>
       <h2 id="s7">📌 7｜保留位址</h2>
 
-      <table class="compare-table reserved-table">
+      <table class="compare-table">
         <thead><tr><th>IP 網域</th><th>保留目的</th></tr></thead>
         <tbody>
           <tr><td><code>0.0.0.0/8</code></td><td>本網域（"This" Network）</td></tr>
           <tr><td><code>10.0.0.0/8</code></td><td>A 類私人使用（Private-Use Networks）</td></tr>
-          <tr><td><code>127.0.0.0/8</code></td><td>迴路回測（Loopback Test）</td></tr>
-          <tr><td><code>169.254.0.0/16</code></td><td>鏈結區域（Link Local）</td></tr>
+          <tr><td><code>127.0.0.0/8</code></td><td>迴路測試（Loopback Test）</td></tr>
+          <tr><td><code>169.254.0.0/16</code></td><td>鏈結區域（Link Local）— DHCP 無回應時自動分配</td></tr>
           <tr><td><code>172.16.0.0/12</code></td><td>B 類私人使用（Private-Use Networks）</td></tr>
           <tr><td><code>192.168.0.0/16</code></td><td>C 類私人使用（Private-Use Networks）</td></tr>
           <tr><td><code>192.0.2.0/24</code></td><td>測試網路（Test-Net）</td></tr>
-          <tr><td><code>255.255.255.255</code></td><td>區域廣播位址</td></tr>
+          <tr><td><code>255.255.255.255</code></td><td>區域廣播位址（定向廣播）</td></tr>
         </tbody>
       </table>
 
@@ -412,14 +403,20 @@
       <table class="compare-table" style="margin-top:1rem;">
         <thead><tr><th>類別</th><th>私有 IP 範圍</th><th>適用規模</th></tr></thead>
         <tbody>
-          <tr><td>A 類</td><td><code>10.0.0.0/8</code></td><td>大型網路</td></tr>
-          <tr><td>B 類</td><td><code>172.16.0.0/12</code></td><td>中型網路</td></tr>
-          <tr><td>C 類</td><td><code>192.168.0.0/16</code></td><td>小型網路</td></tr>
+          <tr><td>A 類</td><td><code>10.0.0.0/8</code></td><td>大型網路（最多 16,777,214 部主機）</td></tr>
+          <tr><td>B 類</td><td><code>172.16.0.0/12</code></td><td>中型網路（最多 1,048,574 部主機）</td></tr>
+          <tr><td>C 類</td><td><code>192.168.0.0/16</code></td><td>小型網路（最多 65,534 部主機）</td></tr>
         </tbody>
       </table>
 
       <div class="highlight-box">
         <strong>Loopback 測試</strong>：<code>ping 127.0.0.1</code> 檢測本機 TCP/IP 設定是否正確。訊號只在本機進行，不會傳到網路。
+      </div>
+
+      <!-- 延伸學習：Link Local -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 169.254.x.x 是怎麼來的？</div>
+        <p>當 DHCP 用戶端無法從 DHCP 伺服器取得 IP 時，Windows 會自動分配一個 Link Local 位址（APIPA）。這是一種自我保護機制，讓區域網路內的裝置即使沒有 DHCP 也能通訊（只在同一網段內）。</p>
       </div>
     </section>
 
@@ -446,6 +443,32 @@
           <li>結合私有 IP：10.0.0.0/8、172.16.0.0/12、192.168.0.0/16</li>
         </ul>
       </div>
+
+      <h3>DHCP 取得 IP 的流程（四步握手）</h3>
+      <div class="step-flow">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>DHCP Discover</strong> — 用戶端廣播「我在找 DHCP 伺服器」<br><span class="timeline-note">使用 0.0.0.0（尚未有 IP），目標 255.255.255.255</span></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>DHCP Offer</strong> — DHCP 伺服器回應「我有 IP 可以給你」<br><span class="timeline-note">包含提議的 IP、租約期限、子網路遮罩等</span></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>DHCP Request</strong> — 用戶端選擇（若有多個伺服器回應）<br><span class="timeline-note">廣播告知選定的伺服器，其他伺服器收回提議</span></div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>DHCP Ack</strong> — 伺服器確認「好，這些設定現在是你的」<br><span class="timeline-note">正式發放 IP、DHCP server 記錄已分配</span></div>
+        </div>
+      </div>
+
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 DHCP 租約與更新</div>
+        <p>DHCP 分配的 IP 有「租約期限」（如 8 天）。用戶端在期限過半時會嘗試更新（Request 送给原伺服器）。若原伺服器不可達，則在期限到達前廣播重新 Discover。這讓 IP 位址可以被回收再用。</p>
+      </div>
     </section>
 
     <!-- ══════════════════════════════════════
@@ -469,7 +492,7 @@
           <thead><tr><th>類型</th><th>說明</th></tr></thead>
           <tbody>
             <tr><td>正向名稱查詢</td><td>由網域名稱查出 IP 位址</td></tr>
-            <tr><td>反向名稱查詢</td><td>由 IP 位址查得網域名稱</td></tr>
+            <tr><td>反向名稱查詢</td><td>由 IP 位址查得網域名稱（需向 <code>in-addr.arpa</code> 查詢）</td></tr>
           </tbody>
         </table>
       </div>
@@ -490,9 +513,32 @@
         </tbody>
       </table>
 
-      <div class="highlight-box">
-        <strong>DNS 運作流程</strong>（遞迴查詢）<br>
-        用戶端 → 本機 DNS → 根伺服器 → TLD 伺服器 → 網域伺服器 → 回覆 IP 位址
+      <h3>DNS 遞迴查詢流程</h3>
+      <div class="dns-flow">
+        <div class="dns-node">
+          <div class="dns-node-name">用戶端</div>
+          <div class="dns-node-desc">輸入 www.example.com</div>
+        </div>
+        <div class="dns-arrow">→</div>
+        <div class="dns-node">
+          <div class="dns-node-name">本機 DNS</div>
+          <div class="dns-node-desc">檢查快取 / 無則轉送</div>
+        </div>
+        <div class="dns-arrow">→</div>
+        <div class="dns-node">
+          <div class="dns-node-name">根伺服器</div>
+          <div class="dns-node-desc">全球 13 組，回覆 .com 的 TLD</div>
+        </div>
+        <div class="dns-arrow">→</div>
+        <div class="dns-node">
+          <div class="dns-node-name">.com TLD</div>
+          <div class="dns-node-desc">回覆 example.com 的 NS</div>
+        </div>
+        <div class="dns-arrow">→</div>
+        <div class="dns-node">
+          <div class="dns-node-name">example.com</div>
+          <div class="dns-node-desc">權威 Name Server，回覆 IP</div>
+        </div>
       </div>
 
       <h3>DNS 伺服器角色</h3>
@@ -501,9 +547,15 @@
         <tbody>
           <tr><td>Resolver</td><td>DNS Client，提出名稱解析請求</td></tr>
           <tr><td>Name Server</td><td>DNS Server，接受要求，回覆答案</td></tr>
-          <tr><td>根伺服器</td><td>記錄各 TLD 伺服器 IP，全球 13 組</td></tr>
+          <tr><td>根伺服器</td><td>記錄各 TLD 伺服器 IP，全球 13 組（A–M）</td></tr>
         </tbody>
       </table>
+
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 DNS 快取與 TTL</div>
+        <p>DNS 記錄有 TTL（存活時間），告訴回應者「這筆記錄可以快取多久」。TTL 越長，伺服器壓力越小但更新越慢；TTL 越短，更新快但上游負擔大。修改 DNS 後需要等 TTL 過期新資料才會完全生效。</p>
+      </div>
     </section>
 
     <!-- ══════════════════════════════════════
@@ -512,14 +564,24 @@
     <section>
       <h2 id="s10">📌 10｜IP 協定標頭</h2>
 
-      <div class="header-diagram">
-<span class="field">Ver</span><span class="bits"> 4</span>│<span class="field">IHL</span><span class="bits"> 4</span>│<span class="field">TOS/DS</span><span class="bits"> 8</span>│<span class="field">TL（Total Length）</span><span class="bits"> 16</span> │
-<span class="field">ID</span><span class="bits"> 16</span> │ <span class="field">FLAGS</span><span class="bits"> 3</span> │ <span class="field">FO</span><span class="bits"> 13</span> │
-<span class="field">TTL</span><span class="bits"> 8</span> │ <span class="field">PROT</span><span class="bits"> 8</span> │ <span class="field">HC（Checksum）</span><span class="bits"> 16</span> │
-<span class="field">SA（Source Address）</span><span class="bits"> 32</span> │
-<span class="field">DA（Destination Address）</span><span class="bits"> 32</span> │
-<span class="field">OPT（Options）</span><span class="bits"> 可變</span> │
-<span class="note">（單位：bits，括號內為欄位寬度）</span>
+      <!-- IPv4 標頭視覺化比例圖 -->
+      <div class="frame-structure">
+        <div class="frame-label">IPv4 Header（20~60 Bytes）</div>
+        <div class="frame-bar" style="min-height:40px;">
+          <div class="frame-segment" style="flex:1;">Ver<br><span>4b</span></div>
+          <div class="frame-segment" style="flex:1;background:#5b9fe8;">IHL<br><span>4b</span></div>
+          <div class="frame-segment" style="flex:2;background:#7bb5f0;">TOS<br><span>8b</span></div>
+          <div class="frame-segment data" style="flex:4;">Total Length<br><span>16b</span></div>
+          <div class="frame-segment" style="flex:3;background:#3a7fc1;">ID<br><span>16b</span></div>
+          <div class="frame-segment" style="flex:0.5;background:#5a9fd4;">Flags<br><span>3b</span></div>
+          <div class="frame-segment" style="flex:3;background:#4a8fc5;">Fragment Offset<br><span>13b</span></div>
+          <div class="frame-segment" style="flex:2;background:#2d6ca8;">TTL<br><span>8b</span></div>
+          <div class="frame-segment" style="flex:2;background:#3a7fc1;">Protocol<br><span>8b</span></div>
+          <div class="frame-segment" style="flex:4;background:#5b9fd4;">Header Checksum<br><span>16b</span></div>
+          <div class="frame-segment" style="flex:8;background:var(--ipv4-color);">Source IP<br><span>32b</span></div>
+          <div class="frame-segment" style="flex:8;background:#5b9fe8;">Dest IP<br><span>32b</span></div>
+        </div>
+        <div class="frame-total">20 Bytes（無 Options）~ 60 Bytes（最大 Options）</div>
       </div>
 
       <div class="layer-card">
@@ -562,7 +624,11 @@
       <div class="layer-card">
         <div class="layer-card-num">8</div>
         <div class="layer-card-name">TTL（存活時間）— 8 位元</div>
-        <div class="layer-card-desc">以秒為單位。抵達路由器時減 1，數值為 0 時封包被丟棄</div>
+        <div class="layer-card-desc">
+          <strong>Hop Count（跳數計數）</strong>，每經過一個路由器就遞減 1。<br>
+          數值為 0 時封包被丟棄，並回傳 ICMP Time Exceeded 訊息。<br>
+          原始設計以秒為單位，但實際上所有路由器都會減 1，所以現在就是跳數。
+        </div>
       </div>
 
       <div class="layer-card">
@@ -574,9 +640,9 @@
             <tr><td>1</td><td>ICMP</td><td>Internet Control Message Protocol</td></tr>
             <tr><td>6</td><td>TCP</td><td>Transmission Control Protocol</td></tr>
             <tr><td>17</td><td>UDP</td><td>User Datagram Protocol</td></tr>
-            <tr><td>41</td><td>IPv6</td><td>Internet Protocol version 6</td></tr>
+            <tr><td>41</td><td>IPv6</td><td>Internet Protocol version 6（封裝）</td></tr>
             <tr><td>47</td><td>GRE</td><td>Generic Routing Encapsulation</td></tr>
-            <tr><td>50/51</td><td>ESP/AH</td><td>安全性標頭</td></tr>
+            <tr><td>50/51</td><td>ESP/AH</td><td>安全性標頭（IPsec）</td></tr>
             <tr><td>89</td><td>OSPF</td><td>Open Shortest Path First</td></tr>
           </tbody>
         </table>
@@ -585,7 +651,7 @@
       <div class="layer-card">
         <div class="layer-card-num">10</div>
         <div class="layer-card-name">HC（Header Checksum）— 16 位元</div>
-        <div class="layer-card-desc">僅檢查 IP 標頭，不含資料。1 補數加總演算法</div>
+        <div class="layer-card-desc">僅檢查 IP 標頭，不含資料。1 補數加總演算法（每個路由器都會重新計算，因為 TTL 改變了）</div>
       </div>
 
       <div class="layer-card">
@@ -596,8 +662,14 @@
 
       <div class="layer-card">
         <div class="layer-card-num">選項</div>
-        <div class="layer-card-name">OPT（Options）— 可變長度</div>
+        <div class="layer-card-name">OPT（Options）— 可變長度（最多 40 Bytes）</div>
         <div class="layer-card-desc">記錄路徑（Record Route）、源路徑（Source Routing）、時間戳記（Timestamp）、安全標記</div>
+      </div>
+
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 為何 TTL 每次減 1 而不是減實際秒數？</div>
+        <p>原本 TTL 的設計是「以秒為單位」，每經過一個路由器就減去該路由器耗費的秒數。但路由器廠商發現很難準確測量「耗費的秒數」，所以多數設備都是每跳直接減 1。因此 TTL 的實際意義就是「允許經過的最大路由器數量」。</p>
       </div>
     </section>
 
@@ -623,12 +695,18 @@
       <table class="compare-table">
         <thead><tr><th>選項</th><th>名稱</th><th>說明</th></tr></thead>
         <tbody>
-          <tr><td>記錄路徑</td><td>Record Route</td><td>追蹤封包行經的路徑</td></tr>
+          <tr><td>記錄路徑</td><td>Record Route</td><td>追蹤封包行經的路徑（每個路由器填入自己 IP）</td></tr>
           <tr><td>鬆散源路徑</td><td>Loose Source Routing</td><td>指定大致路徑，允許中間其他節點</td></tr>
-          <tr><td>嚴格源路徑</td><td>Strict Source Routing</td><td>精確指定每一個節點</td></tr>
+          <tr><td>嚴格源路徑</td><td>Strict Source Routing</td><td>精確指定每一個節點，若無法直連則失敗</td></tr>
           <tr><td>時間戳記</td><td>Timestamp</td><td>記錄路徑節點 IP 與時間</td></tr>
         </tbody>
       </table>
+
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 為何選擇項很少被使用？</div>
+        <p>Record Route 和 Source Routing 涉及安全考量（讓攻擊者可以窺探路徑），多數路由器預設會忽略這些選項。另外，選擇項會讓路由器處理速度變慢，IMH 值變大，實際網路環境中很少使用。</p>
+      </div>
     </section>
 
     <!-- ══════════════════════════════════════
@@ -700,7 +778,7 @@
           <tr><td><code>0000 0000</code></td><td>保留作 IPv4 配置</td></tr>
           <tr><td><code>001</code></td><td>可聚集全球性單點傳播位址（主要使用）</td></tr>
           <tr><td><code>1111 1110 0</code></td><td>區域連結單點傳播位址（Link-Local）</td></tr>
-          <tr><td><code>1111 1110 11</code></td><td>區域站台單點傳播位址（Site-Local）</td></tr>
+          <tr><td><code>1111 1110 11</code></td><td>區域站台單點傳播位址（Site-Local，已廢除）</td></tr>
           <tr><td><code>1111 1111</code></td><td>多點群播位址（Multicast）</td></tr>
         </tbody>
       </table>
@@ -711,33 +789,46 @@
         <tbody>
           <tr><td><code>::</code>（0:0:0:0:0:0:0:0）</td><td>任意位址，類似 IPv4 的 0.0.0.0</td></tr>
           <tr><td><code>::1</code>（0:0:0:0:0:0:0:1）</td><td>迴路位址，類似 IPv4 的 127.0.0.1</td></tr>
-          <tr><td>IPv4 相容位址</td><td>左邊加 96 位元 0，右邊為 IPv4 位址</td></tr>
+          <tr><td>IPv4 相容位址</td><td>左邊加 96 位元 0，右邊為 IPv4 位址（例：<code>::140.134.10.1</code>）</td></tr>
           <tr><td>6to4 位址</td><td>首碼 <code>2002</code> + 32 位元 IPv4 + 子網路欄位 + IID</td></tr>
+          <tr><td>Link-Local</td><td><code>fe80::/10</code>，自動設定，不用 DHCP</td></tr>
         </tbody>
       </table>
     </section>
 
     <!-- ══════════════════════════════════════
-         14｜IPv6 傳播方式（已整合到 12）
          15｜IPv6 標頭
     ══════════════════════════════════════ -->
     <section class="ipv6-section">
       <h2 id="s15">📌 15｜IPv6 標頭與延伸標頭</h2>
 
-      <div class="header-diagram">
-<span class="field">Ver</span><span class="bits"> 4</span>│<span class="field">Traffic Class</span><span class="bits"> 8</span>│<span class="field">Flow Label</span><span class="bits"> 20</span> │
-<span class="field">Payload Length</span><span class="bits"> 16</span> │
-<span class="field">Next Header</span><span class="bits"> 8</span> │ <span class="field">Hop Limit</span><span class="bits"> 8</span> │
-<span class="field">Source Address</span><span class="bits"> 128</span> │
-<span class="field">Destination Address</span><span class="bits"> 128</span> │
-<span class="note">（主標頭固定 40 位元組）</span>
+      <!-- IPv6 標頭視覺化比例圖 -->
+      <div class="frame-structure">
+        <div class="frame-label">IPv6 Header（固定 40 Bytes）</div>
+        <div class="frame-bar" style="min-height:40px;">
+          <div class="frame-segment" style="flex:1;background:var(--ipv6-color);">Ver<br><span>4b</span></div>
+          <div class="frame-segment" style="flex:2;background:#0e8fa8;">Traffic Class<br><span>8b</span></div>
+          <div class="frame-segment data" style="flex:5;background:#0a7a90;">Flow Label<br><span>20b</span></div>
+          <div class="frame-segment" style="flex:4;background:#0a7a90;">Payload Length<br><span>16b</span></div>
+          <div class="frame-segment" style="flex:2;background:#0e8fa8;">Next Header<br><span>8b</span></div>
+          <div class="frame-segment" style="flex:2;background:var(--ipv6-color);">Hop Limit<br><span>8b</span></div>
+          <div class="frame-segment" style="flex:32;background:#0a6a7a;">Source Address<br><span>128b</span></div>
+          <div class="frame-segment" style="flex:32;background:#085868;">Dest Address<br><span>128b</span></div>
+        </div>
+        <div class="frame-total">固定 40 Bytes — 比 IPv4 更精簡，處理更快</div>
       </div>
 
-      <div class="layer-card">
-        <div class="layer-card-num">與 IPv4 的差異</div>
-        <div class="layer-card-desc">
-          IPv6 標頭欄位比 IPv4 少很多（固定 8 欄位），長度固定 40 位元組，<br>
-          封包處理更單純、效能更好。延伸標頭（如有）由 Next Header 引導。
+      <!-- IPv4 vs IPv6 標頭大小對比 -->
+      <div class="two-col-grid">
+        <div class="layer-card" style="border-left-color:var(--ipv4-color);">
+          <div class="layer-card-num">IPv4</div>
+          <div class="layer-card-name">20 ~ 60 Bytes（可變）</div>
+          <div class="layer-card-desc">含可變長度 Options，IHL 影響實際大小。<br>每個路由器幾乎都會修改 TTL，所以 Header Checksum 每次都要重新計算。</div>
+        </div>
+        <div class="layer-card" style="border-left-color:var(--ipv6-color);">
+          <div class="layer-card-num">IPv6</div>
+          <div class="layer-card-name">固定 40 Bytes</div>
+          <div class="layer-card-desc">無 Options，延伸標頭只在需要時才附加。<br>無 Header Checksum（讓上層如 TCP/UDP 負責），路由器處理更快速。</div>
         </div>
       </div>
 
@@ -745,12 +836,12 @@
       <table class="compare-table">
         <thead><tr><th>號碼</th><th>名稱</th><th>用途</th></tr></thead>
         <tbody>
-          <tr><td>0</td><td>Hop-by-Hop 選項標頭</td><td>每個節點都需檢查</td></tr>
-          <tr><td>43</td><td>路由（Routing）標頭</td><td>指定需經過的節點</td></tr>
-          <tr><td>44</td><td>封包分片（Fragmentation）標頭</td><td>分割封包</td></tr>
-          <tr><td>50</td><td>ESP 標頭</td><td>封裝安全性加密</td></tr>
-          <tr><td>51</td><td>認證（Authentication）標頭</td><td>身份認證</td></tr>
-          <tr><td>58</td><td>ICMPv6</td><td>IPv6 使用的 ICMP</td></tr>
+          <tr><td>0</td><td>Hop-by-Hop 選項標頭</td><td>每個節點都需檢查（如 Jumbo Packets）</td></tr>
+          <tr><td>43</td><td>路由（Routing）標頭</td><td>指定需經過的節點（類似 IPv4 Source Routing）</td></tr>
+          <tr><td>44</td><td>封包分片（Fragmentation）標頭</td><td>分割封包（只在來源端進行）</td></tr>
+          <tr><td>50</td><td>ESP 標頭</td><td>封裝安全性加密（IPsec）</td></tr>
+          <tr><td>51</td><td>認證（Authentication）標頭</td><td>身份認證（IPsec）</td></tr>
+          <tr><td>58</td><td>ICMPv6</td><td>IPv6 使用的 ICMP（NDP、MLD）</td></tr>
           <tr><td>135</td><td>Mobile IPv6 標頭</td><td>移動節點使用</td></tr>
         </tbody>
       </table>
@@ -773,7 +864,8 @@
             <tr><td>廣播</td><td>有 Broadcast</td><td>無，以 Multicast 取代</td></tr>
             <tr><td>安全性</td><td>IPsec（可選）</td><td>IPsec（內建）</td></tr>
             <tr><td>QoS</td><td>TOS 欄位</td><td>Traffic Class + Flow Label</td></tr>
-            <tr><td>行動通訊</td><td>需轉接，延遲高</td><td>Mobile IPv6，延遲低</td></tr>
+            <tr><td>Fragmentation</td><td>路由器可分片</td><td>僅來源端分片</td></tr>
+            <tr><td>TTL</td><td>Hop count（8 位元）</td><td>Hop Limit（8 位元）</td></tr>
           </tbody>
         </table>
       </div>
