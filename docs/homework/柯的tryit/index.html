@@ -489,7 +489,6 @@
 
     // Snake
     const skinFn = selectedSkin.draw;
-    if (!skinFn) { console.warn('[Snake] NO skinFn!'); return; }
     snake.forEach((seg, i) => {
       skinFn(ctx, seg.x*sz, seg.y*sz, sz, i === 0, dir);
     });
@@ -769,9 +768,6 @@
   function boot() {
     resize();
     selectedSkin = SKINS.find(s => s.id === LS.selectedSkin) || SKINS[0];
-    console.log('[Snake] boot selectedSkin:', selectedSkin?.id, 'draw fn:', typeof selectedSkin?.draw);
-    console.log('[Snake] cellSize:', cellSize, 'canvas:', canvas.width, canvas.height);
-    console.log('[Snake] snake init:', JSON.stringify(snake));
     checkSkinUnlocks();
     buildSkinBar();
     showStartScreen();
