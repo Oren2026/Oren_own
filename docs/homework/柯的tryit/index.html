@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>貪吃蛇</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #1a1a2e;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #gameCanvas {
+      display: block;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    #ui {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 14px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    #score-display { font-weight: 700; font-size: 16px; }
+    #speed-indicator {
+      font-size: 12px;
+      color: #ffd700;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    #speed-indicator.active { opacity: 1; }
+    #overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.75);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      z-index: 20;
+      cursor: pointer;
+    }
+    #overlay.hidden { display: none; }
+    #overlay h1 { font-size: 32px; margin-bottom: 8px; }
+    #overlay p { font-size: 14px; color: #aaa; margin-bottom: 24px; }
+    #overlay .final-score {
+      font-size: 48px;
+      font-weight: 900;
+      color: #ffd700;
+      margin: 8px 0;
+    }
+    #overlay .high-score {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 24px;
+    }
+    #overlay .tap-hint {
+      font-size: 13px;
+      color: #666;
+      margin-top: 20px;
+    }
+    #skin-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 16px;
+      background: rgba(0,0,0,0.5);
+      z-index: 10;
+      pointer-events: all;
+    }
+    .skin-btn {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .skin-btn.selected { border-color: #ffd700; transform: scale(1.15); }
+    .skin-btn.locked { opacity: 0.4; filter: grayscale(1); cursor: not-allowed; }
+    .skin-btn.unlocked { cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div id="ui">
+    <div id="score-display">分數: 0</div>
+    <div id="speed-indicator">⚡ 加速中</div>
+  </div>
+  <canvas id="gameCanvas"></canvas>
+  <div id="overlay">
+    <h1>🐍 貪吃蛇</h1>
+    <p>滑動控制方向</p>
+    <div id="final-info" style="display:none; text-align:center;">
+      <div class="final-score" id="final-score-text">0</div>
+      <div class="high-score" id="high-score-text">歷史最高: 0</div>
+    </div>
+    <div id="start-hint">點擊開始</div>
+    <div class="tap-hint" id="tap-hint"></div>
+  </div>
+  <div id="skin-bar"></div>
+
+  <script>
+  // ─────────────────────────────────────────────
+  // CONSTANTS
+  // ─────────────────────────────────────────────
+  const GRID = 20;
+  const BASE_TICK = 130;      // ms per move (normal)
+  const FAST_TICK = 65;       // ms per move (speed boost)
+  const SPEED_DURATION = 15000; // 15 seconds
+
+  const ITEM_FOOD   = 0;
+  const ITEM_COIN   = 1;
+  const ITEM_SPEED  = 2;
+
+  // Skin definitions: id, name, unlockScore, draw function
+  const SKINS = [
+    {
+      id: 'classic-green', name: '經典綠', unlock: 0,
+      draw: (ctx, x, y, sz, isHead, dir) => {
+        const g = ctx.createLinearGradient(x, y, x+sz, y+sz);
+        g.addColorStop(0, '#2ecc71'); g.addColorStop(1, '#27ae60');
+        ctx.fillStyle = g;
+        ctx.fillRect(x+1, y+1, sz-2, sz-2);
+        if (isHead) {
+          ctx.fillStyle = '#1a1a2e';
+          const cx = x+sz/2, cy = y+sz/2;
+          const eye = sz*0.2;
+          if (dir === 0) { // right
+            ctx.fillRect(cx+eye, cy-eye, eye, eye);
+            ctx.fillRect(cx+eye, cy+2, eye, eye);
+          } else if (dir === 1) { // down
+            ctx.fillRect(cx-eye, cy+eye, eye, eye);
+            ctx.fillRect(cx+2, cy+eye, eye, eye);
+          } else if (dir === 2) { // left
+            ctx.fillRect(cx-eye*2, cy-eye, eye, eye);
+            ctx.fillRect(cx-eye*2, cy+2, eye, eye);
+          } else { // up
+            ctx.fillRect(cx-eye, cy-eye*2, eye, eye);
+            ctx.fillRect(cx+2, cy-eye*2, eye, eye);
+          }
+        }
+      }
+    },
+    {
+      id: 'neon-purple', name: '霓虹紫', unlock: 50,
+      draw: (ctx, x, y, sz, isHead) => {
+        ctx.shadowBlur = isHead ? 12 : 6;
+        ctx.shadowColor = '#9b59b6';
+        ctx.fillStyle = '#8e44ad';
+        ctx.fillRect(x+1, y+1, sz-2, sz-2);
+        ctx.shadowBlur = 0;
+      }
+    },
+    {
+      id: 'lava-orange', name: '熔岩橙', unlock: 150,
+      draw: (ctx, x, y, sz, isHead) => {
+        const g = ctx.createLinearGradient(x, y, x+sz, y+sz);
+        g.addColorStop(0, '#e74c3c'); g.addColorStop(0.5, '#e67e22'); g.addColorStop(1, '#e74c3c');
+        ctx.fillStyle = g;
+        ctx.fillRect(x+1, y+1, sz-2, sz-2);
+      }
+    },
+    {
+      id: 'ice-blue', name: '冰晶藍', unlock: 300,
+      draw: (ctx, x, y, sz, isHead) => {
+        ctx.globalAlpha = 0.75;
+        const g = ctx.createLinearGradient(x, y, x+sz, y+sz);
+        g.addColorStop(0, '#5dade2'); g.addColorStop(1, '#3498db');
+        ctx.fillStyle = g;
+        ctx.fillRect(x+1, y+1, sz-2, sz-2);
+        ctx.globalAlpha = 1;
+      }
+    },
+    {
+      id: 'golden-dragon', name: '黃金龍', unlock: 500,
+      draw: (ctx, x, y, sz, isHead) => {
+        const g = ctx.createLinearGradient(x, y, x+sz, y+sz);
+        g.addColorStop(0, '#f1c40f'); g.addColorStop(0.5, '#f39c12'); g.addColorStop(1, '#f1c40f');
+        ctx.fillStyle = g;
+        ctx.fillRect(x+1, y+1, sz-2, sz-2);
+        if (isHead) {
+          ctx.fillStyle = '#c0392b';
+          ctx.fillRect(x+sz*0.3, y+sz*0.3, sz*0.15, sz*0.15);
+          ctx.fillRect(x+sz*0.55, y+sz*0.3, sz*0.15, sz*0.15);
+        }
+      }
+    }
+  ];
+
+  // ─────────────────────────────────────────────
+  // PERSISTENCE
+  // ─────────────────────────────────────────────
+  const LS = {
+    get highScore() { return parseInt(localStorage.getItem('snakeHS') || '0'); },
+    set highScore(v) { localStorage.setItem('snakeHS', String(v)); },
+    get unlockedSkins() {
+      return JSON.parse(localStorage.getItem('snakeUS') || '["classic-green"]');
+    },
+    set unlockedSkins(v) { localStorage.setItem('snakeUS', JSON.stringify(v)); },
+    get selectedSkin() { return localStorage.getItem('snakeSS') || 'classic-green'; },
+    set selectedSkin(v) { localStorage.setItem('snakeSS', v); }
+  };
+
+  // ─────────────────────────────────────────────
+  // GAME STATE
+  // ─────────────────────────────────────────────
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let cellSize = 0;
+  let state = 'waiting'; // waiting | playing | gameover
+  let snake = [];         // [{x, y}] head = [0]
+  let dir = 0;            // 0=right 1=down 2=left 3=up
+  let nextDir = 0;
+  let score = 0;
+  let items = [];         // [{x, y, type}]
+  let tickTimer = null;
+  let speedEndTime = 0;
+  let lastDirChangeTime = 0;
+  let tickInterval = BASE_TICK;
+  let selectedSkin = SKINS[0];
+
+  // ─────────────────────────────────────────────
+  // INIT
+  // ─────────────────────────────────────────────
+  function resize() {
+    const maxW = window.innerWidth;
+    const maxH = window.innerHeight - 80; // account for top/bottom UI
+    const sz = Math.floor(Math.min(maxW, maxH) / GRID);
+    cellSize = sz;
+    canvas.width = sz * GRID;
+    canvas.height = sz * GRID;
+  }
+
+  function initGame() {
+    snake = [
+      {x: 5, y: 10},
+      {x: 4, y: 10},
+      {x: 3, y: 10}
+    ];
+    dir = 0; nextDir = 0;
+    score = 0;
+    items = [];
+    speedEndTime = 0;
+    tickInterval = BASE_TICK;
+    spawnFood();
+    updateScore();
+    setSpeedIndicator(false);
+  }
+
+  function startGame() {
+    initGame();
+    state = 'playing';
+    document.getElementById('overlay').classList.add('hidden');
+    clearInterval(tickTimer);
+    tickTimer = setInterval(gameTick, tickInterval);
+  }
+
+  function endGame() {
+    state = 'gameover';
+    clearInterval(tickTimer);
+    if (score > LS.highScore) LS.highScore = score;
+    checkSkinUnlocks();
+    showGameOver();
+  }
+
+  // ─────────────────────────────────────────────
+  // SPAWN LOGIC
+  // ─────────────────────────────────────────────
+  function randEmpty() {
+    const occupied = new Set();
+    snake.forEach(s => occupied.add(`${s.x},${s.y}`));
+    items.forEach(i => occupied.add(`${i.x},${i.y}`));
+    let pos;
+    let tries = 0;
+    do {
+      pos = {x: Math.floor(Math.random()*GRID), y: Math.floor(Math.random()*GRID)};
+      tries++;
+    } while (occupied.has(`${pos.x},${pos.y}`) && tries < 200);
+    return pos;
+  }
+
+  function spawnFood() {
+    items.push({...randEmpty(), type: ITEM_FOOD});
+  }
+
+  function maybeSpawnCoin() {
+    // ~1-2 coins per game on average; spawn with 30% chance after food
+    if (Math.random() < 0.30) {
+      const pos = randEmpty();
+      items.push({...pos, type: ITEM_COIN});
+    }
+  }
+
+  function maybeSpawnSpeed() {
+    // ~2-3 speed items per game; spawn with 40% chance after food
+    if (Math.random() < 0.40) {
+      const pos = randEmpty();
+      items.push({...pos, type: ITEM_SPEED});
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // TICK
+  // ─────────────────────────────────────────────
+  function gameTick() {
+    if (state !== 'playing') return;
+
+    // Check speed boost expiry
+    if (speedEndTime > 0 && Date.now() > speedEndTime) {
+      speedEndTime = 0;
+      tickInterval = BASE_TICK;
+      clearInterval(tickTimer);
+      tickTimer = setInterval(gameTick, tickInterval);
+      setSpeedIndicator(false);
+    }
+
+    dir = nextDir;
+    const head = snake[0];
+    let nx = head.x, ny = head.y;
+
+    if (dir === 0) nx++;
+    else if (dir === 1) ny++;
+    else if (dir === 2) nx--;
+    else if (dir === 3) ny--;
+
+    // Wall collision
+    if (nx < 0 || nx >= GRID || ny < 0 || ny >= GRID) {
+      endGame(); return;
+    }
+
+    // Self collision (skip tail tip that will move)
+    for (let i = 0; i < snake.length - 1; i++) {
+      if (snake[i].x === nx && snake[i].y === ny) {
+        endGame(); return;
+      }
+    }
+
+    // Move snake
+    snake.unshift({x: nx, y: ny});
+    const tail = snake.pop();
+
+    // Item collision
+    let ate = false;
+    for (let i = items.length - 1; i >= 0; i--) {
+      const it = items[i];
+      if (it.x === nx && it.y === ny) {
+        items.splice(i, 1);
+        ate = true;
+
+        if (it.type === ITEM_FOOD) {
+          score += 10;
+          snake.push({...tail});
+          spawnFood();
+          maybeSpawnCoin();
+          maybeSpawnSpeed();
+        } else if (it.type === ITEM_COIN) {
+          score += 20; // 10 * 2
+        } else if (it.type === ITEM_SPEED) {
+          // Activate speed boost
+          speedEndTime = Date.now() + SPEED_DURATION;
+          tickInterval = FAST_TICK;
+          clearInterval(tickTimer);
+          tickTimer = setInterval(gameTick, tickInterval);
+          setSpeedIndicator(true);
+        }
+
+        updateScore();
+        break;
+      }
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // RENDER
+  // ─────────────────────────────────────────────
+  function render() {
+    const sz = cellSize;
+
+    // Background
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Grid lines (subtle)
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 0.5;
+    for (let i = 1; i < GRID; i++) {
+      ctx.beginPath();
+      ctx.moveTo(i*sz, 0); ctx.lineTo(i*sz, canvas.height);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, i*sz); ctx.lineTo(canvas.width, i*sz);
+      ctx.stroke();
+    }
+
+    // Items
+    items.forEach(it => {
+      const x = it.x * sz, y = it.y * sz;
+      if (it.type === ITEM_FOOD) {
+        ctx.font = `${sz*0.8}px serif`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('🍎', x+sz/2, y+sz/2+2);
+      } else if (it.type === ITEM_COIN) {
+        ctx.font = `${sz*0.75}px serif`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('🪙', x+sz/2, y+sz/2+2);
+      } else if (it.type === ITEM_SPEED) {
+        ctx.font = `${sz*0.75}px serif`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('⚡', x+sz/2, y+sz/2+2);
+      }
+    });
+
+    // Snake
+    const skinFn = selectedSkin.draw;
+    snake.forEach((seg, i) => {
+      skinFn(ctx, seg.x*sz, seg.y*sz, sz, i === 0, dir);
+    });
+
+    requestAnimationFrame(render);
+  }
+
+  // ─────────────────────────────────────────────
+  // UI
+  // ─────────────────────────────────────────────
+  function updateScore() {
+    document.getElementById('score-display').textContent = `分數: ${score}`;
+  }
+
+  function setSpeedIndicator(active) {
+    const el = document.getElementById('speed-indicator');
+    el.classList.toggle('active', active);
+  }
+
+  function showGameOver() {
+    const overlay = document.getElementById('overlay');
+    document.getElementById('final-info').style.display = 'block';
+    document.getElementById('final-score-text').textContent = score;
+    document.getElementById('high-score-text').textContent = `歷史最高: ${LS.highScore}`;
+    document.getElementById('start-hint').textContent = '點擊重新開始';
+    document.getElementById('tap-hint').textContent = '';
+    overlay.classList.remove('hidden');
+  }
+
+  function showStartScreen() {
+    const overlay = document.getElementById('overlay');
+    document.getElementById('final-info').style.display = 'none';
+    document.getElementById('start-hint').textContent = '點擊開始';
+    document.getElementById('tap-hint').textContent = '滑動控制方向';
+    overlay.classList.remove('hidden');
+  }
+
+  // ─────────────────────────────────────────────
+  // SKINS
+  // ─────────────────────────────────────────────
+  function checkSkinUnlocks() {
+    const unlocked = LS.unlockedSkins;
+    let changed = false;
+    SKINS.forEach(s => {
+      if (score >= s.unlock && !unlocked.includes(s.id)) {
+        unlocked.push(s.id);
+        changed = true;
+      }
+    });
+    if (changed) LS.unlockedSkins = unlocked;
+  }
+
+  function buildSkinBar() {
+    const bar = document.getElementById('skin-bar');
+    bar.innerHTML = '';
+    const unlocked = LS.unlockedSkins;
+    const hs = LS.highScore;
+
+    SKINS.forEach(s => {
+      const btn = document.createElement('div');
+      btn.className = 'skin-btn';
+      btn.textContent = '🐍';
+      btn.title = s.name + (s.unlock > 0 ? ` (${s.unlock}分解鎖)` : ' (預設)');
+
+      if (unlocked.includes(s.id)) {
+        if (s.id === LS.selectedSkin) btn.classList.add('selected');
+        btn.classList.add('unlocked');
+        btn.addEventListener('click', () => {
+          LS.selectedSkin = s.id;
+          selectedSkin = s;
+          buildSkinBar();
+        });
+      } else {
+        btn.classList.add('locked');
+        btn.title = `🔒 ${s.name} (需 ${s.unlock} 分)`;
+      }
+
+      bar.appendChild(btn);
+    });
+  }
+
+  // ─────────────────────────────────────────────
+  // INPUT
+  // ─────────────────────────────────────────────
+  let touchStartX = 0, touchStartY = 0;
+  const DIR_MAP = {
+    'up':    { dx: 0, dy: -1, idx: 3 },
+    'down':  { dx: 0, dy:  1, idx: 1 },
+    'left':  { dx:-1, dy:  0, idx: 2 },
+    'right': { dx: 1, dy:  0, idx: 0 }
+  };
+
+  function changeDir(newIdx) {
+    // Prevent 180° reversal
+    const opposites = [2, 3, 0, 1];
+    if (newIdx === opposites[dir]) return;
+    nextDir = newIdx;
+  }
+
+  function handleSwipe(dx, dy) {
+    if (state !== 'playing') return;
+    const absX = Math.abs(dx), absY = Math.abs(dy);
+    if (absX < 10 && absY < 10) return; // too small
+
+    if (absX > absY) {
+      changeDir(dx > 0 ? 0 : 2); // right : left
+    } else {
+      changeDir(dy > 0 ? 1 : 3); // down : up
+    }
+  }
+
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, {passive: false});
+
+  canvas.addEventListener('touchend', e => {
+    e.preventDefault();
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    handleSwipe(dx, dy);
+  }, {passive: false});
+
+  // Mouse for desktop testing
+  let mouseDown = false, mouseStartX = 0, mouseStartY = 0;
+  canvas.addEventListener('mousedown', e => {
+    mouseDown = true;
+    mouseStartX = e.clientX; mouseStartY = e.clientY;
+  });
+  canvas.addEventListener('mouseup', e => {
+    if (!mouseDown) return;
+    mouseDown = false;
+    handleSwipe(e.clientX - mouseStartX, e.clientY - mouseStartY);
+  });
+
+  // Keyboard (desktop)
+  document.addEventListener('keydown', e => {
+    if (state === 'playing') {
+      if (e.key === 'ArrowRight' || e.key === 'd') changeDir(0);
+      else if (e.key === 'ArrowDown' || e.key === 's') changeDir(1);
+      else if (e.key === 'ArrowLeft' || e.key === 'a') changeDir(2);
+      else if (e.key === 'ArrowUp' || e.key === 'w') changeDir(3);
+    } else {
+      if (e.key === ' ' || e.key === 'Enter') startGame();
+    }
+  });
+
+  // Overlay click to start/restart
+  document.getElementById('overlay').addEventListener('click', () => {
+    if (state === 'waiting' || state === 'gameover') startGame();
+  });
+
+  // ─────────────────────────────────────────────
+  // RESIZE
+  // ─────────────────────────────────────────────
+  window.addEventListener('resize', resize);
+
+  // ─────────────────────────────────────────────
+  // PWA REGISTRATION
+  // ─────────────────────────────────────────────
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+
+  // ─────────────────────────────────────────────
+  // BOOT
+  // ─────────────────────────────────────────────
+  function boot() {
+    resize();
+    selectedSkin = SKINS.find(s => s.id === LS.selectedSkin) || SKINS[0];
+    checkSkinUnlocks();
+    buildSkinBar();
+    showStartScreen();
+    initGame();
+    state = 'waiting';
+    render();
+  }
+
+  boot();
+  </script>
+</body>
+</html>
