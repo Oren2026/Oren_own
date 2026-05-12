@@ -98,7 +98,7 @@
 
       <h3>靜態尋徑</h3>
       <div class="highlight-box">
-        機制比較簡單，以<strong>人工方式輸入</strong>，缺乏彈性。適合系統不大、架構固定的環境。<br>
+        機制比較簡單，以<strong>人工方式輸入</strong>，缺乏彈性。適合系統不大、架構固定的環境。
         例如：Windows 中 TCP/IP 內容的「預設閘道」設定。
       </div>
 
@@ -109,7 +109,7 @@
 
       <div class="concept-card">
         <div class="concept-card-title">依機制交換訊息時機的不同，分為三類</div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th>類型</th><th>說明</th><th>範例</th></tr>
           <tr><td>距離向量法（Distance Vector）</td><td>定期交換完整尋徑表</td><td>RIP</td></tr>
           <tr><td>連線狀態法（Link State）</td><td>拓撲變動時才更新</td><td>OSPF</td></tr>
@@ -181,7 +181,7 @@
       <h3>距離向量法 vs 連線狀態法</h3>
       <div class="concept-card">
         <div class="concept-card-title">兩者比較</div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th>項目</th><th>距離向量法（DV）</th><th>連線狀態法（LS）</th></tr>
           <tr><td>拓撲資訊</td><td>由相鄰路由器的觀點得知網路拓撲</td><td>藉由共通方式得知整體網路拓撲</td></tr>
           <tr><td>計算方式</td><td>以路由器連接路由器的方式增加距離向量</td><td>計算到其他路由器的最短路徑</td></tr>
@@ -213,7 +213,7 @@
       <h3>常見混合式尋徑協定</h3>
       <div class="concept-card">
         <div class="concept-card-title">IS-IS 與 EIGRP</div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th>協定</th><th>全名</th><th>說明</th></tr>
           <tr><td>IS-IS</td><td>Intermediate System-to-Intermediate System</td><td>OSI 標準</td></tr>
           <tr><td>EIGRP</td><td>Enhanced Interior Gateway Routing Protocol</td><td>Cisco 專有</td></tr>
@@ -229,7 +229,7 @@
 
       <div class="concept-card">
         <div class="concept-card-title">四大問題與對應解法</div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th>問題</th><th>說明</th><th>解決方式</th></tr>
           <tr><td>迴圈問題（Routing Loop）</td><td>封包在網路中循環</td><td>定義最大數值</td></tr>
           <tr><td>無窮計數（Count to Infinity）</td><td>距離數值不斷增加</td><td>分離界線</td></tr>
@@ -279,7 +279,7 @@
       <h2>📡 8｜自律系統（AS）</h2>
 
       <div class="highlight-box">
-        <strong>AS（Autonomous System）</strong>以 16 位元的<strong>AS 編碼（AS Number）</strong>進行辨識。<br>
+        <strong>AS（Autonomous System）</strong>以 16 位元的<strong>AS 編碼（AS Number）</strong>進行辨識。
         因應網路快速發展，現已開始分配 32 位元的 AS 編碼。
       </div>
 
@@ -306,7 +306,7 @@
 
       <div class="concept-card">
         <div class="concept-card-title">兩種協定的範疇</div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th>類型</th><th>全名</th><th>範例</th></tr>
           <tr><td>內部尋徑協定</td><td>Interior Routing Protocol</td><td>RIP、OSPF、IGRP、EIGRP</td></tr>
           <tr><td>外部尋徑協定</td><td>Exterior Routing Protocol</td><td>BGP、EGP</td></tr>
@@ -338,7 +338,7 @@
       <h3>RIP 1.0 與 2.0 比較</h3>
       <div class="concept-card">
         <div class="concept-card-title">RIP 2.0 在 1.0 基礎上的改進</div>
-        <table class="compare-table" style="margin-top:0.5rem;">
+        <table class="compare-table">
           <tr><th>項目</th><th>RIP 1.0</th><th>RIP 2.0</th></tr>
           <tr><td>傳送方式</td><td>廣播（Broadcast）</td><td>群播（Multicasting）</td></tr>
           <tr><td>認證</td><td>無</td><td>支援認證密碼</td></tr>
