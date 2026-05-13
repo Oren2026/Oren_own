@@ -173,6 +173,38 @@ tailscale up
 
 ---
 
+## 開發紀錄
+
+### Gravity 排序實作（2026-04-30）
+- 公式：`score = likes / POWER(hours + 2, gravity)`
+- gravity 範圍：0.5 ~ 3.0（由系統設定，可動態調整）
+- 使用者可在 UI 上用 slider 控制
+
+### Rate Limit 修復（ngrok 共用 IP 問題）
+- 原本 rate limit 用 IP 當 key，但 ngrok 多人共用同一出口 IP 會誤判
+- 修復：改用 `userId` 當 rate limit key（需登入才能限制，未登入走 IP fallback）
+
+### Bug 修復清單（#1 ~ #15）
+| # | 問題 | 修復 |
+|---|------|------|
+| #1 | CSRF token 失效 | 改用 HMAC-SHA256，綁定 userId，24h 有效 |
+| #2 | likedSet key type 錯誤 | 改為統一字串格式 `"userId:postId"` |
+| #3 | Race condition | 增加 likedSet 檢查 + 資料庫事務隔離 |
+| #4 | comment-btn 無效 | 事件監聽器 attach 時機錯誤 |
+| #5 | router user case 未處理 | 未登入使用者訪問需要驗證的頁面時引導至登入 |
+| #6 | 刪文後未更新畫面 | 刪除成功後主動移除 DOM 節點 |
+| #7 | applyLikeUi scope 錯誤 | 改用 closure 或 data attribute 隔離 |
+| #8 | getServerLikeState DOM 誤判 | 增加 isLiked 狀態比對 |
+| #9 | Banner username 錯誤 | 使用 `data-username` 而非 textContent |
+| #10 | avatar data-username 殘留 | 清除舊 DOM 時一併移除 |
+| #11 | feedAuthor 殘留 | 改用template clone，每次render重建 |
+| #12 | renderPostDetail loading 状态 | 加入 loading 遮罩 |
+| #13 | renderPostDetail race condition | 加入 abort controller |
+
+詳細模式說明：技能文件 `v1-chatrank-debug-patterns`
+
+---
+
 ## 授權
 
 MIT License
