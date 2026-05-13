@@ -590,7 +590,7 @@ app.get('/', (req, res) => {
 });
 
 // 靜態檔案：前端（midterm-project 目錄）
-const FRONTEND_PATH = path.join(__dirname, '..', '..', 'Oren_own', 'docs', 'homework', 'CCC作業天地', '網頁設計', 'midterm-project');
+const FRONTEND_PATH = path.join(__dirname, '..');
 app.use(express.static(FRONTEND_PATH));
 
 app.listen(PORT, '0.0.0.0', () => {

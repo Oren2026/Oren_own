@@ -2,9 +2,9 @@
   "name": "FIRA 2026",
   "subtitle": "TurtleBot 3 Burger × ROS × OpenCV",
   "category": "fira",
-  "status": "in-progress",
+  "status": "completed",
   "result": "佳作",
-  "nextMilestone": "任務串接最後調整，準備全關卡實測",
+  "nextMilestone": "比賽已結束，隧道/停車為未來改進方向",
   "progress": {
     "圓環/交叉路口": "done",
     "循線置中": "done",

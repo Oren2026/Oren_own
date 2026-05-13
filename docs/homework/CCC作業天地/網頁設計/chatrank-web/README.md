@@ -1,8 +1,9 @@
-# 聊天啊!尬殿 — ChatRank
+# 聊天啊!尬殿 — ChatRank（網頁版 / 展示用）
 
 > 動態牆社群平台，包含文章、留言、活動系統。
 >
-> **線上體驗：**[https://angelfish-observant-modified.ngrok-free.dev](https://angelfish-observant-modified.ngrok-free.dev)
+> **⚠️ 注意**：此資料夾為「展示用前端」，实际运行的后端在 `~/Desktop/private/backend/`。
+> **線上體驗**（使用 private/backend 的資料庫）：[https://angelfish-observant-modified.ngrok-free.dev](https://angelfish-observant-modified.ngrok-free.dev)
 
 ---
 
