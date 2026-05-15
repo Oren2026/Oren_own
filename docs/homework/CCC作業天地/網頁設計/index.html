@@ -8,6 +8,7 @@
     :root {
       --teal: #0f766e;
       --teal-dark: #115e59;
+      --purple: #6366f1;
       --bg: #f8fafc;
       --card: #ffffff;
       --text: #1e293b;
@@ -203,6 +204,12 @@
     .ver-link  { font-size: 0.75rem; color: var(--teal); }
     .ver-item:hover .ver-link { text-decoration: underline; }
 
+    .ext-link { display: inline-flex; align-items: center; gap: 3px; }
+
+    .ext-link:hover { opacity: 0.8; }
+
+    .item-links { display: flex; gap: 8px; flex-wrap: wrap; }
+
     @media (max-width: 640px) {
       .item { grid-template-columns: 40px 1fr; }
       .item-status { display: none; }
@@ -223,6 +230,21 @@
   </p>
 
   <main class="container">
+
+    <!-- HW1 -->
+    <a href="https://narofeng.github.io/_wp/HW/Homework1/" class="item" target="_blank" rel="noopener">
+      <div class="item-icon" style="background:rgba(236,72,153,0.1);">👤</div>
+      <div class="item-body">
+        <span class="item-title">HW1 — 老馮 Naro 個人頁面</span>
+        <div class="item-desc">Tab 式個人頁面，含「關於我」「人類處理器」「AI共生」「無名創造者」「思考進度」「思辨觸發器」六個面板。響應式設計，無需滾動即可檢視完整內容。</div>
+        <div class="item-links" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <span class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(15,118,110,0.08);color:var(--teal);border:1px solid rgba(15,118,110,0.15);text-decoration:none;">🔗 展示</span>
+          <span onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework1','_blank');" class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(99,102,241,0.08);color:var(--purple);border:1px solid rgba(99,102,241,0.15);text-decoration:none;cursor:pointer;">⚙ GitHub</span>
+        </div>
+        <div class="item-meta">📅 114學年下學期｜授課老師：陳鍾誠｜網頁設計</div>
+      </div>
+      <span class="item-status status-done">完成</span>
+    </a>
 
     <!-- HW_firstweb0327 -->
     <a href="HW_firstweb0327/" class="item">
