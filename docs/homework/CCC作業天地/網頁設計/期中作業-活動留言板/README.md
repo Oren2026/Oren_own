@@ -1,9 +1,6 @@
-# 聊天啊!尬殿 — ChatRank（網頁版 / 展示用）
+# 聊天啊!尬殿 — ChatRank（網頁版）
 
 > 動態牆社群平台，包含文章、留言、活動系統。
->
-> **⚠️ 注意**：此資料夾為「展示用前端」，实际运行的后端在 `~/Desktop/private/backend/`。
-> **線上體驗**（使用 private/backend 的資料庫）：[https://angelfish-observant-modified.ngrok-free.dev](https://angelfish-observant-modified.ngrok-free.dev)
 
 ---
 
@@ -43,7 +40,7 @@ open http://localhost:3000
 ## 專案結構
 
 ```
-midterm-project/
+期中作業-活動留言板/
 ├── backend/                 # API Server
 │   ├── server.js           # 主程式，所有 API Route 在此
 │   ├── db.js               # SQLite 操作，封裝所有 SQL

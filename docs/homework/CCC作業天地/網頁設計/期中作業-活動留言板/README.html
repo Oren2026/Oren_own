@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>聊天啊!尬殿 — ChatRank｜開發紀錄</title>
+  <style>
+    :root {
+      --accent: #0f766e;
+      --accent-dark: #115e59;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #f1f5f9;
+      --pink: #ec4899;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+      color: white;
+      padding: 2.5rem 5% 2rem;
+      text-align: center;
+    }
+    .header .icon { font-size: 3rem; margin-bottom: 0.5rem; }
+    .header h1 { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; }
+    .header .subtitle { opacity: 0.85; margin-top: 0.4rem; font-size: 0.95rem; }
+    .header .tag-row { margin-top: 1rem; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .header .tag { background: rgba(255,255,255,0.2); padding: 0.2rem 0.75rem; border-radius: 20px; font-size: 0.78rem; }
+
+    .breadcrumb { padding: 0.85rem 5%; font-size: 0.82rem; color: var(--muted); }
+    .breadcrumb a { color: var(--accent); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 5% 4rem; }
+
+    .section { margin-bottom: 2.5rem; }
+
+    .section-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .block h3 { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem; }
+    .block p, .block li { font-size: 0.9rem; }
+    .block ul { padding-left: 1.3rem; }
+    .block li { margin-bottom: 0.35rem; }
+    .block li:last-child { margin-bottom: 0; }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      margin-top: 0.75rem;
+    }
+    code { font-family: "Fira Code", "Cascadia Code", "Menlo", monospace; }
+    p code, li code {
+      background: var(--code-bg);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      color: #be185d;
+    }
+
+    .install-steps { counter-reset: step; }
+    .install-step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 1.25rem;
+      align-items: flex-start;
+    }
+    .install-step::before {
+      counter-increment: step;
+      content: counter(step);
+      width: 32px; height: 32px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.9rem; flex-shrink: 0;
+    }
+    .install-step .step-body { flex: 1; padding-top: 4px; }
+    .install-step h4 { font-size: 0.92rem; font-weight: 700; color: var(--accent-dark); margin-bottom: 0.3rem; }
+    .install-step p { font-size: 0.85rem; color: var(--muted); }
+    .install-step pre {
+      margin-top: 0.5rem;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      overflow-x: auto;
+    }
+
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .feature-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+    }
+    .feature-card h4 { font-size: 0.88rem; font-weight: 700; color: var(--accent-dark); margin-bottom: 0.35rem; }
+    .feature-card p { font-size: 0.82rem; color: var(--muted); }
+
+    .env-table { overflow-x: auto; margin-top: 0.5rem; }
+    .env-table table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .env-table th {
+      background: rgba(15,118,110,0.08);
+      color: var(--accent-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.6rem 0.85rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .env-table td { padding: 0.6rem 0.85rem; border-bottom: 1px solid var(--border); vertical-align: top; font-size: 0.85rem; }
+    .env-table tr:last-child td { border-bottom: none; }
+    .env-table code { background: var(--code-bg); padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.8rem; color: #be185d; }
+
+    .note-box {
+      background: rgba(236,72,153,0.06);
+      border: 1px solid rgba(236,72,153,0.2);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      font-size: 0.88rem;
+      margin-top: 1rem;
+    }
+    .note-box strong { color: var(--pink); }
+
+    .footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.78rem; border-top: 1px solid var(--border); }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 500px) {
+      pre { font-size: 0.75rem; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="icon">💬</div>
+    <h1>聊天啊!尬殿</h1>
+    <p class="subtitle">ChatRank — 動態牆社群平台｜期中作業</p>
+    <div class="tag-row">
+      <span class="tag">Node.js</span>
+      <span class="tag">Express</span>
+      <span class="tag">SQLite</span>
+      <span class="tag">JWT</span>
+    </div>
+  </header>
+
+  <p class="breadcrumb">
+    <a href="../index.html">← 網頁設計作業</a>
+  </p>
+
+  <main class="container">
+
+    <!-- 安裝流程 -->
+    <div class="section">
+      <div class="section-title">🚀 快速安裝</div>
+      <div class="block">
+
+        <div class="install-step">
+          <div class="step-body">
+            <h4>安裝依賴</h4>
+            <p>進入 backend 資料夾，安裝 Node.js 相關套件</p>
+            <pre>cd backend
+npm install</pre>
+          </div>
+        </div>
+
+        <div class="install-step">
+          <div class="step-body">
+            <h4>設定環境變數</h4>
+            <p>複製 .env.example 為 .env，並填入 JWT_SECRET（長度愈長愈好）</p>
+            <pre>cp .env.example .env
+# 用文字編輯器打開 .env，設定 JWT_SECRET</pre>
+          </div>
+        </div>
+
+        <div class="install-step">
+          <div class="step-body">
+            <h4>啟動伺服器</h4>
+            <p>第一次啟動會自動建立空的 SQLite 資料庫</p>
+            <pre>npm start</pre>
+          </div>
+        </div>
+
+        <div class="install-step">
+          <div class="step-body">
+            <h4>開啟瀏覽器</h4>
+            <p>访问 <a href="http://localhost:3000" style="color:var(--accent);">http://localhost:3000</a></p>
+          </div>
+        </div>
+
+        <div class="note-box">
+          <strong>⚠️ 注意：</strong>本專案需要 Node.js 環境執行，無法直接以靜態檔案在瀏覽器開啟。別人若要使用，需具備基本的命令列操作能力（clone → npm install → npm start）。
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 功能總覽 -->
+    <div class="section">
+      <div class="section-title">📋 功能總覽</div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4>📝 動態牆</h4>
+          <p>熱門排序（gravity 衰減）與最新排序切換，支援 #tag 自動解析</p>
+        </div>
+        <div class="feature-card">
+          <h4>✏️ 發文與留言</h4>
+          <p>支援發文、刪除、按讚（debounce 5s）、多層留言</p>
+        </div>
+        <div class="feature-card">
+          <h4>🎉 活動系統</h4>
+          <p>建立活動、留言、報名，活動列表與動態牆並行</p>
+        </div>
+        <div class="feature-card">
+          <h4>🛡️ 管理員</h4>
+          <p>role === 'admin' 可刪除任何內容、管理敏感詞、設定排序參數</p>
+        </div>
+        <div class="feature-card">
+          <h4>🔐 登入 / 註冊</h4>
+          <p>bcrypt 密碼加密，JWT HTTP-only Cookie，CSRF 雙重保障</p>
+        </div>
+        <div class="feature-card">
+          <h4>⚡ Rate Limit</h4>
+          <p>登入註冊 10 次/分鐘，其他 API 60 次/分鐘，防止灌水</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 環境變數 -->
+    <div class="section">
+      <div class="section-title">⚙️ 環境變數</div>
+      <div class="block">
+        <div class="env-table">
+          <table>
+            <thead>
+              <tr>
+                <th>變數</th>
+                <th>預設值</th>
+                <th>說明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>JWT_SECRET</code></td>
+                <td>—</td>
+                <td><strong>必填。</strong>JWT 簽章密鑰，長度愈長愈好</td>
+              </tr>
+              <tr>
+                <td><code>PORT</code></td>
+                <td><code>3000</code></td>
+                <td>Server port</td>
+              </tr>
+              <tr>
+                <td><code>DB_PATH</code></td>
+                <td><code>./chatrank.db</code></td>
+                <td>SQLite 資料庫路徑</td>
+              </tr>
+              <tr>
+                <td><code>FRONTEND_PATH</code></td>
+                <td><code>../public</code></td>
+                <td>前端靜態檔目錄（相對於 server.js）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 專案結構 -->
+    <div class="section">
+      <div class="section-title">📂 專案結構</div>
+      <div class="block">
+<pre>期中作業-活動留言板/
+├── backend/
+│   ├── server.js           # 主程式，所有 API Route 在此
+│   ├── db.js               # SQLite 操作，封裝所有 SQL
+│   ├── package.json
+│   ├── .env.example
+│   └── middleware/
+│       ├── auth.js         # JWT 驗證（HTTP-only Cookie）
+│       ├── csrf.js         # CSRF Token（HMAC-SHA256）
+│       └── rateLimit.js    # 頻率限制（防止暴力破解）
+│
+├── index.html               # 前端入口
+├── js/
+│   ├── app.js              # 前端主程式（Hash Router）
+│   └── api.js              # API 客戶端，封裝 fetch
+└── css/
+    └── style.css</pre>
+      </div>
+    </div>
+
+    <!-- 部署到網路 -->
+    <div class="section">
+      <div class="section-title">🌐 讓其他人連到你的伺服器</div>
+      <div class="block">
+        <h3>選項 A：ngrok（最簡單）</h3>
+        <pre># 安裝 ngrok（macOS）
+brew install ngrok
+
+# 啟動 server
+cd backend && npm start
+
+# 另一個終端機開 ngrok
+ngrok http 3000
+
+# 複製出現的 https://xxx.ngrok.io 分享給同學</pre>
+      </div>
+      <div class="block" style="margin-top:1rem;">
+        <h3>選項 B：Tailscale（私人網路）</h3>
+        <pre># Mac 安裝
+brew install tailscale
+tailscale up
+
+# 把 Tailscale IP（100.x.x.x）分享給同學
+# 同學連 http://100.x.x.x:3000</pre>
+      </div>
+    </div>
+
+    <!-- 常見問題 -->
+    <div class="section">
+      <div class="section-title">❓ 常見問題</div>
+      <div class="block">
+        <h3>Q：啟動出現 `Error: listen EADDRINUSE`</h3>
+        <p>Port 被佔用。改用其他 port：<code>PORT=3001 npm start</code>，或先 <code>lsof -i :3000</code> 找程序砍掉。</p>
+      </div>
+      <div class="block">
+        <h3>Q：第一次進去是一片空白</h3>
+        <p>確認 <code>npm install</code> 有執行，且 <code>node_modules/better-sqlite3</code> 有正確編譯（需要 C++ 編譯器）。macOS 上可用 <code>xcode-select --install</code> 安裝編譯工具。</p>
+      </div>
+      <div class="block">
+        <h3>Q：想改成 admin 帳號</h3>
+        <p>用 SQLite 工具直接改資料庫：<code>UPDATE users SET role = 'admin' WHERE username = '你的帳號';</code></p>
+      </div>
+      <div class="block">
+        <h3>Q：想看資料庫內容</h3>
+        <pre>sqlite3 chatrank.db ".tables"
+sqlite3 chatrank.db "SELECT * FROM users;"</pre>
+      </div>
+    </div>
+
+    <!-- 開發紀錄 -->
+    <div class="section">
+      <div class="section-title">💬 開發紀錄</div>
+      <div class="block">
+        <h3>Gravity 熱門排序</h3>
+        <p>公式：<code>score = likes / POWER(hours + 2, gravity)</code>，gravity 範圍 0.5 ~ 3.0，透過 UI slider 可動態調整。</p>
+      </div>
+      <div class="block">
+        <h3>Rate Limit 修復（ngrok 共用 IP 問題）</h3>
+        <p>原本 rate limit 用 IP 當 key，但 ngrok 多人共用同一出口 IP 會誤判。修復：改用 <code>userId</code> 當 rate limit key，未登入走 IP fallback。</p>
+      </div>
+      <div class="block">
+        <h3>Bug 修復（#1 ~ #15）</h3>
+        <p>CSRF token 失效 → 改用 HMAC-SHA256 綁定 userId；likedSet key type 錯誤 → 統一 <code>"userId:postId"</code> 字串格式；Race condition → likedSet 檢查 + 資料庫事務隔離；comment-btn 無效 → 事件監聽器 attach 時機修正；renderPostDetail race condition → 加入 AbortController。</p>
+      </div>
+    </div>
+
+    <!-- 維護者 -->
+    <div class="section">
+      <div class="section-title">👤 維護者</div>
+      <div class="block" style="text-align:center;padding:2rem;">
+        <p style="font-size:1rem;">由 <strong>Oren</strong> 與 AI 協作維護</p>
+        <p style="font-size:0.85rem;color:var(--muted);margin-top:0.5rem;">聊天啊!尬殿 ChatRank · 期中作業 · CCC 作業天地</p>
+        <a href="https://github.com/Oren2026/Oren_own" target="_blank" style="display:inline-block;margin-top:1rem;color:var(--accent);font-size:0.85rem;text-decoration:none;">→ GitHub 仓库</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    💬 聊天啊!尬殿 ChatRank｜由 <a href="https://github.com/Oren2026" target="_blank">Oren</a> 與 AI 協作維護
+  </footer>
+
+</body>
+</html>
