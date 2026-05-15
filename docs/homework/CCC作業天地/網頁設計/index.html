@@ -72,6 +72,7 @@
 
     .container { max-width: 900px; margin: 0 auto; padding: 0 5% 4rem; }
 
+    /* ── 作業卡 ── */
     .item {
       display: grid;
       grid-template-columns: 48px 1fr auto;
@@ -119,22 +120,6 @@
       overflow: hidden;
     }
 
-    .item-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 6px;
-    }
-
-    .tag {
-      font-size: 10px;
-      padding: 1px 7px;
-      border-radius: 3px;
-      background: rgba(15,118,110,0.08);
-      color: var(--teal);
-      border: 1px solid rgba(15,118,110,0.15);
-    }
-
     .item-status {
       font-size: 10px;
       font-weight: 700;
@@ -154,60 +139,53 @@
       margin-top: 5px;
     }
 
-    .ver-section {
-      margin-top: 2rem;
-      background: var(--card);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
-
-    .ver-head {
-      background: var(--bg);
-      padding: 0.9rem 1.25rem;
-      border-bottom: 1px solid var(--border);
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
-
-    .ver-list { padding: 0.75rem 1.25rem 1rem; }
-
-    .ver-item {
+    /* ── 連結區 ── */
+    .item-links {
       display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .link-btn {
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.8rem;
+      gap: 3px;
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 5px;
       text-decoration: none;
-      color: var(--text);
-      transition: color 0.15s;
+      font-weight: 600;
+      transition: opacity 0.15s;
     }
 
-    .ver-item:last-child { border-bottom: none; }
-    .ver-item:hover { color: var(--teal); }
+    .link-btn:hover { opacity: 0.75; }
 
-    .ver-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--teal);
-      flex-shrink: 0;
+    .link-btn.demo {
+      background: rgba(15,118,110,0.1);
+      color: var(--teal);
+      border: 1px solid rgba(15,118,110,0.2);
     }
 
-    .ver-dot.latest {
-      background: #1d4ed8;
-      box-shadow: 0 0 6px rgba(29,78,216,0.4);
+    .link-btn.github {
+      background: rgba(99,102,241,0.1);
+      color: var(--purple);
+      border: 1px solid rgba(99,102,241,0.2);
     }
 
-    .ver-label { font-weight: 700; width: 28px; flex-shrink: 0; }
-    .ver-desc  { flex: 1; color: var(--muted); font-size: 0.78rem; }
-    .ver-link  { font-size: 0.75rem; color: var(--teal); }
-    .ver-item:hover .ver-link { text-decoration: underline; }
+    .link-btn.readme {
+      background: rgba(245,158,11,0.1);
+      color: #d97706;
+      border: 1px solid rgba(245,158,11,0.2);
+    }
 
-    .ext-link { display: inline-flex; align-items: center; gap: 3px; }
-    .ext-link:hover { opacity: 0.8; }
-
-    .item-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .link-btn.disabled {
+      background: rgba(100,116,139,0.08);
+      color: var(--muted);
+      border: 1px solid rgba(100,116,139,0.15);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
 
     .midterm-badge {
       font-size: 9px;
@@ -247,9 +225,10 @@
       <div class="item-body">
         <span class="item-title">HW1 — 老馮 Naro 個人頁面</span>
         <div class="item-desc">Tab 式個人頁面，含「關於我」「人類處理器」「AI共生」「無名創造者」「思考進度」「思辨觸發器」六個面板。響應式設計，無需滾動即可檢視完整內容。</div>
-        <div class="item-links" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-          <span class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(15,118,110,0.08);color:var(--teal);border:1px solid rgba(15,118,110,0.15);text-decoration:none;">🔗 展示</span>
-          <span onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework1','_blank');" class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(99,102,241,0.08);color:var(--purple);border:1px solid rgba(99,102,241,0.15);text-decoration:none;cursor:pointer;">⚙ GitHub</span>
+        <div class="item-links">
+          <a href="https://narofeng.github.io/_wp/HW/Homework1/" class="link-btn demo" target="_blank" rel="noopener">🔗 展示</a>
+          <span class="link-btn github" onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework1','_blank');">⚙ GitHub</span>
+          <span class="link-btn disabled">📖 README</span>
         </div>
         <div class="item-meta">📅 114學年下學期｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
@@ -262,9 +241,10 @@
       <div class="item-body">
         <span class="item-title">HW2 — 多種表單元素展示</span>
         <div class="item-desc">表單元素完整展示：文字輸入、密碼、國家下拉選單、興趣清單加入、單選按鈕、日期選擇器、數字輸入、留言區塊。</div>
-        <div class="item-links" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-          <span class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(15,118,110,0.08);color:var(--teal);border:1px solid rgba(15,118,110,0.15);text-decoration:none;">🔗 展示</span>
-          <span onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework2','_blank');" class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(99,102,241,0.08);color:var(--purple);border:1px solid rgba(99,102,241,0.15);text-decoration:none;cursor:pointer;">⚙ GitHub</span>
+        <div class="item-links">
+          <a href="https://narofeng.github.io/_wp/HW/Homework2/" class="link-btn demo" target="_blank" rel="noopener">🔗 展示</a>
+          <span class="link-btn github" onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework2','_blank');">⚙ GitHub</span>
+          <span class="link-btn disabled">📖 README</span>
         </div>
         <div class="item-meta">📅 114學年下學期｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
@@ -277,8 +257,10 @@
       <div class="item-body">
         <span class="item-title">HW3 — 第一個 JavaScript 程式</span>
         <div class="item-desc">在終端機印出 "Hello 你好"，確認 Node.js 環境正常運作。老師要求：README 說明與 AI 溝通的方式以及自我介紹。</div>
-        <div class="item-links" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-          <span onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework3','_blank');" class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(99,102,241,0.08);color:var(--purple);border:1px solid rgba(99,102,241,0.15);text-decoration:none;cursor:pointer;">⚙ GitHub</span>
+        <div class="item-links">
+          <span class="link-btn disabled">🔗 展示</span>
+          <span class="link-btn github" onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework3','_blank');">⚙ GitHub</span>
+          <span class="link-btn disabled">📖 README</span>
         </div>
         <div class="item-meta">📅 114學年下學期｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
@@ -291,9 +273,10 @@
       <div class="item-body">
         <span class="item-title">HW4 — JavaScript 程式練習</span>
         <div class="item-desc">JS 10 大核心程式挑戰：判斷奇偶數、陣列求和、2 的次方數、物件自我介紹、JSON 解析、陣列過濾、字母頻率統計、陣列反轉、尋找最高分、購物車結帳模擬。</div>
-        <div class="item-links" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-          <span class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(15,118,110,0.08);color:var(--teal);border:1px solid rgba(15,118,110,0.15);text-decoration:none;">🔗 展示</span>
-          <span onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework4','_blank');" class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(99,102,241,0.08);color:var(--purple);border:1px solid rgba(99,102,241,0.15);text-decoration:none;cursor:pointer;">⚙ GitHub</span>
+        <div class="item-links">
+          <a href="https://narofeng.github.io/_wp/HW/Homework4/" class="link-btn demo" target="_blank" rel="noopener">🔗 展示</a>
+          <span class="link-btn github" onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework4','_blank');">⚙ GitHub</span>
+          <span class="link-btn disabled">📖 README</span>
         </div>
         <div class="item-meta">📅 114學年下學期｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
@@ -306,12 +289,10 @@
       <div class="item-body">
         <span class="item-title">HW_firstweb0327 — 網頁日誌系統</span>
         <div class="item-desc">JS + SQLite（sql.js）實作網頁日誌，含 CRUD、搜尋、作者過濾、亮暗主題。從 v1.0 演化至 v3.0（Hash 路由 + 追蹤系統）。</div>
-        <div class="item-tags">
-          <span class="tag">SQLite</span>
-          <span class="tag">Node.js</span>
-          <span class="tag">JWT</span>
-          <span class="tag">亮暗主題</span>
-          <span class="tag">Hash 路由</span>
+        <div class="item-links">
+          <a href="HW_firstweb0327/" class="link-btn demo">🔗 展示</a>
+          <span class="link-btn github" onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/Oren2026/Oren_own/tree/main/docs/homework/CCC作業天地/網頁設計/HW_firstweb0327','_blank');">⚙ GitHub</span>
+          <a href="HW_firstweb0327/README.html" class="link-btn readme" target="_blank">📖 README</a>
         </div>
         <div class="item-meta">📅 2026-03-27｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
@@ -324,11 +305,10 @@
       <div class="item-body">
         <span class="item-title">wp_HW_6-javascrip練習 — JavaScript 選擇題測驗</span>
         <div class="item-desc">20題題庫每次抽出10題，支援亂序選項、進度條跳題、即時動畫回饋、結算分數與重新測驗。</div>
-        <div class="item-tags">
-          <span class="tag">JavaScript</span>
-          <span class="tag">HTML</span>
-          <span class="tag">CSS</span>
-          <span class="tag">互動測驗</span>
+        <div class="item-links">
+          <a href="wp_HW_6-javascrip練習/" class="link-btn demo">🔗 展示</a>
+          <span class="link-btn github" onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/Oren2026/Oren_own/tree/main/docs/homework/CCC作業天地/網頁設計/wp_HW_6-javascrip練習','_blank');">⚙ GitHub</span>
+          <a href="wp_HW_6-javascrip練習/README.html" class="link-btn readme" target="_blank">📖 README</a>
         </div>
         <div class="item-meta">📅 2026-04-17｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
@@ -341,11 +321,10 @@
       <div class="item-body">
         <span class="item-title">wp_HW_7-日誌javascrip認識 — Express 部落格 JS 實作</span>
         <div class="item-desc">左右雙面板互動實作，左側調整變數右側即時預覽部落格日誌。10題涵蓋物件、解構、forEach、Callback 等核心概念。</div>
-        <div class="item-tags">
-          <span class="tag">JavaScript</span>
-          <span class="tag">Express</span>
-          <span class="tag">左右雙面板</span>
-          <span class="tag">即時預覽</span>
+        <div class="item-links">
+          <a href="wp_HW_7-blog_js/" class="link-btn demo">🔗 展示</a>
+          <span class="link-btn github" onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/Oren2026/Oren_own/tree/main/docs/homework/CCC作業天地/網頁設計/wp_HW_7-blog_js','_blank');">⚙ GitHub</span>
+          <a href="wp_HW_7-blog_js/README.html" class="link-btn readme" target="_blank">📖 README</a>
         </div>
         <div class="item-meta">📅 2026-04-17｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
@@ -358,18 +337,15 @@
       <div class="item-body">
         <span class="item-title">chatrank-web — 即時聊天室<span class="midterm-badge">期中專案</span></span>
         <div class="item-desc">Node.js + Express + SQLite 即時聊天系統，含即時訊息、用戶状态、聊天記録查詢。</div>
-        <div class="item-tags">
-          <span class="tag">WebSocket</span>
-          <span class="tag">Express</span>
-          <span class="tag">SQLite</span>
-          <span class="tag">即時</span>
+        <div class="item-links">
+          <a href="chatrank-web/" class="link-btn demo">🔗 展示</a>
+          <span class="link-btn github" onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/Oren2026/Oren_own/tree/main/docs/homework/CCC作業天地/網頁設計/chatrank-web','_blank');">⚙ GitHub</span>
+          <a href="chatrank-web/README.html" class="link-btn readme" target="_blank">📖 README</a>
         </div>
         <div class="item-meta">📅 2026-05-14｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
       <span class="item-status status-latest">最新</span>
     </a>
-
-    
 
   </main>
 
