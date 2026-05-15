@@ -205,10 +205,20 @@
     .ver-item:hover .ver-link { text-decoration: underline; }
 
     .ext-link { display: inline-flex; align-items: center; gap: 3px; }
-
     .ext-link:hover { opacity: 0.8; }
 
     .item-links { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .midterm-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: rgba(236,72,153,0.12);
+      color: #db2777;
+      border: 1px solid rgba(236,72,153,0.2);
+      margin-left: 4px;
+    }
 
     @media (max-width: 640px) {
       .item { grid-template-columns: 40px 1fr; }
@@ -231,6 +241,21 @@
 
   <main class="container">
 
+    <!-- HW1 -->
+    <a href="https://narofeng.github.io/_wp/HW/Homework1/" class="item" target="_blank" rel="noopener">
+      <div class="item-icon" style="background:rgba(236,72,153,0.1);">👤</div>
+      <div class="item-body">
+        <span class="item-title">HW1 — 老馮 Naro 個人頁面</span>
+        <div class="item-desc">Tab 式個人頁面，含「關於我」「人類處理器」「AI共生」「無名創造者」「思考進度」「思辨觸發器」六個面板。響應式設計，無需滾動即可檢視完整內容。</div>
+        <div class="item-links" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <span class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(15,118,110,0.08);color:var(--teal);border:1px solid rgba(15,118,110,0.15);text-decoration:none;">🔗 展示</span>
+          <span onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework1','_blank');" class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(99,102,241,0.08);color:var(--purple);border:1px solid rgba(99,102,241,0.15);text-decoration:none;cursor:pointer;">⚙ GitHub</span>
+        </div>
+        <div class="item-meta">📅 114學年下學期｜授課老師：陳鍾誠｜網頁設計</div>
+      </div>
+      <span class="item-status status-done">完成</span>
+    </a>
+
     <!-- HW2 -->
     <a href="https://narofeng.github.io/_wp/HW/Homework2/" class="item" target="_blank" rel="noopener">
       <div class="item-icon" style="background:rgba(234,179,8,0.1);">📋</div>
@@ -246,15 +271,29 @@
       <span class="item-status status-done">完成</span>
     </a>
 
-    <!-- HW1 -->
-    <a href="https://narofeng.github.io/_wp/HW/Homework1/" class="item" target="_blank" rel="noopener">
-      <div class="item-icon" style="background:rgba(236,72,153,0.1);">👤</div>
+    <!-- HW3 -->
+    <a href="https://github.com/narofeng/_wp/tree/master/HW/Homework3" class="item" target="_blank" rel="noopener">
+      <div class="item-icon" style="background:rgba(15,118,110,0.1);">📄</div>
       <div class="item-body">
-        <span class="item-title">HW1 — 老馮 Naro 個人頁面</span>
-        <div class="item-desc">Tab 式個人頁面，含「關於我」「人類處理器」「AI共生」「無名創造者」「思考進度」「思辨觸發器」六個面板。響應式設計，無需滾動即可檢視完整內容。</div>
+        <span class="item-title">HW3 — 第一個 JavaScript 程式</span>
+        <div class="item-desc">在終端機印出 "Hello 你好"，確認 Node.js 環境正常運作。老師要求：README 說明與 AI 溝通的方式以及自我介紹。</div>
+        <div class="item-links" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <span onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework3','_blank');" class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(99,102,241,0.08);color:var(--purple);border:1px solid rgba(99,102,241,0.15);text-decoration:none;cursor:pointer;">⚙ GitHub</span>
+        </div>
+        <div class="item-meta">📅 114學年下學期｜授課老師：陳鍾誠｜網頁設計</div>
+      </div>
+      <span class="item-status status-done">完成</span>
+    </a>
+
+    <!-- HW4 -->
+    <a href="https://narofeng.github.io/_wp/HW/Homework4/" class="item" target="_blank" rel="noopener">
+      <div class="item-icon" style="background:rgba(234,179,8,0.1);">🧩</div>
+      <div class="item-body">
+        <span class="item-title">HW4 — JavaScript 程式練習</span>
+        <div class="item-desc">JS 10 大核心程式挑戰：判斷奇偶數、陣列求和、2 的次方數、物件自我介紹、JSON 解析、陣列過濾、字母頻率統計、陣列反轉、尋找最高分、購物車結帳模擬。</div>
         <div class="item-links" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
           <span class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(15,118,110,0.08);color:var(--teal);border:1px solid rgba(15,118,110,0.15);text-decoration:none;">🔗 展示</span>
-          <span onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework1','_blank');" class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(99,102,241,0.08);color:var(--purple);border:1px solid rgba(99,102,241,0.15);text-decoration:none;cursor:pointer;">⚙ GitHub</span>
+          <span onclick="event.preventDefault();event.stopPropagation();window.open('https://github.com/narofeng/_wp/tree/master/HW/Homework4','_blank');" class="ext-link" style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(99,102,241,0.08);color:var(--purple);border:1px solid rgba(99,102,241,0.15);text-decoration:none;cursor:pointer;">⚙ GitHub</span>
         </div>
         <div class="item-meta">📅 114學年下學期｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
@@ -274,7 +313,7 @@
           <span class="tag">亮暗主題</span>
           <span class="tag">Hash 路由</span>
         </div>
-        <div class="item-meta">📅 2026-03-27｜授課老師：CCC｜網頁設計</div>
+        <div class="item-meta">📅 2026-03-27｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
       <span class="item-status status-done">完成</span>
     </a>
@@ -291,7 +330,7 @@
           <span class="tag">CSS</span>
           <span class="tag">互動測驗</span>
         </div>
-        <div class="item-meta">📅 2026-04-17｜授課老師：CCC｜網頁設計</div>
+        <div class="item-meta">📅 2026-04-17｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
       <span class="item-status status-done">完成</span>
     </a>
@@ -308,16 +347,16 @@
           <span class="tag">左右雙面板</span>
           <span class="tag">即時預覽</span>
         </div>
-        <div class="item-meta">📅 2026-04-17｜授課老師：CCC｜網頁設計</div>
+        <div class="item-meta">📅 2026-04-17｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
       <span class="item-status status-latest">最新</span>
     </a>
 
-    <!-- chatrank-web -->
+    <!-- chatrank-web（期中專案） -->
     <a href="chatrank-web/" class="item">
       <div class="item-icon" style="background:rgba(236,72,153,0.1);">💬</div>
       <div class="item-body">
-        <span class="item-title">chatrank-web — 即時聊天室</span>
+        <span class="item-title">chatrank-web — 即時聊天室<span class="midterm-badge">期中專案</span></span>
         <div class="item-desc">Node.js + Express + SQLite 即時聊天系統，含即時訊息、用戶状态、聊天記録查詢。</div>
         <div class="item-tags">
           <span class="tag">WebSocket</span>
@@ -325,7 +364,7 @@
           <span class="tag">SQLite</span>
           <span class="tag">即時</span>
         </div>
-        <div class="item-meta">📅 2026-05-14｜授課老師：CCC｜網頁設計</div>
+        <div class="item-meta">📅 2026-05-14｜授課老師：陳鍾誠｜網頁設計</div>
       </div>
       <span class="item-status status-latest">最新</span>
     </a>
