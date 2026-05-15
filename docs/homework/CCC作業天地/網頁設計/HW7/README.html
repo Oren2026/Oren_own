@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HW7 — 日誌系統 JS 實作｜開發紀錄</title>
+  <style>
+    :root {
+      --accent: #0f766e;
+      --accent-dark: #115e59;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #f1f5f9;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: white;
+      padding: 2.5rem 5% 2rem;
+      text-align: center;
+    }
+    .header .icon { font-size: 3rem; margin-bottom: 0.5rem; }
+    .header h1 { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; }
+    .header .subtitle { opacity: 0.8; margin-top: 0.4rem; font-size: 0.95rem; }
+    .header .tag-row { margin-top: 1rem; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .header .tag { background: rgba(255,255,255,0.18); padding: 0.2rem 0.75rem; border-radius: 20px; font-size: 0.78rem; }
+
+    .breadcrumb { padding: 0.85rem 5%; font-size: 0.82rem; color: var(--muted); }
+    .breadcrumb a { color: var(--accent); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 2rem 5% 4rem; }
+
+    .section { margin-bottom: 2.5rem; }
+
+    .section-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .block h3 { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem; }
+    .block p, .block li { font-size: 0.9rem; }
+    .block ul { padding-left: 1.3rem; }
+    .block li { margin-bottom: 0.3rem; }
+
+    .quote {
+      background: rgba(15,118,110,0.05);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem;
+      border-radius: 0 10px 10px 0;
+      margin: 1rem 0;
+      font-size: 0.92rem;
+      font-style: italic;
+    }
+    .quote strong { color: var(--accent); font-style: normal; display: block; margin-bottom: 0.3rem; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      margin-top: 0.5rem;
+    }
+    code { font-family: "Fira Code", "Cascadia Code", "Menlo", monospace; }
+    p code, li code {
+      background: var(--code-bg);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      color: #be185d;
+    }
+
+    .bug-card {
+      background: #fff9f9;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.85rem;
+    }
+    .bug-card:last-child { margin-bottom: 0; }
+    .bug-card h4 { font-size: 0.88rem; font-weight: 700; color: #dc2626; margin-bottom: 0.4rem; }
+    .bug-card p { font-size: 0.85rem; margin-bottom: 0.3rem; }
+    .bug-card p:last-child { margin-bottom: 0; }
+    .bug-card code {
+      background: #fee2e2;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      color: #991b1b;
+    }
+
+    .concept-table { overflow-x: auto; margin-top: 0.5rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th {
+      background: rgba(15,118,110,0.08);
+      color: var(--accent-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.6rem 0.85rem;
+      border-bottom: 2px solid var(--border);
+    }
+    td { padding: 0.6rem 0.85rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    .timeline { border-left: 2px solid var(--border); padding-left: 1.5rem; margin-left: 0.5rem; }
+    .timeline-item { position: relative; margin-bottom: 1.5rem; }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.6rem;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+    }
+    .timeline-item .ver { font-weight: 700; color: var(--accent); font-size: 0.85rem; }
+    .timeline-item p { font-size: 0.88rem; color: var(--text); margin-top: 0.2rem; }
+
+    .footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.78rem; border-top: 1px solid var(--border); }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 500px) {
+      pre { font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="icon">📜</div>
+    <h1>開發紀錄</h1>
+    <p class="subtitle">HW7 — 日誌系統 JS 實作｜與 AI 協作的完整過程</p>
+    <div class="tag-row">
+      <span class="tag">系統導向</span>
+      <span class="tag">左右雙面板</span>
+      <span class="tag">迭代記錄</span>
+    </div>
+  </header>
+
+  <p class="breadcrumb">
+    <a href="../index.html">← 網頁設計作業</a>
+  </p>
+
+  <main class="container">
+
+    <!-- 🎯 核心理念 -->
+    <div class="section">
+      <div class="section-title">🎯 核心理念</div>
+      <div class="block">
+        <h3>從「題目導向」到「系統導向」</h3>
+        <p>傳統的 JS 練習題是「一個題目、一組變數、一個輸出」。這份作業的起點是一個問題：</p>
+        <div class="quote">
+          <strong>核心問題</strong>
+          如果把 10 個 JS 語法當成同一個系統的不同元件，而不是 10 個獨立的練習題，會長什麼樣子？
+        </div>
+        <p style="margin-top:0.75rem;">答案是一個部落格系統。10 個語法概念在裡面各自扮演真實角色：<code>req.params</code> 拿 URL 參數、<code>forEach</code> 渲染文章列表、<code>JSON.parse</code> 解讀請求體、<code>Error-First Callback</code> 做資料庫查詢。</p>
+      </div>
+    </div>
+
+    <!-- 🏗️ 架構決策 -->
+    <div class="section">
+      <div class="section-title">🏗️ 架構決策記錄</div>
+      <div class="block">
+        <h3>為什麼是「統一日誌編輯器」而非「10 個分頁」？</h3>
+        <p>一開始的設計是 10 個 tab 切換頁（Q1 是 Dot Notation、Q2 是 Destructuring...）。但和 AI 反覆討論後，我們意識到：</p>
+        <ul style="margin-top:0.75rem;">
+          <li><strong>分頁的問題：</strong>每個 tab 都是獨立個體，概念之間看不出關聯。Q3 的 <code>forEach</code> 迴圈和 Q1 的物件屬性，在真實系統裡是串在一起的。</li>
+          <li><strong>統一的優點：</strong>當你在左側編輯器改了一個值，右側部落格預覽連帶更新——這種「操作 → 結果」的對應關係，才是 Debug 和理解程式碼時真正的認知模式。</li>
+        </ul>
+        <div class="quote" style="margin-top:1rem;">
+          <strong>最終決定</strong>
+          一個編輯器，一個預覽，10 個 JS 概念自然嵌在部落格的技術說明區。
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔧 技術挑戰 -->
+    <div class="section">
+      <div class="section-title">🔧 技術挑戰與解決方案</div>
+
+      <div class="bug-card">
+        <h4>1. GitHub Pages 空白頁 — DOM 讀取順序錯誤</h4>
+        <p><strong>問題：</strong>頁面載入時一片空白，Console 顯示 <code>Cannot read properties of null (reading 'value')</code>。</p>
+        <p style="margin-top:0.5rem;"><strong>根因：</strong><code>syncAll()</code> 在頁面一載入就執行，但 DOM 根本還沒建出來。<code>getFormData()</code> 嘗試讀取 DOM 時拿到 <code>null</code>。</p>
+        <p style="margin-top:0.5rem;"><strong>修復：</strong>區分「初次渲染」和「讀值更新」兩個函式。初次使用 <code>initFirstRender()</code> 直接從 <code>BLOG_DB</code> 取值，不碰 DOM。</p>
+      </div>
+
+      <div class="bug-card">
+        <h4>2. 打字時輸入框一直消失 — innerHTML 摧毀問題</h4>
+        <p><strong>問題：</strong>在標題或內容輸入框打字時，游標一直跳掉，沒辦法連續輸入。</p>
+        <p style="margin-top:0.5rem;"><strong>根因：</strong><code>oninput</code> → <code>syncAll()</code> → <code>renderEditor()</code> → <code>innerHTML</code> 重新渲染整個左側面板 → input 元素被摧毀重建，游標自然消失。</p>
+        <p style="margin-top:0.5rem;"><strong>修復：</strong>拆出 <code>syncPreview()</code> 專門處理打字事件，只更新右側，不動左側 DOM。</p>
+      </div>
+
+      <div class="bug-card">
+        <h4>3. ES6 語法在 GitHub Pages 失效 — inline JS 執行環境限制</h4>
+        <p><strong>問題：</strong>使用 <code>const</code>、箭頭函式、模板字串、<code>forEach</code>、<code>map</code> 等 ES6 語法時，GitHub Pages inline script 無法正確執行。</p>
+        <p style="margin-top:0.5rem;"><strong>修復：</strong>全部改為 ES5 語法。<code>const</code> → <code>var</code>，<code>arr.forEach(fn)</code> → <code>for</code> 迴圈，模板字串 → 字串串接。</p>
+      </div>
+
+      <div class="bug-card">
+        <h4>4. Callback 概念的視覺化困境（Q5 / Q7 / Q10）</h4>
+        <p><strong>問題：</strong>Error-First Callback、fakeGet、checkAdmin 這些概念的核心是「非同步函式呼叫時機」——在同步環境下沒辦法真的展示視覺效果。</p>
+        <p style="margin-top:0.5rem;"><strong>決定：</strong>不做假的 UI 模擬，純做概念說明。給予完整程式碼展示與概念說明（在哪個情境會用到）。</p>
+      </div>
+    </div>
+
+    <!-- 📂 檔案結構 -->
+    <div class="section">
+      <div class="section-title">📂 檔案結構</div>
+      <div class="block">
+<pre>HW7/
+├── index.html          ← landing page，概念總覽 + 操作說明
+├── practice.html       ← 主要練習頁，左右雙面板
+├── README.html         ← 本文件（開發紀錄）
+├── css/
+│   └── style.css       ← 共用樣式表（亮暗主題）
+└── data/
+    └── questions.js    ← 10 題原始資料</pre>
+      </div>
+    </div>
+
+    <!-- 🧠 10個 JS 概念 -->
+    <div class="section">
+      <div class="section-title">🧠 涉及的 10 個 JS 概念</div>
+      <div class="block">
+        <div class="concept-table">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>概念</th>
+                <th>在部落格系統中的角色</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Q1</td>
+                <td>Dot &amp; Bracket Notation</td>
+                <td>從資料庫物件取屬性：<code>post.title</code></td>
+              </tr>
+              <tr>
+                <td>Q2</td>
+                <td>Destructuring</td>
+                <td>Express req.body 解構：<code>const { title } = req.body</code></td>
+              </tr>
+              <tr>
+                <td>Q3</td>
+                <td>forEach + HTML 拼接</td>
+                <td>部落格列表渲染：<code>posts.forEach(...)</code></td>
+              </tr>
+              <tr>
+                <td>Q4</td>
+                <td>req.params（字典）</td>
+                <td>URL 參數取值：<code>req.params["id"]</code></td>
+              </tr>
+              <tr>
+                <td>Q5</td>
+                <td>Error-First Callback</td>
+                <td>資料庫查詢慣例（純概念說明）</td>
+              </tr>
+              <tr>
+                <td>Q6</td>
+                <td>JSON.parse / stringify</td>
+                <td>API 請求體解析：<code>JSON.parse(req.body)</code></td>
+              </tr>
+              <tr>
+                <td>Q7</td>
+                <td>fakeGet 模擬</td>
+                <td>非同步資料庫查詢（純概念說明）</td>
+              </tr>
+              <tr>
+                <td>Q8</td>
+                <td>三元運算 Conditional</td>
+                <td>Welcome 訊息：<code>user ? user : "Stranger"</code></td>
+              </tr>
+              <tr>
+                <td>Q9</td>
+                <td>String.slice / substr</td>
+                <td>文章預覽截斷：<code>content.slice(0, 30) + "..."</code></td>
+              </tr>
+              <tr>
+                <td>Q10</td>
+                <td>checkAdmin Pattern</td>
+                <td>錯誤優先 callback 實作（純概念說明）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 💡 設計演進時間線 -->
+    <div class="section">
+      <div class="section-title">💡 設計演進時間線</div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="ver">v0</span>
+          <p>傳統 10 tab 切換頁，每個 Q 獨立</p>
+        </div>
+        <div class="timeline-item">
+          <span class="ver">v1</span>
+          <p>提出「統一日誌系統」的想像，開始左／右雙面板規劃</p>
+        </div>
+        <div class="timeline-item">
+          <span class="ver">v1 失敗</span>
+          <p>GitHub Pages 空白頁 — DOM 讀取順序錯誤（<code>getFormData</code> 在 <code>renderEditor</code> 之前）</p>
+        </div>
+        <div class="timeline-item">
+          <span class="ver">v2</span>
+          <p>加入 <code>initFirstRender()</code> 解決 startup crash</p>
+        </div>
+        <div class="timeline-item">
+          <span class="ver">v2.1</span>
+          <p>打字時左側編輯器一直被摧毀 — 拆出 <code>syncPreview()</code></p>
+        </div>
+        <div class="timeline-item">
+          <span class="ver">v2.2</span>
+          <p>index 重新設計（Hero + 概念總覽網格 + 操作說明）</p>
+        </div>
+        <div class="timeline-item">
+          <span class="ver">v3</span>
+          <p>選文章時右側標題不變 — <code>onIdChange()</code> 直接讀 <code>BLOG_DB</code> 而非 DOM</p>
+        </div>
+        <div class="timeline-item">
+          <span class="ver">v3.1</span>
+          <p>精簡左側編輯器（移除 tags 輸入框，三欄並排 👍👁👤，草稿+三元同一行）</p>
+        </div>
+        <div class="timeline-item">
+          <span class="ver">v3.2</span>
+          <p>Q8 勾選三元現在有實際差異（並排顯示 ternary vs OR 結果）</p>
+        </div>
+        <div class="timeline-item">
+          <span class="ver">v3.3</span>
+          <p>主題切換移至左側面板 topbar，深色模式改用護眼翠綠色系</p>
+        </div>
+        <div class="timeline-item">
+          <span class="ver">v3.4</span>
+          <p>返回首頁連結移至左側面板 topbar，與主題切換並排，解決滑動被 header 遮住的問題</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔗 相關連結 -->
+    <div class="section">
+      <div class="section-title">🔗 相關連結</div>
+      <div class="block" style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a href="practice.html" class="link-btn" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:6px 14px;border-radius:8px;text-decoration:none;font-weight:600;background:rgba(15,118,110,0.1);color:var(--accent);border:1px solid rgba(15,118,110,0.2);">🔗 練習頁</a>
+        <a href="index.html" class="link-btn" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:6px 14px;border-radius:8px;text-decoration:none;font-weight:600;background:rgba(234,179,8,0.1);color:#b45309;border:1px solid rgba(234,179,8,0.2);">🔗 入口頁</a>
+      </div>
+    </div>
+
+    <!-- 👤 維護者 -->
+    <div class="section">
+      <div class="section-title">👤 維護者</div>
+      <div class="block" style="text-align:center;padding:2rem;">
+        <p style="font-size:1rem;">由 <strong>Oren</strong> 與 AI 協作維護</p>
+        <p style="font-size:0.85rem;color:var(--muted);margin-top:0.5rem;">HW7 — 日誌系統 JS 實作 · CCC 作業天地</p>
+        <a href="https://github.com/Oren2026/Oren_own" target="_blank" style="display:inline-block;margin-top:1rem;color:var(--accent);font-size:0.85rem;text-decoration:none;">→ GitHub 仓库</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    📜 HW7 開發紀錄｜由 <a href="https://github.com/Oren2026" target="_blank">Oren</a> 與 AI 協作維護
+  </footer>
+
+</body>
+</html>
