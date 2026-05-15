@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HW6 — JavaScript 選擇題測驗</title>
+  <title>HW6 — JavaScript 選擇題測驗｜開發紀錄</title>
   <style>
     :root {
       --accent: #0f766e;
@@ -13,6 +13,9 @@
       --text: #1e293b;
       --muted: #64748b;
       --border: #e2e8f0;
+      --code-bg: #f1f5f9;
+      --tag-bg: rgba(15,118,110,0.08);
+      --tag-color: #0f766e;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -21,49 +24,42 @@
       font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.7;
+      line-height: 1.75;
     }
 
+    /* ── Header ── */
     .header {
       background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
       color: white;
-      padding: 3rem 5% 2.5rem;
+      padding: 2.5rem 5% 2rem;
       text-align: center;
     }
+    .header .icon { font-size: 3rem; margin-bottom: 0.5rem; }
+    .header h1 { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; }
+    .header .subtitle { opacity: 0.8; margin-top: 0.4rem; font-size: 0.95rem; }
+    .header .tag-row { margin-top: 1rem; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .header .tag { background: rgba(255,255,255,0.18); padding: 0.2rem 0.75rem; border-radius: 20px; font-size: 0.78rem; }
 
-    .header .icon { font-size: 3.5rem; margin-bottom: 0.75rem; }
-    .header h1 { font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 800; margin-bottom: 0.4rem; }
-    .header p { opacity: 0.85; font-size: 1rem; }
-    .header .tag {
-      display: inline-block;
-      margin-top: 1rem;
-      background: rgba(255,255,255,0.2);
-      padding: 0.25rem 0.85rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-    }
-
-    .breadcrumb {
-      padding: 0.9rem 5%;
-      font-size: 0.82rem;
-      color: var(--muted);
-    }
+    /* ── Breadcrumb ── */
+    .breadcrumb { padding: 0.85rem 5%; font-size: 0.82rem; color: var(--muted); }
     .breadcrumb a { color: var(--accent); text-decoration: none; }
     .breadcrumb a:hover { text-decoration: underline; }
 
-    .container { max-width: 900px; margin: 0 auto; padding: 2rem 5% 4rem; }
+    /* ── Container ── */
+    .container { max-width: 860px; margin: 0 auto; padding: 2rem 5% 4rem; }
 
+    /* ── Section ── */
     .section { margin-bottom: 2.5rem; }
 
     .section-title {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--muted);
       margin-bottom: 1rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
     .section-title::after {
       content: '';
@@ -72,124 +68,162 @@
       background: var(--border);
     }
 
-    .concept {
+    /* ── Block ── */
+    .block {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.75rem;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .block h3 {
       font-size: 1rem;
-      line-height: 1.8;
-      color: var(--text);
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
     }
+    .block p, .block li { font-size: 0.9rem; color: var(--text); }
+    .block ul { padding-left: 1.3rem; }
+    .block li { margin-bottom: 0.3rem; }
+    .block li:last-child { margin-bottom: 0; }
 
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; }
-    .tag {
-      font-size: 11px;
-      padding: 2px 10px;
-      border-radius: 20px;
-      background: rgba(15,118,110,0.08);
-      color: #0f766e;
-      border: 1px solid rgba(15,118,110,0.15);
-      font-weight: 600;
-    }
-
-    .features {
+    /* ── Phase Block ── */
+    .phase {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: 12px;
+      margin-bottom: 1.25rem;
       overflow: hidden;
     }
-
-    .feature-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 1rem 1.25rem;
+    .phase-header {
+      background: linear-gradient(135deg, rgba(15,118,110,0.06) 0%, rgba(15,118,110,0.03) 100%);
       border-bottom: 1px solid var(--border);
-    }
-    .feature-item:last-child { border-bottom: none; }
-    .feature-item:hover { background: rgba(15,118,110,0.02); }
-
-    .feature-icon { font-size: 1.4rem; flex-shrink: 0; width: 36px; text-align: center; margin-top: 2px; }
-
-    .feature-content h3 { font-size: 0.92rem; font-weight: 700; color: var(--accent); margin-bottom: 2px; }
-    .feature-content p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
-
-    .demo-links {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.25rem 1.5rem;
+      padding: 0.85rem 1.25rem;
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .link-btn {
-      display: inline-flex;
       align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      padding: 6px 14px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: opacity 0.15s;
+      gap: 10px;
     }
-    .link-btn:hover { opacity: 0.75; }
-    .link-btn.demo {
-      background: rgba(15,118,110,0.1);
-      color: var(--accent);
-      border: 1px solid rgba(15,118,110,0.2);
+    .phase-header .num {
+      width: 28px; height: 28px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
     }
-    .link-btn.practice {
-      background: rgba(234,179,8,0.1);
-      color: #b45309;
-      border: 1px solid rgba(234,179,8,0.2);
-    }
+    .phase-header h3 { font-size: 0.95rem; font-weight: 700; color: var(--accent-dark); }
+    .phase-body { padding: 1.25rem; }
 
-    .ai-discussion {
-      background: linear-gradient(135deg, rgba(99,102,241,0.04) 0%, rgba(15,118,110,0.04) 100%);
-      border: 1px solid rgba(99,102,241,0.12);
-      border-radius: 14px;
-      padding: 1.75rem;
-      text-align: center;
+    .speaker {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--accent-dark);
+      margin-bottom: 0.4rem;
     }
-    .ai-discussion .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-    .ai-discussion h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
-    .ai-discussion p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-    .ai-discussion .placeholder {
-      margin-top: 1rem;
+    .speaker.ai { color: #6366f1; }
+    .speaker.oren { color: #0f766e; }
+    .speaker.oren::before { content: '👤 '; }
+    .speaker.ai::before { content: '🤖 '; }
+
+    .result {
+      background: rgba(15,118,110,0.05);
+      border-left: 3px solid var(--accent);
+      padding: 0.85rem 1rem;
+      border-radius: 0 8px 8px 0;
+      margin-top: 0.75rem;
+      font-size: 0.88rem;
+    }
+    .result strong { color: var(--accent); font-size: 0.8rem; display: block; margin-bottom: 0.3rem; }
+
+    .bug-card {
+      background: #fff9f9;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.85rem;
+    }
+    .bug-card:last-child { margin-bottom: 0; }
+    .bug-card h4 { font-size: 0.88rem; font-weight: 700; color: #dc2626; margin-bottom: 0.4rem; }
+    .bug-card p { font-size: 0.85rem; margin-bottom: 0.3rem; }
+    .bug-card p:last-child { margin-bottom: 0; }
+    .bug-card code {
+      background: #fee2e2;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
       font-size: 0.8rem;
-      color: #a5b4fc;
-      background: rgba(99,102,241,0.06);
-      border: 1px dashed rgba(99,102,241,0.2);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
+      color: #991b1b;
     }
 
-    .footer {
-      text-align: center;
-      padding: 2rem;
-      color: var(--muted);
-      font-size: 0.78rem;
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; margin-top: 0.5rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
     }
+    th {
+      background: rgba(15,118,110,0.08);
+      color: var(--accent-dark);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.65rem 0.85rem;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 0.6rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── Code ── */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      margin-top: 0.5rem;
+    }
+    code {
+      font-family: "Fira Code", "Cascadia Code", "Menlo", monospace;
+    }
+    p code, li code {
+      background: var(--code-bg);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      color: #be185d;
+    }
+
+    /* ── Tags ── */
+    .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--tag-bg); color: var(--tag-color); font-weight: 600; margin-right: 4px; }
+
+    /* ── Footer ── */
+    .footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.78rem; border-top: 1px solid var(--border); }
     .footer a { color: var(--accent); text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
 
+    /* ── Responsive ── */
     @media (max-width: 500px) {
-      .feature-item { padding: 0.85rem 1rem; }
-      .feature-icon { display: none; }
+      .phase-body { padding: 1rem; }
+      pre { font-size: 0.75rem; }
     }
   </style>
 </head>
 <body>
 
   <header class="header">
-    <div class="icon">🧩</div>
-    <h1>JavaScript 選擇題測驗</h1>
-    <p>授課老師：陳鍾誠｜114學年下學期</p>
-    <span class="tag">HTML / CSS / JavaScript</span>
+    <div class="icon">💬</div>
+    <h1>開發紀錄</h1>
+    <p class="subtitle">HW6 — JavaScript 選擇題測驗｜與 AI 協作的完整過程</p>
+    <div class="tag-row">
+      <span class="tag">協作開發</span>
+      <span class="tag">迭代記錄</span>
+      <span class="tag">技術決策</span>
+    </div>
   </header>
 
   <p class="breadcrumb">
@@ -198,83 +232,249 @@
 
   <main class="container">
 
+    <!-- 📋 專案概覽 -->
     <div class="section">
-      <div class="section-title">核心概念</div>
-      <div class="concept">
-        一個純前端的 JavaScript 測驗系統，20 題題庫每次隨機抽出 10 題，選項亂序排列。支援進度條跳題、即時動畫回饋、結算分數與重新測驗。純瀏覽器執行，無需後端。
-        <div class="tags">
-          <span class="tag">純前端</span>
-          <span class="tag">隨機題目</span>
-          <span class="tag">亂序選項</span>
-          <span class="tag">即時回饋</span>
-          <span class="tag">進度追蹤</span>
+      <div class="section-title">📋 專案概覽</div>
+      <div class="block">
+        <p>這是 CCC 課堂的 JavaScript 進階練習，分為兩部分。以下是各部分的類型與特色：</p>
+        <div class="table-wrap" style="margin-top:1rem;">
+          <table>
+            <thead>
+              <tr>
+                <th>部分</th>
+                <th>類型</th>
+                <th>題目數</th>
+                <th>特色</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>第一部分</td>
+                <td>選擇題</td>
+                <td>20題庫，每次隨機抽出10題</td>
+                <td>選項亂序、進度跳題、一次結算</td>
+              </tr>
+              <tr>
+                <td>第二部分</td>
+                <td>互動實作題</td>
+                <td>10題</td>
+                <td>變數可控、即時輸出、Syntax Highlight</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
 
+    <!-- 🏗️ 檔案結構 -->
     <div class="section">
-      <div class="section-title">功能總覽</div>
-      <div class="features">
-        <div class="feature-item">
-          <div class="feature-icon">🎲</div>
-          <div class="feature-content">
-            <h3>隨機題目與亂序選項</h3>
-            <p>20 題題庫每次抽出 10 題，每題的四個選項順序也隨機打亂，降低背答案的可能。</p>
+      <div class="section-title">🏗️ 檔案結構</div>
+      <div class="block">
+<pre>HW6/
+├── index.html              ← 首頁，三張卡片入口
+├── quiz.html               ← 第一部分：選擇題
+├── practice.html            ← 第二部分：互動實作題
+├── README.html             ← 本文件（開發紀錄）
+├── css/
+│   └── style.css           ← 共用樣式（亮暗主題一體化）
+└── data/
+    ├── quiz_questions.js   ← 選擇題題庫（維護在此）
+    └── practice_questions.js ← 應用題資料（維護在此）</pre>
+      </div>
+    </div>
+
+    <!-- 💬 開發對話紀錄 -->
+    <div class="section">
+      <div class="section-title">💬 開發對話紀錄</div>
+      <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1.2rem;">以下為實作過程中的關鍵決策與迭代，從需求確認到最終版本的完整軌跡。</p>
+
+      <!-- Phase 1 -->
+      <div class="phase">
+        <div class="phase-header">
+          <div class="num">1</div>
+          <h3>需求確認</h3>
+        </div>
+        <div class="phase-body">
+          <p class="speaker oren">黑皮提出以下需求：</p>
+          <ul>
+            <li>20題選擇題，每次抽10題</li>
+            <li>一次一題，而非一次顯示全部</li>
+            <li>需要進度條且可點擊跳題</li>
+            <li>選完最後一題<strong>才對答案</strong>，不是每題即時對答案</li>
+            <li>最後顯示「8/10」+「你答對了8題」</li>
+            <li>選項要有動畫（選中變色）</li>
+            <li>可重新測驗</li>
+          </ul>
+          <div class="result">
+            <strong>AI 初始實作</strong>
+            用單一 HTML，題目 hardcode 在 JS 中。
           </div>
         </div>
-        <div class="feature-item">
-          <div class="feature-icon">📊</div>
-          <div class="feature-content">
-            <h3>進度條與跳題</h3>
-            <p>頂部進度條即時顯示目前進度，可隨時點擊題號跳回前一題修改答案。</p>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="phase">
+        <div class="phase-header">
+          <div class="num">2</div>
+          <h3>架構重構</h3>
+        </div>
+        <div class="phase-body">
+          <p class="speaker oren">黑皮認為：如果未來要增加題目，不會很難維護嗎？如果拆分 JS 跟 JSON 的話會不會更好？</p>
+          <p class="speaker ai">AI 回應：完全正確，題目和邏輯應該分開。</p>
+          <div class="result">
+            <strong>重構結果</strong>
+            <ul>
+              <li>建立 <code>data/quiz_questions.js</code> 放置所有選擇題</li>
+              <li>建立 <code>data/practice_questions.js</code> 放置應用題</li>
+              <li><code>css/style.css</code> 共用樣式，亮暗主題一體化</li>
+            </ul>
           </div>
         </div>
-        <div class="feature-item">
-          <div class="feature-icon">⚡</div>
-          <div class="feature-content">
-            <h3>即時動畫回饋</h3>
-            <p>選中答案後立即顯示對錯，帶有平滑動畫效果，讓學習過程更有感。</p>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="phase">
+        <div class="phase-header">
+          <div class="num">3</div>
+          <h3>第二部分——應用題</h3>
+        </div>
+        <div class="phase-body">
+          <p class="speaker oren">黑皮提出：</p>
+          <ul>
+            <li>第二部分要是「應用題」，不是選擇題</li>
+            <li>每個 JavaScript 做成圖卡，不只顯示程式碼</li>
+            <li>使用者可以調整<strong>變數</strong>觀察函式輸出的變化</li>
+            <li>可以切換亮暗主題</li>
+          </ul>
+          <div class="result">
+            <strong>實作細節</strong>
+            每張圖卡結構：題目說明 → 預設程式碼（Syntax Highlight）→ 變數調整區 → 執行輸出。使用者可改變變數並即時觀察輸出結果，提供「恢復預設」按鈕。
           </div>
         </div>
-        <div class="feature-item">
-          <div class="feature-icon">🏆</div>
-          <div class="feature-content">
-            <h3>結算分數</h3>
-            <p>作答完畢後顯示總分、答對題數、正確率，以及所有題目的正解說明。</p>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="phase">
+        <div class="phase-header">
+          <div class="num">4</div>
+          <h3>Bug 修復</h3>
+        </div>
+        <div class="phase-body">
+          <div class="bug-card">
+            <h4>問題1：選擇題畫面閃爍（Flicker）</h4>
+            <p><strong>原因：</strong>每次 <code>render()</code> 都用 <code>innerHTML</code> 重新生成，瀏覽器每次都重跑 <code>slideIn</code> 動畫。</p>
+            <p><strong>修復：</strong>跳題才動畫，純粹換選項只更新 class，不重建 DOM。</p>
+          </div>
+          <div class="bug-card">
+            <h4>問題2：應用題執行顯示 NaN</h4>
+            <p><strong>原因：</strong><code>render()</code> 裡 input ID 使用 <code>q.id</code>（1-10），但 <code>runQuestion()</code> 收到的是 array index（0-9），兩邊對不上，抓不到 input 值。</p>
+            <p><strong>修復：</strong>統一使用 array index 作為 ID。</p>
+          </div>
+          <div class="bug-card">
+            <h4>問題3：選項引號多餘</h4>
+            <p><strong>原因：</strong>題目資料中 <code>"'Hello'"</code> 會產生雙層引號。</p>
+            <p><strong>修復：</strong>重寫所有選項字串，只保留乾淨的內容。</p>
           </div>
         </div>
-        <div class="feature-item">
-          <div class="feature-icon">🔄</div>
-          <div class="feature-content">
-            <h3>重新測驗</h3>
-            <p>一鍵重新開始，題目與選項再次隨機，重新計時。</p>
+      </div>
+
+      <!-- Phase 5 -->
+      <div class="phase">
+        <div class="phase-header">
+          <div class="num">5</div>
+          <h3>題目重新設計</h3>
+        </div>
+        <div class="phase-body">
+          <p class="speaker oren">黑皮提出：原本的選擇題太多數字運算題，想要更有深度的題目。</p>
+          <div class="result">
+            <strong>重新設計後的題目類型</strong>
+            <ul>
+              <li><strong>填空題</strong>（6題）：看程式碼片段，填入正確的表達式</li>
+              <li><strong>行為預測題</strong>（4題）：分析程式碼，預測執行結果</li>
+              <li><strong>語法/語意判斷題</strong>（10題）：概念理解與語法判斷</li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 🔧 技術規格 -->
     <div class="section">
-      <div class="section-title">實際體驗</div>
-      <div class="demo-links">
-        <a href="quiz.html" class="link-btn demo" target="_blank">🔗 選擇題測驗</a>
-        <a href="practice.html" class="link-btn practice" target="_blank">🧩 實作練習</a>
+      <div class="section-title">🔧 技術規格</div>
+
+      <div class="block">
+        <h3>亮暗主題</h3>
+        <ul>
+          <li><code>localStorage</code> 儲存使用者偏好</li>
+          <li>CSS Variable 切換，深色模式一體化</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h3>選擇題機制</h3>
+        <ul>
+          <li>Fisher-Yates 洗牌演算法亂序題目與選項</li>
+          <li>送出前不回傳對錯，確保猶豫空間</li>
+          <li>送出後一次結算並顯示分數</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h3>應用題機制</h3>
+        <ul>
+          <li><code>safeNum()</code> 防止空值導致 NaN</li>
+          <li><code>setTimeout</code> 模擬非同步執行</li>
+          <li>Syntax Highlight 使用正則替換關鍵字</li>
+        </ul>
       </div>
     </div>
 
+    <!-- 📌 維護指南 -->
     <div class="section">
-      <div class="section-title">AI 討論過程</div>
-      <div class="ai-discussion">
-        <div class="icon">🤖</div>
-        <h3>與 AI 協作的開發紀錄</h3>
-        <p>這個章節記錄在開發過程中與 AI 的討論、思考轉折與關鍵決策。</p>
-        <div class="placeholder">⚠️ 此章節尚待補充（預計收錄與 AI 討論的核心決策節點）</div>
+      <div class="section-title">📌 維護指南</div>
+
+      <div class="block">
+        <h3>新增選擇題</h3>
+        <p>編輯 <code>data/quiz_questions.js</code>，在 <code>window.QUIZ_QUESTIONS</code> 陣列中加入新物件：</p>
+        <pre>{
+  q: "題目文字（可含程式碼換行）",
+  opts: ["選項A", "選項B", "選項C", "選項D"],
+  ans: 0  // 正確答案的 index
+}</pre>
+      </div>
+
+      <div class="block">
+        <h3>新增應用題</h3>
+        <p>編輯 <code>data/practice_questions.js</code>，在 <code>PRACTICE_QUESTIONS</code> 陣列中加入：</p>
+        <pre>{
+  id: 11,  // 題目編號（用於顯示）
+  title: "標題",
+  desc: "題目說明",
+  code: "function demo() {\n  return __VAR__;\n}",
+  variables: [
+    { key: "VAR", default: 10, label: "變數說明" }
+  ],
+  run(vars) {
+    return String(vars.VAR * 2);
+  }
+}</pre>
+      </div>
+    </div>
+
+    <!-- 👤 維護者 -->
+    <div class="section">
+      <div class="section-title">👤 維護者</div>
+      <div class="block" style="text-align:center; padding:2rem;">
+        <p style="font-size:1rem;color:var(--text);">由 <strong>Oren</strong> 與 AI 協作維護</p>
+        <p style="font-size:0.85rem;color:var(--muted);margin-top:0.5rem;">HW6 — JavaScript 選擇題測驗 · CCC 作業天地</p>
+        <a href="https://github.com/Oren2026/Oren_own" target="_blank" style="display:inline-block;margin-top:1rem;color:var(--accent);font-size:0.85rem;text-decoration:none;">→ GitHub 仓库</a>
       </div>
     </div>
 
   </main>
 
   <footer class="footer">
-    <p>🧩 JavaScript 選擇題測驗｜HW6｜授課老師：陳鍾誠｜<a href="https://github.com/Oren2026/Oren_own" target="_blank" rel="noopener">Oren</a> 維護</p>
+    💬 HW6 開發紀錄｜由 <a href="https://github.com/Oren2026" target="_blank">Oren</a> 與 AI 協作維護
   </footer>
 
 </body>
