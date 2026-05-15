@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HW5 — 網頁日誌系統</title>
+  <style>
+    :root {
+      --accent: #0f766e;
+      --accent-dark: #115e59;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --tag-bg: rgba(15,118,110,0.08);
+      --tag-color: #0f766e;
+      --tag-border: rgba(15,118,110,0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: white;
+      padding: 3rem 5% 2.5rem;
+      text-align: center;
+    }
+
+    .header .icon { font-size: 3.5rem; margin-bottom: 0.75rem; }
+    .header h1 { font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 800; margin-bottom: 0.4rem; }
+    .header p { opacity: 0.85; font-size: 1rem; }
+    .header .tag {
+      display: inline-block;
+      margin-top: 1rem;
+      background: rgba(255,255,255,0.2);
+      padding: 0.25rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    .breadcrumb {
+      padding: 0.9rem 5%;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .breadcrumb a { color: var(--accent); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .container { max-width: 760px; margin: 0 auto; padding: 2rem 5% 4rem; }
+
+    /* Section */
+    .section { margin-bottom: 2.5rem; }
+
+    .section-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Concept card */
+    .concept {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    /* Tags */
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; }
+    .tag {
+      font-size: 11px;
+      padding: 2px 10px;
+      border-radius: 20px;
+      background: var(--tag-bg);
+      color: var(--tag-color);
+      border: 1px solid var(--tag-border);
+      font-weight: 600;
+    }
+
+    /* Feature list */
+    .features {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .feature-item:last-child { border-bottom: none; }
+    .feature-item:hover { background: rgba(15,118,110,0.02); }
+
+    .feature-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      width: 36px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .feature-content h3 {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 2px;
+    }
+
+    .feature-content p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Version timeline */
+    .timeline {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .timeline-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+    .timeline-item:last-child { border-bottom: none; }
+    .timeline-item:hover { background: rgba(15,118,110,0.03); }
+
+    .tl-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .tl-badge.latest { background: #d1fae5; color: #059669; }
+    .tl-badge.old { background: var(--bg); border: 1px solid var(--border); color: var(--muted); }
+
+    .tl-info { flex: 1; }
+    .tl-info .name { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+    .tl-info .desc { font-size: 0.78rem; color: var(--muted); }
+    .tl-link { font-size: 0.75rem; color: var(--accent); }
+    .timeline-item:hover .tl-link { text-decoration: underline; }
+
+    /* AI discussion placeholder */
+    .ai-discussion {
+      background: linear-gradient(135deg, rgba(99,102,241,0.04) 0%, rgba(15,118,110,0.04) 100%);
+      border: 1px solid rgba(99,102,241,0.12);
+      border-radius: 14px;
+      padding: 1.75rem;
+      text-align: center;
+    }
+    .ai-discussion .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .ai-discussion h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+    .ai-discussion p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .ai-discussion .placeholder {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: #a5b4fc;
+      background: rgba(99,102,241,0.06);
+      border: 1px dashed rgba(99,102,241,0.2);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 500px) {
+      .feature-item { padding: 0.85rem 1rem; }
+      .feature-icon { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="icon">📓</div>
+    <h1>網頁日誌系統</h1>
+    <p>授課老師：陳鍾誠｜114學年下學期</p>
+    <span class="tag">HTML / CSS / JavaScript / sql.js / Node.js / SQLite</span>
+  </header>
+
+  <p class="breadcrumb">
+    <a href="../index.html">← 網頁設計作業</a>
+  </p>
+
+  <main class="container">
+
+    <!-- 核心概念 -->
+    <div class="section">
+      <div class="section-title">核心概念</div>
+      <div class="concept">
+        一個在瀏覽器裡就能跑的日誌系統，從初版一路演化到 v3.0。前端用 JavaScript + sql.js（SQLite 的 WASM 版）實作，後期加入 Node.js 後端對照版。前端版本無需安裝任何東西，開了瀏覽器就能用。
+        <div class="tags">
+          <span class="tag">純前端</span>
+          <span class="tag">SQLite (WASM)</span>
+          <span class="tag">本地持久化</span>
+          <span class="tag">亮暗主題</span>
+          <span class="tag">SPA 路由</span>
+          <span class="tag">Hash 模式</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 功能總覽 -->
+    <div class="section">
+      <div class="section-title">功能總覽</div>
+      <div class="features">
+        <div class="feature-item">
+          <div class="feature-icon">🌙</div>
+          <div class="feature-content">
+            <h3>亮 / 暗版主題</h3>
+            <p>一鍵切換亮版與暗版，CSS 變數驅動，無需重整頁面。</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">👥</div>
+          <div class="feature-content">
+            <h3>作者追蹤系統</h3>
+            <p>可追蹤 / 取消追蹤作者，有自己的個人頁（`/#/profile/:username`），顯示粉絲數、追蹤數、文章列表。</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🔗</div>
+          <div class="feature-content">
+            <h3>Hash SPA 路由</h3>
+            <p>純前端路由，無需後端支援，URL 直接分享到特定頁面。</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🔐</div>
+          <div class="feature-content">
+            <h3>JWT 身份驗證</h3>
+            <p>Node.js 後端版支援 JWT，bcrypt 密碼雜湊，完整的使用者系統。</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🗄️</div>
+          <div class="feature-content">
+            <h3>本地優先儲存</h3>
+            <p>sql.js + IndexedDB，資料存在瀏覽器本地，關掉後端也能完整使用（試用模式）。</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🎨</div>
+          <div class="feature-content">
+            <h3>自定義個人頁</h3>
+            <p>可自行設定頭像色彩、背景圖、暱稱與自我介紹。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 版本演化 -->
+    <div class="section">
+      <div class="section-title">版本演化</div>
+      <div class="timeline">
+        <a href="v3.0/index.html" class="timeline-item">
+          <span class="tl-badge latest">最新</span>
+          <div class="tl-info">
+            <div class="name">v3.0 — Hash 路由 + 追蹤系統</div>
+            <div class="desc">🌙 亮/暗版 + 👤 個人頁 + Hash SPA + 設定 Modal</div>
+          </div>
+          <span class="tl-link">進入 →</span>
+        </a>
+        <a href="v2.1/index.html" class="timeline-item">
+          <span class="tl-badge old">舊版</span>
+          <div class="tl-info">
+            <div class="name">v2.1 — Node.js 主力版</div>
+            <div class="desc">🪵 Morgan 日誌 + 統一錯誤處理 + 試用模式</div>
+          </div>
+          <span class="tl-link">進入 →</span>
+        </a>
+        <a href="v2.0/index.html" class="timeline-item">
+          <span class="tl-badge old">舊版</span>
+          <div class="tl-info">
+            <div class="name">v2.0 — 後端對照版</div>
+            <div class="desc">Node.js + bcrypt + JWT + REST API</div>
+          </div>
+          <span class="tl-link">進入 →</span>
+        </a>
+        <a href="v1.3/index.html" class="timeline-item">
+          <span class="tl-badge old">舊版</span>
+          <div class="tl-info">
+            <div class="name">v1.3 — 純前端最新版</div>
+            <div class="desc">DB class 重構 + 參數化查詢 + 安全性提升</div>
+          </div>
+          <span class="tl-link">進入 →</span>
+        </a>
+        <a href="v1.2/index.html" class="timeline-item">
+          <span class="tl-badge old">舊版</span>
+          <div class="tl-info">
+            <div class="name">v1.2 — 作者過濾</div>
+            <div class="desc">點作者名稱即時過濾該作者文章</div>
+          </div>
+          <span class="tl-link">進入 →</span>
+        </a>
+        <a href="v1.1/index.html" class="timeline-item">
+          <span class="tl-badge old">舊版</span>
+          <div class="tl-info">
+            <div class="name">v1.1 — 公開日誌牆</div>
+            <div class="desc">雙面板登入 + 所有人都能看到的日誌牆</div>
+          </div>
+          <span class="tl-link">進入 →</span>
+        </a>
+        <a href="v1.0/index.html" class="timeline-item">
+          <span class="tl-badge old">舊版</span>
+          <div class="tl-info">
+            <div class="name">v1.0 — 初版</div>
+            <div class="desc">基本 CRUD + 搜尋（已整合至後續版本）</div>
+          </div>
+          <span class="tl-link">進入 →</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- AI 討論過程 -->
+    <div class="section">
+      <div class="section-title">AI 討論過程</div>
+      <div class="ai-discussion">
+        <div class="icon">🤖</div>
+        <h3>與 AI 協作的演化紀錄</h3>
+        <p>這個章節記錄在開發過程中與 AI 的討論、思考轉折與關鍵決策。</p>
+        <div class="placeholder">⚠️ 此章節尚待補充（預計收錄與 AI 討論的核心決策節點）</div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <p>📓 網頁日誌系統｜HW5｜授課老師：陳鍾誠｜<a href="https://github.com/Oren2026/Oren_own" target="_blank" rel="noopener">Oren</a> 維護</p>
+  </footer>
+
+</body>
+</html>
