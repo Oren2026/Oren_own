@@ -8,13 +8,13 @@
     :root {
       --teal: #0f766e;
       --teal-dark: #115e59;
-      --teal-light: #14b8a6;
+      --purple: #6366f1;
+      --purple-dark: #4f46e5;
       --bg: #f8fafc;
-      --card: #ffffff;
       --text: #1e293b;
       --muted: #64748b;
       --border: #e2e8f0;
-      --radius: 12px;
+      --radius: 16px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,7 +26,6 @@
       line-height: 1.6;
     }
 
-    /* ── Header ── */
     .header {
       background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
       color: #fff;
@@ -74,155 +73,107 @@
       font-size: 0.8rem;
     }
 
-    /* ── Main ── */
-    .container { max-width: 900px; margin: 0 auto; padding: 2rem 5% 4rem; }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 5% 4rem;
+    }
 
-    /* ── Section ── */
-    .section {
-      background: var(--card);
-      border-radius: var(--radius);
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: #fff;
       border: 1px solid var(--border);
-      margin-bottom: 1.5rem;
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      position: relative;
       overflow: hidden;
     }
 
-    .section-head {
-      background: var(--bg);
-      padding: 0.9rem 1.25rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
     }
 
-    .section-head h2 { font-size: 1rem; font-weight: 700; }
+    .card.teal::before { background: var(--teal); }
+    .card.purple::before { background: var(--purple); }
 
-    /* ── Items ── */
-    .item {
-      display: grid;
-      grid-template-columns: 48px 1fr auto;
-      gap: 0 1rem;
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--border);
-      align-items: start;
-      text-decoration: none;
-      color: inherit;
-      transition: background 0.15s;
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.08);
     }
 
-    .item:last-child { border-bottom: none; }
-    .item:hover { background: rgba(15,118,110,0.03); }
+    .card.teal:hover { border-color: rgba(15,118,110,0.3); }
+    .card.purple:hover { border-color: rgba(99,102,241,0.3); }
 
-    .item-icon {
-      width: 40px; height: 40px;
-      border-radius: 10px;
+    .card-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.3rem;
-      flex-shrink: 0;
+      font-size: 1.8rem;
     }
 
-    .item-body { min-width: 0; }
+    .card.teal .card-icon { background: rgba(15,118,110,0.1); }
+    .card.purple .card-icon { background: rgba(99,102,241,0.1); }
 
-    .item-title {
-      font-weight: 700;
-      font-size: 0.92rem;
-      color: var(--teal);
-      margin-bottom: 3px;
-      display: block;
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 800;
     }
 
-    .item:hover .item-title { text-decoration: underline; }
+    .card.teal .card-title { color: var(--teal); }
+    .card.purple .card-title { color: var(--purple); }
 
-    .item-desc {
-      font-size: 0.8rem;
+    .card-desc {
+      font-size: 0.85rem;
       color: var(--muted);
-      line-height: 1.6;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      line-height: 1.7;
+      flex: 1;
     }
 
-    .item-tags {
+    .card-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 6px;
+      gap: 6px;
     }
 
     .tag {
-      font-size: 10px;
-      padding: 1px 7px;
-      border-radius: 3px;
-      background: rgba(15,118,110,0.08);
-      color: var(--teal);
-      border: 1px solid rgba(15,118,110,0.15);
-    }
-
-    .item-status {
-      font-size: 10px;
-      font-weight: 700;
+      font-size: 11px;
       padding: 2px 8px;
-      border-radius: 4px;
-      white-space: nowrap;
-      align-self: start;
-      margin-top: 2px;
-    }
-
-    .status-done   { background: #d1fae5; color: #059669; }
-    .status-latest { background: #dbeafe; color: #1d4ed8; }
-
-    .item-meta {
-      font-size: 0.75rem;
+      border-radius: 6px;
+      background: var(--bg);
       color: var(--muted);
-      margin-top: 5px;
+      border: 1px solid var(--border);
     }
 
-    /* ── Version list ── */
-    .ver-list { padding: 0.75rem 1.25rem 1rem; }
-
-    .ver-item {
+    .card-link {
+      font-size: 0.85rem;
+      font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.8rem;
-      text-decoration: none;
-      color: var(--text);
-      transition: color 0.15s;
+      gap: 4px;
+      margin-top: 0.5rem;
     }
 
-    .ver-item:last-child { border-bottom: none; }
-    .ver-item:hover { color: var(--teal); }
+    .card.teal .card-link { color: var(--teal); }
+    .card.purple .card-link { color: var(--purple); }
 
-    .ver-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--teal);
-      flex-shrink: 0;
-    }
+    .card:hover .card-link { text-decoration: underline; }
 
-    .ver-dot.latest {
-      background: #1d4ed8;
-      box-shadow: 0 0 6px rgba(29,78,216,0.4);
-    }
-
-    .ver-label { font-weight: 700; width: 28px; flex-shrink: 0; }
-    .ver-desc  { flex: 1; color: var(--muted); font-size: 0.78rem; }
-    .ver-link  { font-size: 0.75rem; color: var(--teal); }
-    .ver-item:hover .ver-link { text-decoration: underline; }
-
-    /* ── Divider ── */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 0 5%;
-    }
-
-    /* ── Footer ── */
     .footer {
       text-align: center;
       padding: 2rem;
@@ -232,20 +183,14 @@
 
     .footer a { color: var(--teal); text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
-
-    @media (max-width: 640px) {
-      .item { grid-template-columns: 40px 1fr; }
-      .item-status { display: none; }
-    }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
   <header class="header">
     <div class="header-content">
       <h1>📚 CCC 作業天地</h1>
-      <p class="subtitle">課堂作業與專案存放處</p>
+      <p class="subtitle">課堂作業與專題實作</p>
       <div class="badge-row">
         <span class="badge">🗂️ 持續更新</span>
         <span class="badge">📅 2026-03-27 起</span>
@@ -254,218 +199,46 @@
     </div>
   </header>
 
-  <!-- Main -->
   <main class="container">
+    <div class="cards">
 
-    <!-- 系統程式作業 -->
-    <div class="section">
-      <div class="section-head">
-        <span>⚡</span>
-        <h2>系統程式作業</h2>
-      </div>
-
-      <!-- sp_HW_6 -->
-      <a href="系統程式/sp_HW_6/" class="item">
-        <div class="item-icon" style="background:rgba(99,102,241,0.1);">⚡</div>
-        <div class="item-body">
-          <span class="item-title">sp_HW_6 — Fork 與檔案系統</span>
-          <div class="item-desc">fork() 影分身、execvp() 換魂、wait() 收屍。FS 系統層（open/read/write）vs 標準層（fgets/fputs）。I/O Redirection、pipe()、mmap()、socket 完整覆蓋，含互動式 Mini Shell 終端機模擬。</div>
-          <div class="item-tags">
-            <span class="tag">fork()</span>
-            <span class="tag">execvp()</span>
-            <span class="tag">wait()</span>
-            <span class="tag">I/O Redirection</span>
-            <span class="tag">pipe()</span>
-            <span class="tag">mmap()</span>
-            <span class="tag">socket</span>
-          </div>
-          <div class="item-meta">📅 2026-04-23｜授課老師：CCC｜系統程式</div>
+      <!-- 系統程式 -->
+      <a href="系統程式/index.html" class="card purple">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">系統程式作業</div>
+        <div class="card-desc">fork() 影分身、execvp() 換魂、wait() 收屍。I/O Redirection、pipe()、mmap()、Thread / Mutex / Deadlock 同步機制。</div>
+        <div class="card-tags">
+          <span class="tag">fork()</span>
+          <span class="tag">execvp()</span>
+          <span class="tag">Thread</span>
+          <span class="tag">Mutex</span>
+          <span class="tag">pipe()</span>
+          <span class="tag">socket</span>
         </div>
-        <span class="item-status status-latest">最新</span>
+        <div class="card-link">查看作業 →</div>
       </a>
 
-      <!-- sp_HW_5 -->
-      <a href="系統程式/sp_HW_5/" class="item">
-        <div class="item-icon" style="background:rgba(99,102,241,0.1);">⚡</div>
-        <div class="item-body">
-          <span class="item-title">sp_HW_5 — Thread 執行緒與同步機制</span>
-          <div class="item-desc">Race Condition / Mutex / Deadlock 說明文件，含三個互動模擬：銀行存提款（10萬次）、生產者消費者（Semaphore 緩衝區）、哲學家用餐（死結演示）。</div>
-          <div class="item-tags">
-            <span class="tag">Thread</span>
-            <span class="tag">Race Condition</span>
-            <span class="tag">Mutex</span>
-            <span class="tag">Deadlock</span>
-            <span class="tag">Semaphore</span>
-          </div>
-          <div class="item-meta">📅 2026-04-22｜授課老師：CCC｜系統程式</div>
+      <!-- 網頁設計 -->
+      <a href="網頁設計/index.html" class="card teal">
+        <div class="card-icon">🌐</div>
+        <div class="card-title">網頁設計作業</div>
+        <div class="card-desc">HTML / CSS / JavaScript / Node.js / Express / SQLite。涵蓋網頁日誌系統、互動測驗、部落格、即時聊天室。</div>
+        <div class="card-tags">
+          <span class="tag">HTML</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">Express</span>
+          <span class="tag">SQLite</span>
+          <span class="tag">WebSocket</span>
         </div>
-        <span class="item-status status-done">完成</span>
-      </a>
-
-      <!-- Orenbook0325 -->
-      <a href="系統程式/Orenbook0325/" class="item">
-        <div class="item-icon" style="background:rgba(99,102,241,0.1);">📖</div>
-        <div class="item-body">
-          <span class="item-title">Orenbook0325 — 機器的喃喃</span>
-          <div class="item-desc">系統程式讀書報告，展示用 HTML/CSS/JS 做出一本互動式書本。點目錄可跳轉章節，含翻頁動畫與書頁效果。</div>
-          <div class="item-tags">
-            <span class="tag">HTML</span>
-            <span class="tag">CSS 動畫</span>
-            <span class="tag">讀書報告</span>
-            <span class="tag">系統程式</span>
-          </div>
-          <div class="item-meta">📅 2026-03-25｜授課老師：CCC｜系統程式</div>
-        </div>
-        <span class="item-status status-done">完成</span>
+        <div class="card-link">查看作業 →</div>
       </a>
 
     </div>
-
-    <!-- 網頁設計作業 -->
-    <div class="section">
-      <div class="section-head">
-        <span>🌐</span>
-        <h2>網頁設計作業</h2>
-      </div>
-
-      <!-- HW_firstweb0327 -->
-      <a href="網頁設計/HW_firstweb0327/" class="item">
-        <div class="item-icon" style="background:rgba(15,118,110,0.1);">🌐</div>
-        <div class="item-body">
-          <span class="item-title">HW_firstweb0327 — 網頁日誌系統</span>
-          <div class="item-desc">JS + SQLite（sql.js）實作網頁日誌，含 CRUD、搜尋、作者過濾、亮暗主題。從 v1.0 演化至 v3.0（Hash 路由 + 追蹤系統）。</div>
-          <div class="item-tags">
-            <span class="tag">SQLite</span>
-            <span class="tag">Node.js</span>
-            <span class="tag">JWT</span>
-            <span class="tag">亮暗主題</span>
-            <span class="tag">Hash 路由</span>
-          </div>
-          <div class="item-meta">📅 2026-03-27｜授課老師：CCC｜網頁設計</div>
-        </div>
-        <span class="item-status status-done">完成</span>
-      </a>
-
-      <!-- wp_HW_6-javascrip練習 -->
-      <a href="網頁設計/wp_HW_6-javascrip練習/" class="item">
-        <div class="item-icon" style="background:rgba(234,179,8,0.1);">🧩</div>
-        <div class="item-body">
-          <span class="item-title">wp_HW_6-javascrip練習 — JavaScript 選擇題測驗</span>
-          <div class="item-desc">20題題庫每次抽出10題，支援亂序選項、進度條跳題、即時動畫回饋、結算分數與重新測驗。</div>
-          <div class="item-tags">
-            <span class="tag">JavaScript</span>
-            <span class="tag">HTML</span>
-            <span class="tag">CSS</span>
-            <span class="tag">互動測驗</span>
-          </div>
-          <div class="item-meta">📅 2026-04-17｜授課老師：CCC｜網頁設計</div>
-        </div>
-        <span class="item-status status-done">完成</span>
-      </a>
-
-      <!-- wp_HW_7-blog_js -->
-      <a href="https://oren2026.github.io/Oren_own/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B6%B2%E9%A0%81%E8%A8%AD%E8%A8%88/wp_HW_7-blog_js/" class="item">
-        <div class="item-icon" style="background:rgba(15,118,110,0.1);">📝</div>
-        <div class="item-body">
-          <span class="item-title">wp_HW_7-日誌javascrip認識 — Express 部落格 JS 實作</span>
-          <div class="item-desc">左右雙面板互動實作，左側調整變數右側即時預覽部落格日誌。10題涵蓋物件、解構、forEach、Callback 等核心概念。</div>
-          <div class="item-tags">
-            <span class="tag">JavaScript</span>
-            <span class="tag">Express</span>
-            <span class="tag">左右雙面板</span>
-            <span class="tag">即時預覽</span>
-          </div>
-          <div class="item-meta">📅 2026-04-17｜授課老師：CCC｜網頁設計</div>
-        </div>
-        <span class="item-status status-latest">最新</span>
-      </a>
-
-    </div>
-
-    <!-- 版本演化 -->
-    <div class="section">
-      <div class="section-head">
-        <span>📈</span>
-        <h2>HW_firstweb0327 版本演化</h2>
-      </div>
-      <div class="ver-list">
-
-        <a href="網頁設計/HW_firstweb0327/v3.0/" class="ver-item">
-          <span class="ver-dot latest"></span>
-          <span class="ver-label">v3.0</span>
-          <span class="ver-desc">🌟 最新：追蹤系統 + 亮暗版主題 + Hash 路由 + 設定 Modal</span>
-          <span class="ver-link">→</span>
-        </a>
-
-        <a href="網頁設計/HW_firstweb0327/v2.1/" class="ver-item">
-          <span class="ver-dot"></span>
-          <span class="ver-label">v2.1</span>
-          <span class="ver-desc">Node.js：Morgan 日誌 + 統一錯誤處理 + 試用模式（demo.js）</span>
-          <span class="ver-link">→</span>
-        </a>
-
-        <a href="網頁設計/HW_firstweb0327/v2.0/" class="ver-item">
-          <span class="ver-dot"></span>
-          <span class="ver-label">v2.0</span>
-          <span class="ver-desc">Node.js 後端對照版：bcrypt + JWT + REST API</span>
-          <span class="ver-link">→</span>
-        </a>
-
-        <a href="網頁設計/HW_firstweb0327/v1.3/" class="ver-item">
-          <span class="ver-dot"></span>
-          <span class="ver-label">v1.3</span>
-          <span class="ver-desc">DB class 重構 + 參數化查詢（防 SQL injection）</span>
-          <span class="ver-link">→</span>
-        </a>
-
-        <a href="網頁設計/HW_firstweb0327/v1.2/" class="ver-item">
-          <span class="ver-dot"></span>
-          <span class="ver-label">v1.2</span>
-          <span class="ver-desc">作者過濾功能 + 預設文章內容（4人共10篇）</span>
-          <span class="ver-link">→</span>
-        </a>
-
-        <a href="網頁設計/HW_firstweb0327/v1.1/" class="ver-item">
-          <span class="ver-dot"></span>
-          <span class="ver-label">v1.1</span>
-          <span class="ver-desc">雙面板 Auth Modal + 公開日誌牆 + seed.db</span>
-          <span class="ver-link">→</span>
-        </a>
-
-        <a href="網頁設計/HW_firstweb0327/v1.0/" class="ver-item">
-          <span class="ver-dot"></span>
-          <span class="ver-label">v1.0</span>
-          <span class="ver-desc">初版：基本 CRUD + 搜尋（已整合至後續版本）</span>
-          <span class="ver-link">→</span>
-        </a>
-
-      </div>
-    </div>
-
-    <!-- 使用說明 -->
-    <div class="section">
-      <div class="section-head">
-        <span>💡</span>
-        <h2>使用說明</h2>
-      </div>
-      <div style="padding: 1.25rem; color: var(--muted); line-height: 1.85; font-size: 0.85rem;">
-        <ul style="padding-left: 1.25rem; margin-bottom: 0.75rem;">
-          <li>老師的作業要求放在對應子資料夾，同學的繳交內容建議另外建立資料夾存放</li>
-          <li>每次改版前建議先複製前版再做修改，保留完整演化軌跡</li>
-          <li>index.html 只放最新版本入口；各版本詳細說明在各版本資料夾的 README.md</li>
-        </ul>
-        <ul style="padding-left: 1.25rem;">
-          <li>更新版本時：在 README.md 頂部的「改版日誌」表格加入新列</li>
-          <li>如需上傳大型檔案，建議使用 Git LFS 或外部雲端連結</li>
-        </ul>
-      </div>
-    </div>
-
   </main>
 
-  <!-- Footer -->
   <footer class="footer">
-    由 <a href="https://github.com/Oren2026">Oren</a> 維護 · CCC 作業天地 · 黑皮團隊
+    <a href="https://oren2026.github.io/Oren_own/docs/">← 黑研所</a>
   </footer>
 
 </body>

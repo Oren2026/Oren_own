@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>網頁設計作業 — CCC作業天地</title>
+  <style>
+    :root {
+      --teal: #0f766e;
+      --teal-dark: #115e59;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+      color: #fff;
+      padding: 2.5rem 5%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    .header-content { position: relative; z-index: 2; }
+
+    .header h1 {
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+
+    .header .subtitle { opacity: 0.8; font-size: 0.95rem; }
+
+    .breadcrumb {
+      padding: 1rem 5%;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .breadcrumb a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 5% 4rem; }
+
+    .item {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      gap: 0 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+
+    .item:last-child { border-bottom: none; }
+    .item:hover { background: rgba(15,118,110,0.03); margin: 0 -1rem; padding-left: 1rem; padding-right: 1rem; border-radius: 8px; }
+
+    .item-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .item-body { min-width: 0; }
+
+    .item-title {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--teal);
+      margin-bottom: 3px;
+      display: block;
+    }
+
+    .item:hover .item-title { text-decoration: underline; }
+
+    .item-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .item-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 1px 7px;
+      border-radius: 3px;
+      background: rgba(15,118,110,0.08);
+      color: var(--teal);
+      border: 1px solid rgba(15,118,110,0.15);
+    }
+
+    .item-status {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      align-self: start;
+      margin-top: 2px;
+    }
+
+    .status-done   { background: #d1fae5; color: #059669; }
+    .status-latest { background: #dbeafe; color: #1d4ed8; }
+
+    .item-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .ver-section {
+      margin-top: 2rem;
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .ver-head {
+      background: var(--bg);
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .ver-list { padding: 0.75rem 1.25rem 1rem; }
+
+    .ver-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: color 0.15s;
+    }
+
+    .ver-item:last-child { border-bottom: none; }
+    .ver-item:hover { color: var(--teal); }
+
+    .ver-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--teal);
+      flex-shrink: 0;
+    }
+
+    .ver-dot.latest {
+      background: #1d4ed8;
+      box-shadow: 0 0 6px rgba(29,78,216,0.4);
+    }
+
+    .ver-label { font-weight: 700; width: 28px; flex-shrink: 0; }
+    .ver-desc  { flex: 1; color: var(--muted); font-size: 0.78rem; }
+    .ver-link  { font-size: 0.75rem; color: var(--teal); }
+    .ver-item:hover .ver-link { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      .item { grid-template-columns: 40px 1fr; }
+      .item-status { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-content">
+      <h1>🌐 網頁設計作業</h1>
+      <p class="subtitle">HTML / CSS / JavaScript / Node.js / Express / SQLite</p>
+    </div>
+  </header>
+
+  <p class="breadcrumb">
+    <a href="../index.html">← CCC作業天地</a>
+  </p>
+
+  <main class="container">
+
+    <!-- HW_firstweb0327 -->
+    <a href="HW_firstweb0327/" class="item">
+      <div class="item-icon" style="background:rgba(15,118,110,0.1);">🌐</div>
+      <div class="item-body">
+        <span class="item-title">HW_firstweb0327 — 網頁日誌系統</span>
+        <div class="item-desc">JS + SQLite（sql.js）實作網頁日誌，含 CRUD、搜尋、作者過濾、亮暗主題。從 v1.0 演化至 v3.0（Hash 路由 + 追蹤系統）。</div>
+        <div class="item-tags">
+          <span class="tag">SQLite</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">JWT</span>
+          <span class="tag">亮暗主題</span>
+          <span class="tag">Hash 路由</span>
+        </div>
+        <div class="item-meta">📅 2026-03-27｜授課老師：CCC｜網頁設計</div>
+      </div>
+      <span class="item-status status-done">完成</span>
+    </a>
+
+    <!-- wp_HW_6 -->
+    <a href="wp_HW_6-javascrip練習/" class="item">
+      <div class="item-icon" style="background:rgba(234,179,8,0.1);">🧩</div>
+      <div class="item-body">
+        <span class="item-title">wp_HW_6-javascrip練習 — JavaScript 選擇題測驗</span>
+        <div class="item-desc">20題題庫每次抽出10題，支援亂序選項、進度條跳題、即時動畫回饋、結算分數與重新測驗。</div>
+        <div class="item-tags">
+          <span class="tag">JavaScript</span>
+          <span class="tag">HTML</span>
+          <span class="tag">CSS</span>
+          <span class="tag">互動測驗</span>
+        </div>
+        <div class="item-meta">📅 2026-04-17｜授課老師：CCC｜網頁設計</div>
+      </div>
+      <span class="item-status status-done">完成</span>
+    </a>
+
+    <!-- wp_HW_7 -->
+    <a href="wp_HW_7-blog_js/" class="item">
+      <div class="item-icon" style="background:rgba(15,118,110,0.1);">📝</div>
+      <div class="item-body">
+        <span class="item-title">wp_HW_7-日誌javascrip認識 — Express 部落格 JS 實作</span>
+        <div class="item-desc">左右雙面板互動實作，左側調整變數右側即時預覽部落格日誌。10題涵蓋物件、解構、forEach、Callback 等核心概念。</div>
+        <div class="item-tags">
+          <span class="tag">JavaScript</span>
+          <span class="tag">Express</span>
+          <span class="tag">左右雙面板</span>
+          <span class="tag">即時預覽</span>
+        </div>
+        <div class="item-meta">📅 2026-04-17｜授課老師：CCC｜網頁設計</div>
+      </div>
+      <span class="item-status status-latest">最新</span>
+    </a>
+
+    <!-- chatrank-web -->
+    <a href="chatrank-web/" class="item">
+      <div class="item-icon" style="background:rgba(236,72,153,0.1);">💬</div>
+      <div class="item-body">
+        <span class="item-title">chatrank-web — 即時聊天室</span>
+        <div class="item-desc">Node.js + Express + SQLite 即時聊天系統，含即時訊息、用戶状态、聊天記録查詢。</div>
+        <div class="item-tags">
+          <span class="tag">WebSocket</span>
+          <span class="tag">Express</span>
+          <span class="tag">SQLite</span>
+          <span class="tag">即時</span>
+        </div>
+        <div class="item-meta">📅 2026-05-14｜授課老師：CCC｜網頁設計</div>
+      </div>
+      <span class="item-status status-latest">最新</span>
+    </a>
+
+    <!-- 版本演化 -->
+    <div class="ver-section">
+      <div class="ver-head">📈 HW_firstweb0327 版本演化</div>
+      <div class="ver-list">
+        <a href="HW_firstweb0327/v3.0/" class="ver-item">
+          <span class="ver-dot latest"></span>
+          <span class="ver-label">v3.0</span>
+          <span class="ver-desc">🌟 最新：追蹤系統 + 亮暗版主題 + Hash 路由 + 設定 Modal</span>
+          <span class="ver-link">→</span>
+        </a>
+        <a href="HW_firstweb0327/v2.1/" class="ver-item">
+          <span class="ver-dot"></span>
+          <span class="ver-label">v2.1</span>
+          <span class="ver-desc">Node.js：Morgan 日誌 + 統一錯誤處理 + 試用模式（demo.js）</span>
+          <span class="ver-link">→</span>
+        </a>
+        <a href="HW_firstweb0327/v2.0/" class="ver-item">
+          <span class="ver-dot"></span>
+          <span class="ver-label">v2.0</span>
+          <span class="ver-desc">Node.js 後端對照版：bcrypt + JWT + REST API</span>
+          <span class="ver-link">→</span>
+        </a>
+        <a href="HW_firstweb0327/v1.3/" class="ver-item">
+          <span class="ver-dot"></span>
+          <span class="ver-label">v1.3</span>
+          <span class="ver-desc">DB class 重構 + 參數化查詢（防 SQL injection）</span>
+          <span class="ver-link">→</span>
+        </a>
+        <a href="HW_firstweb0327/v1.2/" class="ver-item">
+          <span class="ver-dot"></span>
+          <span class="ver-label">v1.2</span>
+          <span class="ver-desc">作者過濾功能 + 預設文章內容（4人共10篇）</span>
+          <span class="ver-link">→</span>
+        </a>
+        <a href="HW_firstweb0327/v1.1/" class="ver-item">
+          <span class="ver-dot"></span>
+          <span class="ver-label">v1.1</span>
+          <span class="ver-desc">雙面板 Auth Modal + 公開日誌牆 + seed.db</span>
+          <span class="ver-link">→</span>
+        </a>
+        <a href="HW_firstweb0327/v1.0/" class="ver-item">
+          <span class="ver-dot"></span>
+          <span class="ver-label">v1.0</span>
+          <span class="ver-desc">初版：基本 CRUD + 搜尋（已整合至後續版本）</span>
+          <span class="ver-link">→</span>
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系統程式作業 — CCC作業天地</title>
+  <style>
+    :root {
+      --purple: #6366f1;
+      --purple-dark: #4f46e5;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%);
+      color: #fff;
+      padding: 2.5rem 5%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    .header-content { position: relative; z-index: 2; }
+
+    .header h1 {
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+
+    .header .subtitle { opacity: 0.8; font-size: 0.95rem; }
+
+    .breadcrumb {
+      padding: 1rem 5%;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .breadcrumb a {
+      color: var(--purple);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 5% 4rem; }
+
+    .item {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      gap: 0 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+
+    .item:last-child { border-bottom: none; }
+    .item:hover { background: rgba(99,102,241,0.03); margin: 0 -1rem; padding-left: 1rem; padding-right: 1rem; border-radius: 8px; }
+
+    .item-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .item-body { min-width: 0; }
+
+    .item-title {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--purple);
+      margin-bottom: 3px;
+      display: block;
+    }
+
+    .item:hover .item-title { text-decoration: underline; }
+
+    .item-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .item-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 1px 7px;
+      border-radius: 3px;
+      background: rgba(99,102,241,0.08);
+      color: var(--purple);
+      border: 1px solid rgba(99,102,241,0.15);
+    }
+
+    .item-status {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      align-self: start;
+      margin-top: 2px;
+    }
+
+    .status-done   { background: #d1fae5; color: #059669; }
+    .status-latest { background: #dbeafe; color: #1d4ed8; }
+
+    .item-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    @media (max-width: 640px) {
+      .item { grid-template-columns: 40px 1fr; }
+      .item-status { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-content">
+      <h1>⚡ 系統程式作業</h1>
+      <p class="subtitle">fork() / execvp() / Thread / Mutex / Deadlock / I/O Redirection</p>
+    </div>
+  </header>
+
+  <p class="breadcrumb">
+    <a href="../index.html">← CCC作業天地</a>
+  </p>
+
+  <main class="container">
+
+    <!-- sp_HW_6 -->
+    <a href="sp_HW_6/" class="item">
+      <div class="item-icon" style="background:rgba(99,102,241,0.1);">⚡</div>
+      <div class="item-body">
+        <span class="item-title">sp_HW_6 — Fork 與檔案系統</span>
+        <div class="item-desc">fork() 影分身、execvp() 換魂、wait() 收屍。FS 系統層（open/read/write）vs 標準層（fgets/fputs）。I/O Redirection、pipe()、mmap()、socket 完整覆蓋，含互動式 Mini Shell 終端機模擬。</div>
+        <div class="item-tags">
+          <span class="tag">fork()</span>
+          <span class="tag">execvp()</span>
+          <span class="tag">wait()</span>
+          <span class="tag">I/O Redirection</span>
+          <span class="tag">pipe()</span>
+          <span class="tag">mmap()</span>
+          <span class="tag">socket</span>
+        </div>
+        <div class="item-meta">📅 2026-04-23｜授課老師：CCC｜系統程式</div>
+      </div>
+      <span class="item-status status-latest">最新</span>
+    </a>
+
+    <!-- sp_HW_5 -->
+    <a href="sp_HW_5/" class="item">
+      <div class="item-icon" style="background:rgba(99,102,241,0.1);">⚡</div>
+      <div class="item-body">
+        <span class="item-title">sp_HW_5 — Thread 執行緒與同步機制</span>
+        <div class="item-desc">Race Condition / Mutex / Deadlock 說明文件，含三個互動模擬：銀行存提款（10萬次）、生產者消費者（Semaphore 緩衝區）、哲學家用餐（死結演示）。</div>
+        <div class="item-tags">
+          <span class="tag">Thread</span>
+          <span class="tag">Race Condition</span>
+          <span class="tag">Mutex</span>
+          <span class="tag">Deadlock</span>
+          <span class="tag">Semaphore</span>
+        </div>
+        <div class="item-meta">📅 2026-04-22｜授課老師：CCC｜系統程式</div>
+      </div>
+      <span class="item-status status-done">完成</span>
+    </a>
+
+    <!-- Orenbook0325 -->
+    <a href="Orenbook0325/" class="item">
+      <div class="item-icon" style="background:rgba(99,102,241,0.1);">📖</div>
+      <div class="item-body">
+        <span class="item-title">Orenbook0325 — 機器的喃喃</span>
+        <div class="item-desc">系統程式讀書報告，展示用 HTML/CSS/JS 做出一本互動式書本。點目錄可跳轉章節，含翻頁動畫與書頁效果。</div>
+        <div class="item-tags">
+          <span class="tag">HTML</span>
+          <span class="tag">CSS 動畫</span>
+          <span class="tag">讀書報告</span>
+          <span class="tag">系統程式</span>
+        </div>
+        <div class="item-meta">📅 2026-03-25｜授課老師：CCC｜系統程式</div>
+      </div>
+      <span class="item-status status-done">完成</span>
+    </a>
+
+  </main>
+
+</body>
+</html>
