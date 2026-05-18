@@ -513,6 +513,46 @@
       transform: translateX(60px);
     }
 
+    /* Modal for enlarged image */
+    .modal-img-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      cursor: zoom-out;
+      padding: 2rem;
+    }
+    .modal-img-overlay.open { display: flex; }
+    .modal-img-overlay img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 0 60px rgba(0,0,0,0.6);
+    }
+    .modal-img-overlay .modal-caption {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+    }
+    .modal-img-overlay .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      font-size: 2rem;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-img-overlay .modal-close:hover { color: white; }
+
     /* Slide number overlay */
     .slide-number {
       position: fixed;
@@ -1011,6 +1051,36 @@
         dx < 0 ? goTo(current + 1) : goTo(current - 1);
       }
     }, { passive: true });
+
+    <!-- Modal for image zoom -->
+  <div class="modal-img-overlay" id="modalOverlay" onclick="closeModal()">
+    <span class="modal-close" onclick="closeModal()">×</span>
+    <img id="modalImg" src="" alt="">
+    <div class="modal-caption" id="modalCaption"></div>
+  </div>
+
+  <script>
+    // Modal logic
+    function openModal(src, caption) {
+      const m = document.getElementById('modalOverlay');
+      document.getElementById('modalImg').src = src;
+      document.getElementById('modalCaption').textContent = caption || '';
+      m.classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Make Windows image clickable
+    document.querySelectorAll('.col img').forEach(img => {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', () => openModal(img.src, img.alt));
+    });
 
     updateUI();
   </script>
