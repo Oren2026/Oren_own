@@ -1053,7 +1053,15 @@
       }
     }, { passive: true });
 
-    <!-- Modal for image zoom -->
+    // Image zoom modal
+    document.querySelectorAll('.col img').forEach(img => {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', () => openModal(img.src, img.alt));
+    });
+
+    updateUI();
+  </script>
+
   <div class="modal-img-overlay" id="modalOverlay" onclick="closeModal()">
     <span class="modal-close" onclick="closeModal()">×</span>
     <img id="modalImg" src="" alt="">
@@ -1061,7 +1069,6 @@
   </div>
 
   <script>
-    // Modal logic
     function openModal(src, caption) {
       const m = document.getElementById('modalOverlay');
       document.getElementById('modalImg').src = src;
@@ -1076,14 +1083,6 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeModal();
     });
-
-    // Make Windows image clickable
-    document.querySelectorAll('.col img').forEach(img => {
-      img.style.cursor = 'zoom-in';
-      img.addEventListener('click', () => openModal(img.src, img.alt));
-    });
-
-    updateUI();
   </script>
 
 </body>
