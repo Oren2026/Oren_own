@@ -130,6 +130,24 @@
     .dot:hover:not(.active) { background: var(--muted); }
 
     /* ── Slide Content Layouts ── */
+    /* Increase font sizes for non-title slides */
+    .slide:not(.slide-title) .slide-header h2 { font-size: 1.8rem; }
+    .slide:not(.slide-title) .card h3 { font-size: 1.1rem; }
+    .slide:not(.slide-title) .card p,
+    .slide:not(.slide-title) .card li,
+    .slide:not(.slide-title) .text-card { font-size: 1rem; line-height: 1.7; }
+    .slide:not(.slide-title) .bullet-list li { font-size: 1rem; }
+    .slide:not(.slide-title) .challenge-card h3 { font-size: 1.05rem; }
+    .slide:not(.slide-title) .challenge-card p { font-size: 0.95rem; }
+    .slide:not(.slide-title) .goal-card h3 { font-size: 1.05rem; }
+    .slide:not(.slide-title) .goal-card p { font-size: 0.9rem; }
+    .slide:not(.slide-title) .col h3 { font-size: 1.1rem; }
+    .slide:not(.slide-title) .highlight-text { font-size: 1rem; }
+    .slide:not(.slide-title) .two-col .bullet-list li { font-size: 1.05rem; }
+    /* Section slides - bigger headings */
+    .slide:not(.slide-title) .slide-section h2 { font-size: clamp(2.5rem, 5vw, 3.5rem); }
+    .slide:not(.slide-title) .slide-section .section-desc { font-size: 1.1rem; }
+    .slide:not(.slide-title) .slide-section .section-num { font-size: 6rem; }
 
     /* Title Slide */
     .slide-title {
