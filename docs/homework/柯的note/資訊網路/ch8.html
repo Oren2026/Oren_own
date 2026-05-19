@@ -50,8 +50,9 @@
         <div class="toc-item"><span class="toc-num">9</span><span>DNS 網域名稱系統</span></div>
         <div class="toc-item"><span class="toc-num">10</span><span>IP 協定標頭</span></div>
         <div class="toc-item"><span class="toc-num">11</span><span>IP 選擇項</span></div>
-        <div class="toc-item"><span class="toc-num">12–14</span><span>IPv6 簡介與位址結構</span></div>
-        <div class="toc-item"><span class="toc-num">15–16</span><span>IPv6 標頭與結語</span></div>
+        <div class="toc-item"><span class="toc-num">12</span><span>佇列管理（Scheduling / Buffer）</span></div>
+        <div class="toc-item"><span class="toc-num">13–15</span><span>IPv6 簡介與位址結構</span></div>
+        <div class="toc-item"><span class="toc-num">16–17</span><span>IPv6 標頭與結語</span></div>
       </div>
     </section>
 
@@ -710,10 +711,142 @@
     </section>
 
     <!-- ══════════════════════════════════════
-         12｜IPv6 簡介
+         12｜佇列管理
+    ══════════════════════════════════════ -->
+    <section>
+      <h2 id="s12">📌 12｜佇列管理（Queue Management）</h2>
+
+      <div class="concept-card">
+        <div class="concept-card-title">為何需要佇列管理？</div>
+        <p>當封包抵達路由器的速度 > 輸出介面能發送的速度，就會在記憶體緩衝區（Buffer）中等待，這就是<strong>佇列（Queue）</strong>。</p>
+        <ul>
+          <li><strong>Scheduling（排程）</strong>：決定多個封包的<strong>發送順序</strong></li>
+          <li><strong>Buffer Management（緩衝管理）</strong>：決定緩衝區<strong>滿了時要丟誰的包</strong></li>
+        </ul>
+      </div>
+
+      <!-- Scheduling 視覺圖 -->
+      <h3>Scheduling（封包排程）</h3>
+      <div class="queue-scheduling-viz">
+        <div class="qsv-in">
+          <div class="qsv-label">輸入封包</div>
+          <div class="qsv-packets">
+            <div class="qsv-pkt" style="background:#ef4444;">語音<br><span>VoIP</span></div>
+            <div class="qsv-pkt" style="background:#f59e0b;">網頁<br><span>HTTP</span></div>
+            <div class="qsv-pkt" style="background:#22c55e;">郵件<br><span>Email</span></div>
+            <div class="qsv-pkt" style="background:#3b82f6;">下載<br><span>FTP</span></div>
+          </div>
+        </div>
+        <div class="qsv-arrow">▶</div>
+        <div class="qsv-sched">
+          <div class="qsv-label">Scheduler（排程器）</div>
+          <div class="qsv-box">依演算法<br>決定順序</div>
+        </div>
+        <div class="qsv-arrow">▶</div>
+        <div class="qsv-out">
+          <div class="qsv-label">輸出介面</div>
+          <div class="qsv-packets">
+            <div class="qsv-pkt" style="background:#ef4444;">①</div>
+            <div class="qsv-pkt" style="background:#f59e0b;">②</div>
+            <div class="qsv-pkt" style="background:#3b82f6;">③</div>
+            <div class="qsv-pkt" style="background:#22c55e;">④</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Scheduling 演算法比較</h3>
+      <table class="compare-table">
+        <thead><tr><th>演算法</th><th>運作方式</th><th>優點</th><th>缺點</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>FIFO</strong><br><span style="font-size:0.75rem;color:#6b7280;">First In First Out</span></td>
+            <td>依到達順序先到先出</td>
+            <td>簡單、硬體易實作</td>
+            <td>無法區分服務品質，所有封包一視同仁</td>
+          </tr>
+          <tr>
+            <td><strong>Priority Queue (PQ)</strong><br><span style="font-size:0.75rem;color:#6b7280;">優先權佇列</span></td>
+            <td>封包依優先權分組，高優先先發送</td>
+            <td>重要流量（如 VoIP）保證優先</td>
+            <td>低優先封包可能長期被餓死（Starvation）</td>
+          </tr>
+          <tr>
+            <td><strong>Round Robin (RR)</strong><br><span style="font-size:0.75rem;color:#6b7280;">輪流服務</span></td>
+            <td>每個佇列輪流發送一個封包</td>
+            <td>各流量類別公平取得頻寬</td>
+            <td>無法區分封包大小，小封包類別吃虧</td>
+          </tr>
+          <tr>
+            <td><strong>Weighted Fair Queue (WFQ)</strong><br><span style="font-size:0.75rem;color:#6b7280;">加權公平佇列</span></td>
+            <td>依權重分配發送機會，權重高多發</td>
+            <td>兼顧公平與優先權，避免餓死</td>
+            <td>演算法複雜度較高</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Buffer Management 視覺圖 -->
+      <h3>Buffer Management（緩衝管理）</h3>
+      <div class="buffer-viz">
+        <div class="bv-stage">
+          <div class="bv-label">正常狀態</div>
+          <div class="bv-bars">
+            <div class="bv-bar" style="width:40%;background:#22c55e;">封包</div>
+            <div class="bv-bar-empty" style="width:60%;">緩衝區</div>
+          </div>
+          <div class="bv-status ok">無丟包</div>
+        </div>
+        <div class="bv-stage">
+          <div class="bv-label">RED 提前偵測</div>
+          <div class="bv-bars">
+            <div class="bv-bar" style="width:70%;background:#f59e0b;">封包</div>
+            <div class="bv-bar-empty" style="width:30%;">緩衝區</div>
+          </div>
+          <div class="bv-status warn">隨機提前丟包</div>
+        </div>
+        <div class="bv-stage">
+          <div class="bv-label">Drop Tail 滿了才丟</div>
+          <div class="bv-bars">
+            <div class="bv-bar" style="width:100%;background:#ef4444;">封包</div>
+            <div class="bv-bar-empty" style="width:0%;">緩衝區</div>
+          </div>
+          <div class="bv-status danger">全部丟棄新進封包</div>
+        </div>
+      </div>
+
+      <table class="compare-table">
+        <thead><tr><th>機制</th><th>運作方式</th><th>特點</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Drop Tail</strong></td>
+            <td>緩衝區滿了，直接丟棄新到的封包</td>
+            <td>最簡單；易造成<strong>全球同步（Global Synchronization）</strong>——多個 TCP 連線同時偵測到丟包、集體降速</td>
+          </tr>
+          <tr>
+            <td><strong>RED</strong><br><span style="font-size:0.75rem;color:#6b7280;">Random Early Detection</span></td>
+            <td>提前偵測擁塞，主動隨機丟包（不等滿）</td>
+            <td>避免 Global Synchronization；保護 TCP 流量</td>
+          </tr>
+          <tr>
+            <td><strong>ECN</strong><br><span style="font-size:0.75rem;color:#6b7280;">Explicit Congestion Notification</span></td>
+            <td>不丟包，改在 IP 標頭設定拥塞標記，通知來源端降速</td>
+            <td>比 RED 更溫和，保留傳輸效率；需兩端都支援</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 延伸學習 -->
+      <div class="learn-more">
+        <div class="learn-more-title">💡 為何 Buffer 太大也會有問題？</div>
+        <p>Buffer 太大時，封包在佇列中等待時間過長，會造成延遲（Latency）和抖動（Jitter）。這對即時應用（VoIP、遊戲）傷害很大。「緩衝區膨脹」（Bufferbloat）問題就是因此而生的。</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         13｜IPv6 簡介
     ══════════════════════════════════════ -->
     <section class="ipv6-section">
-      <h2 id="s12">📌 12｜IPv6 簡介 <span class="ip-block ipv6">IPv6</span></h2>
+      <h2 id="s13">📌 13｜IPv6 簡介 <span class="ip-block ipv6">IPv6</span></h2>
 
       <div class="concept-card">
         <div class="concept-card-title">為何需要 IPv6？</div>
@@ -754,7 +887,7 @@
          13｜IPv6 位址結構
     ══════════════════════════════════════ -->
     <section class="ipv6-section">
-      <h2 id="s13">📌 13｜IPv6 位址結構</h2>
+      <h2 id="s14">📌 14｜IPv6 位址結構</h2>
 
       <div class="concept-card">
         <div class="concept-card-title">位址格式</div>
@@ -800,7 +933,7 @@
          15｜IPv6 標頭
     ══════════════════════════════════════ -->
     <section class="ipv6-section">
-      <h2 id="s15">📌 15｜IPv6 標頭與延伸標頭</h2>
+      <h2 id="s16">📌 16｜IPv6 標頭與延伸標頭</h2>
 
       <!-- IPv6 標頭視覺化比例圖 -->
       <div class="frame-structure">
@@ -851,7 +984,7 @@
          16｜結語
     ══════════════════════════════════════ -->
     <section>
-      <h2 id="s16">📌 16｜結語</h2>
+      <h2 id="s17">📌 17｜結語</h2>
 
       <div class="concept-card">
         <div class="concept-card-title">IPv4 與 IPv6 主要差異</div>

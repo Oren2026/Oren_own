@@ -2491,4 +2491,119 @@ span.formula {
 .kcb-count-warn { color: #d97706; }
 .kcb-count-ok { color: #15803d; }
 
+/* ── 佇列管理視覺化（CH8 Section 12）── */
+.queue-scheduling-viz {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+.qsv-in, .qsv-out { text-align: center; min-width: 100px; }
+.qsv-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+.qsv-packets {
+  display: flex;
+  gap: 0.35rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.qsv-pkt {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+}
+.qsv-pkt span { font-weight: 400; font-size: 0.6rem; opacity: 0.85; }
+.qsv-arrow {
+  font-size: 1.5rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.qsv-sched { text-align: center; min-width: 110px; }
+.qsv-box {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.75rem 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* ── Buffer 管理視覺化（CH8 Section 12）── */
+.buffer-viz {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.bv-stage {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  text-align: center;
+}
+.bv-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted-2);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.bv-bars {
+  display: flex;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 0.6rem;
+}
+.bv-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fff;
+  transition: width 0.3s;
+}
+.bv-bar-empty {
+  background: rgba(49,108,244,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--muted-2);
+}
+.bv-status {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.3rem 0.5rem;
+  border-radius: 20px;
+  display: inline-block;
+}
+.bv-status.ok   { background: #d1fae5; color: #065f46; }
+.bv-status.warn { background: #fef3c7; color: #92400e; }
+.bv-status.danger { background: #fee2e2; color: #991b1b; }
+
 
