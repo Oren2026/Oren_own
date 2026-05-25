@@ -3,8 +3,8 @@
   "subtitle": "第30屆 TDK 盧 — 遙控組",
   "category": "tdk",
   "status": "in-progress",
-  "deadline": "2026-05（初審）",
-  "nextMilestone": "機構設計確認、採購到位、控制系統整合",
+  "deadline": "2026-07",
+  "nextMilestone": "第一階段資料繳交（7/12截止）",
   "progress": {
     "機構設計": "in-progress",
     "爪子框架": "in-progress",
@@ -78,6 +78,11 @@
   },
   "updates": [
     {
+      "date": "2026-05-25",
+      "text": "更新 deadline 為 7/12 新增繳交項目與週報追蹤機制",
+      "category": "結構更新"
+    },
+    {
       "date": "2026-04-30",
       "text": "黑輪同步：與 TDK/status.md 同步，確認四大關卡、爪子機構方向、採購清單",
       "category": "進度同步"
@@ -97,5 +102,24 @@
       "text": "老師建議：電源系統升級 + RPI 5，預算調整至 NT$29,930",
       "category": "硬體更新"
     }
+  ],
+  "weeklyReports": [
+    { "week": 1,  "date": "2026-04-27", "status": "pending" },
+    { "week": 2,  "date": "2026-05-04", "status": "pending" },
+    { "week": 3,  "date": "2026-05-11", "status": "pending" },
+    { "week": 4,  "date": "2026-05-18", "status": "pending" },
+    { "week": 5,  "date": "2026-05-25", "status": "pending" },
+    { "week": 6,  "date": "2026-06-01", "status": "pending" },
+    { "week": 7,  "date": "2026-06-08", "status": "pending" },
+    { "week": 8,  "date": "2026-06-15", "status": "pending" },
+    { "week": 9,  "date": "2026-06-22", "status": "pending" },
+    { "week": 10, "date": "2026-06-29", "status": "pending" },
+    { "week": 11, "date": "2026-07-06", "status": "pending" }
+  ],
+  "submissions": [
+    { "id": "s1", "name": "作品說明文件", "types": ["Word", "PDF"], "status": "pending", "note": "含機構設計、電控設計、創意與科技人文整合說明、團隊成員分工說明" },
+    { "id": "s2", "name": "第一階段工作週報", "types": ["PDF"], "status": "pending", "note": "4/27~7/12 整期，含 11 份週報" },
+    { "id": "s3", "name": "機器人完整結構 CAD 圖與照片", "types": ["ZIP"], "status": "pending", "note": "CAD 檔 + 截圖照片 + 實體照片" },
+    { "id": "s4", "name": "創思設計與製作歷程 2 分鐘短片", "types": ["MP4"], "status": "pending", "note": "100MB 以下，90~120 秒，含機器人作動影片" }
   ]
 }
