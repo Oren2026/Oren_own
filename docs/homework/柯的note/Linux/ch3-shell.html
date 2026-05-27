@@ -218,7 +218,11 @@
           <tr><td rowspan="2">I/O</td><td><code>&gt;</code>、<code>&gt;&gt;</code></td><td>輸出導向（覆寫／附加）</td></tr>
           <tr><td><code>|</code></td><td>建立管線</td></tr>
           <tr><td>脫逸</td><td><code>\</code></td><td>解除特殊字元的含意</td></tr>
-          <tr><td>其他</td><td><code>;</code>、<code>~</code></td><td><code>;</code> 分隔多指令依序執行；<code>~</code> 為家目錄簡稱</td></tr>
+          <tr><td>順序執行</td><td><code>;</code></td><td>將多個指令依序執行（前一個無論成功與否都會執行下一個）</td></tr>
+          <tr><td>邏輯 AND</td><td><code>&&</code></td><td>前一個指令執行成功（exit code 0）才執行下一個</td></tr>
+          <tr><td>邏輯 OR</td><td><code>||</code></td><td>前一個指令執行失敗（exit code ≠ 0）才執行下一個</td></tr>
+          <tr><td>/history 執行</td><td><code>!!</code></td><td>執行上一個指令（等同 <code>!-1</code>）</td></tr>
+          <tr><td>家目錄</td><td><code>~</code></td><td>目前使用者的家目錄簡稱</td></tr>
         </tbody>
       </table>
     </section>
