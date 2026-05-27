@@ -582,7 +582,7 @@ function renderPostCard(post) {
           ${post.likedByMe ? '❤️' : '🤍'} <span>${post.likeCount}</span>
         </button>
         <button class="post-action comment-btn" data-post-id="${post.id}">
-          💬 留言
+          💬 ${post.commentCount || 0}
         </button>
         ${canDelete ? `<button class="post-action delete-btn" data-post-id="${post.id}">🗑️ 刪除</button>` : ''}
       </div>
@@ -622,6 +622,7 @@ function renderPostDetail(postId) {
           <button class="post-action like-btn ${post.likedByMe ? 'liked' : ''}" data-post-id="${post.id}" data-liked="${post.likedByMe}">
             ${post.likedByMe ? '❤️' : '🤍'} <span>${post.likeCount}</span>
           </button>
+          ${canDelete ? `<button class="post-action edit-btn" data-post-id="${post.id}">✏️ 編輯</button>` : ''}
           ${canDelete ? `<button class="post-action delete-btn" data-post-id="${post.id}">🗑️ 刪除</button>` : ''}
         </div>
       </div>
@@ -924,6 +925,26 @@ document.addEventListener('click', async e => {
     return;
   }
 
+  // ── 編輯文章 ─────────────────────────────────────────────
+  const editPostBtn = target.closest('.post-detail-actions .edit-btn');
+  if (editPostBtn) {
+    const postId = parseInt(editPostBtn.dataset.postId);
+    // 先拿資料，等回來再填表單 + 切換視圖（避免 resetPostForm 清掉欄位）
+    ChatRankAPI.getPost(postId).then(data => {
+      const postData = { title: data.post.title, content: data.post.content, tags: data.post.tags || [] };
+      navigate('new-post');
+      // 下一個 tick router() 跑完後再填（確保切頁完成）
+      requestAnimationFrame(() => {
+        document.querySelector('#form-post input[name="postId"]').value = postId;
+        document.querySelector('#form-post input[name="title"]').value = postData.title || '';
+        document.querySelector('#form-post textarea[name="content"]').value = postData.content || '';
+        document.querySelector('#form-post input[name="tags"]').value = postData.tags.join(',');
+        document.getElementById('post-edit-title').textContent = '編輯文章';
+      });
+    }).catch(err => { showToast(err.message, 'error'); });
+    return;
+  }
+
   // ── 刪除文章 ─────────────────────────────────────────────
   const deletePostBtn = target.closest('.post-card .delete-btn');
   if (deletePostBtn) {
@@ -1062,21 +1083,32 @@ async function renderHotSettings() {
   try {
     const data = await ChatRankAPI.getSettings();
     const gravity = data.hot_gravity;
+    const commentWeight = data.hot_comment_weight;
     container.innerHTML = `
       <div class="hot-settings">
-        <h3>🔥 熱門排序 Gravity</h3>
+        <h3>🔥 熱門排序設定</h3>
         <p class="hot-settings-desc">
-          公式：<code>score = likes / (小時 + 2)<sup>gravity</sup></code><br>
-          gravity ↑ = 新文崛起快；gravity ↓ = 舊文累積時間長
+          公式：<code>score = (likes + comments × w) / (小時 + 2)<sup>gravity</sup></code><br>
+          gravity ↑ = 新文崛起快；gravity ↓ = 舊文累積時間長<br>
+          w（留言權重）↑ = 討論串文章更容易上熱門
         </p>
-        <div class="hot-settings-control">
+        <div class="hot-settings-group">
+          <label>gravity（衰減速度）：<span id="hot-gravity-value">${gravity}</span></label>
           <input type="range" id="hot-gravity-slider"
             min="0.5" max="3.0" step="0.1" value="${gravity}" />
-          <span id="hot-gravity-value">${gravity}</span>
+          <div class="hot-settings-range-labels">
+            <span>0.5（慢衰減）</span>
+            <span>3.0（快衰減）</span>
+          </div>
         </div>
-        <div class="hot-settings-range-labels">
-          <span>0.5（慢衰減）</span>
-          <span>3.0（快衰減）</span>
+        <div class="hot-settings-group">
+          <label>w（留言權重）：<span id="hot-comment-weight-value">${commentWeight}</span></label>
+          <input type="range" id="hot-comment-weight-slider"
+            min="0" max="3" step="0.1" value="${commentWeight}" />
+          <div class="hot-settings-range-labels">
+            <span>0（不看留言）</span>
+            <span>3（留言很重要）</span>
+          </div>
         </div>
         <div class="hot-settings-hint">拖動後直接套用</div>
       </div>
@@ -1088,15 +1120,17 @@ async function renderHotSettings() {
   }
 }
 
-// 即時套用 gravity（slider 拖動時直接 PUT，不需按鈕）
+// 即時套用 gravity / comment weight（slider 拖動時直接 PUT，不需按鈕）
 $('body').addEventListener('input', async e => {
-  if (e.target.id !== 'hot-gravity-slider') return;
-  const val = parseFloat(e.target.value);
-  $('#hot-gravity-value').textContent = val;
-  try {
+  const id = e.target.id;
+  if (id === 'hot-gravity-slider') {
+    const val = parseFloat(e.target.value);
+    $('#hot-gravity-value').textContent = val;
     await ChatRankAPI.updateSettings({ hot_gravity: val });
-  } catch (err) {
-    showToast('儲存失敗：' + (err.message || err.error), 'error');
+  } else if (id === 'hot-comment-weight-slider') {
+    const val = parseFloat(e.target.value);
+    $('#hot-comment-weight-value').textContent = val;
+    await ChatRankAPI.updateSettings({ hot_comment_weight: val });
   }
 });
 
@@ -1181,8 +1215,13 @@ $('#form-post').onsubmit = async e => {
     const tags = fd.get('tags') ? fd.get('tags').split(',').map(t => t.trim()).filter(Boolean) : [];
 
     if (postId) {
-      // 編輯模式（目前只有新增）
-      showToast('編輯功能準備中', 'info');
+      // 編輯模式
+      await ChatRankAPI.updatePost(parseInt(postId), {
+        title: fd.get('title').trim(),
+        content: fd.get('content').trim(),
+      });
+      showToast('已更新', 'success');
+      navigate('feed');
     } else {
       await ChatRankAPI.createPost({
         title: fd.get('title').trim(),

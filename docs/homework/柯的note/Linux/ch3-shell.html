@@ -40,6 +40,7 @@
       <div class="toc-item"><span class="toc-num">12</span><span>💬 Shell 特殊字元</span></div>
       <div class="toc-item"><span class="toc-num">13</span><span>💬 環境變數</span></div>
       <div class="toc-item"><span class="toc-num">14</span><span>💬 PATH</span></div>
+      <div class="toc-item"><span class="toc-num">15</span><span>💬 萬用符號 vs 正則表達式</span></div>
     </div>
 
 
@@ -259,6 +260,49 @@
           <li>明確指定路徑：<code>./程式名稱</code></li>
           <li>將現行目錄加入 PATH：<code>export PATH=$PATH:.</code></li>
         </ul>
+      </div>
+    </section>
+
+
+    <!-- S15: Wildcard vs Regex -->
+    <section id="s15">
+      <h2>💬 15｜萬用符號 vs 正則表達式</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">⚡ 兩種不同的模式比對</div>
+        <p>經常被混淆的两个概念：<strong>萬用符號（Wildcard）</strong>用於 Shell 檔案名稱比對，<strong>正則表達式（Regular Expression）</strong>用於文字內容搜尋。兩者語法不同、應用場景也不同。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>比較維度</th><th>萬用符號（Wildcard / Glob）</th><th>正則表達式（Regex）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>使用時機</td><td>Shell 檔案名稱比對（<code>ls</code>、<code>rm</code>、<code>cp</code>）</td><td>文字內容搜尋（<code>grep</code>、<code>sed</code>、<code>awk</code>）</td></tr>
+          <tr><td><code>*</code></td><td>對應任意字串（含空字串）<br><code>ls *.txt</code></td><td>對應前一個字元重複 0～多次<br><code>go*gle</code> = <code>gogle</code>/<code>google</code>/<code>gooogle</code></td></tr>
+          <tr><td><code>?</code></td><td>對應任意單一字元<br><code>ls file?.log</code></td><td>對應前一個字元出現 0 或 1 次（BRE 中可用）</td></tr>
+          <tr><td><code>[abc]</code></td><td>對應括弧中任意<strong>單一字元</strong><br><code>ls [A-Z]*</code></td><td>對應括弧中任意<strong>單一字元</strong>（相同）</td></tr>
+          <tr><td><code>[!abc]</code></td><td>排除括弧中任意字元</td><td>BRE 中無此語法，ERE 可用 <code>[^abc]</code></td></tr>
+          <tr><td><code>.</code></td><td>目前目錄（路徑用法）</td><td>對應任意單一字元（與 Shell 的 <code>?</code> 相同）</td></tr>
+          <tr><td>脫逸</td><td><code>\*</code>（解除萬用意義）</td><td><code>\*</code>（解除正則特殊意義）</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <div class="concept-card-title">🔍 實例對照</div>
+        <p><strong>萬用符號（Shell）：</strong></p>
+        <ul style="margin:0 0 1rem 0;padding-left:1.2rem;">
+          <li><code>ls *.log</code> — 列出副檔名為 .log 的所有檔案</li>
+          <li><code>rm file[0-9].txt</code> — 刪除 file0.txt ~ file9.txt</li>
+          <li><code>cp data???.csv /backup/</code> — 複製 data 加三個任意字元的 CSV 檔</li>
+        </ul>
+        <p><strong>正則表達式（grep）：</strong></p>
+        <ul style="margin:0;padding-left:1.2rem;">
+          <li><code>grep 'go+gle' file.txt</code> — 找 google, gooogle（+ 為 ERE）</li>
+          <li><code>grep '^Hello' file.txt</code> — 找行首為 Hello 的行</li>
+          <li><code>grep 'end\.' file.txt</code> — 找行尾為 end. 的行（<code>\.</code> 脫逸）</li>
+          <li><code>grep '[0-9]{3}' file.txt</code> — 找三個連續數字（ERE）</li>
+        </ul>
+      </div>
+      <div class="highlight-box">
+        <p>簡單記憶：<strong>萬用符號在 Shell 下就對檔案操作</strong>，<strong>正則表達式對文字內容下功夫</strong>。所有現代程式語言都有正則表達式，是字串處理的標準工具。</p>
       </div>
     </section>
 

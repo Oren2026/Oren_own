@@ -137,6 +137,13 @@ async function apiDeletePost(id) {
   return apiFetch(`/posts/${id}`, { method: 'DELETE' });
 }
 
+async function apiUpdatePost(id, { title, content }) {
+  return apiFetch(`/posts/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({ title, content }),
+  });
+}
+
 async function apiToggleLike(postId) {
   return apiFetch(`/posts/${postId}/like`, { method: 'POST' });
 }
@@ -237,6 +244,7 @@ window.ChatRankAPI = {
   getPost: apiGetPost,
   createPost: apiCreatePost,
   deletePost: apiDeletePost,
+  updatePost: apiUpdatePost,
   toggleLike: apiToggleLike,
   comment: apiComment,
   deleteComment: apiDeleteComment,
