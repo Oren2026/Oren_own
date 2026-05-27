@@ -304,6 +304,38 @@
       <div class="highlight-box">
         <p>簡單記憶：<strong>萬用符號在 Shell 下就對檔案操作</strong>，<strong>正則表達式對文字內容下功夫</strong>。所有現代程式語言都有正則表達式，是字串處理的標準工具。</p>
       </div>
+      <div class="concept-card">
+        <div class="concept-card-title">🏷️ POSIX 字元類別（Character Classes）</div>
+        <p>在正則表達式的<code>[ ]</code>中，可使用<code>[[:class:]]</code>語法來對應一整類字元，是跨平台的標準寫法。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>類別</th><th>說明</th><th>同等於</th><th>範例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>[[:alpha:]]</code></td><td>英文字母（a-z, A-Z）</td><td><code>[a-zA-Z]</code></td><td><code>grep '[[:alpha:]]' file</code></td></tr>
+          <tr><td><code>[[:digit:]]</code></td><td>數字（0-9）</td><td><code>[0-9]</code></td><td><code>grep '[[:digit:]]' file</code></td></tr>
+          <tr><td><code>[[:alnum:]]</code></td><td>英數字（字母+數字）</td><td><code>[a-zA-Z0-9]</code></td><td><code>grep '[[:alnum:]]' file</code></td></tr>
+          <tr><td><code>[[:space:]]</code></td><td>空白字元（空格、Tab、換行）</td><td><code>[ \t\n]</code></td><td><code>grep '[[:space:]]' file</code></td></tr>
+          <tr><td><code>[[:upper:]]</code></td><td>大寫字母</td><td><code>[A-Z]</code></td><td><code>grep '[[:upper:]]' file</code></td></tr>
+          <tr><td><code>[[:lower:]]</code></td><td>小寫字母</td><td><code>[a-z]</code></td><td><code>grep '[[:lower:]]' file</code></td></tr>
+          <tr><td><code>[[:punct:]]</code></td><td>標點符號（!@#$%^&*...）</td><td>—</td><td><code>grep '[[:punct:]]' file</code></td></tr>
+          <tr><td><code>[[:cntrl:]]</code></td><td>控制字元（ASCII 0-31, 127）</td><td>—</td><td><code>grep '[[:cntrl:]]' file</code></td></tr>
+          <tr><td><code>[[:graph:]]</code></td><td>可顯示字元（不含空白）</td><td><code>[^ \t\n]</code></td><td><code>grep '[[:graph:]]' file</code></td></tr>
+          <tr><td><code>[[:print:]]</code></td><td>可顯示字元（含空白）</td><td>—</td><td><code>grep '[[:print:]]' file</code></td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <div class="concept-card-title">🔍 實用範例</div>
+        <ul style="margin:0;padding-left:1.2rem;">
+          <li><code>grep '[[:alpha:]]' passwd</code> — 找出包含英文字母的行</li>
+          <li><code>grep '^[[:digit:]]' data.txt</code> — 找出開頭是數字的行</li>
+          <li><code>grep '[[:space:]][[:punct:]]' log.txt</code> — 空白後接標點符號</li>
+          <li><code>sed 's/[[:digit:]]//g' file</code> — 刪除所有數字</li>
+          <li><code>grep '<strong>[[:lower:]]</strong>[[:upper:]]' file</code> — 小寫後接大寫（ camelCase 偵測）</li>
+        </ul>
+        <p style="margin-top:1rem;">注意：<code>[[:alpha:]]</code>寫在<code>[ ]</code>內，不是<code>[[:alpha:]]</code>！！！外面有范围的意思，兩者不能混用。</p>
+      </div>
     </section>
 
 
