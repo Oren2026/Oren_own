@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CalcLang — 從直譯器到編譯器</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --orange: #d29922;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      line-height: 1.7;
+      padding: 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      padding: 50px 20px;
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 40px;
+    }
+    header h1 { font-size: 2.2em; color: var(--accent); margin-bottom: 8px; }
+    header .subtitle { color: var(--muted); font-size: 14px; }
+    header .desc { max-width: 550px; margin: 16px auto 0; color: var(--text); font-size: 13px; line-height: 1.8; }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+    .meta-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 12px;
+    }
+    .meta-item .label { color: var(--muted); margin-bottom: 4px; }
+    .meta-item .value { color: var(--accent); font-weight: bold; }
+
+    .section { margin-bottom: 36px; }
+    .section-title {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .path-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .path-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .path-card h3 { font-size: 14px; color: var(--accent); margin-bottom: 6px; }
+    .path-card p { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+    .path-card .arrow { color: var(--accent); font-size: 12px; }
+
+    .level-list { display: flex; flex-direction: column; gap: 8px; }
+    .level-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 12px;
+    }
+    .level-item .num { color: var(--accent); font-weight: bold; min-width: 40px; }
+    .level-item .desc { color: var(--text); flex: 1; }
+    .level-item .status { font-size: 10px; padding: 2px 8px; border-radius: 4px; }
+    .status-done { background: rgba(63,185,80,0.15); color: var(--green); }
+    .status-impl { background: rgba(210,153,34,0.15); color: var(--orange); }
+
+    .code-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 12px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+    .code-block pre { color: var(--text); }
+
+    .doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .doc-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 12px;
+    }
+    .doc-item .name { color: var(--accent); margin-bottom: 4px; }
+    .doc-item .desc { color: var(--muted); font-size: 11px; }
+
+    .example-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .example-box h4 { font-size: 13px; color: var(--accent); margin-bottom: 12px; }
+    .example-box code { color: #79c0ff; font-size: 12px; }
+    .example-box .output { color: var(--green); font-size: 12px; margin-top: 8px; }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: var(--muted);
+      font-size: 11px;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+
+    @media (max-width: 600px) { .path-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <h1>CalcLang</h1>
+      <p class="subtitle">從直譯器到編譯器的教學語言</p>
+      <p class="desc">一個用於學習編譯器原理的簡單語言。從文字替換開始，逐步建立Tokenizer、AST、Bytecode VM，最終完成一個可用於實際計算的編譯型語言。</p>
+    </header>
+
+    <!-- 基本資訊 -->
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="label">語言類型</div>
+        <div class="value">強型態靜態</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">目標平台</div>
+        <div class="value">Stack VM Bytecode</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">記憶體管理</div>
+        <div class="value">無 GC（手動）</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">實現語言</div>
+        <div class="value">C</div>
+      </div>
+    </div>
+
+    <!-- 學習路徑 -->
+    <div class="section">
+      <div class="section-title">學習路徑</div>
+      <div class="path-grid">
+
+        <div class="path-card">
+          <h3>解譯器 path（interpreter/）</h3>
+          <p>直接執行：Tokenizer → AST → Eval</p>
+          <div class="level-list">
+            <div class="level-item">
+              <span class="num">L1</span>
+              <span class="desc">電腦基礎：Hello World</span>
+              <span class="status status-done">完成</span>
+            </div>
+            <div class="level-item">
+              <span class="num">L2</span>
+              <span class="desc">直譯器基礎：數字加減</span>
+              <span class="status status-done">完成</span>
+            </div>
+            <div class="level-item">
+              <span class="num">L3</span>
+              <span class="desc">Tokenizer：拆解 Token</span>
+              <span class="status status-done">完成</span>
+            </div>
+            <div class="level-item">
+              <span class="num">L4</span>
+              <span class="desc">AST：語法樹建構</span>
+              <span class="status status-done">完成</span>
+            </div>
+            <div class="level-item">
+              <span class="num">L5</span>
+              <span class="desc">完整計算器（直接執行）</span>
+              <span class="status status-done">完成</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="path-card">
+          <h3>編譯器 path（compiler/）</h3>
+          <p>編譯後執行：Tokenizer → AST → Bytecode → VM</p>
+          <div class="level-list">
+            <div class="level-item">
+              <span class="num">L1</span>
+              <span class="desc">編譯器概念：從解釋器到編譯器</span>
+              <span class="status status-done">完成</span>
+            </div>
+            <div class="level-item">
+              <span class="num">L2</span>
+              <span class="desc">基本運算：1 + 2 * 3 = 7</span>
+              <span class="status status-done">完成</span>
+            </div>
+            <div class="level-item">
+              <span class="num">L3</span>
+              <span class="desc">變數支援：x, y, x+y</span>
+              <span class="status status-done">完成</span>
+            </div>
+            <div class="level-item">
+              <span class="num">L4</span>
+              <span class="desc">while 迴圈：遞迴與跳轉</span>
+              <span class="status status-done">完成</span>
+            </div>
+            <div class="level-item">
+              <span class="num">L5</span>
+              <span class="desc">函數與 Bytecode VM</span>
+              <span class="status status-impl">可執行</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bytecode 指令集 -->
+    <div class="section">
+      <div class="section-title">Bytecode 指令集</div>
+      <div class="code-block">
+        <pre>IMM n       載入立即值 n 到堆疊
+LOAD idx    從變數陣列取第 idx 個變數 push 到堆疊
+STORE idx   pop 堆疊頂存入變數陣列第 idx 格
+ADD/SUB/MUL/DIV  pop 兩個值，運算後 push 結果
+CMP_LT/GT/EQ     比較，push 1 (真) 或 0 (假)
+JMP addr    無條件跳躍到 addr
+JMP_FALSE addr   若堆疊頂為 0，跳至 addr
+CALL addr   函數呼叫（Level 5）
+RET         函數返回（Level 5）
+PRINT       pop 並輸出（Level 5）
+EOF         程式結束</pre>
+      </div>
+    </div>
+
+    <!-- 範例 -->
+    <div class="section">
+      <div class="section-title">範例程式</div>
+
+      <div class="example-box">
+        <h4>基本運算（Level 2）</h4>
+        <code>1 + 2 * 3;</code>
+        <div class="output">→ 輸出: 7</div>
+      </div>
+
+      <div class="example-box">
+        <h4>變數（Level 3）</h4>
+        <code>x = 5;
+y = 3;
+x + y;</code>
+        <div class="output">→ 輸出: 8</div>
+      </div>
+
+      <div class="example-box">
+        <h4>while 迴圈（Level 4）</h4>
+        <code>x = 0;
+while (x < 3) {
+  x = x + 1;
+}
+print(x);</code>
+        <div class="output">→ 輸出: x = 3</div>
+      </div>
+
+    </div>
+
+    <!-- 文件 -->
+    <div class="section">
+      <div class="section-title">相關文件</div>
+      <div class="doc-grid">
+        <div class="doc-item">
+          <div class="name">SPEC.md</div>
+          <div class="desc">語言規格：強型態/Bytecode VM/執行模式</div>
+        </div>
+        <div class="doc-item">
+          <div class="name">GRAMMAR.md</div>
+          <div class="desc">BNF 語法：完整語法 + 簡化版（Level 1-4）</div>
+        </div>
+        <div class="doc-item">
+          <div class="name">EXAMPLES.md</div>
+          <div class="desc">範例程式：各層級測試案例</div>
+        </div>
+        <div class="doc-item">
+          <div class="name">DISCUSSION_LOG.md</div>
+          <div class="desc">開發紀錄：Bootstrapping/修復過程</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      CalcLang — 系統程式 HW2 — 260311
+    </footer>
+
+  </div>
+</body>
+</html>
