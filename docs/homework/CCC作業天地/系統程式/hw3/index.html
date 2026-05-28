@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HW3 Solang — 強化編譯器 — 系統程式</title>
+  <style>
+    :root {
+      --purple: #6366f1;
+      --purple-dark: #4f46e5;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #1e1e2e;
+      --code-text: #cdd6f4;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .header {
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: #fff;
+      padding: 2rem 5%;
+      position: relative;
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .header-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+    .header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.3rem; }
+    .header .meta { opacity: 0.8; font-size: 0.85rem; }
+
+    .breadcrumb {
+      padding: 0.8rem 5%;
+      font-size: 0.82rem;
+      color: var(--muted);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .breadcrumb a { color: var(--purple); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 1.5rem 5% 4rem; }
+
+    section { margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--purple);
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 2px solid var(--border);
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.2rem 0 0.5rem; color: var(--text); }
+    p { margin-bottom: 0.7rem; color: var(--text); }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+    .meta-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 0.88rem;
+    }
+    .meta-item .label { color: var(--muted); margin-bottom: 4px; font-size: 0.82rem; }
+    .meta-item .value { color: var(--purple); font-weight: 700; }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      margin: 0.8rem 0;
+    }
+    code { font-family: "Fira Code", "Consolas", monospace; }
+
+    .flow-diagram { margin: 1.2rem 0; }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .flow-num {
+      width: 28px;
+      height: 28px;
+      background: var(--purple);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .flow-body { flex: 1; }
+    .flow-title { font-size: 1rem; font-weight: 700; color: var(--purple); margin-bottom: 6px; }
+    .flow-desc { font-size: 0.88rem; color: var(--text); margin-bottom: 8px; }
+    .flow-example {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-family: "Fira Code", "Consolas", monospace;
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+    .flow-arrow {
+      text-align: center;
+      font-size: 1.2rem;
+      color: var(--muted);
+      padding: 4px 0;
+    }
+
+    .level-logic { display: flex; flex-direction: column; gap: 8px; margin: 1rem 0; }
+    .level-row {
+      display: flex;
+      gap: 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+    }
+    .level-row-num { color: var(--purple); font-weight: 700; min-width: 50px; flex-shrink: 0; }
+    .level-row-content { color: var(--text); line-height: 1.6; }
+
+    .opcode-table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.85rem; }
+    .opcode-table th { background: var(--purple); color: #fff; padding: 0.6rem 0.8rem; text-align: left; }
+    .opcode-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .opcode-table tr:hover td { background: rgba(99,102,241,0.04); }
+    .opcode-table code { color: var(--purple); font-family: "Fira Code", "Consolas", monospace; font-size: 0.82rem; }
+
+    .compare-table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.88rem; }
+    .compare-table th { background: var(--purple); color: #fff; padding: 0.6rem 0.8rem; text-align: left; }
+    .compare-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .compare-table tr:hover td { background: rgba(99,102,241,0.04); }
+
+    .dialogue {
+      background: #fafafa;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 0.8rem 0;
+    }
+    .dialogue .speaker { font-weight: 700; color: var(--purple); margin-bottom: 0.3rem; }
+    .dialogue .text { font-size: 0.9rem; color: var(--text); }
+
+    .key-fix {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 0.8rem 1rem;
+      margin: 1rem 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .key-fix strong { color: #856404; }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 1rem;
+    }
+    .feature-card h3 { color: var(--purple); margin-bottom: 0.5rem; }
+    .feature-card p { color: var(--muted); font-size: 0.88rem; }
+
+    .links {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .link-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .link-btn.github { background: #24292e; color: #fff; }
+    .link-btn.github:hover { background: #3d444d; }
+
+    @media (max-width: 600px) { .meta-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-content">
+    <h1>HW3 Solang — 強化編譯器</h1>
+    <div class="meta">📅 2026-05-28｜授課老師：CCC｜系統程式｜基於 HW2 CalcLang</div>
+  </div>
+</header>
+
+<div class="breadcrumb">
+  <a href="../../index.html">← CCC作業天地</a> /
+  <a href="../index.html">系統程式</a> / HW3
+</div>
+
+<div class="container">
+
+  <!-- 為什麼要強化 -->
+  <section>
+    <h2>為什麼要強化 CalcLang</h2>
+
+    <div class="dialogue">
+      <div class="speaker">黑皮：</div>
+      <div class="text">老師說 HW3 要做一個軟體專案，或延伸其他專案修改。那如果我們就把 HW2 的編譯器繼續延伸，加入新功能讓它變得更強大？</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑輪：</div>
+      <div class="text">像是加入 fork、file I/O、time、rand 這類系統層面的功能？讓它從純計算機變成一個真正可以「做事」的腳本語言？</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑皮：</div>
+      <div class="text">對，而且可以用 HW2 當基礎，變成 HW3。這樣 HW2 的內容就不只是計算機了，而是一個可以持續成長的系統。</div>
+    </div>
+
+    <div class="key-fix">
+      <strong>⭐ 目標：從「計算機」升級成「腳本語言」</strong>
+      <p style="margin-top:0.5rem; margin-bottom:0;">HW3 在 HW2 的基礎上，新增程序控制、檔案 I/O、時間與睡眠、亂數、字串操作等功能，讓 Solang 不只是計算，而是可以做任何事。</p>
+    </div>
+  </section>
+
+  <!-- 新功能總覽 -->
+  <section>
+    <h2>HW3 新功能總覽</h2>
+
+    <div class="feature-card">
+      <h3>程序控制（Process Control）</h3>
+      <p>FORK：fork() 程序複製，建立子程序 / EXIT：結束程式並返回 exit code / EXEC：執行外部命令</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>標準輸出入（I/O）</h3>
+      <p>PRINT / PRINTLN：輸出字串（不換行/換行）/ READ：讀取一行 stdin</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>檔案 I/O（File Operations）</h3>
+      <p>FOPEN / FREAD / FWRITE / FCLOSE：開啟、讀取、寫入、關閉檔案</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>時間與亂數（Time & Random）</h3>
+      <p>TIME：取得目前時間戳 / SLEEP：暫停執行 / RAND：產生亂數</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>字串操作（String Operations）</h3>
+      <p>STRLEN：回傳字串長度 / STRCMP：比較兩字串 / INT_TO_STR：整數轉字串</p>
+    </div>
+  </section>
+
+  <!-- HW3 指令集（表格） -->
+  <section>
+    <h2>HW3 新增 Bytecode 指令</h2>
+    <p>以下指令在 HW2 的基礎上新增（Opcode 13-28）。HW2 的指令（0-12）仍然完整保留。</p>
+
+    <table class="opcode-table">
+      <tr>
+        <th>Opcode</th>
+        <th>名稱</th>
+        <th>參數</th>
+        <th>說明</th>
+        <th>範例</th>
+      </tr>
+      <tr>
+        <td><code>13</code></td>
+        <td><code>FORK</code></td>
+        <td>—</td>
+        <td>fork() 程序複製，回傳子程序 PID，0 表示在子程序中</td>
+        <td>fork() → push 12345（子 PID）</td>
+      </tr>
+      <tr>
+        <td><code>14</code></td>
+        <td><code>EXIT</code></td>
+        <td>code</td>
+        <td>exit(code)，結束程式並返回 exit code</td>
+        <td>push 0 → exit → 正常結束</td>
+      </tr>
+      <tr>
+        <td><code>15</code></td>
+        <td><code>EXEC</code></td>
+        <td>str_idx</td>
+        <td>執行外部命令（system()），結果壓入堆疊</td>
+        <td>EXEC("echo hello") → push 0</td>
+      </tr>
+      <tr>
+        <td><code>16</code></td>
+        <td><code>PRINT</code></td>
+        <td>str_idx</td>
+        <td>輸出字串（不換行）</td>
+        <td>PRINT("Hello ") → Hello</td>
+      </tr>
+      <tr>
+        <td><code>17</code></td>
+        <td><code>PRINTLN</code></td>
+        <td>str_idx</td>
+        <td>輸出字串（換行）</td>
+        <td>PRINTLN("World") → World[newline]</td>
+      </tr>
+      <tr>
+        <td><code>18</code></td>
+        <td><code>READ</code></td>
+        <td>—</td>
+        <td>讀取一行 stdin，回傳字串索引</td>
+        <td>READ → push 0（字串池索引）</td>
+      </tr>
+      <tr>
+        <td><code>19</code></td>
+        <td><code>FOPEN</code></td>
+        <td>fn_idx + mode_idx</td>
+        <td>fopen(filename, mode)，回傳檔案指標（-1 表示失敗）</td>
+        <td>FOPEN("test.txt", "r") → push 0x1000</td>
+      </tr>
+      <tr>
+        <td><code>20</code></td>
+        <td><code>FREAD</code></td>
+        <td>fp</td>
+        <td>fgets 讀一行，回傳字串索引（-1 表示失敗）</td>
+        <td>FREAD(fp) → push 1（讀到內容）</td>
+      </tr>
+      <tr>
+        <td><code>21</code></td>
+        <td><code>FWRITE</code></td>
+        <td>fp, str_idx</td>
+        <td>寫入字串到檔案，回傳 0（成功）或 -1（失敗）</td>
+        <td>FWRITE(fp, str) → push 0</td>
+      </tr>
+      <tr>
+        <td><code>22</code></td>
+        <td><code>FCLOSE</code></td>
+        <td>fp</td>
+        <td>fclose，回傳 0（成功）或 -1（失敗）</td>
+        <td>FCLOSE(fp) → push 0</td>
+      </tr>
+      <tr>
+        <td><code>23</code></td>
+        <td><code>TIME</code></td>
+        <td>—</td>
+        <td>time(NULL)，回傳目前時間戳（int）</td>
+        <td>TIME → push 1779981484</td>
+      </tr>
+      <tr>
+        <td><code>24</code></td>
+        <td><code>SLEEP</code></td>
+        <td>sec</td>
+        <td>sleep(sec)，暫停指定秒數</td>
+        <td>SLEEP(1) → 暫停 1 秒</td>
+      </tr>
+      <tr>
+        <td><code>25</code></td>
+        <td><code>RAND</code></td>
+        <td>max</td>
+        <td>rand() % max，回傳 0 到 max-1 的亂數（max=0 時預設 100）</td>
+        <td>RAND(6) → push 3（擲骰子）</td>
+      </tr>
+      <tr>
+        <td><code>26</code></td>
+        <td><code>STRLEN</code></td>
+        <td>str_idx</td>
+        <td>回傳字串長度</td>
+        <td>STRLEN("hello") → push 5</td>
+      </tr>
+      <tr>
+        <td><code>27</code></td>
+        <td><code>STRCMP</code></td>
+        <td>idx1, idx2</td>
+        <td>比較兩字串，回傳 0（相等）、正數或負數</td>
+        <td>STRCMP("a","b") → push -1</td>
+      </tr>
+      <tr>
+        <td><code>28</code></td>
+        <td><code>INT_TO_STR</code></td>
+        <td>val</td>
+        <td>整數轉字串，結果存入字串池，回傳索引</td>
+        <td>INT_TO_STR(42) → push 2（"42"）</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- 程式範例 -->
+  <section>
+    <h2>測試案例</h2>
+
+    <h3>fork() — 程序複製</h3>
+    <pre>=== fork() test ===
+Child: I am child, PID=77529
+Child: exiting with code 42
+=== fork() test ===
+Parent: child PID=77529
+Parent: child exited with 42</pre>
+
+    <h3>檔案 I/O — 寫入 + 讀取</h3>
+    <pre>=== file I/O test ===
+Wrote to test_output.txt
+Read line 1: Hello from Solang VM!
+Read line 2: Line 2: 1 + 2 = 3
+Read line 3: Line 3: random=42</pre>
+
+    <h3>時間與亂數</h3>
+    <pre>=== time/sleep/rand test ===
+Current time: 1779981484
+Random [0-99]: 78
+Random [0-9]: 7
+Random [1-6] (dice): 1
+Sleeping 1 second...
+Wake up!</pre>
+
+    <h3>exec() — 執行外部命令</h3>
+    <pre>=== exec/system test ===
+Hello from shell
+system(echo) returned: 0
+system(ls) returned: 0
+Testing exit codes...
+exit 0 -> 0
+exit 1 -> 256</pre>
+  </section>
+
+  <!-- VM 架構 -->
+  <section>
+    <h2>VM 架構說明</h2>
+    <p>HW3 的 VM 基於 HW2 的 Stack VM 改造而來，加入了以下新元件：</p>
+
+    <div class="feature-card">
+      <h3>String Pool（字串池）</h3>
+      <p>所有字串（包括 PRINT/EXEC 的內容、FOPEN 的檔案名稱與模式）都存在 String Pool 裡，以索引值存取。這樣可以讓 Bytecode 只帶數字索引，不需要攜帶完整字串。</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>FOPEN 參數封裝</h3>
+      <p>FOPEN 需要兩個字串參數（filename 和 mode）。HW3 用一個 16-bit 整數打包：filename_idx 放高 8 bits，mode_idx 放低 8 bits。解讀時用 (arg >> 8) & 0xFF 取 filename，(arg & 0xFF) 取 mode。</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>FORK 的父子程序模型</h3>
+      <p>fork() 以後，父子程序各自從同一個 VM 狀態繼續執行。區分方式是：fork() 回傳值在子程序是 0，在父程序是子程序的 PID。</p>
+    </div>
+  </section>
+
+  <!-- 開發討論 -->
+  <section>
+    <h2>開發討論紀錄</h2>
+
+    <div class="dialogue">
+      <div class="speaker">黑皮：</div>
+      <div class="text">老師出的題目是「做一個軟體專案，或延伸其他專案修改」。我本來想做 PWA，但那個比較偏網頁，跟命令列比較沒關聯。</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑輪：</div>
+      <div class="text">對，PWA 比較偏向網頁前端這個方向。HW2 的 CalcLang 本身就是一個命令列工具，有 Makefile、有編譯流程，很符合老師的要求。</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑皮：</div>
+      <div class="text">所以就延伸 HW2，把它變得更強大。加入系統層面的功能，讓它變成一個可以fork、讀寫檔案、執行程式的腳本語言。</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑輪：</div>
+      <div class="text">這就是所謂的 Bootstrapping——用現有的工具打造更強大的工具。我們從 HW2 的基礎上，一層一層往上疊。</div>
+    </div>
+
+    <div class="key-fix">
+      <strong>⭐ 從 HW2 到 HW3 的跃遷</strong>
+      <p style="margin-top:0.5rem; margin-bottom:0;">HW2 的 CalcLang 是一個只能做算術計算的語言。HW3 的 Solang 繼承了 HW2 的所有能力，加上程序控制、檔案 I/O、時間和亂數，變成一個真正可以在系統層面幹活的腳本語言。</p>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>
+  </section>
