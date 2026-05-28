@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HW1 — while 迴圈與指標 — 系統程式</title>
+  <style>
+    :root {
+      --purple: #6366f1;
+      --purple-dark: #4f46e5;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #1e1e2e;
+      --code-text: #cdd6f4;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "PingFang TC", "Microsoft JhengHei", -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .header {
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: #fff;
+      padding: 2rem 5%;
+      position: relative;
+    }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .header-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+    .header h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.3rem; }
+    .header .meta { opacity: 0.8; font-size: 0.85rem; }
+
+    .breadcrumb {
+      padding: 0.8rem 5%;
+      font-size: 0.82rem;
+      color: var(--muted);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .breadcrumb a { color: var(--purple); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 1.5rem 5% 4rem; }
+
+    section { margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--purple);
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 2px solid var(--border);
+    }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.2rem 0 0.5rem; color: var(--text); }
+
+    p { margin-bottom: 0.7rem; color: var(--text); }
+
+    table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.88rem; }
+    th { background: var(--purple); color: #fff; padding: 0.5rem 0.8rem; text-align: left; }
+    td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); }
+    tr:hover td { background: rgba(99,102,241,0.04); }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      margin: 0.8rem 0;
+    }
+    code { font-family: "Fira Code", "Consolas", monospace; }
+    .inline-code {
+      background: #f0f0f0;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      color: #c7254e;
+    }
+
+    .dialogue {
+      background: #fafafa;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 0.8rem 0;
+    }
+    .dialogue .speaker { font-weight: 700; color: var(--purple); margin-bottom: 0.3rem; }
+    .dialogue .text { font-size: 0.9rem; color: var(--text); }
+
+    .key-fix {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 0.8rem 1rem;
+      margin: 1rem 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .key-fix strong { color: #856404; }
+
+    .result-box {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+      padding: 0.8rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      margin: 0.8rem 0;
+    }
+
+    .links {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .link-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .link-btn.github {
+      background: #24292e;
+      color: #fff;
+    }
+    .link-btn.github:hover { background: #3d444d; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-content">
+    <h1>HW1 — while 迴圈與指標</h1>
+    <div class="meta">📅 2026-03-04｜授課老師：CCC｜系統程式</div>
+  </div>
+</header>
+
+<div class="breadcrumb">
+  <a href="../../index.html">← CCC作業天地</a> /
+  <a href="../index.html">系統程式</a> / HW1
+</div>
+
+<div class="container">
+
+  <section>
+    <h2>實作：while 迴圈</h2>
+
+    <h3>測試程式 while.p0</h3>
+    <pre>i = 1;
+sum = 0;
+while (i &lt; 11) {
+    sum = sum + i;
+    i = i + 1;
+}</pre>
+
+    <div class="result-box">
+      ✅ 執行結果：<code>i = 11</code>，<code>sum = 55</code>（1+2+...+10）
+    </div>
+  </section>
+
+  <section>
+    <h2>while 迴圈設計原理</h2>
+
+    <h3>核心概念：一次掃描，雙向跳轉</h3>
+    <p>while 迴圈的本質是<strong>有條件的重複</strong>。在四元組（Quadruple）層次，需要兩個跳轉指令：</p>
+
+    <table>
+      <tr><th>指令</th><th>行為</th></tr>
+      <tr><td><code>JMP_F 條件, -, ?</code></td><td>若條件為 0（false），跳到 <code>?</code>（迴圈結束位置）</td></tr>
+      <tr><td><code>JMP -, -, 起始位置</code></td><td>無條件跳回條件判斷的起點</td></tr>
+    </table>
+
+    <h3>與 if 的關鍵差異</h3>
+    <p>if 只需要一個 <code>JMP_F</code>（條件為 false 時跳過區塊）。while 需要<strong>兩個</strong>：<code>JMP_F</code> 離開迴圈 + <code>JMP</code> 回頭。</p>
+
+    <div class="key-fix">
+      <strong>⭐ 關鍵：loop_start 必須設在 expression() 之前</strong>
+      <p style="margin-top:0.5rem; margin-bottom:0;">否則 JMP 會跳到上一輪已經計算過的 <code>JMP_F</code>，而用來判斷的 <code>t4</code>（CMP_LT 結果）不會更新——導致無窮迴圈。</p>
+    </div>
+
+    <h3>產生的四元組</h3>
+    <pre>000: IMM    1          -    t1      ; i = 1
+001: STORE  t1         -    i
+002: IMM    0          -    t2      ; sum = 0
+003: STORE  t2         -    sum
+004: IMM    11         -    t3      ; 條件：i &lt; 11  （★ loop_start = 4）
+005: CMP_LT i          t3    t4      ; 比較結果放 t4
+006: JMP_F  t4         -    ?        ; 為0跳出（回填→013）
+007: ADD    sum        i     t5      ; sum = sum + i
+008: STORE  t5         -    sum
+009: IMM    1          -    t6      ; i = i + 1
+010: ADD    i          t6    t7
+011: STORE  t7         -    i
+012: JMP    -          -    4        ; 回頭到條件起點（★）</pre>
+  </section>
+
+  <section>
+    <h2>與 Hermes 的討論紀錄</h2>
+
+    <div class="dialogue">
+      <div class="speaker">黑皮：</div>
+      <div class="text">作業要加上 while 語法的處理，並說明設計原理。要看懂 p0 compiler 中的函數呼叫機制是怎麼運作的。並於 README 中解釋寫 while 的邏輯。</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑輪：</div>
+      <div class="text">看完 compiler.py 後，發現現有 compiler 支援 <code>func</code>/<code>return</code>/<code>if</code>，但<strong>沒有 <code>while</code></strong>。需要做四件事：Lexer 加 <code>TK_WHILE</code> + 關鍵字、Parser 加 while 分支、VM 加 <code>JMP</code> 指令、測試 <code>while.p0</code> 並確認結果。</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑皮：</div>
+      <div class="text">可以。</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑輪（第一次實作）：</div>
+      <div class="text">把 <code>loop_start = len(self.quads)</code> 設在 <code>expression()</code> 之後。</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">結果：</div>
+      <div class="text">無窮迴圈。因為 JMP 回到 <code>loop_start=6</code>（JMP_F 的位置），但 <code>t4</code>（比較結果）是上一輪的值。<code>IMM 11 → CMP_LT</code> 不會重新執行。</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑輪（修正版本）：</div>
+      <div class="text">把 <code>loop_start</code> 設在 <code>expression()</code> <strong>之前</strong>。JMP 回頭時會從條件表達式的第一個 quad 重新執行，重新計算 <code>t4</code>。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>p0 函數呼叫機制</h2>
+
+    <h3>編譯階段：四元組生成</h3>
+    <table>
+      <tr><th>指令</th><th>意義</th></tr>
+      <tr><td><code>PARAM a, -, -</code></td><td>將參數值放入參數堆疊</td></tr>
+      <tr><td><code>CALL f, n, t</code></td><td>呼叫函數 f，參數 n 個，結果存入 t</td></tr>
+      <tr><td><code>RET_VAL r, -, -</code></td><td>回傳值 r</td></tr>
+    </table>
+
+    <h3>執行階段：呼叫堆疊（Call Stack）</h3>
+    <p>VM 內部用 <code>Frame</code> 模擬每一層函數呼叫：</p>
+    <pre>Frame {
+    vars: {}           ; 區域變數
+    ret_pc: int        ; 返回地址（CALL 的下一行）
+    ret_var: str       ; 回傳值要寫入的目標變數
+    incoming_args: []  ; 接收到的參數
+    formal_idx: int    ; 參數索引
+}</pre>
+
+    <h3>呼叫流程</h3>
+    <ol style="margin-left:1.2rem; margin-bottom:0.8rem;">
+      <li><code>PARAM</code>：將參數放入 <code>param_stack</code>（因為參數可能是複雜表達式，需先算完）</li>
+      <li><code>CALL</code>：建立新 Frame（<code>sp++</code>）、儲存返回地址、搬移參數、跳轉到函數進入點</li>
+      <li><code>FORMAL</code>：從 <code>incoming_args</code> 取出值，建立區域變數</li>
+      <li><code>RET_VAL</code>：取出回傳值、銷毀 Frame（<code>sp--</code>）、返回到 <code>ret_pc</code></li>
+    </ol>
+
+    <h3>為什麼支援遞迴？</h3>
+    <p>每次呼叫 <code>sp++</code> 就開一個新 Frame，遞迴的每一層都有獨立的作用域和變數，不會互相干擾。</p>
+  </section>
+
+  <section>
+    <h2>執行方式</h2>
+    <pre>python3 compiler.py while.p0</pre>
+    <div class="result-box">
+      全域變數結果：<code>i = 11</code>，<code>sum = 55</code>
+    </div>
+  </section>
+
+  <div class="links">
+    <a class="link-btn github" href="https://github.com/Oren2026/Oren_own/tree/main/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B3%BB%E7%B5%B1%E7%A8%8B%E5%BC%8F/HW1">⚙ GitHub</a>
+    <a class="link-btn github" href="https://github.com/Oren2026/Oren_own/blob/main/docs/homework/CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/%E7%B3%BB%E7%B5%B1%E7%A8%8B%E5%BC%8F/HW1/README.md">📖 README.md（純文字版）</a>
+  </div>
+
+</div>
+</body>
+</html>
