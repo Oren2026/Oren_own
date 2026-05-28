@@ -36,6 +36,19 @@ body {
     background: linear-gradient(180deg, #0f3460 0%, transparent 100%);
     flex-shrink: 0;
 }
+.book-header .breadcrumb {
+    text-align: left;
+    margin-bottom: 8px;
+}
+.book-header .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-family: sans-serif;
+}
+.book-header .breadcrumb a:hover {
+    text-decoration: underline;
+}
 .book-header h1 {
     font-size: 1.4em;
     color: var(--accent);
