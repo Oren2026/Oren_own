@@ -186,6 +186,108 @@
     .link-btn.github:hover { background: #3d444d; }
 
     @media (max-width: 600px) { .path-grid { grid-template-columns: 1fr; } }
+
+    /* ===== Flow diagram ===== */
+    .flow-diagram { margin: 1.2rem 0; }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .flow-num {
+      width: 28px;
+      height: 28px;
+      background: var(--purple);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .flow-body { flex: 1; }
+    .flow-title { font-size: 1rem; font-weight: 700; color: var(--purple); margin-bottom: 6px; }
+    .flow-desc { font-size: 0.88rem; color: var(--text); margin-bottom: 8px; }
+    .flow-example {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-family: "Fira Code", "Consolas", monospace;
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+    .flow-levels { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+    .flow-level-tag {
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      background: rgba(99,102,241,0.08);
+      color: var(--purple);
+      border-radius: 4px;
+      border-left: 3px solid var(--purple);
+    }
+    .flow-arrow {
+      text-align: center;
+      font-size: 1.2rem;
+      color: var(--muted);
+      padding: 4px 0;
+    }
+
+    /* ===== Level 递进邏輯 ===== */
+    .level-logic { display: flex; flex-direction: column; gap: 8px; margin: 1rem 0; }
+    .level-row {
+      display: flex;
+      gap: 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+    }
+    .level-row-num { color: var(--purple); font-weight: 700; min-width: 42px; flex-shrink: 0; }
+    .level-row-content { color: var(--text); line-height: 1.6; }
+
+    /* ===== 比較表格 ===== */
+    .compare-table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.88rem; }
+    .compare-table th { background: var(--purple); color: #fff; padding: 0.6rem 0.8rem; text-align: left; }
+    .compare-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .compare-table tr:hover td { background: rgba(99,102,241,0.04); }
+
+    /* ===== Opcode 表格 ===== */
+    .opcode-table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.85rem; }
+    .opcode-table th { background: var(--purple); color: #fff; padding: 0.6rem 0.8rem; text-align: left; }
+    .opcode-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .opcode-table tr:hover td { background: rgba(99,102,241,0.04); }
+    .opcode-table code { color: var(--purple); font-family: "Fira Code", "Consolas", monospace; font-size: 0.82rem; }
+    .opcode-table .opcode-op { color: var(--purple); font-weight: 700; }
+
+    /* ===== Dialogue ===== */
+    .dialogue {
+      background: #fafafa;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 0.8rem 0;
+    }
+    .dialogue .speaker { font-weight: 700; color: var(--purple); margin-bottom: 0.3rem; }
+    .dialogue .text { font-size: 0.9rem; color: var(--text); }
+
+    /* ===== Key fix ===== */
+    .key-fix {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 0.8rem 1rem;
+      margin: 1rem 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .key-fix strong { color: #856404; }
   </style>
 </head>
 <body>
@@ -227,92 +329,353 @@
     </div>
   </section>
 
-  <!-- 學習路徑 -->
+  <!-- 直譯器 -->
   <section>
-    <h2>學習路徑</h2>
-    <div class="path-grid">
+    <h2>直譯器（Interpreter）</h2>
+    <p>直譯器不走「編譯」這條路，而是拿到程式碼後立刻執行。想像成一個即時口譯員——你說一句，他翻一句，馬上行動。</p>
 
-      <div class="path-card">
-        <h3>解譯器 path（interpreter/）</h3>
-        <p>直接執行：Tokenizer → AST → Eval</p>
-        <div class="level-list">
-          <div class="level-item">
-            <span class="num">L1</span>
-            <span class="desc">電腦基礎：Hello World</span>
-            <span class="status status-done">完成</span>
+    <h3>執行流程與 Level 對照</h3>
+    <div class="flow-diagram">
+      <div class="flow-step">
+        <span class="flow-num">1</span>
+        <div class="flow-body">
+          <div class="flow-title">Tokenizer（斷詞）</div>
+          <div class="flow-desc">把程式碼字串拆成一個個 Token。每個 Token 有類型（數字、運算子、關鍵字）和值。</div>
+          <div class="flow-levels">
+            <div class="flow-level-tag">L3 — Tokenizer：將字元序列切分為 Token 流</div>
           </div>
-          <div class="level-item">
-            <span class="num">L2</span>
-            <span class="desc">直譯器基礎：數字加減</span>
-            <span class="status status-done">完成</span>
+          <div class="flow-example">"1 + 2 * 3" → [NUM:1, PLUS, NUM:2, MUL, NUM:3]</div>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <span class="flow-num">2</span>
+        <div class="flow-body">
+          <div class="flow-title">AST（語法樹）</div>
+          <div class="flow-desc">將 Token 組裝成樹狀結構，表現運算的優先順序。乘法的層級高於加法，所以在樹的上層。</div>
+          <div class="flow-levels">
+            <div class="flow-level-tag">L4 — AST：遞迴下降解析，將 Token 流組裝為語法樹</div>
           </div>
-          <div class="level-item">
-            <span class="num">L3</span>
-            <span class="desc">Tokenizer：拆解 Token</span>
-            <span class="status status-done">完成</span>
-          </div>
-          <div class="level-item">
-            <span class="num">L4</span>
-            <span class="desc">AST：語法樹建構</span>
-            <span class="status status-done">完成</span>
-          </div>
-          <div class="level-item">
-            <span class="num">L5</span>
-            <span class="desc">完整計算器（直接執行）</span>
-            <span class="status status-done">完成</span>
+          <div class="flow-example">1 + (2 * 3) →<br>　　　＋<br>　　／　＼<br>　１　　　＊<br>　　　　／　＼<br>　　　　２　　３</div>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <span class="flow-num">3</span>
+        <div class="flow-body">
+          <div class="flow-title">Eval（執行）</div>
+          <div class="flow-desc">從樹根開始，遞迴走訪每個節點，執行運算。遇見數字就回傳，遇見運算子就對左右子樹先求值再計算。</div>
+          <div class="flow-levels">
+            <div class="flow-level-tag">L2 — 文字替換：不做Tokenizer，直接用字串判斷做計算（示範用）</div>
+            <div class="flow-level-tag">L5 — 完整直譯器：串連 L3 Tokenizer + L4 AST + Eval，真正可用</div>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="path-card">
-        <h3>編譯器 path（compiler/）</h3>
-        <p>編譯後執行：Tokenizer → AST → Bytecode → VM</p>
-        <div class="level-list">
-          <div class="level-item">
-            <span class="num">L1</span>
-            <span class="desc">編譯器概念：從解釋器到編譯器</span>
-            <span class="status status-done">完成</span>
-          </div>
-          <div class="level-item">
-            <span class="num">L2</span>
-            <span class="desc">基本運算：1 + 2 * 3 = 7</span>
-            <span class="status status-done">完成</span>
-          </div>
-          <div class="level-item">
-            <span class="num">L3</span>
-            <span class="desc">變數支援：x, y, x+y</span>
-            <span class="status status-done">完成</span>
-          </div>
-          <div class="level-item">
-            <span class="num">L4</span>
-            <span class="desc">while 迴圈：遞迴與跳轉</span>
-            <span class="status status-done">完成</span>
-          </div>
-          <div class="level-item">
-            <span class="num">L5</span>
-            <span class="desc">函數與 Bytecode VM</span>
-            <span class="status status-impl">可執行</span>
+    <h3>Level 递进邏輯</h3>
+    <div class="level-logic">
+      <div class="level-row">
+        <div class="level-row-num">L1</div>
+        <div class="level-row-content">什麼是電腦——用最原始的方式理解記憶體與指令。不涉及任何高階概念。</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-num">L2</div>
+        <div class="level-row-content">直譯器基礎——模仿計算機的思維，用 if/switch 做字串判斷，不依賴Tokenizer，純文字替換。</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-num">L3</div>
+        <div class="level-row-content">Tokenizer——為什麼需要？L2 的缺點：無法處理空白、無法擴展支援多運算子。Tokenizer 把問題正規化。</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-num">L4</div>
+        <div class="level-row-content">AST——為什麼需要？Tokenizer 只告訴你「有哪些Token」，但不知道「誰先算」。AST 建立優先順序結構。</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-num">L5</div>
+        <div class="level-row-content">完整直譯器——串連 L2~L4 的成果。Tokenizer + AST + Eval，三者協作形成真正的解譯器。</div>
+      </div>
+    </div>
+
+    <div class="key-fix">
+      <strong>⭐ 關鍵：直譯器沒有「寫入檔案」這步</strong>
+      <p style="margin-top:0.5rem; margin-bottom:0;">原始碼 → 直譯器 → 直接輸出結果。沒有中間產物，執行完就結束。</p>
+    </div>
+  </section>
+
+  <!-- 編譯器 -->
+  <section>
+    <h2>編譯器（Compiler）</h2>
+    <p>編譯器不走即時翻譯，而是先把原始碼翻譯成一種中介語言（Bytecode），再由虛擬機器（VM）執行。想像成翻譯書——先把整本譯好，讀者什麼時候想看都可以。</p>
+
+    <h3>執行流程與 Level 對照</h3>
+    <div class="flow-diagram">
+      <div class="flow-step">
+        <span class="flow-num">1</span>
+        <div class="flow-body">
+          <div class="flow-title">Tokenizer（斷詞）</div>
+          <div class="flow-desc">與直譯器相同——把程式碼拆成 Token。</div>
+          <div class="flow-levels">
+            <div class="flow-level-tag">C-L2 — 直接改造 eval() 為 emit()，輸出 Bytecode 而非直接執行</div>
           </div>
         </div>
       </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <span class="flow-num">2</span>
+        <div class="flow-body">
+          <div class="flow-title">AST（語法樹）</div>
+          <div class="flow-desc">與直譯器相同——將 Token 組裝成語法樹。編譯器同樣需要語法樹來理解程式結構。</div>
+          <div class="flow-levels">
+            <div class="flow-level-tag">C-L3 — 加入符號表（Symbol Table），支援變數：x = 5 → STORE 0</div>
+          </div>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <span class="flow-num">3</span>
+        <div class="flow-body">
+          <div class="flow-title">Bytecode（位元組碼）</div>
+          <div class="flow-desc">遍歷 AST，根據每個節點的類型輸出對應的指令。每一個指令只是一個數字或一個地址。</div>
+          <div class="flow-levels">
+            <div class="flow-level-tag">C-L2 — 基本運算：1 + 2 * 3 = 7</div>
+          </div>
+          <div class="flow-example">1 + 2 * 3 →<br>
+IMM 1　; push 1<br>
+IMM 2　; push 2<br>
+IMM 3　; push 3<br>
+MUL　　; pop 3,2 → push 6<br>
+ADD　　; pop 6,1 → push 7</div>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <span class="flow-num">4</span>
+        <div class="flow-body">
+          <div class="flow-title">VM（虛擬機器）</div>
+          <div class="flow-desc">Bytecode 不是給真實 CPU 看的，而是給軟體做出來的虛擬機器看。VM 就是一個只懂 Bytecode 的模擬計算機。</div>
+          <div class="flow-levels">
+            <div class="flow-level-tag">C-L4 — 支援 while 迴圈：JMP/JMP_FALSE 控制流程跳轉</div>
+            <div class="flow-level-tag">C-L5 — 支援函數：CALL/RET 建立呼叫堆疊（Call Stack）</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <h3>編譯器 Level 递进邏輯</h3>
+    <div class="level-logic">
+      <div class="level-row">
+        <div class="level-row-num">C-L1</div>
+        <div class="level-row-content">編譯器概念——從直譯器過渡到編譯器，理解「翻譯一本書」的概念：先翻譯，之後再執行。</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-num">C-L2</div>
+        <div class="level-row-content">基本運算——改造 eval() 為 emit()。每一個 AST 節點不再直接計算，而是輸出對應的 Bytecode 指令。</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-num">C-L3</div>
+        <div class="level-row-content">變數支援——為什麼需要符號表？Bytecode 的 STORE/LOAD 用索引值（不是名稱），需要一個表格把變數名稱映射到索引。</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-num">C-L4</div>
+        <div class="level-row-content">while 迴圈——為什麼需要 JMP/JMP_FALSE？迴圈的本質是「滿足條件就跳回去」。Bytecode 用跳轉指令模擬控制流程。</div>
+      </div>
+      <div class="level-row">
+        <div class="level-row-num">C-L5</div>
+        <div class="level-row-content">函數與 Call Stack——為什麼需要 Frame？每一次函數呼叫需要：保存返回地址、建立新作用域、搬移參數。Frame 讓這些操作結構化。</div>
+      </div>
+    </div>
+
+    <div class="key-fix">
+      <strong>⭐ 關鍵：編譯器有「寫入檔案」這步</strong>
+      <p style="margin-top:0.5rem; margin-bottom:0;">原始碼 → 編譯器 → Bytecode 檔案 → VM 讀取執行。多了「中間產物」，可以脫離編譯器獨立存在。</p>
     </div>
   </section>
 
   <!-- Bytecode 指令集 -->
   <section>
     <h2>Bytecode 指令集</h2>
-    <pre>IMM n         載入立即值 n 到堆疊
-LOAD idx       從變數陣列取第 idx 個變數 push 到堆疊
-STORE idx      pop 堆疊頂存入變數陣列第 idx 格
-ADD/SUB/MUL/DIV  pop 兩個值，運算後 push 結果
-CMP_LT/GT/EQ    比較，push 1 (真) 或 0 (假)
-JMP addr       無條件跳躍到 addr
-JMP_FALSE addr    若堆疊頂為 0，跳至 addr
-CALL addr      函數呼叫（Level 5）
-RET            函數返回（Level 5）
-PRINT          pop 並輸出（Level 5）
-EOF            程式結束</pre>
+    <p>CalcLang 的 VM 基於 Stack 架構，所有運算都透過堆疊完成。壓入（push）彈出（pop）是基本操作單位。</p>
+
+    <table class="opcode-table">
+      <tr>
+        <th>Opcode</th>
+        <th>格式</th>
+        <th>說明</th>
+        <th>範例</th>
+      </tr>
+      <tr>
+        <td><code>IMM</code></td>
+        <td>IMM n</td>
+        <td>將立即值 n 壓入堆疊頂端</td>
+        <td><code>IMM 5</code> → push 5</td>
+      </tr>
+      <tr>
+        <td><code>LOAD</code></td>
+        <td>LOAD idx</td>
+        <td>將變數陣列第 idx 個元素壓入堆疊</td>
+        <td><code>LOAD 0</code> → push vars[0]</td>
+      </tr>
+      <tr>
+        <td><code>STORE</code></td>
+        <td>STORE idx</td>
+        <td>彈出堆疊頂端，存入變數陣列第 idx 格</td>
+        <td><code>STORE 0</code> → pop → vars[0]</td>
+      </tr>
+      <tr>
+        <td><code>ADD</code></td>
+        <td>ADD</td>
+        <td>彈出兩個值相加，結果壓回堆疊</td>
+        <td>push 1, push 2 → <code>ADD</code> → push 3</td>
+      </tr>
+      <tr>
+        <td><code>SUB</code></td>
+        <td>SUB</td>
+        <td>彈出兩個值相減（先 pop 右側，再 pop 左側）</td>
+        <td>push 5, push 2 → <code>SUB</code> → push 3</td>
+      </tr>
+      <tr>
+        <td><code>MUL</code></td>
+        <td>MUL</td>
+        <td>彈出兩個值相乘，結果壓回堆疊</td>
+        <td>push 2, push 3 → <code>MUL</code> → push 6</td>
+      </tr>
+      <tr>
+        <td><code>DIV</code></td>
+        <td>DIV</td>
+        <td>彈出兩個值相除（先 pop 右側，再 pop 左側）</td>
+        <td>push 8, push 2 → <code>DIV</code> → push 4</td>
+      </tr>
+      <tr>
+        <td><code>CMP_LT</code></td>
+        <td>CMP_LT</td>
+        <td>比較是否小於，結果為 1（真）或 0（假）</td>
+        <td>push 2, push 5 → <code>CMP_LT</code> → push 1</td>
+      </tr>
+      <tr>
+        <td><code>CMP_GT</code></td>
+        <td>CMP_GT</td>
+        <td>比較是否大於</td>
+        <td>push 2, push 5 → <code>CMP_GT</code> → push 0</td>
+      </tr>
+      <tr>
+        <td><code>CMP_EQ</code></td>
+        <td>CMP_EQ</td>
+        <td>比較是否相等</td>
+        <td>push 3, push 3 → <code>CMP_EQ</code> → push 1</td>
+      </tr>
+      <tr>
+        <td><code>JMP</code></td>
+        <td>JMP addr</td>
+        <td>無條件跳躍到指定地址</td>
+        <td><code>JMP 4</code> → PC = 4</td>
+      </tr>
+      <tr>
+        <td><code>JMP_FALSE</code></td>
+        <td>JMP_FALSE addr</td>
+        <td>若堆疊頂為 0，跳到指定地址；否則繼續執行下一條</td>
+        <td>push 0 → <code>JMP_FALSE 10</code> → PC = 10</td>
+      </tr>
+      <tr>
+        <td><code>CALL</code></td>
+        <td>CALL addr</td>
+        <td>建立新 Frame（保存返回地址、跳轉到函數入口）</td>
+        <td><code>CALL 20</code> → frame.push(PC+1), PC=20</td>
+      </tr>
+      <tr>
+        <td><code>RET</code></td>
+        <td>RET</td>
+        <td>函數返回——彈出 Frame，恢復返回地址</td>
+        <td><code>RET</code> → frame.pop(), PC=ret_addr</td>
+      </tr>
+      <tr>
+        <td><code>PRINT</code></td>
+        <td>PRINT</td>
+        <td>彈出堆疊頂端並輸出</td>
+        <td>push 7 → <code>PRINT</code> → 輸出 7</td>
+      </tr>
+      <tr>
+        <td><code>EOF</code></td>
+        <td>EOF</td>
+        <td>程式結束，VM 停止</td>
+        <td>—</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- 直譯器 vs 編譯器 -->
+  <section>
+    <h2>直譯器 vs 編譯器</h2>
+    <p>兩者的前半段（Tokenizer + AST）完全相同，差異從「如何執行」這一步開始分道揚鑣。</p>
+
+    <table class="compare-table">
+      <tr>
+        <th></th>
+        <th>直譯器（Interpreter）</th>
+        <th>編譯器（Compiler）</th>
+      </tr>
+      <tr>
+        <td>核心差異</td>
+        <td>直接執行 AST</td>
+        <td>把 AST 編譯成 Bytecode 再執行</td>
+      </tr>
+      <tr>
+        <td>執行方式</td>
+        <td>一邊翻譯一邊執行，翻譯完就執行完</td>
+        <td>先完整翻譯成檔案，未來隨時可執行</td>
+      </tr>
+      <tr>
+        <td>輸出</td>
+        <td>沒有輸出檔案</td>
+        <td>產生 .byte 或 .bin 中間檔</td>
+      </tr>
+      <tr>
+        <td>速度</td>
+        <td>啟動快，每次執行都要重新翻譯</td>
+        <td>啟動慢（需先載入 Bytecode），但執行穩定</td>
+      </tr>
+      <tr>
+        <td>跨平台</td>
+        <td>依賴直譯器本身（需針對每個平台編譯）</td>
+        <td>只需移植 VM（Bytecode 是平台無關的）</td>
+      </tr>
+      <tr>
+        <td>類似例子</td>
+        <td>Python、Ruby、JavaScript</td>
+        <td>C、C++、Java（.class）、Lua</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- 開發討論紀錄 -->
+  <section>
+    <h2>開發討論紀錄</h2>
+
+    <div class="dialogue">
+      <div class="speaker">黑皮：</div>
+      <div class="text">以前又沒有編譯器？如果我現在是透過這樣的方式得到編譯器，那以前的人又如何創造？總不可能雞生蛋蛋生雞吧？</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑輪：</div>
+      <div class="text">1940s: 直接寫機器碼（0/1）→ 1950s: 用機器碼寫第一個 assembler → 1957: FORTRAN（第一個高階語言，用 assembly 寫）。關鍵概念叫 <strong>Bootstrapping</strong>——用機器碼手工打造第一個工具，然後用這個工具寫更複雜的工具。</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑皮：</div>
+      <div class="text">我覺得我需要先學習，才能做到這次的專案。</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑輪：</div>
+      <div class="text">那我們就用 Level 1-5 的方式，先把概念拆開——什麼是電腦、直譯器基礎、Tokenizer、AST、最後串成完整直譯器。每一個 Level 都是獨立的，學完一個再做下一個。</div>
+    </div>
+    <div class="dialogue">
+      <div class="speaker">黑皮：</div>
+      <div class="text">可以。</div>
+    </div>
+
+    <div class="key-fix">
+      <strong>⭐ 雞生蛋問題的起點</strong>
+      <p style="margin-top:0.5rem; margin-bottom:0;">這個問題促使整個 HW2 的教學架構誕生——從最原始的機器碼開始，一層上一層，直到能自我編譯。</p>
+    </div>
   </section>
 
   <!-- 範例 -->
