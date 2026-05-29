@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Evolution OS — 系統規格書</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0e1a;
+      --surface: #111827;
+      --surface2: #1a2332;
+      --border: #1e3050;
+      --text: #c8d8f0;
+      --muted: #5a7090;
+      --accent: #00d4ff;
+      --accent2: #7b61ff;
+      --green: #00e87a;
+      --yellow: #ffd93d;
+      --red: #ff4757;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; min-height: 100vh; padding: 20px; line-height: 1.7; }
+    .container { max-width: 900px; margin: 0 auto; }
+    .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #0d1525 0%, #111827 100%); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 48px; }
+    .hero h1 { font-size: 2.4em; color: var(--accent); letter-spacing: 4px; margin-bottom: 12px; text-shadow: 0 0 30px rgba(0,212,255,0.4); }
+    .hero .version { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 12px; background: rgba(123,97,255,0.1); color: var(--accent2); border: 1px solid var(--accent2); margin-bottom: 16px; }
+    .hero .tagline { color: var(--muted); font-size: 14px; }
+    .section { margin-bottom: 56px; }
+    .section-label { font-size: 0.75em; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .section h2 { font-size: 1.3em; color: var(--accent); margin-bottom: 20px; letter-spacing: 1px; }
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; margin-right: 6px; margin-bottom: 6px; }
+    .tag-cyan { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid var(--accent); }
+    .tag-purple { background: rgba(123,97,255,0.1); color: var(--accent2); border: 1px solid var(--accent2); }
+    .tag-green { background: rgba(0,232,122,0.1); color: var(--green); border: 1px solid var(--green); }
+    .tag-yellow { background: rgba(255,217,61,0.1); color: var(--yellow); border: 1px solid var(--yellow); }
+    pre { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; overflow-x: auto; font-size: 12px; line-height: 1.6; margin-bottom: 20px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 16px; }
+    .card h3 { font-size: 14px; color: var(--accent); margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 10px; overflow: hidden; margin-bottom: 20px; font-size: 13px; }
+    th { background: var(--surface2); color: var(--accent); padding: 10px 14px; text-align: left; }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    .note { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--yellow); border-radius: 0 8px 8px 0; padding: 14px 18px; font-size: 13px; margin-bottom: 16px; }
+    .note-title { font-size: 11px; color: var(--yellow); margin-bottom: 6px; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>EVOLUTION OS</h1>
+    <div class="version">v0.3.0 · DRAFT · 2026-05-28</div>
+    <p class="tagline">意圖驅動（Intent-Driven）的 AI 推理與協作系統</p>
+    <div style="margin-top:20px;">
+      <span class="tag tag-cyan">Planner</span>
+      <span class="tag tag-purple">Executor</span>
+      <span class="tag tag-green">Memory Graph</span>
+      <span class="tag tag-yellow">Kernel OS</span>
+    </div>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section">
+    <div class="section-label">Section 1 · 系統背景</div>
+    <h2>問題動機</h2>
+    <div class="card">
+      現有 AI 程式碼生成工具（如 Copilot、Codex）在面對<strong style="color:var(--accent)">複雜、多領域的軟體系統</strong>時，常有以下問題：
+      <ul style="margin-top:12px; padding-left:20px; color:var(--muted);">
+        <li>單一 AI prompt 無法同時處理：前端、後端、資料庫、認證等多面向任務</li>
+        <li>推理過程不透明：難以理解 AI 為何做出某個分工決策</li>
+        <li>缺乏顯性的需求收斂：還沒確認需求就先實作，方向錯誤後難以修正</li>
+        <li>無法表達「我的意圖是什麼」：只能寫規格，無法讓 AI 理解背後的意圖</li>
+      </ul>
+    </div>
+
+    <h2>解決方向：Evolution</h2>
+    <div class="card">
+      <strong style="color:var(--green)">Evolution OS</strong> 是一個以 <strong>意圖驅動（Intent-Driven）</strong>為核心的 AI 推理/協作工具。
+      <div style="margin-top:16px;">
+        <div style="margin-bottom:8px;"><span class="tag tag-cyan">Input</span> 任務描述（自然語言）</div>
+        <div style="margin-bottom:8px;"><span class="tag tag-purple">Analyze</span> 分析問題的複雜度、領域多樣性、推理分支數</div>
+        <div style="margin-bottom:8px;"><span class="tag tag-yellow">Dispatch</span> 決定 Solo 或 Fork 模式</div>
+        <div style="margin-bottom:8px;"><span class="tag tag-green">Plan</span> 輸出完整的分工 Manifest</div>
+        <div><span class="tag tag-cyan">Execute</span> 根據 Manifest 調度 AI 節點執行</div>
+      </div>
+    </div>
+    <div class="note">
+      <div class="note-title">核心理念</div>
+      <strong>「能夠給 AI 更好輸入的軟體」</strong>，而不是「寫代碼的軟體」。最終目標是讓 AI 理解人類的<em>意圖</em>，而不只是執行指令。
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section">
+    <div class="section-label">Section 2 · 系統架構</div>
+    <h2>Evolution OS 整體架構</h2>
+    <pre>┌─────────────────────────────────────────────────────────────────┐
+│                      Evolution OS                                  │
+│                                                                 │
+│   Input: "幫我建一個庫存管理系統"                                   │
+│                          ↓                                       │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                    PLANNER                              │   │
+│  │   ┌──────────┐  ┌──────────┐  ┌───────────────────┐     │   │
+│  │   │  S1      │→ │  S2      │→ │  S3                │     │   │
+│  │   │  確認需求 │  │  分析問題 │  │  規劃派工           │     │   │
+│  │   │(Converge)│  │(Analyze) │  │  (Dispatch Plan)   │     │   │
+│  │   └──────────┘  └──────────┘  └───────────────────────┘     │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│                               ↓                                   │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │                     EXECUTOR                              │  │
+│  │  ┌────────┐   ┌────────┐   ┌────────┐                     │  │
+│  │  │ Planner │   │ Front  │   │  QA    │  ...               │  │
+│  │  │ Node   │──→│ Node   │──→│ Node   │                     │  │
+│  │  └────────┘   └────────┘   └────────┘                     │  │
+│  └──────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘</pre>
+
+    <h2>Planner Stage Flow（核心流程）</h2>
+    <pre>輸入：task description
+   │
+   ├─▶ S1: 確認需求（questions[]）
+   │       └─ 輸出：待確認問題清單
+   │
+   ├─▶ S2: 分析問題
+   │       └─ ComplexityMetrics.estimate_from_task()
+   │           ├─ reasoning_branches（推理分支數）
+   │           ├─ domain_diversity（領域多樣性）
+   │           └─ context_complexity（語境複雜度）
+   │
+   └─▶ S3: 規劃派工
+           └─ WorkMode.decide(metrics)
+               ├─ Solo: branches ≤ 2 AND diversity ≤ 1 AND complexity ≤ 0.6
+               └─ Fork: branches > 2 OR diversity > 1 OR complexity > 0.6</pre>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section">
+    <div class="section-label">Section 3 · 核心決策邏輯</div>
+    <h2>Dispatch Decision 閾值判定樹</h2>
+    <pre>ComplexityMetrics
+      │
+      ├── reasoning_branches ≥ 3 ──────────┐ YES → Fork
+      │                                    │
+      ├── domain_diversity ≥ 2 ────────────┤ YES → Fork
+      │                                    │
+      └── context_complexity > 0.6 ────────┤ YES → Fork
+                                           │ NO
+                                           └──→ Solo</pre>
+
+    <h2>分工閾值表</h2>
+    <table>
+      <thead>
+        <tr><th>指標</th><th>閾值</th><th>Solo 條件</th><th>Fork 條件</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>reasoning_branches</td><td>3</td><td style="color:var(--green)">≤ 2</td><td style="color:var(--accent2)">≥ 3</td></tr>
+        <tr><td>domain_diversity</td><td>2</td><td style="color:var(--green)">≤ 1</td><td style="color:var(--accent2)">≥ 2</td></tr>
+        <tr><td>context_complexity</td><td>0.6</td><td style="color:var(--green)">≤ 0.6</td><td style="color:var(--accent2)">> 0.6</td></tr>
+      </tbody>
+    </table>
+    <div class="note">
+      <div class="note-title">觸發條件</div>
+      三者之一成立即觸發 Fork：<code>branches >= 3</code> OR <code>diversity >= 2</code> OR <code>complexity > 0.6</code>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section">
+    <div class="section-label">Section 4 · 領域檢測</div>
+    <h2>領域關鍵詞對照表</h2>
+    <table>
+      <thead>
+        <tr><th>領域</th><th>關鍵詞</th><th>標籤</th></tr>
+      </thead>
+      <tbody>
+        <tr><td style="color:var(--accent)">前端</td><td>前端, ui, html, css, react, vue, 網站, web, 頁面</td><td><span class="tag tag-cyan">frontend</span></td></tr>
+        <tr><td style="color:var(--accent2)">後端</td><td>後端, api, server, backend, node, java</td><td><span class="tag tag-purple">backend</span></td></tr>
+        <tr><td style="color:var(--green)">資料庫</td><td>資料庫, sql, db, 儲存, mysql</td><td><span class="tag tag-green">database</span></td></tr>
+        <tr><td style="color:var(--yellow)">認證</td><td>認證, auth, 登入, 權限, jwt, oauth</td><td><span class="tag tag-yellow">auth</span></td></tr>
+        <tr><td style="color:var(--red)">部署</td><td>部署, docker, ci, cd, k8s</td><td><span class="tag" style="background:rgba(255,71,87,0.1);color:var(--red);border:1px solid var(--red);">devops</span></td></tr>
+        <tr><td style="color:#ff9f43">安全</td><td>安全, 加密, 資安, xss, injection</td><td><span class="tag" style="background:rgba(255,159,67,0.1);color:#ff9f43;border:1px solid #ff9f43;">security</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section">
+    <div class="section-label">Section 5 · OS Kernel 核心（v0.3.0）</div>
+    <h2>核心元件</h2>
+    <pre>kernel/
+├── mod.rs              # Kernel — syscall() 單一進場點
+├── process.rs          # Process / ProcessState / Pid（含 Debug impl）
+├── mailbox.rs          # Mailbox（FIFO 訊息佇列）
+├── process_table.rs    # ProcessTable（index-based，PID=index）
+├── scheduler.rs        # Scheduler（FIFO 排程，不遞迴 update）
+├── syscall.rs          # SysCallKind（Spawn/Send/Receive/Wait/Exit）
+└── system_process.rs  # SystemProcess trait（Node 包裝介面）</pre>
+
+    <h2>Process 狀態機</h2>
+    <pre>                    ┌───────┐
+   spawn() ──▶     │ Ready │
+                    └───┬───┘
+                        │ scheduler 選中
+                        ▼
+                  ┌───────────┐
+                  │ Running   │───▶ exit() ──▶ Zombie
+                  └───────────┘
+                        │
+                   yield() ◀──┘
+                        │
+                        ▼
+                  ┌───────────┐
+                  │ Waiting   │◀──── wait(Pid)
+                  └───────────┘</pre>
+
+    <h2>System Call 介面</h2>
+    <pre>pub enum SysCallKind {
+    Spawn(Box&lt;dyn SystemProcess&gt;),    // 創建新行程
+    Send { to: Pid, msg: String },   // 發送訊息
+    Receive,                          // 接收訊息（blocking）
+    Wait(Pid),                        // 等待指定行程結束
+    Exit,                             // 行程結束
+}</pre>
+
+    <h2>Planner → Kernel → Executor 整合</h2>
+    <pre> PlannerManifest
+      │
+      ▼ spawn(PlannerProcess)
+ ┌─────────┐     syscall(Spawn)      ┌─────────────┐
+ │ Kernel  │ ──────────────────────▶ │ Planner PID=1│
+ └─────────┘                        └─────────────┘
+      │                                   │
+      │  syscall(Send, node-frontend)     │
+      ▼                                   │
+ ┌─────────┐                              │
+ │Executor │◀─── on_syscall ──────────────┘
+ │ PID=2   │
+ └─────────┘</pre>
+
+    <div class="note">
+      <div class="note-title">測試結果</div>
+      <span style="color:var(--green)">11 passed; 0 failed</span>（kernel module）<br>
+      <span style="color:var(--green)">106 passed; 3 failed</span>（全體 — pre-existing, 與 kernel 無關）
+    </div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section">
+    <div class="section-label">Section 6 · 輸入輸出範例</div>
+    <h2>PlannerManifest（JSON 輸出）</h2>
+    <pre>{
+  "version": "0.1.0",
+  "task": "幫我建一個庫存管理系統，要有前端、後端、資料庫、登入功能",
+  "stage": "Confirming",
+  "work_mode": "Fork",
+  "complexity": {
+    "reasoning_branches": 1,
+    "domain_diversity": 4,
+    "context_complexity": 0.168
+  },
+  "dispatch": {
+    "mode": "Fork",
+    "rationale": "branches=1, diversity=4, complexity=0.17 → Fork",
+    "estimated_nodes": 3,
+    "domain_tags": ["database", "frontend", "backend", "auth"]
+  },
+  "questions": [
+    { "question": "技術栈偏好？" },
+    { "question": "部署環境偏好？" },
+    { "question": "需要角色權限管理嗎？" }
+  ]
+}</pre>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section">
+    <div class="section-label">Section 7 · 期末展示</div>
+    <h2>Demo 指令</h2>
+    <pre><span style="color:var(--accent)"># 1. Planner 分工決策展示</span>
+cargo run --bin planner_cli -- "幫我建一個庫存管理系統"
+
+<span style="color:var(--accent)"># 2. Solo vs Fork 對比</span>
+cargo run --bin planner_cli -- "寫一個計數器網頁"   → Solo
+cargo run --bin planner_cli -- "幫我建一個庫存管理系統"  → Fork
+
+<span style="color:var(--accent)"># 3. 測試通過</span>
+cargo test --test planner_decision</pre>
+
+    <h2>預期展現的能力</h2>
+    <table>
+      <tbody>
+        <tr><td style="color:var(--accent);width:160px;">可讀的分析報告</td><td>終端直接顯示分工理由</td></tr>
+        <tr><td style="color:var(--accent2);">結構化 JSON 輸出</td><td>可直接交給下層系統執行</td></tr>
+        <tr><td style="color:var(--green);">清晰的問題清單</td><td>告知用户還需要確認什麼</td></tr>
+        <tr><td style="color:var(--yellow);">測試覆蓋驗證</td><td>88 個單元測試 + 6 個整合測試</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 8 -->
+  <div class="section">
+    <div class="section-label">Section 8 · 版本歷程</div>
+    <table>
+      <thead>
+        <tr><th>版本</th><th>日期</th><th>內容</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span style="color:var(--accent2)">v0.3.0</span></td><td>2026-05-28</td><td>OS Kernel 核心：Process/Mailbox/Scheduler/SysCall，sync Rust，11 tests passed</td></tr>
+        <tr><td><span style="color:var(--accent)">v0.2.0</span></td><td>2026-05-27</td><td>期末文件：SPEC.md + REPORT.md + VERSION_CONTROL.md</td></tr>
+        <tr><td><span style="color:var(--green)">v0.1.0</span></td><td>2026-05-27</td><td>Planner 核心：stages + decision + manifest + CLI + 整合測試</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 9 -->
+  <div class="section">
+    <div class="section-label">Section 9 · 設計原則</div>
+    <div class="card">
+      <h3>核心設計原則</h3>
+      <ul style="padding-left:18px;color:var(--muted);font-size:13px;">
+        <li style="margin-bottom:6px;"><strong style="color:var(--accent)">問題未確認不實作</strong>：S1 强制產出問題清單，防止方向錯誤</li>
+        <li style="margin-bottom:6px;"><strong style="color:var(--accent2)">複雜度驅動分工</strong>：分工依據是「推理複雜度」，不是「任務數量」</li>
+        <li style="margin-bottom:6px;"><strong style="color:var(--green)">邏輯上的遞迴</strong>：Planner 的優化輸出 → 更好的下次輸入結構</li>
+        <li><strong style="color:var(--yellow)">可驗證的決策</strong>：每個分工決策都有可讀的 <code>rationale</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center; padding:32px 0 16px; border-top:1px solid var(--border); margin-top:40px;">
+    <a href="../index.html" style="color:var(--muted);font-size:12px;text-decoration:none;">← 返回 系統程式</a>
+    <span style="color:var(--border);margin:0 12px;">|</span>
+    <a href="https://github.com/Oren2026/Evolution/tree/os" target="_blank" style="color:var(--muted);font-size:12px;text-decoration:none;">GitHub ↗</a>
+  </div>
+
+</div>
+</body>
+</html>
