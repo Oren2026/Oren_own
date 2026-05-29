@@ -17,6 +17,9 @@
       --text: #f0f0f0;
       --muted: #9ca3af;
       --muted-2: #6b7280;
+      --cyan: #00d4ff;
+      --purple: #a78bfa;
+      --green: #34d399;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -131,17 +134,96 @@
     }
     .slide-card:hover .slide-card-arrow { transform: translateX(4px); }
 
-    .placeholder {
+    /* AERC Block */
+    .aerc-block { display: flex; flex-direction: column; gap: 16px; }
+    .aerc-card {
       background: var(--surface);
-      border: 1px dashed var(--border);
+      border: 1px solid var(--border);
       border-radius: 12px;
       padding: 24px;
-      text-align: center;
-      color: var(--muted);
+      transition: border-color 0.25s;
+    }
+    .aerc-card:hover { border-color: var(--accent); }
+    .aerc-card-num {
+      font-size: 10px;
+      color: var(--cyan);
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .aerc-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .aerc-card p {
       font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .aerc-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .aerc-card li {
+      font-size: 0.85rem;
+      color: var(--muted);
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+    .aerc-card li::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      color: var(--cyan);
     }
 
-    .contest-icon { font-size: 1.4rem; margin-right: 10px; }
+    .award-badge {
+      display: inline-block;
+      background: rgba(251,191,36,0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .info-item {
+      background: var(--surface-2);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .info-item .label { font-size: 10px; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.08em; }
+    .info-item .value { font-size: 0.88rem; color: var(--text); font-weight: 600; }
+
+    .pdf-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.82rem;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.25s;
+      margin-top: 8px;
+    }
+    .pdf-link:hover {
+      border-color: var(--accent);
+      color: var(--accent-text);
+    }
   </style>
 </head>
 <body>
@@ -153,6 +235,109 @@
     <div class="eyebrow">黑皮團隊</div>
     <h1>報告展示區</h1>
     <p>各比賽的進度報告投影片，記錄從零到現在的完整建置歷程</p>
+  </div>
+
+  <!-- AERC-A02 -->
+  <div class="contest-section">
+    <div class="contest-title">🤖 AERC 亞洲機器人運動競技大賽</div>
+    <div class="aerc-block">
+
+      <div class="aerc-card">
+        <div class="award-badge">🏆 佳作 · AERC-A02 循跡無限制組</div>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="label">競賽項目</div>
+            <div class="value">AERC-A02 機器人避障挑戰</div>
+          </div>
+          <div class="info-item">
+            <div class="label">活動地點</div>
+            <div class="value">勤益科技大學</div>
+          </div>
+          <div class="info-item">
+            <div class="label">團隊成員</div>
+            <div class="value">陳盈圳、卓家妘、謝承睿、沈心怡</div>
+          </div>
+          <div class="info-item">
+            <div class="label">指導教授</div>
+            <div class="value">王建鈞</div>
+          </div>
+        </div>
+        <p>本作品參與 AERC 亞洲機器人運動競技大賽，核心任務是讓機器人在限定場地中自行感測、判斷並避開障礙。所有控制由車體內部系統完成，不可依賴外部遙控訊號。</p>
+        <a href="AERC-A02_機器人避障挑戰.pdf" target="_blank" class="pdf-link">
+          📄 完整報告 PDF ↗
+        </a>
+      </div>
+
+      <div class="aerc-card">
+        <div class="aerc-card-num">01 · 競賽背景</div>
+        <h3>從競賽任務看自主避障</h3>
+        <p>A02 挑戰的核心，是讓機器人在限定場地中自行感測、判斷並避開障礙。本作品重點不是單純前進，而是在不依賴外部遙控的前提下完成即時移動控制與避障決策。</p>
+        <ul>
+          <li>15+ 寶特瓶障礙隨機擺放，考驗偵測穩定度</li>
+          <li>ㄇ型木製障礙物，要求路徑判斷與轉向控制</li>
+          <li>零外部遙控依賴，決策由車體內部系統完成</li>
+        </ul>
+      </div>
+
+      <div class="aerc-card">
+        <div class="aerc-card-num">02 · 控制架構</div>
+        <h3>全自主控制是作品核心</h3>
+        <p>作品不依賴紅外線、無線射頻或外部遙控，而是讓機器人以內部控制板與程式邏輯完成即時判斷與移動控制。</p>
+        <ul>
+          <li><strong>INPUT</strong> — 感測資料：讀取障礙距離、路徑狀態與環境變化</li>
+          <li><strong>DECISION</strong> — 核心控制板：即時計算、判斷方向，依程式邏輯修正車體動作</li>
+          <li><strong>OUTPUT</strong> — 馬達控制：將決策轉換為前進、轉向與避障行為</li>
+          <li>即時閉環控制：感測、判斷、修正與輸出連續循環</li>
+        </ul>
+      </div>
+
+      <div class="aerc-card">
+        <div class="aerc-card-num">03 · 避障技術核心</div>
+        <h3>感測融合提升避障穩定度</h3>
+        <p>作品整合超音波、循線與專用感測器，讓機器人能同時掌握前方障礙、場地路徑與移動狀態。</p>
+        <ul>
+          <li>多來源感測降低誤判，使障礙與路徑資訊更完整</li>
+          <li>超音波偵測前方距離</li>
+          <li>循線感測判斷路徑</li>
+          <li>專用感測器輔助定位</li>
+        </ul>
+      </div>
+
+      <div class="aerc-card">
+        <div class="aerc-card-num">04 · 環境適應</div>
+        <h3>現場環境考驗系統韌性</h3>
+        <p>競賽場域不是固定實驗室條件；機器人必須面對地面摩擦、光線變化與環境干擾，仍維持穩定的感測判斷與移動控制。</p>
+        <ul>
+          <li>地面材質：木質與帆布等表面造成不同摩擦力，影響起步、轉向與循跡穩定性</li>
+          <li>現場照明：光線條件可能干擾感測讀值，控制邏輯需具備容錯與即時修正能力</li>
+          <li>閉環控制即時適應：感測回饋、程式判斷與馬達控制持續修正車體行為</li>
+        </ul>
+      </div>
+
+      <div class="aerc-card">
+        <div class="aerc-card-num">05 · 成果驗證</div>
+        <h3>實作成果展現工程價值</h3>
+        <p>本作品把感測、程式與車體控制整合為可執行系統，並在實際場地中完成避障挑戰，呈現從概念到實作的工程轉換能力。</p>
+        <ul>
+          <li>嵌入式控制：由內部核心控制板完成感測讀取、運算判斷與馬達輸出</li>
+          <li>PID 控制思維：透過誤差修正概念維持移動穩定</li>
+          <li>感測回饋應用：整合超音波、循線感測器，支援障礙判斷與路徑修正</li>
+          <li>機電整合能力：把機構、電路、程式與現場測試連結</li>
+        </ul>
+      </div>
+
+      <div class="aerc-card">
+        <div class="aerc-card-num">06 · 未來方向</div>
+        <h3>從避障走向自主移動</h3>
+        <p>本專題以機器人避障競賽為起點，完成自主控制、感測整合與現場測試。下一步是把競賽經驗延伸為更完整的智慧自走車平台。</p>
+        <ul>
+          <li>強化感測精度：加入更精準的距離與環境辨識能力</li>
+          <li>導入路徑規劃：從即時避障進一步發展成可預測、可規劃的移動策略</li>
+          <li>擴充自主移動平台：延伸至自主車、倉儲搬運機器人或智慧移動載具應用</li>
+        </ul>
+      </div>
+
+    </div>
   </div>
 
   <!-- 上銀撞球 -->
@@ -168,18 +353,6 @@
         <div class="slide-card-arrow">→</div>
       </a>
     </div>
-  </div>
-
-  <!-- TDK -->
-  <div class="contest-section">
-    <div class="contest-title">🏁 TDK 遙控組</div>
-    <div class="placeholder">投影片製作中，即將上線</div>
-  </div>
-
-  <!-- FIRA AutoRace -->
-  <div class="contest-section">
-    <div class="contest-title">🤖 FIRA AutoRace — TB3</div>
-    <div class="placeholder">投影片製作中，即將上線</div>
   </div>
 
 </div>
