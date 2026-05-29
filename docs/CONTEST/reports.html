@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>報告展示區 — 黑皮團隊</title>
+  <link rel="stylesheet" href="./assets/css/shared.css">
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface-2: #242836;
+      --border: rgba(251,191,36,0.15);
+      --accent: #fbbf24;
+      --accent-dim: rgba(251,191,36,0.08);
+      --accent-text: #fbbf24;
+      --text: #f0f0f0;
+      --muted: #9ca3af;
+      --muted-2: #6b7280;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+
+    .header {
+      text-align: center;
+      padding: 48px 20px;
+      margin-bottom: 48px;
+    }
+    .header .eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .header p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      max-width: 400px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      margin-bottom: 32px;
+      transition: all 0.25s;
+    }
+    .back-link:hover {
+      border-color: var(--accent);
+      color: var(--accent-text);
+    }
+
+    .contest-section { margin-bottom: 56px; }
+    .contest-title {
+      font-size: 0.75em;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .slides-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slide-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .slide-card:hover {
+      border-color: var(--accent);
+      transform: translateX(4px);
+    }
+    .slide-card-info { flex: 1; }
+    .slide-card-num {
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+    .slide-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .slide-card-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .slide-card-arrow {
+      font-size: 1.2rem;
+      color: var(--accent);
+      transition: transform 0.25s;
+    }
+    .slide-card:hover .slide-card-arrow { transform: translateX(4px); }
+
+    .placeholder {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .contest-icon { font-size: 1.4rem; margin-right: 10px; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <a href="./" class="back-link">← 比賽專區</a>
+
+  <div class="header">
+    <div class="eyebrow">黑皮團隊</div>
+    <h1>報告展示區</h1>
+    <p>各比賽的進度報告投影片，記錄從零到現在的完整建置歷程</p>
+  </div>
+
+  <!-- 上銀撞球 -->
+  <div class="contest-section">
+    <div class="contest-title">🎱 上銀撞球</div>
+    <div class="slides-list">
+      <a href="./上銀撞球/slides.html" class="slide-card">
+        <div class="slide-card-info">
+          <div class="slide-card-num">16 SLIDES · 2026-05-18</div>
+          <div class="slide-card-title">上銀撞球 2026 進度報告</div>
+          <div class="slide-card-meta">學校活動介紹 · 內部進度記錄</div>
+        </div>
+        <div class="slide-card-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- TDK -->
+  <div class="contest-section">
+    <div class="contest-title">🏁 TDK 遙控組</div>
+    <div class="placeholder">投影片製作中，即將上線</div>
+  </div>
+
+  <!-- FIRA AutoRace -->
+  <div class="contest-section">
+    <div class="contest-title">🤖 FIRA AutoRace — TB3</div>
+    <div class="placeholder">投影片製作中，即將上線</div>
+  </div>
+
+</div>
+</body>
+</html>
