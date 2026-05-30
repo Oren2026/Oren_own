@@ -1,0 +1,250 @@
+Robotic Navigation and Exploration
+HW4: Object Detection & Semantic Segmentation
+Min-Chun Hu
+CS, NTHU
+anitahu@cs.nthu.edu.tw
+
+Agenda
+Introduction to YOLO
+Object Detection
+Semantic Segmentation
+Data Collection
+Data Labeling
+YOLO Training
+YOLO Testing
+Grading & Submission
+
+2
+
+Introduction to YOLO
+3
+
+YOLO
+4
+YOLO: You Only Look Once
+A popular, real-time object detection and image segmentation model
+Official website: https://docs.ultralytics.com/
+Born in 2015
+Versions: YOLOv1~YOLOv12, YOLO26
+
+YOLO26
+5
+https://docs.ultralytics.com/models/yolo26/
+
+Object Detection
+6
+
+Goal
+7
+Predict the bounding box of ​​each object
+In this homework, you’re asked to detect bear and knob
+
+Dataset Format
+8
+Class     X             Y         Width     Height
+
+Semantic Segmentation
+9
+
+Goal
+10
+Predict the area of ​​each object
+In this homework, you’re asked to detect road and bridge
+
+Dataset Format
+11
+
+Data Collection
+12
+
+Data Collection
+13
+Open Docker Desktop (Never close it!!!)
+
+Connect VSCode to WSL
+Execute pros_app#Open a terminalcd ~/workspace/pros/pros_app/python3 ./control.py -s#Select “./slam_unity.sh”(Do not close it)
+
+Data Collection
+14
+Open “PROS Twin.exe” and login with your account.
+
+Data Collection
+15
+Continue with “EASY” mode.
+Choose “FINAL PROJECT” scene. (You may need to wait for a while.)
+Switch from “MANUAL” (Unity) to “AI” (ROS) mode.
+
+Data Collection
+16
+Hold the right mouse button to change the view direction.Press the WASD keys to move the viewpoint.Use the mouse wheel to zoom in and out.
+Click “FINAL PROJECT” tab to reset the scene. (Scene will be generated randomly.)
+You can turn off the LiDAR visualization if needed.
+
+Data Collection
+17
+Open Foxglove and connect to Rosbridge
+
+Data Collection
+18
+You will see the image captured by the camera of the car.
+
+Data Collection
+19
+Execute pros_car#Open another terminalcd ~/workspace/pros/pros_car/./car_control.shrros2 run pros_car_py robot_control#Select “Manual Arm Control”#Select “[0]”#Press b to reset (see the images on the right)#Press q to quit#Select “Control Vehicle”
+Images will be stored at ./workspace/pros/pros_car/src/pros_car_py/images
+Note that the GitHub repository already includes one image
+
+Data Collection
+20
+Adjust the moving and rotation speed here.
+
+Data Labeling
+21
+
+Label Tool: Roboflow
+22
+https://roboflow.com/
+
+1. Create Project
+23
+
+1. Create Project - Object Detection
+24
+Use a random project name (e.g., “dfgyyuawegbfa“), so others cannot easily copy your homework.
+
+1. Create Project - Semantic Segmentation
+25
+Use a random project name (e.g., “dfgyyuawegbfa“), so others cannot easily copy your homework.
+
+1. Create Project
+26
+
+2. Define Classes
+27
+Object Detection: bear, knob
+Semantic Segmentation: road, bridge
+
+3. Upload Dataset
+28
+
+3. Upload Dataset
+29
+
+4. Annotate Images
+30
+
+4. Annotate Images
+31
+
+4. Annotate Images
+32
+Switch images
+Move to train/valid/test set
+Draw bounding box (object detection)
+Draw area (semantic segmentation)
+Auto labeling (semantic segmentation)
+If there’s no target object, mark it null
+
+4. Annotate Images
+33
+
+5. Export Dataset
+34
+YOLO automatically performs image resizing and augmentation during training (See the official documentation for details)
+
+5. Export Dataset
+35
+
+5. Export Dataset
+36
+
+5. Export Dataset
+37
+
+5. Export Dataset
+38
+
+5. Export Dataset
+39
+
+YOLO Training
+40
+
+Test CUDA Version
+41
+
+Install Pytorch
+42
+https://pytorch.org/
+
+Install Ultralytics
+43
+
+YOLO Configs
+44
+Modify to absolute path
+
+YOLO Training
+45
+Execute “cd detection; python train.py”
+The best model weight will be stored at detection\runs\detect\train\weights\best.pt
+The default batch size is 16. Use a smaller batch size if you do not have enough RAM.
+Specify the model name.
+Object Detection: yolo26n.pt, yolo26s.pt, …
+Semantic Segmentation: yolo26n-seg.pt, yolo26s-seg.pt, …
+
+YOLO Testing
+46
+
+Test Your YOLO Model
+47
+Put your model (.pt file) in ./workspace/pros/ros2_yolo_integration/src/yolo_example_pkg/models
+Modify the model path in workspace/pros/ros2_yolo_integration/src/yolo_example_pkg/yolo_example_pkg/object_detect.py (line 26)
+Execute ros2_yolo_integration cd ~/workspace/pros/ros2_yolo_integration/./yolo_activate.shrros2 run yolo_example_pkg yolo_node
+See the result in Foxglove
+
+Grading & Submission
+48
+
+Grading
+49
+ Object Detection (45%)
+Bear (20%) + Knob (20%)
+Quality (5%)
+Semantic Segmentation (45%)
+Road (20%) + Bridge (20%)
+Quality (5%)
+Report (10%)
+
+Report
+50
+Two Roboflow project links
+Dataset configuration
+# of images, object categories, train/test split, augmentation setting, …
+YOLO training configuration
+model type, # of epochs, …
+Description of dataset diversity
+text description, example images
+Description of your navigation strategy in the final project
+text description, figures, algorithm
+
+The report may be written in either English or Mandarin.
+
+Roboflow Project Link
+51
+
+Submission
+52
+Submit one zip file ({studentID}_HW4.zip), including:
+Model * 2 (detection.pt & segmentation.pt)
+Demo video * 2 (detection.mp4 & segmentation.mp4)
+Record the detection results in Foxglove
+Each video should be about 30~60 seconds long
+These videos will be used for grading
+Report (report.pdf)
+10 points will be deducted for each missing file or incorrect filename
+Deadline: 2026/05/03 23:59
+No late submissions will be accepted, even in the case of project environment issues
+
+HW4 Discussion
+53
