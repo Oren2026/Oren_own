@@ -223,6 +223,14 @@
           <tr><td>邏輯 OR</td><td><code>||</code></td><td>前一個指令執行失敗（exit code ≠ 0）才執行下一個</td></tr>
           <tr><td>/history 執行</td><td><code>!!</code></td><td>執行上一個指令（等同 <code>!-1</code>）</td></tr>
           <tr><td>家目錄</td><td><code>~</code></td><td>目前使用者的家目錄簡稱</td></tr>
+          <tr><td rowspan="8">變數取值</td><td><code>$VAR</code></td><td>讀取名為 VAR 的環境變數值</td></tr>
+          <tr><td><code>${VAR}</code></td><td>同上，適用边界分隔（如 <code>${VAR}_suffix</code>）</td></tr>
+          <tr><td><code>$?</code></td><td>上一個指令的離開碼（0=成功，非0=失敗）</td></tr>
+          <tr><td><code>$$</code></td><td>目前 Shell 的行程 ID（PID）</td></tr>
+          <tr><td><code>$!</code></td><td>上一個背景行程的 PID</td></tr>
+          <tr><td><code>$0</code></td><td>目前腳本或 Shell 的名稱</td></tr>
+          <tr><td><code>$1~$9</code></td><td>腳本的第一到第九個參數</td></tr>
+          <tr><td><code>$*</code> / <code>$@</code></td><td>所有參數（前者合併成一字串，後者分開）</td></tr>
         </tbody>
       </table>
     </section>
@@ -286,6 +294,8 @@
           <tr><td><code>[abc]</code></td><td>對應括弧中任意<strong>單一字元</strong><br><code>ls [A-Z]*</code></td><td>對應括弧中任意<strong>單一字元</strong>（相同）</td></tr>
           <tr><td><code>[!abc]</code></td><td>排除括弧中任意字元</td><td>BRE 中無此語法，ERE 可用 <code>[^abc]</code></td></tr>
           <tr><td><code>.</code></td><td>目前目錄（路徑用法）</td><td>對應任意單一字元（與 Shell 的 <code>?</code> 相同）</td></tr>
+          <tr><td><code>^</code></td><td>—</td><td>對應行首（anchoring）</td></tr>
+          <tr><td><code>$</code></td><td>—</td><td>對應行尾（anchoring）</td></tr>
           <tr><td>脫逸</td><td><code>\*</code>（解除萬用意義）</td><td><code>\*</code>（解除正則特殊意義）</td></tr>
         </tbody>
       </table>
@@ -299,8 +309,10 @@
         </ul>
         <p><strong>正則表達式（grep）：</strong></p>
         <ul style="margin:0;padding-left:1.2rem;">
-          <li><code>grep 'go+gle' file.txt</code> — 找 google, gooogle（+ 為 ERE）</li>
           <li><code>grep '^Hello' file.txt</code> — 找行首為 Hello 的行</li>
+          <li><code>grep 'end$' file.txt</code> — 找行尾為 end 的行</li>
+          <li><code>grep '^word$' file.txt</code> — 找只有 word 這一個字元的行</li>
+          <li><code>grep 'go+gle' file.txt</code> — 找 google, gooogle（+ 為 ERE）</li>
           <li><code>grep 'end\.' file.txt</code> — 找行尾為 end. 的行（<code>\.</code> 脫逸）</li>
           <li><code>grep '[0-9]{3}' file.txt</code> — 找三個連續數字（ERE）</li>
         </ul>
