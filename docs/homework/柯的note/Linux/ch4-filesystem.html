@@ -33,6 +33,7 @@
       <div class="toc-item"><span class="toc-num">5</span><span>📁 數字法更改權限</span></div>
       <div class="toc-item"><span class="toc-num">6</span><span>📁 文字法更改權限</span></div>
       <div class="toc-item"><span class="toc-num">7</span><span>📁 實際練習</span></div>
+      <div class="toc-item"><span class="toc-num">8</span><span>🔍 檔案搜尋指令（locate / find / which）</span></div>
     </div>
 
     <!-- S1: 系統目錄架構 -->
@@ -74,6 +75,11 @@
       </table>
       <div class="highlight-box">
         <p>查詢目錄所佔硬碟空間：<code>du -sh 目錄名稱</code></p>
+        <ul style="margin:0.5rem 0 0 1.2rem;padding-left:0;">
+          <li><code>du -sh</code>：僅顯示該目錄的<strong>總計大小</strong>（-s = summarize），不列出子目錄細項</li>
+          <li><code>du -h</code>：顯示該目錄下<strong>每個子目錄與檔案</strong>的大小（遞迴列出），適合查看哪個子資料夾吃最多空間</li>
+        </ul>
+        <p>常見組合：<code>du -sh *</code> — 列出目前目錄每個項目（檔案或資料夾）的總大小。</p>
       </div>
     </section>
 
@@ -231,6 +237,93 @@
           <li>使用 <code>chown</code> 將檔案擁有者轉移給其他使用者（需 root 權限）</li>
           <li>使用者和群組的關係記錄在 <code>/etc/group</code> 檔案中</li>
         </ul>
+      </div>
+    </section>
+
+    <!-- S8: 檔案搜尋指令 -->
+    <section id="s8">
+      <h2>🔍 8｜檔案搜尋指令（locate / find / which）</h2>
+      <div class="concept-card">
+        <div class="concept-card-title">📂 locate — 速查資料庫</div>
+        <p><code>locate</code> 透過預先建立的檔案資料庫（updatedb）做快速搜尋，適合找已知名稱的檔案，速度遠快於 <code>find</code>。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>locate 關鍵字</code></td><td>在資料庫中搜詢含有關鍵字的檔案路徑</td><td><code>locate passwd</code></td></tr>
+          <tr><td><code>locate -i 關鍵字</code></td><td>忽略大小寫</td><td><code>locate -i readme</code></td></tr>
+          <tr><td><code>locate -c 關鍵字</code></td><td>只顯示符合的數量</td><td><code>locate -c .conf</code></td></tr>
+          <tr><td><code>updatedb</code></td><td>手動更新資料庫（需 root）</td><td><code>sudo updatedb</code></td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>⚠️ <code>locate</code> 搜的是資料庫，若新建檔案後找不到，先執行 <code>sudo updatedb</code> 更新資料庫。</p>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">🔎 find — 進階搜尋（磁碟即時搜尋）</div>
+        <p><code>find</code> 從指定目錄出發，針對檔名、大小、時間、權限等條件做即時搜尋，功能最齊全但較慢。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>find . -name "*.txt"</code></td><td>依檔名搜尋（可用萬用字元）</td><td>当前目錄下找所有 .txt</td></tr>
+          <tr><td><code>find /home -name "file*"</code></td><td>在 /home 目錄下搜尋</td><td>指定起始路徑</td></tr>
+          <tr><td><code>find . -type f</code></td><td>只找檔案（file）</td><td>排除目錄</td></tr>
+          <tr><td><code>find . -type d</code></td><td>只找目錄（directory）</td><td>只列出目錄</td></tr>
+          <tr><td><code>find . -size +10M</code></td><td>找大於 10MB 的檔案</td><td>+ 表大於，- 表小於</td></tr>
+          <tr><td><code>find . -mtime -7</code></td><td>找 7 天內修改過的檔案</td><td>-7 = 7天內，+7 = 超過7天</td></tr>
+          <tr><td><code>find . -user root</code></td><td>找擁有者為 root 的檔案</td><td>可換成實際使用者名稱</td></tr>
+          <tr><td><code>find . -perm 755</code></td><td>找權限為 755 的檔案</td><td>精確比對權限</td></tr>
+          <tr><td><code>find . -name "*.log" -exec rm {} \;</code></td><td>找到後對每個檔案執行指令</td><td>-exec 參數強大，可搭配 rm、cp、ls 等</td></tr>
+          <tr><td><code>find . -empty</code></td><td>找空檔案或空目錄</td><td>清理可用</td></tr>
+        </tbody>
+      </table>
+
+      <div class="concept-card">
+        <div class="concept-card-title">🎯 which — 確認指令所在路徑</div>
+        <p><code>which</code> 根據 <code>$PATH</code> 環境變數，找出系統會執行哪個版本的指令，適合確認指令是否存在或被別名覆寫。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>which 指令名</code></td><td>回傳該指令的完整路徑</td><td><code>which python</code></td></tr>
+          <tr><td><code>which -a 指令名</code></td><td>列出所有符合 $PATH 的版本</td><td><code>which -a python</code></td></tr>
+          <tr><td><code>which npm</code></td><td>查看 npm 安裝路徑</td><td>確認是否安裝</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p>範例情境：<code>which python</code> → <code>/usr/bin/python</code>；若同時有 conda 環境，可能出現多個版本，用 <code>which -a python</code> 確認所有路徑。</p>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">🧹 清除畫面（clear）</div>
+        <p><code>clear</code> 指令用於清除終端機畫面。（Windows 指令為 <code>cls</code>，全名為 Clear Screen）</p>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-card-title">📄 分頁檢視（more / less）</div>
+        <p>當指令輸出結果太長時，可用 <code>more</code> 或 <code>less</code> 分頁檢視，避免一次全部顯示刷屏。</p>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>指令 | more</code></td><td>分頁顯示，空白鍵換頁，Enter 換一行</td><td><code>du -h | more</code></td></tr>
+          <tr><td><code>指令 | less</code></td><td>分頁顯示，可上下鍵滾動、搜尋，離開按 <code>q</code></td><td><code>ls -la / | less</code></td></tr>
+          <tr><td><code>more 檔案</code></td><td>直接用 more 開啟檔案</td><td><code>more readme.txt</code></td></tr>
+          <tr><td><code>less 檔案</code></td><td>直接用 less 開啟檔案</td><td><code>less readme.txt</code></td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p><code>less</code> 比 <code>more</code> 功能更強，幾乎是業界標配。可用 <code>/關鍵字</code> 搜尋，<code>n</code> 跳到下一個符合處，<code>q</code> 離開。</p>
       </div>
     </section>
 
