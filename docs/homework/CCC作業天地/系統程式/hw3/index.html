@@ -377,6 +377,72 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>exit(code)，結束程式並返回 exit code</td>
         <td>push 0 → exit → 正常結束</td>
       </tr>
+
+      <!-- EXIT 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">14</span>
+              EXIT — 結束程式
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>EXIT</code> 是程式的正常出口，用於<strong>結束目前程序的執行</strong>並回傳一個 exit code（離開碼）給父程序。Convention：0 表示正常結束，非 0 表示異常。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">系統層面發生了什麼</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">程式調用 exit(exit_code)
+        ↓
+作業系統做的事情：
+  1. 關閉所有開啟的檔案描述符
+  2. 釋放記憶體（heap、stack）
+  3. 將 exit_code 寫入 PCB（程序控制區塊）
+  4. 向父程序發送 SIGCHLD 訊號
+  5. 程式從行程表中移除（進入 Zombie 狀態等待父程序撿收）
+        ↓
+父程序可透過 wait() 取得 exit_code</pre>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <code>EXIT</code> 從 stack pop exit code 並終止 VM：
+                <ul style="margin:6px 0 0 1.2rem; padding:0;">
+                  <li>pop <code>exit_code</code> → 作為程式結束碼</li>
+                  <li>0 = 正常結束，非 0 = 異常或錯誤碼</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 正常結束
+push 0
+EXIT        ; exit(0) → 程式正常結束
+
+; 錯誤結束
+push 1
+EXIT        ; exit(1) → 程式異常結束
+
+; 結合 IF 判斷
+push 100
+DUP
+push 0
+JGT error   ; 如果 > 0，跳到 error 標籤
+
+; 正常流程結束
+push 0
+EXIT
+
+label error
+push 1
+EXIT        ; 帶錯誤碼 1 結束</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>15</code></td>
         <td><code>EXEC</code></td>
@@ -384,6 +450,78 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>執行外部命令（system()），結果壓入堆疊</td>
         <td>EXEC("echo hello") → push 0</td>
       </tr>
+
+      <!-- EXEC 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">15</span>
+              EXEC — 執行外部命令
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>EXEC</code> 是 Unix 系統的核心系統呼叫，用於<strong>以新程式替換當前行程的執行映像</strong>。在 Solang VM 中，透過 <code>system()</code> 實現，執行 Shell 命令並取得其回傳值。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">系統層面發生了什麼</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">EXEC("ls -la")
+        ↓
+1. 在字串池中找到命令 "ls -la"
+2. 呼叫 system("ls -la")
+   system() 內部：fork() + execvp() + wait()
+        ↓
++-------------------+-------------------+
+|      父程序        |      子程序        |
+| 等待 execvp()      | execvp("ls -la")  |
+| 執行完畢           | 執行 ls -la       |
++-------------------+-------------------+
+        ↓
+system() 回傳 ls 的 exit code
+        ↓
+push 到 VM stack</pre>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <code>EXEC</code> 讀取字串池中的命令並執行：
+                <ul style="margin:6px 0 0 1.2rem; padding:0;">
+                  <li>從 stack pop 命令的字串池索引 <code>str_idx</code></li>
+                  <li>執行 <code>system(string_pool[str_idx])</code></li>
+                  <li>將 exit code push 回 stack（0 = 成功）</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 執行 ls 命令
+EXEC("ls")
+
+; 執行並判斷是否成功
+EXEC("mkdir testdir")
+DUP
+JZ mkdir_failed   ; 如果是 0（失敗），跳至錯誤處理
+
+PRINTLN("目錄建立成功")
+JMP done
+
+label mkdir_failed
+PRINTLN("目錄建立失敗")
+
+label done
+; 執行多個指令（用分號串接）
+EXEC("gcc -o prog main.c && ./prog")
+
+; 讀取系統資訊
+EXEC("uname -a")
+EXEC("date")</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>16</code></td>
         <td><code>PRINT</code></td>
@@ -391,6 +529,55 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>輸出字串（不換行）</td>
         <td>PRINT("Hello ") → Hello</td>
       </tr>
+
+      <!-- PRINT 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">16</span>
+              PRINT — 輸出字串（不換行）
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>PRINT</code> 從字串池取出指定索引的字串，輸出到標準輸出（stdout），<strong>輸出後不換行</strong>，游標留在結尾。適合需要連續輸出多個片段的場景（如橫向列表、格式化輸出）。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>從 stack pop 字串池索引 <code>str_idx</code></li>
+                  <li>從 <code>string_pool[str_idx]</code> 取得字串</li>
+                  <li>輸出至 stdout，<strong>不自動換行</strong></li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 基本用法
+PRINT("Hello ")    ; 輸出: Hello[游標在這裡]
+PRINT("World")     ; 輸出: HelloWorld[游標在這裡]
+PRINTLN("!")       ; 輸出: HelloWorld![換行]
+
+; 橫向列表
+PRINT("Item 1: ")
+PRINTLN("apple")
+
+PRINT("Item 2: ")
+PRINTLN("banana")
+
+; 搭配整數輸出
+PRINT("Result = ")
+; 這裡需要先將整數轉成字串再印出
+INT_TO_STR(42)
+PRINTLN()          ; 輸出: Result = 42</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>17</code></td>
         <td><code>PRINTLN</code></td>
@@ -398,6 +585,54 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>輸出字串（換行）</td>
         <td>PRINTLN("World") → World[newline]</td>
       </tr>
+
+      <!-- PRINTLN 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">17</span>
+              PRINTLN — 輸出字串（換行）
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>PRINTLN</code> 與 <code>PRINT</code> 相同，但輸出後<strong>自動附加換行字元</strong>（<code>\n</code>），每條訊息各自佔一行，適合大多數日常輸出場景。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>從 stack pop 字串池索引 <code>str_idx</code></li>
+                  <li>從 <code>string_pool[str_idx]</code> 取得字串</li>
+                  <li>輸出至 stdout 並附加 <code>\n</code>（自動換行）</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 基本用法
+PRINTLN("Hello")    ; 輸出: Hello[換行]
+PRINTLN("World")    ; 輸出: World[換行]
+
+; 訊息輸出
+PRINTLN("=== 程式開始 ===")
+PRINTLN("讀取檔案中...")
+PRINTLN("完成！")
+
+; 錯誤訊息
+PRINTLN("Error: 檔案不存在")
+PRINTLN("請確認路徑是否正確")
+
+; PRINT vs PRINTLN 差異
+PRINT("No newline")   ; 輸出: No newline[游標在這]
+PRINTLN("With newline") ; 輸出: With newline[換行]</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>18</code></td>
         <td><code>READ</code></td>
@@ -405,6 +640,59 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>讀取一行 stdin，回傳字串索引</td>
         <td>READ → push 0（字串池索引）</td>
       </tr>
+
+      <!-- READ 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">18</span>
+              READ — 讀取一行 stdin
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>READ</code> 從標準輸入（stdin）讀取一行文字，使用者需按下 Enter 鍵才算完成。讀取的內容會存入字串池，並將該字串的索引 push 到 stack。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>呼叫 <code>fgets()</code> 或 <code>gets()</code> 讀取一行</li>
+                  <li>將讀到的字串存入 <code>string_pool</code></li>
+                  <li>將字串池索引 push 到 stack（可用 <code>PRINTLN</code> 或 <code>STRLEN</code> 等指令操作）</li>
+                  <li>若讀取失敗（EOF），push <code>-1</code></li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 基本互動程式
+PRINTLN("請輸入您的名字：")
+READ           ; 等待使用者輸入並按 Enter
+; stack: [字串池索引]
+
+; 讀取並顯示
+PRINT("您輸入的是：")
+PRINTLN()      ; 印出剛才 READ 的內容
+
+; 讀取並運算
+PRINTLN("請輸入第一個數字：")
+READ
+; 這裡需要將讀到的數字字串轉成整數做計算
+; 示範基本互動對話
+PRINTLN("=== 使用者互動範例 ===")
+PRINTLN("請輸入您的名字：")
+READ
+PRINT("您好，")
+PRINTLN()
+PRINTLN("歡迎使用 Solang VM！")</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>19</code></td>
         <td><code>FOPEN</code></td>
@@ -412,6 +700,71 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>fopen(filename, mode)，回傳檔案指標（-1 表示失敗）</td>
         <td>FOPEN("test.txt", "r") → push 0x1000</td>
       </tr>
+
+      <!-- FOPEN 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">19</span>
+              FOPEN — 開啟檔案
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>FOPEN</code> 是標準 C 函式 <code>fopen()</code> 的封裝，用於<strong>開啟一個檔案並取得檔案指標（File Pointer）</strong>。這個指標後續會用於讀取（FREAD）、寫入（FWRITE）、關閉（FCLOSE）該檔案。開啟失敗時回傳 -1。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">檔案模式（mode）</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+                  <tr style="border-bottom:1px solid #e2e8f0;"><th style="text-align:left; padding:4px 8px;">mode</th><th style="text-align:left; padding:4px 8px;">意義</th></tr>
+                  <tr><td style="padding:4px 8px;"><code>"r"</code></td><td style="padding:4px 8px;">唯讀，檔案需存在</td></tr>
+                  <tr><td style="padding:4px 8px;"><code>"w"</code></td><td style="padding:4px 8px;">唯寫，不存在則新建，存在則截斷</td></tr>
+                  <tr><td style="padding:4px 8px;"><code>"a"</code></td><td style="padding:4px 8px;">附加，寫入從檔尾開始</td></tr>
+                  <tr><td style="padding:4px 8px;"><code>"r+"</code></td><td style="padding:4px 8px;">讀寫，檔案需存在</td></tr>
+                  <tr><td style="padding:4px 8px;"><code>"w+"</code></td><td style="padding:4px 8px;">讀寫，不存在則新建</td></tr>
+                  <tr><td style="padding:4px 8px;"><code>"a+"</code></td><td style="padding:4px 8px;">讀寫附加，讀取從頭，寫入從尾</td></tr>
+                </table>
+              </div>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>HW3 將 filename_idx（左 8 bits）和 mode_idx（右 8 bits）封裝成一個 16-bit 參數</li>
+                  <li>pop 該參數後解封裝，取出兩個字串池索引</li>
+                  <li>呼叫 <code>fopen(filename, mode)</code></li>
+                  <li>成功：push 檔案指標（指標位址）；失敗：push -1</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 開啟檔案讀取
+FOPEN("data.txt", "r")
+DUP
+JZ open_failed   ; 如果是 -1（失敗），跳至錯誤處理
+
+; 開啟檔案寫入（不存在會新建）
+FOPEN("output.txt", "w")
+DUP
+JZ write_failed
+
+; 開啟檔案附加
+FOPEN("log.txt", "a")
+
+label open_failed
+PRINTLN("錯誤：無法開啟檔案")
+
+label write_failed
+PRINTLN("錯誤：無法寫入檔案")</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>20</code></td>
         <td><code>FREAD</code></td>
@@ -419,6 +772,61 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>fgets 讀一行，回傳字串索引（-1 表示失敗）</td>
         <td>FREAD(fp) → push 1（讀到內容）</td>
       </tr>
+
+      <!-- FREAD 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">20</span>
+              FREAD — 讀取檔案一行
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>FREAD</code> 使用 <code>fgets()</code> 從已開啟的檔案指標讀取<strong>一行文字</strong>（遇到 <code>\n</code> 或 EOF 為止）。讀取的內容存入字串池，回傳索引至 stack。常用於逐行處理文字檔。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>從 stack pop 檔案指標 <code>fp</code></li>
+                  <li>呼叫 <code>fgets(buffer, MAX_LINE, fp)</code></li>
+                  <li>將該行存入字串池，push 索引到 stack</li>
+                  <li>成功：push 字串池索引；失敗（EOF/錯誤）：push -1</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 開啟並逐行讀取
+FOPEN("data.txt", "r")
+JZ open_failed
+
+; 迴圈讀取直到 EOF
+label read_loop
+FREAD            ; 讀取一行
+DUP
+push -1
+JEQ end_of_file  ; 如果是 -1，到檔案結尾
+
+; 處理讀到的行
+PRINT("讀到：")
+PRINTLN
+
+JMP read_loop
+
+label end_of_file
+FCLOSE           ; 關閉檔案
+
+label open_failed
+PRINTLN("無法開啟檔案")</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>21</code></td>
         <td><code>FWRITE</code></td>
@@ -426,6 +834,53 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>寫入字串到檔案，回傳 0（成功）或 -1（失敗）</td>
         <td>FWRITE(fp, str) → push 0</td>
       </tr>
+
+      <!-- FWRITE 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">21</span>
+              FWRITE — 寫入字串到檔案
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>FWRITE</code> 將字串寫入已開啟的檔案，使用 <code>fputs()</code> 實作。寫入後，游標位置隨之移動。常用於將程式執行結果或日誌寫入磁碟。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>從 stack pop 檔案指標 <code>fp</code></li>
+                  <li>從 stack pop 字串池索引 <code>str_idx</code></li>
+                  <li>呼叫 <code>fputs(string_pool[str_idx], fp)</code></li>
+                  <li>成功：push 0；失敗：push -1</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 開啟並寫入
+FOPEN("output.txt", "w")
+JZ write_failed
+
+; 寫入多行文字
+FWRITE            ; fp 在 stack
+"Line 1: Hello\n"
+FWRITE
+"Line 2: Solang\n"
+
+PRINTLN("寫入完成")
+
+label write_failed
+PRINTLN("錯誤：寫入失敗")</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>22</code></td>
         <td><code>FCLOSE</code></td>
@@ -433,6 +888,52 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>fclose，回傳 0（成功）或 -1（失敗）</td>
         <td>FCLOSE(fp) → push 0</td>
       </tr>
+
+      <!-- FCLOSE 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">22</span>
+              FCLOSE — 關閉檔案
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>FCLOSE</code> 關閉已開啟的檔案，緩衝區內尚未寫入的資料會先 flush 寫入磁碟，並釋放該檔案指標。完成所有檔案操作後，必須關閉檔案以確保資料寫入且不泄漏檔案描述符。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>從 stack pop 檔案指標 <code>fp</code></li>
+                  <li>呼叫 <code>fclose(fp)</code></li>
+                  <li>成功：push 0；失敗：push -1</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 完整檔案操作流程
+FOPEN("data.txt", "r")
+JZ failed
+
+; ... 讀取或寫入操作 ...
+
+FCLOSE
+PRINTLN("檔案已關閉")
+
+; 錯誤處理
+label failed
+PRINTLN("無法開啟檔案")
+push 1
+EXIT</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>23</code></td>
         <td><code>TIME</code></td>
@@ -440,13 +941,112 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>time(NULL)，回傳目前時間戳（int）</td>
         <td>TIME → push 1779981484</td>
       </tr>
+
+      <!-- TIME 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">23</span>
+              TIME — 取得目前時間戳
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>TIME</code> 呼叫系統函式 <code>time(NULL)</code>，回傳<strong>自 1970-01-01 00:00:00 UTC 起經過的秒數</strong>（Unix Epoch）。常用於計算時間差、生成唯一ID、或作為亂數生成器的 seed。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>呼叫 <code>time(NULL)</code></li>
+                  <li>將回傳的 <code>time_t</code> 值（秒數）push 到 stack</li>
+                  <li>無參數，不 pop 任何值</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 取得目前時間戳
+TIME
+PRINTLN           ; 輸出：1700000000（Unix 時間戳）
+
+; 時間戳的用途
+PRINTLN("=== 時間戳應用 ===")
+TIME               ; push 時間戳
+; 可用於：
+; - 計算程式執行時間
+; - 為 RAND 提供 seed
+; - 生成不重複ID
+
+; 顯示時間戳含義
+TIME
+PRINTLN(" Unix 時間戳（秒）")
+PRINTLN("從 1970-01-01 起算")</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>24</code></td>
         <td><code>SLEEP</code></td>
         <td>sec</td>
-        <td>sleep(sec)，暫停指定秒數</td>
+        <td>sleep(sec)，暫停執行秒數</td>
         <td>SLEEP(1) → 暫停 1 秒</td>
       </tr>
+
+      <!-- SLEEP 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">24</span>
+              SLEEP — 暫停執行
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>SLEEP</code> 呼叫系統函式 <code>sleep(sec)</code>，讓 VM<strong>暫停指定秒數</strong>後再繼續執行。常用於需要延遲的場景：等待外部資源、冷卻計時、動畫延時、或批次作業的間隔。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>從 stack pop 秒數 <code>sec</code></li>
+                  <li>呼叫 <code>sleep(sec)</code> 暫停行程</li>
+                  <li>暫停結束後繼續執行，無回傳值</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 倒數計時
+PRINTLN("倒數開始：")
+push 3
+label countdown
+DUP
+JZ done
+PRINTLN
+push 1
+SUB
+SLEEP             ; 暂停 1 秒
+JMP countdown
+
+label done
+PRINTLN("時間到！")
+
+; 批次作業間隔
+PRINTLN("處理中...")
+SLEEP             ; 假設前面 push 了 2
+PRINTLN("完成")</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>25</code></td>
         <td><code>RAND</code></td>
@@ -454,6 +1054,60 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>rand() % max，回傳 0 到 max-1 的亂數（max=0 時預設 100）</td>
         <td>RAND(6) → push 3（擲骰子）</td>
       </tr>
+
+      <!-- RAND 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">25</span>
+              RAND — 亂數產生
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>RAND</code> 呼叫 <code>rand()</code> 並取 <code>max</code> 的模數，回傳 <code>[0, max-1]</code> 範圍內的亂數。常用於遊戲（擲骰子、抽卡）、模擬、隨機測試資料生成等場景。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>從 stack pop <code>max</code></li>
+                  <li>呼叫 <code>rand() % max</code></li>
+                  <li>若 <code>max == 0</code>，預設使用 100（回傳 0~99）</li>
+                  <li>push 亂數結果到 stack</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 擲骰子（1~6）
+RAND(6)             ; 回傳 0~5
+push 1
+ADD
+PRINTLN            ; 輸出 1~6
+
+; 亂數範圍技巧
+; 要取得 1~max（含）：RAND(max) + 1
+; 要取得 min~max（含）：RAND(max-min+1) + min
+
+; 遊戲範例
+PRINTLN("擲骰子：")
+RAND(6)             ; 0~5
+push 1
+ADD
+PRINTLN
+
+PRINTLN("隨機顏色：")
+RAND(3)             ; 0~2
+; 0=紅, 1=綠, 2=藍
+; 根據數值做不同處理</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>26</code></td>
         <td><code>STRLEN</code></td>
@@ -461,6 +1115,57 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>回傳字串長度</td>
         <td>STRLEN("hello") → push 5</td>
       </tr>
+
+      <!-- STRLEN 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">26</span>
+              STRLEN — 取得字串長度
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>STRLEN</code> 從字串池取出指定字串，回傳其長度（不包括結尾的 <code>\0</code>）。常用於驗證輸入、計算迴圈次數、動態配置記憶體等場景。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>從 stack pop 字串池索引 <code>str_idx</code></li>
+                  <li>呼叫 <code>strlen(string_pool[str_idx])</code></li>
+                  <li>push 長度（int）到 stack</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 測量字串長度
+STRLEN             ; 假設 stack 頂是 "hello"
+PRINTLN            ; 輸出: 5
+
+; 驗證輸入長度
+PRINTLN("請輸入密碼：")
+READ
+STRLEN
+push 8
+JLT password_short  ; 小於 8 字元
+
+label password_short
+PRINTLN("密碼太短")
+
+; 搭配迴圈處理每個字元
+STRLEN
+DUP
+JZ empty_string
+; 迴圈處理...</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>27</code></td>
         <td><code>STRCMP</code></td>
@@ -468,12 +1173,136 @@ WAIT         ; 等待子程序並取得 exit code</pre>
         <td>比較兩字串，回傳 0（相等）、正數或負數</td>
         <td>STRCMP("a","b") → push -1</td>
       </tr>
+
+      <!-- STRCMP 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">27</span>
+              STRCMP — 字串比較
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>STRCMP</code> 呼叫標準 C 的 <code>strcmp()</code>，依字典順序比較兩個字串。常用於密碼驗證、命令解析、條件分支（if/case）等場景。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>從 stack pop idx2（第二個字串）和 idx1（第一個字串）</li>
+                  <li>呼叫 <code>strcmp(string_pool[idx1], string_pool[idx2])</code></li>
+                  <li>結果：0 = 相等，正數 = idx1 > idx2，負數 = idx1 < idx2</li>
+                  <li>push 比較結果到 stack</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 基本相等判斷
+STRCMP              ; 比較棧頂兩個字串
+JZ equal            ; 結果為 0，跳到 equal
+
+PRINTLN("不相等")
+
+label equal
+PRINTLN("相等")
+
+; 命令解析
+PRINTLN("請輸入指令：")
+READ
+STRCMP("quit")
+JZ exit_program
+
+; 密碼驗證
+READ                 ; 讀取使用者輸入密碼
+STRCMP("secret123")  ; 比較
+JZ login_success
+
+label login_success
+PRINTLN("登入成功")
+JMP done
+
+label exit_program
+PRINTLN("再見！")
+push 0
+EXIT</pre>
+            </div>
+          </div>
+        </td>
+      </tr>
+
       <tr>
         <td><code>28</code></td>
         <td><code>INT_TO_STR</code></td>
         <td>val</td>
         <td>整數轉字串，結果存入字串池，回傳索引</td>
         <td>INT_TO_STR(42) → push 2（"42"）</td>
+      </tr>
+
+      <!-- INT_TO_STR 詳細說明 -->
+      <tr>
+        <td colspan="5" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:1rem; color:#4f46e5; margin-bottom:0.8rem; display:flex; align-items:center; gap:6px;">
+              <span style="background:#6366f1; color:#fff; padding:2px 10px; border-radius:4px; font-size:0.78rem;">28</span>
+              INT_TO_STR — 整數轉字串
+            </h3>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">介紹</div>
+              <p style="margin:0; font-size:0.9rem; color:#1e293b; line-height:1.7;">
+                <code>INT_TO_STR</code> 將整數轉換為可顯示的字串，結果存入字串池並回傳索引。這讓 VM 能輸出計算結果、格式化訊息，或將數值寫入檔案。屬於 HW3 新增的最後一個指令。
+              </p>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">VM 語意</div>
+              <div style="background:#f1f5f9; border-radius:8px; padding:0.8rem 1rem; font-size:0.85rem; line-height:1.7;">
+                <ul style="margin:0; padding-left:1.2rem;">
+                  <li>從 stack pop 整數 <code>val</code></li>
+                  <li>呼叫 <code>sprintf()</code> 將整數格式化為字串</li>
+                  <li>將新字串存入字串池，push 該字串池索引到 stack</li>
+                  <li>該索引可用於 PRINTLN、FWRITE 等需要字串的操作</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem; color:#64748b; margin-bottom:6px;">使用範例</div>
+              <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.9rem; border-radius:8px; font-size:0.8rem; line-height:1.6; overflow-x:auto; margin:0;">; 輸出計算結果
+push 100
+push 200
+ADD                  ; 計算 100+200=300
+INT_TO_STR           ; 轉成 "300"
+PRINTLN              ; 輸出: 300
+
+; 格式化輸出訊息
+PRINT("結果：")
+push 42
+INT_TO_STR
+PRINTLN              ; 輸出: 結果：42
+
+; 將數值寫入檔案
+FOPEN("data.txt", "w")
+FWRITE               ; 寫入 "42"
+FCLOSE
+
+; 實用：計算並顯示
+PRINTLN("1+2+3+4+5 =")
+push 1
+push 2
+ADD
+push 3
+ADD
+push 4
+ADD
+push 5
+ADD
+INT_TO_STR
+PRINTLN              ; 輸出: 1+2+3+4+5 = 15</pre>
+            </div>
+          </div>
+        </td>
       </tr>
     </table>
   </section>
