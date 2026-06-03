@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CH2 — 指令地圖 | 柯志亨的筆記天地</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="right-nav.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-course">柯的note</div>
+    <div class="sidebar-title">Linux</div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-label">所有章節</div>
+    <div id="sidebar-links"></div>
+  </nav>
+
+  <main class="content">
+    <header class="note-header">
+      <div class="note-date">2026 年 06 月 03 日</div>
+      <h1 class="note-title">CH2 — 指令地圖</h1>
+      <div class="note-tags">
+        <span class="note-tag">CH2</span>
+        <span class="note-tag">Linux</span>
+      </div>
+    </header>
+
+    <h2>📋 大綱</h2>
+    <div class="toc-grid">
+      <div class="toc-item"><span class="toc-num">1</span><span>📂 檔案與目錄操作</span></div>
+      <div class="toc-item"><span class="toc-num">2</span><span>📄 內容檢視</span></div>
+      <div class="toc-item"><span class="toc-num">3</span><span>🔍 檔案搜尋</span></div>
+      <div class="toc-item"><span class="toc-num">4</span><span>📖 說明文件</span></div>
+      <div class="toc-item"><span class="toc-num">5</span><span>💻 系統資訊</span></div>
+      <div class="toc-item"><span class="toc-num">6</span><span>👤 使用者切換</span></div>
+      <div class="toc-item"><span class="toc-num">7</span><span>⚙️ 程序管理</span></div>
+      <div class="toc-item"><span class="toc-num">8</span><span>💾 磁碟空間</span></div>
+      <div class="toc-item"><span class="toc-num">9</span><span>✏️ 文字處理</span></div>
+      <div class="toc-item"><span class="toc-num">10</span><span>🛠️ 其他工具</span></div>
+    </div>
+
+    <!-- S1: 檔案與目錄操作 -->
+    <section id="s1">
+      <h2>📂 1｜檔案與目錄操作</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th><th>備註</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>ls</code></td><td>列出目錄內容</td><td><code>ls -la /home</code></td><td>-a 顯示隱藏檔，-l 詳細格式，-h 人類可讀大小（第3/4章）</td></tr>
+          <tr><td><code>cd</code></td><td>切換目錄</td><td><code>cd ~</code>, <code>cd -</code>, <code>cd ..</code></td><td>~ 家目錄，- 上一個目錄，.. 上一層（第3章）</td></tr>
+          <tr><td><code>pwd</code></td><td>顯示目前所在路徑</td><td><code>pwd</code></td><td>Print Working Directory（第3章）</td></tr>
+          <tr><td><code>mkdir</code></td><td>建立目錄</td><td><code>mkdir dir1</code>, <code>mkdir -p a/b/c</code></td><td>-p 同時建立多層子目錄（第3章）</td></tr>
+          <tr><td><code>rmdir</code></td><td>刪除空目錄</td><td><code>rmdir emptydir</code></td><td>目錄需為空，否則用 <code>rm -r</code>（第3章）</td></tr>
+          <tr><td><code>rm</code></td><td>刪除檔案或目錄</td><td><code>rm file.txt</code>, <code>rm -rf mydir</code></td><td>-r 遞迴刪除，-f 強制刪除，危險操作請三思（第3章）</td></tr>
+          <tr><td><code>cp</code></td><td>複製檔案或目錄</td><td><code>cp src.txt /backup/</code>, <code>cp -r dir/ /backup/</code></td><td>-r 複製目錄，-i 覆寫前確認（第3章）</td></tr>
+          <tr><td><code>mv</code></td><td>移動或重新命名</td><td><code>mv old.txt new.txt</code>, <code>mv file.txt /dir/</code></td><td>等同於 Windows 的「剪下+貼上」（第3章）</td></tr>
+          <tr><td><code>cat</code></td><td>顯示檔案完整內容</td><td><code>cat readme.txt</code>, <code>cat -n file.txt</code></td><td>-n 顯示行號，適合小檔案；大檔案請用 less（第3章）</td></tr>
+          <tr><td><code>touch</code></td><td>建立空檔案 / 更新時間戳</td><td><code>touch new.txt</code></td><td>若檔案已存在則更新 mtime（第4章 inode）</td></tr>
+          <tr><td><code>ln</code></td><td>建立連結（捷徑）</td><td><code>ln file hardlink</code>, <code>ln -s /path softlink</code></td><td>硬連結 vs 符號連結，差異在 inode（第4章）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S2: 內容檢視 -->
+    <section id="s2">
+      <h2>📄 2｜內容檢視</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th><th>備註</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>head</code></td><td>顯示檔案前幾行</td><td><code>head -n 20 file.txt</code></td><td>預設前 10 行，-n 指定行數（第3章）</td></tr>
+          <tr><td><code>tail</code></td><td>顯示檔案後幾行</td><td><code>tail -n 50 file.txt</code>, <code>tail -f /var/log/syslog</code></td><td>-f 動態追蹤（即時看日誌），Ctrl+C 停止（第3章）</td></tr>
+          <tr><td><code>more</code></td><td>分頁檢視（只能往下）</td><td><code>ls -la / | more</code></td><td>空白鍵換頁，Enter 換一行，q 離開（第4章）</td></tr>
+          <tr><td><code>less</code></td><td>分頁檢視（可上下滾）</td><td><code>less readme.txt</code></td><td>比 more 強，支援 /搜尋、上下鍵滾動，q 離開（第4章）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S3: 檔案搜尋 -->
+    <section id="s3">
+      <h2>🔍 3｜檔案搜尋</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th><th>備註</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>find</code></td><td>進階搜尋（磁碟即時）</td><td><code>find /home -name "*.log"</code>, <code>find . -size +100M</code></td><td>最強大但最慢，可搭配 -exec 對結果動作（第4章）</td></tr>
+          <tr><td><code>locate</code></td><td>資料庫快速搜尋</td><td><code>locate passwd</code>, <code>locate -i readme</code></td><td>需先 updatedb，-i 忽略大小寫（第4章）</td></tr>
+          <tr><td><code>which</code></td><td>確認指令所在路徑</td><td><code>which python</code>, <code>which -a python</code></td><td>根據 $PATH 查找，-a 列出所有版本（第4章）</td></tr>
+          <tr><td><code>whereis</code></td><td>搜尋二進位/原始碼/手冊</td><td><code>whereis ls</code></td><td>比 which 多找原始碼與手冊頁位置（第4章）</td></tr>
+          <tr><td><code>type</code></td><td>判斷指令類型</td><td><code>type cd</code>, <code>type ls</code></td><td>內建指令 vs 外部程式，協助理解 Shell 行為（第3章）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S4: 說明文件 -->
+    <section id="s4">
+      <h2>📖 4｜說明文件</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th><th>備註</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>man</code></td><td>指令手冊（分頁說明）</td><td><code>man ls</code>, <code>man 5 passwd</code></td><td>最完整說明，空白鍵翻頁，q 離開；man 5 指第 5 章節（第3章）</td></tr>
+          <tr><td><code>--help</code></td><td>快速說明提示</td><td><code>ls --help</code>, <code>mkdir --help</code></td><td>部分指令支援，直接顯示摘要，不用 man 翻頁</td></tr>
+          <tr><td><code>info</code></td><td>GNU 超文字手冊</td><td><code>info ls</code></td><td>比 man 更完整，支援超連結導航， Emacs 風格操作</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S5: 系統資訊 -->
+    <section id="s5">
+      <h2>💻 5｜系統資訊</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th><th>備註</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>whoami</code></td><td>顯示目前使用者名稱</td><td><code>whoami</code></td><td>確認自己是誰，遠端登入後常使用</td></tr>
+          <tr><td><code>hostname</code></td><td>顯示或設定主機名稱</td><td><code>hostname</code>, <code>sudo hostname newname</code></td><td>檢視當前主機名稱；設定需 root（第7章）</td></tr>
+          <tr><td><code>uname</code></td><td>顯示系統資訊</td><td><code>uname -a</code>, <code>uname -r</code></td><td>-a 全部資訊，-r 核心版本，-m 硬體架構</td></tr>
+          <tr><td><code>date</code></td><td>顯示或設定系統時間</td><td><code>date</code>, <code>date -s "2026-06-03 12:00:00"</code></td><td>設定需 root；+%Y%m%d 等格式輸出</td></tr>
+          <tr><td><code>cal</code></td><td>顯示日曆</td><td><code>cal</code>, <code>cal 2026</code>, <code>cal -m 6</code></td><td>預設當月；指定月份或年份</td></tr>
+          <tr><td><code>who</code></td><td>顯示目前登入的使用者</td><td><code>who</code></td><td>查看誰登入這台機器</td></tr>
+          <tr><td><code>w</code></td><td>顯示登入者詳細資訊</td><td><code>w</code></td><td>比 who 更詳細，含正在執行的程序與負載</td></tr>
+          <tr><td><code>uptime</code></td><td>系統運行時間與負載</td><td><code>uptime</code></td><td>可快速看機器開機多久</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S6: 使用者切換 -->
+    <section id="s6">
+      <h2>👤 6｜使用者切換</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th><th>備註</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>su</code></td><td>切換使用者（Substitute User）</td><td><code>su - root</code>, <code>su - user2</code></td><td>不指定使用者預設切到 root；- 同時載入目標家目錄與環境（第7章）</td></tr>
+          <tr><td><code>sudo</code></td><td>以 root 權限執行單一指令</td><td><code>sudo apt update</code>, <code>sudo -u user2 command</code></td><td>需先設定 /etc/sudoers；不需知道 root 密碼（第7章）</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p><strong>su vs sudo 差異：</strong><code>su</code> 會切入另一個使用者環境並持續有效；<code>sudo</code> 只在單一指令前取得臨時權限，執行完畢即恢復普通使用者身份。</p>
+      </div>
+    </section>
+
+    <!-- S7: 程序管理 -->
+    <section id="s7">
+      <h2>⚙️ 7｜程序管理</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th><th>備註</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>ps</code></td><td>顯示程序快照</td><td><code>ps aux</code>, <code>ps -ef</code></td><td>aux 顯示所有程序（BSD 格式），-ef 顯示完整格式（SysV）（第10章）</td></tr>
+          <tr><td><code>kill</code></td><td>終止或傳訊號給程序</td><td><code>kill 1234</code>, <code>kill -9 1234</code></td><td>-9 強制結束，-15 正常終止（預設），先試 -15（第10章）</td></tr>
+          <tr><td><code>killall</code></td><td>依名稱終止所有程序</td><td><code>killall firefox</code></td><td>一次砍掉所有同名程序</td></tr>
+          <tr><td><code>top</code></td><td>互動式程序檢視</td><td><code>top</code></td><td>動態顯示 CPU、記憶體、程序排名；q 離開；按 M 以記憶體排序（第10章）</td></tr>
+          <tr><td><code>pkill</code></td><td>依名稱傳送訊號給程序</td><td><code>pkill -9 firefox</code></td><td>比 killall 更彈性，支援正規表達式</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S8: 磁碟空間 -->
+    <section id="s8">
+      <h2>💾 8｜磁碟空間</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th><th>備註</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>df</code></td><td>顯示檔案系統掛載與空間</td><td><code>df -h</code>, <code>df -h /home</code></td><td>-h 人類可讀大小；看整體掛載狀況（第4章）</td></tr>
+          <tr><td><code>du</code></td><td>查詢目錄/檔案磁碟用量</td><td><code>du -sh *</code>, <code>du -h --max-depth=1</code></td><td>-sh 總計大小；-h 個別子目錄；--max-depth 限制深度（第4章）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S9: 文字處理 -->
+    <section id="s9">
+      <h2>✏️ 9｜文字處理</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th><th>備註</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>wc</code></td><td>計算行數/字數/位元組</td><td><code>wc -l file.txt</code>, <code>cat file.txt | wc</code></td><td>-l 只算行數，常搭配管線統計前面指令輸出（第3章）</td></tr>
+          <tr><td><code>sort</code></td><td>排序文字行</td><td><code>sort file.txt</code>, <code>sort -rn numbers.txt</code></td><td>-r 反向，-n 數字排序，-k 指定欄位（第3章）</td></tr>
+          <tr><td><code>uniq</code></td><td>過濾相鄰重複行</td><td><code>uniq file.txt</code>, <code>sort file.txt | uniq</code></td><td>需先 sort 才能正確偵測重複；-c 計算重複次數（第3章）</td></tr>
+          <tr><td><code>cut</code></td><td>擷取文字欄位</td><td><code>cut -d: -f1 /etc/passwd</code></td><td>-d 指定分隔符，-f 選擇欄位，擅長處理 CSV/帳號檔</td></tr>
+          <tr><td><code>tr</code></td><td>字元替換或刪除</td><td><code>cat file.txt | tr a-z A-Z</code></td><td>大小寫轉換、刪除特定字元，不支援檔案直接讀取（需管線）</td></tr>
+          <tr><td><code>grep</code></td><td>搜尋並顯示符合列</td><td><code>grep "error" log.txt</code>, <code>ls | grep txt</code></td><td>功能強大，支援正規表達式，重要章節（第3章）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- S10: 其他工具 -->
+    <section id="s10">
+      <h2>🛠️ 10｜其他工具</h2>
+      <table class="compare-table">
+        <thead>
+          <tr><th>指令</th><th>說明</th><th>範例</th><th>備註</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>alias</code></td><td>設定指令別名</td><td><code>alias ll='ls -la'</code></td><td>只對當前 session 有效；寫入 ~/.bashrc 永久生效（第3章）</td></tr>
+          <tr><td><code>unalias</code></td><td>取消別名</td><td><code>unalias ll</code></td><td>移除已定義的別名</td></tr>
+          <tr><td><code>time</code></td><td>計時指令執行時間</td><td><code>time sleep 3</code>, <code>time ls -la /</code></td><td>顯示 real/user/sys 三種時間，效能分析用（第3章）</td></tr>
+          <tr><td><code>xargs</code></td><td>將上一個指令輸出轉為指令參數</td><td><code>find . -name "*.log" | xargs rm -f</code></td><td>強大搭配工具，把管線結果轉成參數餵給下一個指令（第3章）</td></tr>
+          <tr><td><code>watch</code></td><td>定期執行並顯示輸出</td><td><code>watch -n 2 date</code></td><td>-n 指定間隔秒數，適合監控系統狀態</td></tr>
+          <tr><td><code>history</code></td><td>顯示指令歷程</td><td><code>history</code>, <code>history -c</code></td><td>清單顯示並附帶編號；-c 清除歷程；!<code>n</code> 執行第 n 筆（第3章）</td></tr>
+          <tr><td><code>echo</code></td><td>輸出文字或變數值</td><td><code>echo "Hello"</code>, <code>echo $PATH</code></td><td>印出文字；印出環境變數需加 $（第3章）</td></tr>
+          <tr><td><code>export</code></td><td>設定或顯示環境變數</td><td><code>export VAR=value</code>, <code>export -n VAR</code></td><td>設定進程層級變數；-n 取消匯出（第3章）</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-box">
+        <p><strong>💡 學習建議：</strong>本章是 Linux 指令的「索引頁」，遇到任何指令不知道怎麼用時，可以回來查。平時遇到新指令，試著在終端機實際操作看看，用 <code>man</code> 或 <code>--help</code> 查看詳細說明。</p>
+      </div>
+    </section>
+
+    <footer class="note-footer">
+      <span>📖 柯的note — Linux</span>
+    </footer>
+  </main>
+
+  <script src="right-nav.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

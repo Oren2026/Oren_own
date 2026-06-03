@@ -6,6 +6,12 @@
     "tag": "CH1"
   },
   {
+    "file": "ch2-commands.html",
+    "emoji": "⌨️",
+    "title": "CH2 — 指令地圖",
+    "tag": "CH2"
+  },
+  {
     "file": "ch3-shell.html",
     "emoji": "💬",
     "title": "CH3 — Shell 基本操作",
