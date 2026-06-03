@@ -510,11 +510,60 @@ ADD　　; pop 6,1 → push 7</div>
         <td>將立即值 n 壓入堆疊頂端</td>
         <td><code>IMM 5</code> → push 5</td>
       </tr>
+      <!-- IMM 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>IMM</code> — 載入立即值（Immediate）
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>IMM n</code> 將常數 <code>n</code> 直接壓入 stack頂端，是 CalcLang 中<strong>唯一會把具體數值放進程式的指令</strong>。所有變數的初始值、運算元、迴圈次數，都需要先用 IMM 載入。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; 計算 10 + 20
+IMM 10       ; push 10
+IMM 20       ; push 20
+ADD          ; pop 20 + pop 10 = push 30
+PRINT        ; 輸出: 30
+
+; 初始化的過程就是連續 IMM
+IMM 0        ; 初始化計數器
+IMM 100      ; 設定上限</pre>
+          </div>
+        </td>
+      </tr>
       <tr>
         <td><code>LOAD</code></td>
         <td>LOAD idx</td>
         <td>將變數陣列第 idx 個元素壓入堆疊</td>
         <td><code>LOAD 0</code> → push vars[0]</td>
+      </tr>
+      <!-- LOAD 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>LOAD</code> — 讀取變數（Load from Variable）
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>LOAD idx</code> 從 VM 的<strong>變數陣列 vars[idx]</strong> 讀取內容並 push 到 stack。相當於「把變數的值取出來繼續運算」。每次使用變數前，都需要先 LOAD 才能取得其中的數值。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; x = 5 之後，取出計算
+IMM 5        ; 將 5 壓入 stack
+STORE 0      ; pop → vars[0] = 5
+
+LOAD 0       ; push vars[0] → push 5
+IMM 3        ; push 3
+ADD          ; pop 3 + pop 5 = push 8
+PRINT        ; 輸出: 8</pre>
+          </div>
+        </td>
       </tr>
       <tr>
         <td><code>STORE</code></td>
@@ -522,11 +571,69 @@ ADD　　; pop 6,1 → push 7</div>
         <td>彈出堆疊頂端，存入變數陣列第 idx 格</td>
         <td><code>STORE 0</code> → pop → vars[0]</td>
       </tr>
+      <!-- STORE 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>STORE</code> — 寫入變數（Store to Variable）
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>STORE idx</code> 從 stack pop 一個值，存入<strong>變數陣列 vars[idx]</strong>。這是 CalcLang 中「賦值」的唯一方式——先把表達式結果算出來，再用 STORE 寫入變數。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; x = 10 + 5
+IMM 10       ; push 10
+IMM 5        ; push 5
+ADD          ; pop 5 + pop 10 = push 15
+STORE 0      ; pop → vars[0] = 15
+
+; 完整賦值流程：先 IMM/LOAD 算出值，再 STORE 寫入
+IMM 3        ; 計算 3*4
+IMM 4
+MUL          ; push 12
+STORE 1      ; y = 12</pre>
+          </div>
+        </td>
+      </tr>
       <tr>
         <td><code>ADD</code></td>
         <td>ADD</td>
         <td>彈出兩個值相加，結果壓回堆疊</td>
         <td>push 1, push 2 → <code>ADD</code> → push 3</td>
+      </tr>
+      <!-- ADD 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>ADD</code> — 加法
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>ADD</code> 從 stack pop <strong>兩個值</strong>（先右側再左側）相加，結果 push 回 stack。計算是：<code>左側 + 右側</code>。結果壓回後可用於繼續運算或馬上列印。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; 1 + 2
+IMM 1        ; push 1
+IMM 2        ; push 2
+ADD          ; pop 2 + pop 1 = push 3
+PRINT        ; 輸出: 3
+
+; 鏈式計算：1 + 2 + 3 + 4
+IMM 1
+IMM 2
+ADD          ; push 3
+IMM 3
+ADD          ; push 6
+IMM 4
+ADD          ; push 10
+PRINT        ; 輸出: 10</pre>
+          </div>
+        </td>
       </tr>
       <tr>
         <td><code>SUB</code></td>
@@ -534,11 +641,67 @@ ADD　　; pop 6,1 → push 7</div>
         <td>彈出兩個值相減（先 pop 右側，再 pop 左側）</td>
         <td>push 5, push 2 → <code>SUB</code> → push 3</td>
       </tr>
+      <!-- SUB 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>SUB</code> — 減法
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>SUB</code> pop <strong>兩個值</strong>後計算「左側 − 右側」，結果 push 回 stack。<code>左側</code> 是第二次 pop 的值，<code>右側</code> 是第一次 pop 的值。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; 10 - 3 = 7
+IMM 10       ; push 10（左側）
+IMM 3        ; push 3（右側）
+SUB          ; pop 3（左）-pop 10（右）= push 7
+PRINT        ; 輸出: 7
+
+; 鏈式：10 - 3 - 2 = 5
+IMM 10
+IMM 3
+SUB          ; push 7
+IMM 2
+SUB          ; pop 2（左）-pop 7（右）= push 5
+PRINT        ; 輸出: 5</pre>
+          </div>
+        </td>
+      </tr>
       <tr>
         <td><code>MUL</code></td>
         <td>MUL</td>
         <td>彈出兩個值相乘，結果壓回堆疊</td>
         <td>push 2, push 3 → <code>MUL</code> → push 6</td>
+      </tr>
+      <!-- MUL 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>MUL</code> — 乘法
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>MUL</code> pop 兩個值相乘（<code>左側 × 右側</code>），結果 push 回 stack。乘法比除法優先順序相同，但都高於加法和減法。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; 3 × 4 = 12
+IMM 3
+IMM 4
+MUL          ; pop 4 × pop 3 = push 12
+PRINT        ; 輸出: 12
+
+; 計算面積：寬 × 高
+IMM 5        ; 寬度 5
+IMM 8        ; 高度 8
+MUL          ; push 40（面積）
+PRINT        ; 輸出: 40</pre>
+          </div>
+        </td>
       </tr>
       <tr>
         <td><code>DIV</code></td>
@@ -546,11 +709,68 @@ ADD　　; pop 6,1 → push 7</div>
         <td>彈出兩個值相除（先 pop 右側，再 pop 左側）</td>
         <td>push 8, push 2 → <code>DIV</code> → push 4</td>
       </tr>
+      <!-- DIV 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>DIV</code> — 除法
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>DIV</code> pop 兩個值後計算「左側 ÷ 右側」，結果 push 回 stack。<strong>只做整數除法</strong>，小數部分會截斷（不是四捨五入）。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; 10 / 3 = 3（整數除法）
+IMM 10
+IMM 3
+DIV          ; pop 3（左）÷ pop 10（右）= push 3
+PRINT        ; 輸出: 3
+
+; 複合計算：(8 + 2) / 2 = 5
+IMM 8
+IMM 2
+ADD          ; push 10
+IMM 2
+DIV          ; push 5
+PRINT        ; 輸出: 5</pre>
+          </div>
+        </td>
+      </tr>
       <tr>
         <td><code>CMP_LT</code></td>
         <td>CMP_LT</td>
         <td>比較是否小於，結果為 1（真）或 0（假）</td>
         <td>push 2, push 5 → <code>CMP_LT</code> → push 1</td>
+      </tr>
+      <!-- CMP_LT 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>CMP_LT</code> — 比較小於（Less Than）
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>CMP_LT</code> pop 兩個值，檢查「左側 < 右側」是否為真。結果為 1（真）或 0（假），用於控制流程中的條件判斷。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; if (3 < 5) 列印 1，否則列印 0
+IMM 3        ; 左側
+IMM 5        ; 右側
+CMP_LT       ; push 1（3 < 5 成立）
+PRINT        ; 輸出: 1
+
+; 與 JMP_FALSE 搭配實現條件分支
+IMM 10
+IMM 20
+CMP_LT       ; push 0（10 < 20 成立 → 結果為 1）
+JMP_FALSE skip ; 結果為 1，不跳轉，繼續執行
+PRINT        ; 輸出: 1</pre>
+          </div>
+        </td>
       </tr>
       <tr>
         <td><code>CMP_GT</code></td>
@@ -558,11 +778,71 @@ ADD　　; pop 6,1 → push 7</div>
         <td>比較是否大於</td>
         <td>push 2, push 5 → <code>CMP_GT</code> → push 0</td>
       </tr>
+      <!-- CMP_GT 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>CMP_GT</code> — 比較大於（Greater Than）
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>CMP_GT</code> pop 兩個值，檢查「左側 > 右側」是否為真。與 CMP_LT 相反，但同樣輸出 1（真）或 0（假）。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; 10 > 5 → 1
+IMM 10
+IMM 5
+CMP_GT       ; push 1（10 > 5 成立）
+PRINT        ; 輸出: 1
+
+; 5 > 10 → 0
+IMM 5
+IMM 10
+CMP_GT       ; push 0（5 > 10 不成立）
+PRINT        ; 輸出: 0</pre>
+          </div>
+        </td>
+      </tr>
       <tr>
         <td><code>CMP_EQ</code></td>
         <td>CMP_EQ</td>
         <td>比較是否相等</td>
         <td>push 3, push 3 → <code>CMP_EQ</code> → push 1</td>
+      </tr>
+      <!-- CMP_EQ 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>CMP_EQ</code> — 比較相等（Equal）
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>CMP_EQ</code> pop 兩個值，檢查「左側 == 右側」是否相等。相等輸出 1，否則輸出 0。常用於等號判斷、迴圈終止條件。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; 5 == 5 → 1
+IMM 5
+IMM 5
+CMP_EQ       ; push 1（相等）
+PRINT        ; 輸出: 1
+
+; 5 == 3 → 0
+IMM 5
+IMM 3
+CMP_EQ       ; push 0（不相等）
+PRINT        ; 輸出: 0
+
+; while (x != 0) 的終止條件
+LOAD 0       ; 讀取 x
+IMM 0
+CMP_EQ       ; x == 0 ?
+JMP_FALSE loop ; 不為 0，繼續迴圈</pre>
+          </div>
+        </td>
       </tr>
       <tr>
         <td><code>JMP</code></td>
@@ -570,11 +850,81 @@ ADD　　; pop 6,1 → push 7</div>
         <td>無條件跳躍到指定地址</td>
         <td><code>JMP 4</code> → PC = 4</td>
       </tr>
+      <!-- JMP 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>JMP</code> — 無條件跳躍（Jump）
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>JMP addr</code> 直接修改 PC（程式計數器）為指定地址，VM 下一個執行週期會跳到該位址繼續執行。常用於迴圈、無條件分支。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; 無限迴圈（while 1）
+label start
+IMM 1        ; 這行位址 0
+PRINT        ; 位址 1
+JMP start    ; PC 跳回位址 0，繼續執行
+
+; if-else 的跳過分支
+CMP_EQ       ; 結果在 stack
+JMP_FALSE else_part ; 為 0，跳到 else
+PRINT        ; then 分支
+JMP end
+label else_part
+PRINT        ; else 分支
+label end</pre>
+          </div>
+        </td>
+      </tr>
       <tr>
         <td><code>JMP_FALSE</code></td>
         <td>JMP_FALSE addr</td>
         <td>若堆疊頂為 0，跳到指定地址；否則繼續執行下一條</td>
         <td>push 0 → <code>JMP_FALSE 10</code> → PC = 10</td>
+      </tr>
+      <!-- JMP_FALSE 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>JMP_FALSE</code> — 條件跳躍（Jump if False）
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>JMP_FALSE addr</code> 先 pop stack 頂端的值，若為 <code>0（假）</code>，則跳到指定地址；若為 <code>非0（真）</code>，則繼續執行下一條指令。搭配 CMP_* 指令使用，實現 if / while 等控制流程。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; while (x < 10) { print x }
+; 假設 x 已在 vars[0]，位址 5 是 loop 入口
+LOAD 0       ; push x
+IMM 10
+CMP_LT       ; push 1（假）或 0（真）
+JMP_FALSE exit ; 為 0（條件為假）時跳出迴圈
+PRINT
+JMP loop     ; 繼續下一次迴圈
+
+label exit
+; 迴圈結束
+
+; if (x > 0) print 1 else print 0
+LOAD 0
+IMM 0
+CMP_GT       ; x > 0 ?
+JMP_FALSE else ; 為 0，跳到 else
+IMM 1
+PRINT        ; then: 輸出 1
+JMP end
+label else
+IMM 0
+PRINT        ; else: 輸出 0
+label end</pre>
+          </div>
+        </td>
       </tr>
       <tr>
         <td><code>CALL</code></td>
@@ -582,11 +932,67 @@ ADD　　; pop 6,1 → push 7</div>
         <td>建立新 Frame（保存返回地址、跳轉到函數入口）</td>
         <td><code>CALL 20</code> → frame.push(PC+1), PC=20</td>
       </tr>
+      <!-- CALL 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>CALL</code> — 函數呼叫（Call Function）
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>CALL addr</code> 將<strong>下一條指令的位址（PC+1）存入 Call Frame</strong>，再跳到函數入口執行。RET 時會取出返回位址繼續執行。支援巢狀函數呼叫。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; 呼叫函數 foo（假設入口在位址 5）
+IMM 10       ; 準備參數
+CALL foo     ; frame.push(PC+1=下一條), PC=5
+PRINT        ; 函數返回後繼續執行這裡
+
+label foo
+; 函數內容在這裡
+RET          ; frame.pop() → PC 返回
+
+; 巢狀呼叫
+CALL a       ; 進入 a
+label a
+CALL b       ; 再進入 b
+label b
+RET          ; 返回 a
+RET          ; 返回 main</pre>
+          </div>
+        </td>
+      </tr>
       <tr>
         <td><code>RET</code></td>
         <td>RET</td>
         <td>函數返回——彈出 Frame，恢復返回地址</td>
         <td><code>RET</code> → frame.pop(), PC=ret_addr</td>
+      </tr>
+      <!-- RET 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>RET</code> — 函數返回（Return）
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>RET</code> 從 Call Frame stack pop 返回位址，恢復 PC（程式計數器），讓 VM 跳回函數呼叫處的下一條指令繼續執行。每一個 CALL 都必須有對應的 RET，否則 VM 無法正確返回。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; 簡單的返回範例
+CALL my_func ; 位址 0 → 跳到位址 5
+PRINT        ; 位址 2 → 函數返回後執行這裡（PC=2）
+
+label my_func ; 位址 5
+IMM 99
+PRINT        ; 輸出 99
+RET          ; pop ret_addr=2 → PC=2，繼續執行</pre>
+          </div>
+        </td>
       </tr>
       <tr>
         <td><code>PRINT</code></td>
@@ -594,11 +1000,72 @@ ADD　　; pop 6,1 → push 7</div>
         <td>彈出堆疊頂端並輸出</td>
         <td>push 7 → <code>PRINT</code> → 輸出 7</td>
       </tr>
+      <!-- PRINT 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>PRINT</code> — 輸出堆疊頂端
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>PRINT</code> 從 stack pop 頂端值並輸出（printf）。不改變 stack 內容（只是取出）。常用於顯示計算結果、變數值、函數回傳值。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; 基本輸出
+IMM 42
+PRINT        ; 輸出: 42
+
+; 輸出字串（Compiler 版本）
+; 字串在 Compiler 中是直接作為資料印出
+
+; 鏈式計算並輸出
+IMM 1
+IMM 2
+ADD          ; push 3
+PRINT        ; 輸出: 3
+
+; 印出多個值
+IMM 10
+IMM 20
+ADD          ; push 30
+PRINT        ; 輸出: 30</pre>
+          </div>
+        </td>
+      </tr>
       <tr>
         <td><code>EOF</code></td>
         <td>EOF</td>
         <td>程式結束，VM 停止</td>
         <td>—</td>
+      </tr>
+      <!-- EOF 詳細說明 -->
+      <tr>
+        <td colspan="4" style="background:#f8f9ff; padding:1.2rem 1rem; border-top:2px solid #6366f1;">
+          <div style="max-width:750px; margin:0 auto;">
+            <h3 style="font-size:0.95rem; color:#4f46e5; margin-bottom:0.7rem;">
+              <code>EOF</code> — 程式結束（End of File）
+            </h3>
+            <div style="margin-bottom:0.8rem;">
+              <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">VM 語意</div>
+              <p style="margin:0; font-size:0.88rem; color:#1e293b; line-height:1.7;">
+                <code>EOF</code> 是 VM 的停止訊號。執行到此指令時，VM 結束執行迴圈並輸出 <code>VM done.</code>。每個 CalcLang 程式都必須以 EOF 結尾，否則 VM 會繼續執行記憶體中剩餘的垃圾資料，導致未定義行為。
+              </p>
+            </div>
+            <pre style="background:#1e1e2e; color:#cdd6f4; padding:0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.6; overflow-x:auto; margin:0;">; 完整程式範例：1 + 2
+IMM 1
+IMM 2
+ADD
+PRINT
+EOF          ; VM 停止，輸出 "VM done."
+
+; 沒有 EOF 的風險
+; IMM 1
+; IMM 2        ← VM 可能會把這些當成指令執行
+; ADD          ← 導致錯誤輸出或當機</pre>
+          </div>
+        </td>
       </tr>
     </table>
   </section>
