@@ -175,25 +175,21 @@
     .tl-link { font-size: 0.75rem; color: var(--accent); }
     .timeline-item:hover .tl-link { text-decoration: underline; }
 
-    /* AI discussion placeholder */
-    .ai-discussion {
-      background: linear-gradient(135deg, rgba(99,102,241,0.04) 0%, rgba(15,118,110,0.04) 100%);
-      border: 1px solid rgba(99,102,241,0.12);
-      border-radius: 14px;
-      padding: 1.75rem;
-      text-align: center;
+    .section-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    .ai-discussion .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-    .ai-discussion h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
-    .ai-discussion p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-    .ai-discussion .placeholder {
-      margin-top: 1rem;
-      font-size: 0.8rem;
-      color: #a5b4fc;
-      background: rgba(99,102,241,0.06);
-      border: 1px dashed rgba(99,102,241,0.2);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
     }
 
     .footer {
@@ -204,6 +200,77 @@
     }
     .footer a { color: var(--accent); text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
+
+    /* AI discussion */
+    .discussion-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .version-tag {
+      background: rgba(15,118,110,0.06);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.5rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dialogue {
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .dialogue-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .dialogue-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .dialogue-item.user .dialogue-label {
+      background: rgba(15,118,110,0.1);
+      color: var(--accent);
+    }
+
+    .dialogue-item.assistant .dialogue-label {
+      background: rgba(99,102,241,0.1);
+      color: #6366f1;
+    }
+
+    .dialogue-bubble {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .decision-tag {
+      margin: 0 1.25rem 1rem;
+      font-size: 0.78rem;
+      color: var(--accent);
+      font-weight: 600;
+      padding: 0.4rem 0.8rem;
+      background: rgba(15,118,110,0.06);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+    }
 
     @media (max-width: 500px) {
       .feature-item { padding: 0.85rem 1rem; }
@@ -356,13 +423,156 @@
 
     <!-- AI 討論過程 -->
     <div class="section">
-      <div class="section-title">AI 討論過程</div>
-      <div class="ai-discussion">
-        <div class="icon">🤖</div>
-        <h3>與 AI 協作的演化紀錄</h3>
-        <p>這個章節記錄在開發過程中與 AI 的討論、思考轉折與關鍵決策。</p>
-        <div class="placeholder">⚠️ 此章節尚待補充（預計收錄與 AI 討論的核心決策節點）</div>
+      <div class="section-title">💬 與 AI 的討論過程</div>
+
+      <!-- v1.0 初版 -->
+      <div class="discussion-block">
+        <div class="version-tag">v1.0 — 初版</div>
+        <div class="dialogue">
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">我想做一個可以在瀏覽器跑的日誌系統，不需要伺服器那種</div>
+          </div>
+          <div class="dialogue-item assistant">
+            <div class="dialogue-label">Hermes</div>
+            <div class="dialogue-bubble">建議用 sql.js（SQLite 的 WebAssembly 版），資料存在 IndexedDB，關掉瀏覽器後還在。不需要任何後端就能跑。</div>
+          </div>
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">好，那就用 sql.js，先做基本 CRUD 和搜尋功能</div>
+          </div>
+        </div>
+        <div class="decision-tag">→ 决策：純前端 SQLite，無需後端依赖</div>
       </div>
+
+      <!-- v1.1 雙面板 -->
+      <div class="discussion-block">
+        <div class="version-tag">v1.1 — 雙面板 Auth + 公開日誌牆</div>
+        <div class="dialogue">
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">想要有一個大家都看得到的日誌牆，但也可以登入有自己的內容</div>
+          </div>
+          <div class="dialogue-item assistant">
+            <div class="dialogue-label">Hermes</div>
+            <div class="dialogue-bubble">建議用「雙面板 Auth Modal」——未登入時看到公開日誌牆，點登入後出現浮動面板切換登入/註冊，切換時 label 會有動態位移。</div>
+          </div>
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">這樣不錯，先做示範資料，讓老師打開就能看到效果</div>
+          </div>
+        </div>
+        <div class="decision-tag">→ 决策：雙面板 Auth + seed.db 預設資料</div>
+      </div>
+
+      <!-- v1.2 作者過濾 -->
+      <div class="discussion-block">
+        <div class="version-tag">v1.2 — 作者過濾</div>
+        <div class="dialogue">
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">想要點作者名字就能只看那個人的文章</div>
+          </div>
+          <div class="dialogue-item assistant">
+            <div class="dialogue-label">Hermes</div>
+            <div class="dialogue-bubble">實作方式：點擊作者名稱時，在 posts 查詢時加一個 WHERE author = ? 的條件；右上角顯示目前過濾狀態，可以一鍵清除。</div>
+          </div>
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">OK，就用那個方式</div>
+          </div>
+        </div>
+        <div class="decision-tag">→ 决策：作者名稱作為即時過濾器，右上角顯示篩選狀態</div>
+      </div>
+
+      <!-- v1.3 SQL 安全 -->
+      <div class="discussion-block">
+        <div class="version-tag">v1.3 — DB class 重構 + 安全性</div>
+        <div class="dialogue">
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">之前都是直接字串拼接 SQL，現在數據多了感覺不太安心</div>
+          </div>
+          <div class="dialogue-item assistant">
+            <div class="dialogue-label">Hermes</div>
+            <div class="dialogue-bubble">SQL 注入攻擊是真实風險。建議全面改用參數化查詢，封裝一個 DB class：`db.get() / db.all() / db.run()`，所有 SQL 字串中都杜絕字串拼接。</div>
+          </div>
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">好，重構起來。以後每個 query 都用參數化</div>
+          </div>
+        </div>
+        <div class="decision-tag">→ 决策：DB class 封裝 + 全面參數化查詢</div>
+      </div>
+
+      <!-- v2.0 Node.js -->
+      <div class="discussion-block">
+        <div class="version-tag">v2.0 — Node.js 後端對照版</div>
+        <div class="dialogue">
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">想對照看一下，前端 sql.js 版本和真實後端版本差在哪</div>
+          </div>
+          <div class="dialogue-item assistant">
+            <div class="dialogue-label">Hermes</div>
+            <div class="dialogue-bubble">建議用 Express + SQLite（better-sqlite3）+ bcrypt 密碼雜湊 + JWT 身份驗證，前端介面盡量保持不變，方便兩邊對照。</div>
+          </div>
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">好，那就做一個後端版，功能盡量跟前端的差不多</div>
+          </div>
+        </div>
+        <div class="decision-tag">→ 决策：Express + bcrypt + JWT，前端介面一致</div>
+      </div>
+
+      <!-- v2.1 試用模式 -->
+      <div class="discussion-block">
+        <div class="version-tag">v2.1 — 試用模式 + Morgan 日誌</div>
+        <div class="dialogue">
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">有時候想展示但沒有辦法開後端，能不能讓前端也能獨立跑？</div>
+          </div>
+          <div class="dialogue-item assistant">
+            <div class="dialogue-label">Hermes</div>
+            <div class="dialogue-bubble">可以做一個「試用模式」：當後端沒有啟動時，前端 fetch 全部 mock（demo.js），開關後端時自動切換，不需要手動切換。</div>
+          </div>
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">這個好，Morgan 日誌也加進去，方便除錯</div>
+          </div>
+        </div>
+        <div class="decision-tag">→ 决策：demo.js 全域 mock + Morgan HTTP 日誌</div>
+      </div>
+
+      <!-- v3.0 亮暗版 + 追蹤系統 -->
+      <div class="discussion-block">
+        <div class="version-tag">v3.0 — 亮/暗版主題 + 追蹤系統 + Hash 路由</div>
+        <div class="dialogue">
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">想要能做亮暗版切換，這樣看起來更專業</div>
+          </div>
+          <div class="dialogue-item assistant">
+            <div class="dialogue-label">Hermes</div>
+            <div class="dialogue-bubble">用 CSS 變數 + `data-theme` 屬性在 html 元素上，Js 只要改 html 的 data-theme 值就能切換，不需要重整頁面。主題樣式全部集中在 style.css。</div>
+          </div>
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">好。另外想要有個人頁，可以看到每個人發過什麼文，也能追蹤別人</div>
+          </div>
+          <div class="dialogue-item assistant">
+            <div class="dialogue-label">Hermes</div>
+            <div class="dialogue-bubble">新增一個 `follows` 資料表（follower / following），用 Hash SPA 路由（`/#/profile/:username`）實作，URL 可以直接分享個人頁，不需要後端支援。</div>
+          </div>
+          <div class="dialogue-item user">
+            <div class="dialogue-label">黑皮</div>
+            <div class="dialogue-bubble">OK，就這樣做</div>
+          </div>
+        </div>
+        <div class="decision-tag">→ 决策：CSS 變數亮暗版 + follows 資料表 + Hash SPA 路由</div>
+      </div>
+
     </div>
 
   </main>
