@@ -1,0 +1,229 @@
+Which sentence uses a modal verb to give advice?
+
+You should save your work frequently.
+
+Which sentence expresses necessity with a modal verb?
+
+You must turn off the lights after leaving.
+
+Which sentence uses "could" to suggest a possibility?
+
+You could try restarting the computer.
+
+Which sentence advises against an action?
+
+You shouldn’t click on suspicious links.
+
+Why is planning so important in software development, according to the text?
+
+It helps avoid confusion
+
+What else can be helpful?
+
+The use of effective tools
+
+Why is speaking to each other important?
+
+Developers can find quicker solutions
+
+Why do things need to be checked frequently?
+
+To find mistakes and make improvements
+
+Click on the numbers to put the options in the correct order and complete the sentence.
+She could not
+attend the meeting
+yesterday
+due to a prior commitment.
+
+She would not
+help me
+finish the
+updates.
+
+She would have
+won the race
+if she hadn't
+fallen.
+
+Could
+you solve
+the problem
+on your own?
+
+What does AI prompting mean?
+
+Giving instructions to a computer program that uses AI
+
+Why is it important to be clear and exact with your questions?
+
+Because general questions might not give helpful answers
+
+What is the role of context in AI prompting?
+
+It helps the AI understand the situation you are asking about
+
+Why do you need to keep learning about AI prompting?
+
+Because AI tools and methods are always improving
+
+Which sentence uses the present continuous correctly to describe an action happening now?
+
+I am downloading a file right now.
+
+Which sentence uses the present continuous to describe a future plan?
+
+We are updating our software tomorrow.
+
+Which sentence correctly uses the present continuous in a negative form?
+
+They are not working on the project today.
+
+Which question uses the present continuous correctly?
+
+Are they still talking about the same point?
+
+The process of changing or modifying something to reduce its size.
+
+Compression
+
+A set of instructions or commands used to solve a problem.
+
+Algorithm
+
+When something does not stay the same.
+
+Inconsistent
+
+The process of checking something to make sure it is correct.
+
+Validation
+
+What issue does Heidi have in her project?
+
+Data storage limitations
+
+What does Lincoln mention as a possible solution for the slow processing speed?
+
+Upgrading hardware
+
+What is Heidi exploring to reduce storage costs and improve speed?
+
+Reviewing the code
+
+What other challenge does Lincoln mention?
+
+Data accuracy
+
+Lincoln wants to use a week to do what?
+
+Data cleaning
+
+Despite the challenges, what does Heidi find exciting?
+
+Learning something new
+
+What does Chris say about making progress on the network performance data?
+
+It hasn’t been easy
+
+What does Emily suggest?
+
+An update may have affected the flow of data
+
+Why does Emily suggest using Wireshark?
+
+She thinks it's quite useful for finding things
+
+Why does Chris consider using PRTG?
+
+Because Nagios is sometimes complicated
+
+A delay between an action and a response.
+
+Latency
+
+A measurement of network capacity.
+
+Bandwidth
+
+Difficult, tricky, challenging.
+
+Tough
+
+To watch something carefully or measure something.
+
+Monitor
+
+Data files that store events, processes, messages etc.
+
+Logs
+
+Reduce the number of possibilities.
+
+Narrow down
+
+Which sentence uses the present perfect correctly?
+
+I have already spoken to my boss about the problem.
+
+What does "yet" mean in a present perfect sentence?
+
+Something has not happened but will happen soon
+
+Which sentence uses "just" correctly in the present perfect?
+
+I have just sent the email to the client.
+
+What does "already" mean in a present perfect sentence?
+
+Something has happened earlier than expected
+
+Why is the person calling for help?
+
+Their computer has been doing some unusual things
+
+What have they done to try to solve the issue?
+
+They have run an antivirus program
+
+How can they prevent these problems in future?
+
+Pay attention to links they don’t recognize
+
+What does the customer say they will do?
+
+Take more care when opening and clicking on links
+
+What does a conditional sentence describe?
+
+A possible situation and its result
+
+Which sentence shows the correct word order for a conditional sentence?
+
+If it rains tomorrow, I will stay home.
+
+How are imperatives used in conditional sentences?
+
+To give instructions or advice when a condition is met
+
+Which sentence correctly places the outcome before the condition?
+
+I will call you if I finish the report on time.
+
+What does Cecil say about how to manage user issues?
+
+They should focus on the most serious issues first
+
+Why is it important to keep a record of how the problems are solved?
+
+This information can help them later
+
+Why should they ask their colleagues for help?
+
+Because working together can produce new solutions
+
+Complete the following sentence. If they notice that some problems happen again,
+
+they should provide feedback in order to help.
+
