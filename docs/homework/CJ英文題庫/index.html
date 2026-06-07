@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>作業呈現 — 黑研所</title>
+  <title>CJ 英文題庫 — 黑研所</title>
   <style>
     :root {
       --bg: #f5f7fa;
@@ -27,7 +27,6 @@
       flex-direction: column;
     }
 
-    /* ── Background ── */
     body::before {
       content: "";
       position: fixed;
@@ -51,7 +50,7 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 60% 50% at 50% -10%, rgba(217,119,6,0.10) 0%, transparent 65%);
+        radial-gradient(ellipse 60% 50% at 50% -10%, rgba(8,145,178,0.10) 0%, transparent 65%);
       pointer-events: none;
     }
     .header-inner { position: relative; z-index: 1; }
@@ -112,12 +111,12 @@
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 2px;
-      background: var(--accent-warm);
+      background: var(--accent);
     }
     .card:hover {
       background: var(--surface-hover);
       transform: translateY(-3px);
-      border-color: rgba(217,119,6,0.30);
+      border-color: rgba(8,145,178,0.30);
     }
 
     .card-icon { font-size: 1.8rem; }
@@ -127,10 +126,10 @@
       display: inline-block;
       font-size: 0.7rem;
       padding: 0.2rem 0.6rem;
-      background: rgba(217,119,6,0.08);
-      border: 1px solid rgba(217,119,6,0.15);
+      background: rgba(8,145,178,0.08);
+      border: 1px solid rgba(8,145,178,0.15);
       border-radius: 20px;
-      color: var(--accent-warm);
+      color: var(--accent);
       align-self: flex-start;
     }
 
@@ -151,41 +150,34 @@
 
 <header>
   <div class="header-inner">
-    <h1>作業呈現</h1>
-    <p>各科課堂作業與專題展示</p>
+    <h1>CJ 英文題庫</h1>
+    <p>English for IT 相關練習題庫</p>
   </div>
 </header>
 
 <main>
-  <p class="section-label">課程列表</p>
+  <p class="section-label">題庫列表</p>
   <div class="cards">
 
-    <a href="CCC%E4%BD%9C%E6%A5%AD%E5%A4%A9%E5%9C%B0/index.html" class="card">
-      <div class="card-icon">📚</div>
-      <div class="card-title">CCC 作業天地</div>
-      <div class="card-desc">課堂練習與專題實作，包含網頁設計、系統程式等作業成果。</div>
-      <div class="card-tag">授課教師</div>
+    <a href="English_for_IT_Describing_and_Comparing/index.html" class="card">
+      <div class="card-icon">📊</div>
+      <div class="card-title">Describing and Comparing</div>
+      <div class="card-desc">練習描述與比較資訊科技相關主題的英文表達。</div>
+      <div class="card-tag">線上答題</div>
     </a>
 
-    <a href="%E6%9F%AF%E7%9A%84note/index.html" class="card">
-      <div class="card-icon">📝</div>
-      <div class="card-title">柯的note</div>
-      <div class="card-desc">資訊網路課程筆記，OSI 七層、TCP/IP、封裝概念等。</div>
-      <div class="card-tag">授課教師：柯志亨</div>
-    </a>
-
-    <a href="CJ%E8%8B%B1%E6%96%87%E9%A1%8C%E5%BA%AB/index.html" class="card">
-      <div class="card-icon">🌐</div>
-      <div class="card-title">CJ 英文題庫</div>
-      <div class="card-desc">English for IT 相關練習題庫，包含 Describing & Comparing、Needs & Responsibilities 等單元。</div>
-      <div class="card-tag">授課教師：CJ</div>
+    <a href="English_for_IT_Needs_and_Responsibilities/index.html" class="card">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">Needs and Responsibilities</div>
+      <div class="card-desc">練習表達需求與職責相關的英文語境。</div>
+      <div class="card-tag">線上答題</div>
     </a>
 
   </div>
 </main>
 
 <footer>
-  <a href="https://oren2026.github.io/Oren_own/docs/">← 黑研所</a>
+  <a href="https://oren2026.github.io/Oren_own/docs/homework/">← 作業呈現</a>
 </footer>
 
 </body>
