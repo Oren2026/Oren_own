@@ -1,0 +1,356 @@
+Why is "throw" a transitive verb?
+
+Because it needs an object to complete its meaning
+
+What is the indirect object in this sentence? "Ana sent the email to all her team members yesterday."
+
+All her team members
+
+Which of these verbs is explained in the video as being both transitive and intransitive?
+
+Run
+
+Which sentence uses the verb "run" intransitively?
+
+Olivia runs every morning.
+
+What does Sofia say about long surveys?
+
+People don’t like them
+
+How does Sofia plan to organize the survey questions?
+
+By grouping them into sections
+
+What does Sofia think they should do first?
+
+Send out surveys
+
+What is one advantage Jeffrey mentions about one-on-one interviews?
+
+They give more details
+
+What is the purpose of the passive voice?
+
+To focus on what happens to a person or object
+
+What is the structure of a passive sentence?
+
+Subject + BE + Past Participle
+
+How is the passive voice formed in the past tense?
+
+Use the past form of BE + a past participle
+
+In the sentence “The email was sent to all her team members by Ana yesterday,” which part is the direct object?
+
+The email
+
+What is the Agile method?
+
+A flexible way of working that uses feedback and small changes
+
+What is an example of the Waterfall method?
+
+Following specific Lego instructions step by step
+
+When is the Agile method useful?
+
+When requirements may change or are unclear
+
+What is a key feature of the Waterfall method?
+
+Completing one stage before moving to the next
+
+What is one difference between Agile and Waterfall?
+
+Agile allows changes during the process; Waterfall does not
+
+What does the video compare Agile to?
+
+Building Lego by improvising and adjusting
+
+What is a sprint in software development?
+
+A short, fixed period to complete specific tasks
+
+What does "debugging" mean?
+
+Finding and fixing errors in software
+
+What is "functionality" in software development?
+
+Everything the software can do for its users
+
+What do developers do to improve functionality?
+
+Add new features or improve existing ones
+
+What is the Agile methodology in software development known for?
+
+Flexible development in stages
+
+What does the Waterfall methodology need in software development?
+
+Completion of each stage before the next
+
+What is the role of version control systems in software development?
+
+To be sure that changes are followed and managed
+
+Why is documentation important in software development?
+
+To guide by showing functionality and structure
+
+What do security measures in software development protect against?
+
+Unauthorized access and possible problems
+
+What is the focus of software development, according to the last paragraph?
+
+Attention to detail and teamwork
+
+What is the main use of the modal verb "must"?
+
+To express personal obligations
+
+What do we use instead of "must" in the past tense?
+
+Had to
+
+Which of the following expresses an external obligation?
+
+Our boss says we have to complete this task
+
+How can "need to" be used?
+
+In past, present, and future tenses
+
+What did Amelia do during the security issue?
+
+She stopped the breach and fixed the vulnerability
+
+What does Amelia say about identifying who caused the issue?
+
+It’s tricky because they were sneaky
+
+What does Mateo suggest they should do about the issue?
+
+Inform the security team for more support
+
+What does Amelia emphasize at the end of the conversation?
+
+The need to be cautious to prevent future issues
+
+In the dialogue, what is Alex's role?
+
+IT Community Manager
+
+What is the focus of the community event mentioned in the dialogue?
+
+Sharing knowledge across IT fields
+
+What does Sam get from being part of the event?
+
+To build a professional network
+
+How does Alex describe the audience of the event to Sam?
+
+A mix of IT professionals with different expertise
+
+According to Alex, what does the event aim to achieve?
+
+Bring together diverse IT experts to share knowledge
+
+How does the dialogue end?
+
+Sam agrees to lead a session
+
+What is the main purpose of the community event Sam mentions?
+
+To host workshops, discussions, and networking for IT professionals
+
+What will Sam do at the event?
+
+Lead a session on basic cybersecurity and challenges
+
+Who are the attendees expected at the event?
+
+IT professionals from various fields like developers and tech support
+
+What does Jasmine want Sam to do regarding the event?
+
+Ask Alex if she can join the event
+
+Which sentence contains non-essential information?
+
+The cloud architect, who designs the infrastructure, plays an important role.
+
+What does the comma in a relative clause show?
+
+The information is not essential
+
+Which word introduces a relative clause about time?
+
+When
+
+What happens if you remove non-essential information from a sentence?
+
+The sentence still works fine
+
+What does cloud development allow developers to do?
+
+Write code without needing powerful computers
+
+What do strong servers used in cloud development help with?
+
+Handling large amounts of traffic and data
+
+What does scalability in the cloud mean?
+
+The system adapts to increases in usage
+
+How do companies keep data safe in cloud development?
+
+By using special tools and techniques
+
+What is a gerund?
+
+A verb that acts like a noun and ends in -ing
+
+Why does the verb need to be in the gerund form after "about"?
+
+Because "about" is a preposition
+
+Which sentence correctly uses a gerund?
+
+How about starting the project next week?
+
+Which of these sentences does NOT contain a preposition?
+
+She enjoys reading books every evening.
+
+What is the first step Sarah suggests for understanding users?
+
+Doing surveys or interviews to ask about needs and pain points
+
+Why does Sarah suggest focusing on the layout before visuals?
+
+A solid structure helps to design the app's colors and fonts later
+
+What does Mark agree to do as his task?
+
+Research similar apps for inspiration
+
+Why does Sarah suggest testing the designs with users?
+
+To see what works best and improve usability
+
+What feedback did Sarah get from the user surveys?
+
+Users want something simple but powerful
+
+What step does Sarah want to complete before testing the prototype?
+
+Finalizing the user personas and layout
+
+What has Mark done to contribute to the project so far?
+
+Researched other apps for ideas and listed potential visuals
+
+When will Sarah and Mark review the layout ideas?
+
+Next week
+
+Which sentence follows the structure SUBJECT + BE + ADJECTIVE + TO-INFINITIVE?
+
+I’m happy to help you with any issues you may have.
+
+What can we add to include the person we are talking about?
+
+FOR or OF SOMEONE before the TO-INFINITIVE
+
+Which of these sentences talks about a situation?
+
+For some of our users, it’s difficult to find exactly what they need.
+
+How does the example “Some of our users were frustrated to see…” show flexibility?
+
+It shows that the tense can be changed to talk about the past
+
+What problem does Sarah mention about their users?
+
+Users often seem confused by too many options
+
+How can natural language processing help users?
+
+It lets users ask questions in their own words to find answers easily
+
+What does machine learning allow the app to do?
+
+Learn from user actions and adjust the app to their needs
+
+What problem does Sarah mention about users at the start of the email?
+
+Users get confused when there are too many choices
+
+How does Jordan suggest helping users find what they need?
+
+By using natural language processing to answer questions in simple language
+
+What is the main benefit of using machine learning to personalize the app?
+
+It can change the app to fit each user’s preferences
+
+What does Sarah suggest as the next step?
+
+Meeting to plan how to add the first idea to the app
+
+What is Sarah focusing on for the new app?
+
+Making the app simple to use and easy to navigate
+
+What does Sarah say is important for the app's security?
+
+Several steps for logging in and ways to protect user information
+
+What kind of database does Sarah suggest using?
+
+A flexible database, such as NoSQL
+
+How often do Sarah and Cosmo agree to meet?
+
+Every week to stay on the same page
+
+What is Sarah concerned about when adding more features to the app?
+
+The app might become slow
+
+What solution does Sarah suggest for collecting user feedback?
+
+Allowing users to share feedback easily inside the app
+
+What does Cosmo say about the app’s security?
+
+Extra login steps are being tested to protect user data
+
+Why does Cosmo suggest having a backup plan?
+
+To address problems that might happen after the app launches
+
+What form does a verb take after a preposition?
+
+Gerund (verb+ing)
+
+Which of the following sentences contains a gerund after a preposition?
+
+They left the meeting without saying goodbye.
+
+Which prepositions are commonly used to indicate time before a gerund?
+
+Before and after
+
+Which sentence correctly uses a preposition with a gerund?
+
+After attending the seminar, we shared valuable insights
+
