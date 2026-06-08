@@ -3,22 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>科技英文導論 - 題庫攻略</title>
+    <title>Describing and Comparing — 題庫攻略</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: "Segoe UI", sans-serif;
+            font-family: "Segoe UI", "PingFang TC", sans-serif;
             background: #f5f5f5;
             padding: 20px;
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
+        .container { max-width: 700px; margin: 0 auto; }
+
         header {
             background: #1a73e8;
             color: white;
@@ -27,25 +21,41 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
-        header h1 {
-            font-size: 1.5rem;
+        header h1 { font-size: 1.5rem; }
+
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
         }
+        .filter-btn {
+            padding: 6px 14px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: #1a73e8; }
+        .filter-btn.active {
+            background: #1a73e8;
+            color: white;
+            border-color: #1a73e8;
+        }
+
         .search-box {
             width: 100%;
             padding: 12px 15px;
             font-size: 1rem;
             border: 2px solid #ddd;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
-        .search-box:focus {
-            outline: none;
-            border-color: #1a73e8;
-        }
-        .stats {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+        .search-box:focus { outline: none; border-color: #1a73e8; }
+
+        .stats { text-align: center; margin-bottom: 20px; }
         .stats span {
             background: #1a73e8;
             color: white;
@@ -53,11 +63,8 @@
             border-radius: 20px;
             font-size: 0.9rem;
         }
-        .question-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+
+        .question-list { display: flex; flex-direction: column; gap: 12px; }
         .question-card {
             background: white;
             border-radius: 8px;
@@ -65,17 +72,19 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             border-left: 4px solid #4caf50;
         }
-        .question-card .num {
-            color: #4caf50;
-            font-weight: bold;
-            font-size: 0.85rem;
-            margin-bottom: 8px;
+        .question-card .meta { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+        .question-card .num { color: #4caf50; font-weight: bold; font-size: 0.85rem; }
+        .question-card .cat-tag {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
         }
-        .question-card .question {
-            font-size: 1rem;
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
+        .cat-Grammar { background: #e3f2fd; color: #1565c0; }
+        .cat-IT-Vocabulary { background: #f3e5f5; color: #7b1fa2; }
+        .cat-IT-Context { background: #e8f5e9; color: #2e7d32; }
+
+        .question-card .question { font-size: 1rem; margin-bottom: 12px; line-height: 1.5; }
         .question-card .answer {
             display: inline-block;
             padding: 8px 16px;
@@ -84,18 +93,21 @@
             color: #2e7d32;
             font-weight: 500;
         }
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
+        .no-results { text-align: center; padding: 40px; color: #666; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>📚 科技英文導論 - 題庫攻略</h1>
+            <h1>📊 Describing and Comparing — 題庫攻略</h1>
         </header>
+
+        <div class="filter-bar" id="filterBar">
+            <button class="filter-btn active" data-cat="all">全部</button>
+            <button class="filter-btn" data-cat="語法">📘 語法</button>
+            <button class="filter-btn" data-cat="科技詞彙">📗 科技詞彙</button>
+            <button class="filter-btn" data-cat="閱讀理解">📙 閱讀理解</button>
+        </div>
 
         <input type="text" class="search-box" id="searchBox" placeholder="🔍 搜尋題目關鍵字...">
 
@@ -108,24 +120,38 @@
 
     <script src="js/data.js"></script>
     <script>
-        function renderQuestions(search = '') {
+        let currentCat = 'all';
+        let currentSearch = '';
+
+        function getCatClass(cat) {
+            return {
+                '語法': 'cat-Grammar',
+                '科技詞彙': 'cat-IT-Vocabulary',
+                '閱讀理解': 'cat-IT-Context'
+            }[cat] || '';
+        }
+
+        function renderQuestions() {
             const list = document.getElementById('questionList');
             list.innerHTML = '';
-
             let count = 0;
 
             AppData.quiz.forEach((q, i) => {
-                const id = i + 1;
-                const matchesSearch = search === '' || 
-                    q.question.toLowerCase().includes(search.toLowerCase()) ||
-                    q.answer.toLowerCase().includes(search.toLowerCase());
+                const matchesCat = currentCat === 'all' || q.category === currentCat;
+                const matchesSearch = currentSearch === '' ||
+                    q.question.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    q.answer.toLowerCase().includes(currentSearch.toLowerCase());
 
-                if (matchesSearch) {
+                if (matchesCat && matchesSearch) {
                     count++;
+                    const catClass = getCatClass(q.category);
                     const card = document.createElement('div');
                     card.className = 'question-card';
                     card.innerHTML = `
-                        <div class="num">第 ${id} 題</div>
+                        <div class="meta">
+                            <span class="num">第 ${q.id} 題</span>
+                            <span class="cat-tag ${catClass}">${q.category}</span>
+                        </div>
                         <div class="question">${q.question}</div>
                         <div class="answer">${q.answer}</div>
                     `;
@@ -134,14 +160,23 @@
             });
 
             document.getElementById('totalCount').textContent = `共 ${count} 題`;
-
             if (count === 0) {
                 list.innerHTML = '<div class="no-results">找不到符合的題目</div>';
             }
         }
 
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCat = btn.dataset.cat;
+                renderQuestions();
+            });
+        });
+
         document.getElementById('searchBox').addEventListener('input', (e) => {
-            renderQuestions(e.target.value);
+            currentSearch = e.target.value;
+            renderQuestions();
         });
 
         document.getElementById('totalCount').textContent = `共 ${AppData.quiz.length} 題`;

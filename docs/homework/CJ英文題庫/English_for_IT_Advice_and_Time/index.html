@@ -113,10 +113,10 @@
 
         <div class="filter-bar" id="filterBar">
             <button class="filter-btn active" data-cat="all">全部</button>
-            <button class="filter-btn" data-cat="Grammar">📘 Grammar</button>
-            <button class="filter-btn" data-cat="IT Vocabulary">📗 IT Vocabulary</button>
-            <button class="filter-btn" data-cat="IT Context">📙 IT Context</button>
-            <button class="filter-btn" data-cat="Sentence Rearrangement">📓 Sentence Rearrangement</button>
+            <button class="filter-btn" data-cat="語法">📘 語法</button>
+            <button class="filter-btn" data-cat="科技詞彙">📗 科技詞彙</button>
+            <button class="filter-btn" data-cat="閱讀理解">📙 閱讀理解</button>
+            <button class="filter-btn" data-cat="語句重組">📓 語句重組</button>
         </div>
 
         <input type="text" class="search-box" id="searchBox" placeholder="🔍 搜尋題目關鍵字...">
@@ -135,10 +135,10 @@
 
         function getCatClass(cat) {
             return {
-                'Grammar': 'cat-Grammar',
-                'IT Vocabulary': 'cat-IT-Vocabulary',
-                'IT Context': 'cat-IT-Context',
-                'Sentence Rearrangement': 'cat-Sentence-Rearrangement'
+                '語法': 'cat-Grammar',
+                '科技詞彙': 'cat-IT-Vocabulary',
+                '閱讀理解': 'cat-IT-Context',
+                '語句重組': 'cat-Sentence-Rearrangement'
             }[cat] || '';
         }
 
