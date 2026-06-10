@@ -336,7 +336,43 @@
     letter-spacing: 1px;
   }
 
-</style>
+  /* === 成果圖片區 === */
+  .成果圖片區 {
+    margin: 6mm 0;
+  }
+
+  .成果圖片區 .images-section {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5mm;
+    background: #fff;
+    border-radius: 4mm;
+    padding: 5mm;
+    border: 1.5px solid #e0e0e0;
+  }
+
+  .成果圖片區 .img-placeholder {
+    aspect-ratio: 16/9;
+    background: #f0f2f5;
+    border-radius: 3mm;
+    border: 2px dashed #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2mm;
+    color: #aaa;
+    font-size: 8pt;
+    text-align: center;
+    padding: 3mm;
+    overflow: hidden;
+  }
+
+  .成果圖片區 .img-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 2mm;
+  }
 </head>
 <body>
 <div class="poster">
@@ -440,25 +476,27 @@
     </div>
   </div>
 
-  <!-- 底部成果 -->
-  <div class="footer">
-    <!-- 圖片區（移到上方） -->
-    <div class="images-section" style="margin-top:4mm;">
+  <!-- 成果圖片區（独立於 footer） -->
+  <div class="成果圖片區">
+    <div class="images-section">
       <div class="img-placeholder">
-        <img src="ppt_assets/images/poster_end_effector.jpg" alt="末端載具結構圖" style="width:100%;height:100%;object-fit:contain;border-radius:8px;">
+        <img src="ppt_assets/images/poster_end_effector.jpg" alt="末端載具結構圖">
       </div>
       <div class="img-placeholder">
-        <img src="ppt_assets/images/poster_software_screenshot.jpg" alt="軟體系統截圖" style="width:100%;height:100%;object-fit:contain;border-radius:8px;">
+        <img src="ppt_assets/images/poster_software_screenshot.jpg" alt="軟體系統截圖">
       </div>
       <div class="img-placeholder">
         <div class="placeholder-icon">🖼️</div>
         <div>擊球測試畫面<br>（待置入圖片）</div>
       </div>
       <div class="img-placeholder">
-        <img src="ppt_assets/images/poster_calibration.jpg" alt="校正流程圖" style="width:100%;height:100%;object-fit:contain;border-radius:8px;">
+        <img src="ppt_assets/images/poster_calibration.jpg" alt="校正流程圖">
       </div>
     </div>
+  </div>
 
+  <!-- 底部成果 -->
+  <div class="footer">
     <div class="footer-label">成果亮點</div>
     <div class="footer-text">
       整合步進馬達、3D 列印機構與 Homography 校正，打造可在陌生環境快速部署的智慧撞球系統
