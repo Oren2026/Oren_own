@@ -337,11 +337,11 @@
   }
 
   /* === 成果圖片區 === */
-  .成果圖片區 {
+  .result-images {
     margin: 0;
   }
 
-  .成果圖片區 .images-section {
+  .result-images .images-section {
     grid-template-columns: repeat(2, 1fr);
     gap: 4mm;
     background: #fff;
@@ -350,11 +350,11 @@
     border: 1.5px solid #e0e0e0;
   }
 
-  .成果圖片區 .img-placeholder {
+  .result-images .img-placeholder {
     aspect-ratio: 4/3;
   }
 
-  .成果圖片區 .img-placeholder img {
+  .result-images .img-placeholder img {
     width: 80%;
     height: 80%;
     object-fit: contain;
@@ -466,8 +466,9 @@
   </div>
 
   <!-- 成果圖片區（独立於 footer） -->
-  <div class="成果圖片區">
-    <div class="images-section">
+  <div style="max-width:80%;margin:0 auto;">
+    <div class="result-images">
+      <div class="images-section">
       <div class="img-placeholder">
         <img src="ppt_assets/images/poster_end_effector.jpg" alt="末端載具結構圖" style="width:100%;height:100%;object-fit:cover;border-radius:3mm;">
       </div>
