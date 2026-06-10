@@ -18,7 +18,7 @@
 
   body {
     font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-    background: #fff;
+    background: #0a0a1a;
     color: #1a1a2e;
   }
 
@@ -30,9 +30,59 @@
     display: flex;
     flex-direction: column;
     gap: 4mm;
-    background: #fafbfc;
+    background: #0a0a1a;
     position: relative;
     overflow: hidden;
+  }
+
+  /* === 科技背景底層 === */
+  .poster::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      /* 網格線 */
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 19mm,
+        rgba(40, 80, 160, 0.08) 19mm,
+        rgba(40, 80, 160, 0.08) 20mm
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 19mm,
+        rgba(40, 80, 160, 0.08) 19mm,
+        rgba(40, 80, 160, 0.08) 20mm
+      ),
+      /* 放射狀漸層 */
+      radial-gradient(ellipse at 20% 80%, rgba(0, 100, 200, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(0, 180, 140, 0.08) 0%, transparent 50%),
+      /* 底色 */
+      linear-gradient(160deg, #0d0d24 0%, #0a0a1a 40%, #0f1020 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* === 幾何裝飾線 === */
+  .poster::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      /* 左上角裝飾線 */
+      linear-gradient(135deg, rgba(0, 180, 220, 0.15) 0%, transparent 30%) no-repeat 0 0 / 60mm 60mm,
+      /* 右下角裝飾線 */
+      linear-gradient(315deg, rgba(0, 140, 220, 0.12) 0%, transparent 30%) no-repeat right bottom / 80mm 80mm,
+      /* 電路线條 - 水平 */
+      linear-gradient(90deg, transparent 48%, rgba(0, 200, 180, 0.06) 49%, rgba(0, 200, 180, 0.06) 51%, transparent 52%) no-repeat 0 120mm / 100% 1px,
+      linear-gradient(90deg, transparent 48%, rgba(0, 200, 180, 0.06) 49%, rgba(0, 200, 180, 0.06) 51%, transparent 52%) no-repeat 0 300mm / 100% 1px,
+      /* 電路线條 - 垂直 */
+      linear-gradient(180deg, transparent 48%, rgba(0, 200, 180, 0.06) 49%, rgba(0, 200, 180, 0.06) 51%, transparent 52%) no-repeat 80mm 0 / 1px 100%,
+      linear-gradient(180deg, transparent 48%, rgba(0, 200, 180, 0.06) 49%, rgba(0, 200, 180, 0.06) 51%, transparent 52%) no-repeat 220mm 0 / 1px 100%;
+    pointer-events: none;
+    z-index: 0;
   }
 
   /* === 頂部標題區 === */
@@ -40,6 +90,8 @@
     text-align: center;
     border-bottom: 2px solid #1a1a2e;
     padding-bottom: 5mm;
+    position: relative;
+    z-index: 1;
   }
 
   .header .tag {
@@ -104,6 +156,8 @@
     grid-template-columns: 1fr 1fr;
     gap: 6mm;
     align-content: start;
+    position: relative;
+    z-index: 1;
   }
 
   /* === 系統架構區 === */
@@ -309,6 +363,8 @@
     border-radius: 4mm;
     padding: 5mm 8mm;
     text-align: center;
+    position: relative;
+    z-index: 1;
   }
 
   .footer .footer-label {
@@ -459,7 +515,7 @@
   </div>
 
   <!-- 成果圖片區（独立於 footer） -->
-  <div style="max-width:80%;margin:0 auto;">
+  <div style="max-width:80%;margin:0 auto;position:relative;z-index:1;">
     <div class="result-images">
       <div class="images-section">
       <div class="img-placeholder">
