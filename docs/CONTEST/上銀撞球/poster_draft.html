@@ -17,82 +17,70 @@
   }
 
   body {
-    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-    background: #0a0a1a;
-    color: #1a1a2e;
-  }
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: #f0f4f8;
+      color: #1a1a2e;
+    }
 
-  .poster {
-    width: 297mm;
-    height: 420mm;
-    /* A4 portrait scaled × 1.414 ≈ A1 short side */
-    padding: 16mm 14mm;
-    display: flex;
-    flex-direction: column;
-    gap: 4mm;
-    background: #0a0a1a;
-    position: relative;
-    overflow: hidden;
-  }
+    .poster {
+      width: 297mm;
+      height: 420mm;
+      /* A4 portrait scaled × 1.414 ≈ A1 short side */
+      padding: 16mm 14mm;
+      display: flex;
+      flex-direction: column;
+      gap: 4mm;
+      background: #f0f4f8;
+      position: relative;
+      overflow: hidden;
+    }
 
-  /* === 科技背景底層 === */
-  .poster::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      /* 網格線 */
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 19mm,
-        rgba(40, 80, 160, 0.08) 19mm,
-        rgba(40, 80, 160, 0.08) 20mm
-      ),
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 19mm,
-        rgba(40, 80, 160, 0.08) 19mm,
-        rgba(40, 80, 160, 0.08) 20mm
-      ),
-      /* 放射狀漸層 */
-      radial-gradient(ellipse at 20% 80%, rgba(0, 100, 200, 0.12) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(0, 180, 140, 0.08) 0%, transparent 50%),
-      /* 底色 */
-      linear-gradient(160deg, #0d0d24 0%, #0a0a1a 40%, #0f1020 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
+    /* === 科技背景底層（淺色輕盈版） === */
+    .poster::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        /* 極淡網格線 */
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 39mm,
+          rgba(30, 80, 180, 0.04) 39mm,
+          rgba(30, 80, 180, 0.04) 40mm
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 39mm,
+          rgba(30, 80, 180, 0.04) 39mm,
+          rgba(30, 80, 180, 0.04) 40mm
+        ),
+        /* 左上角淡藍光 */
+        radial-gradient(ellipse at 0% 0%, rgba(0, 120, 220, 0.06) 0%, transparent 50%),
+        /* 右下角淡青光 */
+        radial-gradient(ellipse at 100% 100%, rgba(0, 160, 200, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  /* === 幾何裝飾線 === */
-  .poster::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      /* 左上角裝飾線 */
-      linear-gradient(135deg, rgba(0, 180, 220, 0.15) 0%, transparent 30%) no-repeat 0 0 / 60mm 60mm,
-      /* 右下角裝飾線 */
-      linear-gradient(315deg, rgba(0, 140, 220, 0.12) 0%, transparent 30%) no-repeat right bottom / 80mm 80mm,
-      /* 電路线條 - 水平 */
-      linear-gradient(90deg, transparent 48%, rgba(0, 200, 180, 0.06) 49%, rgba(0, 200, 180, 0.06) 51%, transparent 52%) no-repeat 0 120mm / 100% 1px,
-      linear-gradient(90deg, transparent 48%, rgba(0, 200, 180, 0.06) 49%, rgba(0, 200, 180, 0.06) 51%, transparent 52%) no-repeat 0 300mm / 100% 1px,
-      /* 電路线條 - 垂直 */
-      linear-gradient(180deg, transparent 48%, rgba(0, 200, 180, 0.06) 49%, rgba(0, 200, 180, 0.06) 51%, transparent 52%) no-repeat 80mm 0 / 1px 100%,
-      linear-gradient(180deg, transparent 48%, rgba(0, 200, 180, 0.06) 49%, rgba(0, 200, 180, 0.06) 51%, transparent 52%) no-repeat 220mm 0 / 1px 100%;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* === 頂部標題區 === */
-  .header {
-    text-align: center;
-    border-bottom: 2px solid #1a1a2e;
-    padding-bottom: 5mm;
-    position: relative;
-    z-index: 1;
-  }
+    /* === 科技裝飾線（淺色版） === */
+    .poster::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        /* 頂部裝飾線 */
+        linear-gradient(90deg, transparent 5%, rgba(0, 140, 220, 0.08) 20%, rgba(0, 140, 220, 0.08) 80%, transparent 95%) no-repeat 0 0 / 100% 1px,
+        /* 左側細線 */
+        linear-gradient(180deg, transparent 5%, rgba(0, 180, 160, 0.06) 30%, rgba(0, 180, 160, 0.06) 70%, transparent 95%) no-repeat 0 0 / 1px 100%,
+        /* 底部細線 */
+        linear-gradient(90deg, transparent 5%, rgba(30, 100, 200, 0.06) 50%, rgba(30, 100, 200, 0.06) 95%, transparent 100%) no-repeat 0 100% / 100% 1px,
+        /* 右上角小裝飾圓 */
+        radial-gradient(circle at 95% 8%, rgba(0, 160, 220, 0.12) 0%, transparent 8mm) no-repeat;
+      pointer-events: none;
+      z-index: 0;
+    }
 
   .header .tag {
     display: inline-block;
