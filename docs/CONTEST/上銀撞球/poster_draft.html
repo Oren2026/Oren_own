@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>上銀撞球 — 海報草稿</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #fff;
+    color: #1a1a2e;
+  }
+
+  .poster {
+    width: 210mm;
+    height: 297mm;
+    /* A4: 210×297mm */
+    padding: 18mm 16mm;
+    display: flex;
+    flex-direction: column;
+    gap: 10mm;
+    background: #fafbfc;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* === 頂部標題區 === */
+  .header {
+    text-align: center;
+    border-bottom: 3px solid #1a1a2e;
+    padding-bottom: 6mm;
+  }
+
+  .header .tag {
+    display: inline-block;
+    background: #1a1a2e;
+    color: #fff;
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 2mm 6mm;
+    border-radius: 2mm;
+    margin-bottom: 4mm;
+  }
+
+  .header h1 {
+    font-size: 18pt;
+    font-weight: 900;
+    line-height: 1.3;
+    color: #1a1a2e;
+  }
+
+  .header h1 .subtitle {
+    display: block;
+    font-size: 13pt;
+    font-weight: 400;
+    color: #555;
+    margin-top: 2mm;
+  }
+
+  /* === 基本資訊區 === */
+  .info-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1a1a2e;
+    color: #fff;
+    border-radius: 4mm;
+    padding: 5mm 8mm;
+    font-size: 9pt;
+  }
+
+  .info-bar .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1mm;
+  }
+
+  .info-bar .info-label {
+    font-size: 7pt;
+    color: #aaa;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .info-bar .info-value {
+    font-size: 10pt;
+    font-weight: 700;
+  }
+
+  /* === 主內容區 === */
+  .main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8mm;
+    flex: 1;
+  }
+
+  /* === 系統架構區 === */
+  .section-title {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #1a1a2e;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4mm;
+    padding-bottom: 2mm;
+    border-bottom: 2px solid #1a1a2e;
+  }
+
+  .arch-section {
+    background: #fff;
+    border-radius: 4mm;
+    padding: 5mm;
+    border: 1.5px solid #e0e0e0;
+  }
+
+  .flow-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2mm;
+    flex-wrap: wrap;
+    margin: 4mm 0;
+    padding: 4mm 2mm;
+    background: #f5f7fa;
+    border-radius: 3mm;
+  }
+
+  .flow-box {
+    background: #1a1a2e;
+    color: #fff;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 2.5mm 4mm;
+    border-radius: 2mm;
+    text-align: center;
+    min-width: 22mm;
+  }
+
+  .flow-arrow {
+    font-size: 12pt;
+    color: #1a1a2e;
+  }
+
+  /* === 末端載具 === */
+  .mech-section {
+    background: #fff;
+    border-radius: 4mm;
+    padding: 5mm;
+    border: 1.5px solid #e0e0e0;
+  }
+
+  .mech-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 3mm;
+    margin-top: 3mm;
+  }
+
+  .mech-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 3mm;
+    font-size: 9pt;
+    line-height: 1.5;
+  }
+
+  .mech-list li::before {
+    content: "▸";
+    color: #1a1a2e;
+    font-weight: 900;
+    flex-shrink: 0;
+    margin-top: 0.5mm;
+  }
+
+  /* === 軟體系統 === */
+  .software-section {
+    background: #fff;
+    border-radius: 4mm;
+    padding: 5mm;
+    border: 1.5px solid #e0e0e0;
+  }
+
+  .software-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3mm;
+    margin-top: 3mm;
+  }
+
+  .sw-card {
+    background: #f5f7fa;
+    border-radius: 3mm;
+    padding: 4mm 3mm;
+    text-align: center;
+    border: 1.5px solid #e0e0e0;
+  }
+
+  .sw-card .sw-icon {
+    font-size: 16pt;
+    margin-bottom: 2mm;
+  }
+
+  .sw-card .sw-name {
+    font-size: 9pt;
+    font-weight: 900;
+    color: #1a1a2e;
+    margin-bottom: 2mm;
+  }
+
+  .sw-card .sw-desc {
+    font-size: 7.5pt;
+    color: #555;
+    line-height: 1.4;
+  }
+
+  /* === 校正框架 === */
+  .calib-section {
+    background: #fff;
+    border-radius: 4mm;
+    padding: 5mm;
+    border: 1.5px solid #e0e0e0;
+  }
+
+  .calib-highlight {
+    display: flex;
+    align-items: center;
+    gap: 5mm;
+    margin-top: 3mm;
+    padding: 4mm;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf0 100%);
+    border-radius: 3mm;
+    border-left: 4px solid #1a1a2e;
+  }
+
+  .calib-highlight .calib-icon {
+    font-size: 20pt;
+    flex-shrink: 0;
+  }
+
+  .calib-highlight .calib-text h3 {
+    font-size: 10pt;
+    font-weight: 900;
+    color: #1a1a2e;
+    margin-bottom: 1.5mm;
+  }
+
+  .calib-highlight .calib-text p {
+    font-size: 8pt;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  /* === 圖片區（預留） === */
+  .images-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5mm;
+    background: #fff;
+    border-radius: 4mm;
+    padding: 5mm;
+    border: 1.5px solid #e0e0e0;
+  }
+
+  .img-placeholder {
+    aspect-ratio: 4/3;
+    background: #f0f2f5;
+    border-radius: 3mm;
+    border: 2px dashed #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2mm;
+    color: #aaa;
+    font-size: 8pt;
+    text-align: center;
+    padding: 4mm;
+  }
+
+  .img-placeholder .placeholder-icon {
+    font-size: 18pt;
+  }
+
+  /* === 底部成果區 === */
+  .footer {
+    background: #1a1a2e;
+    color: #fff;
+    border-radius: 4mm;
+    padding: 5mm 8mm;
+    text-align: center;
+  }
+
+  .footer .footer-label {
+    font-size: 7pt;
+    color: #aaa;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 2mm;
+  }
+
+  .footer .footer-text {
+    font-size: 10pt;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  /* === 浮水印區 === */
+  .watermark {
+    position: absolute;
+    bottom: 8mm;
+    right: 10mm;
+    font-size: 7pt;
+    color: #ccc;
+    letter-spacing: 1px;
+  }
+
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <!-- 頂部標題 -->
+  <div class="header">
+    <div class="tag">HIWIN 第十八屆 · 撞球組</div>
+    <h1>
+      上銀智慧機器手實作競賽
+      <span class="subtitle">末端載具系統設計 — 擊球機構與軟硬體整合</span>
+    </h1>
+  </div>
+
+  <!-- 基本資訊 -->
+  <div class="info-bar">
+    <div class="info-item">
+      <span class="info-label">參賽學生</span>
+      <span class="info-value">戴佑宸、馮至豪、溫家寶</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">指導教授</span>
+      <span class="info-value">王建鈞</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">科系年級</span>
+      <span class="info-value">金門大學 資工系</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">決賽日期</span>
+      <span class="info-value">2026-08-19</span>
+    </div>
+  </div>
+
+  <!-- 主內容 -->
+  <div class="main-content">
+
+    <!-- 左欄 -->
+    <div style="display:flex;flex-direction:column;gap:6mm;">
+
+      <!-- 系統架構 -->
+      <div class="arch-section">
+        <div class="section-title">系統架構</div>
+        <div class="flow-diagram">
+          <div class="flow-box">Webcam<br>視覺輸入</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box">Vision<br>球偵測</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box">Strategy<br>策略規劃</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box">末端載具<br>擊球機構</div>
+        </div>
+        <div style="font-size:7.5pt;color:#666;text-align:center;margin-top:2mm;">
+          Windows 接收影像｜WSL 運算軌跡｜Arduino 控制位移與力道
+        </div>
+      </div>
+
+      <!-- 末端載具 -->
+      <div class="mech-section">
+        <div class="section-title">末端載具 — 擊球機構</div>
+        <ul class="mech-list">
+          <li><strong>步進馬達 + 皮帶傳動</strong><br>精準控制撞桿位移距離</li>
+          <li><strong>3D 列印撞桿</strong><br>客製化桿頭形狀，適應不同擊球角度</li>
+          <li><strong>白球擊發機制</strong><br>透過皮帶帶動撞桿衝撞白球，達成定桿或側旋擊球</li>
+          <li><strong>力道分級控制</strong><br>12 段力道（0.25～3.0 m/s），對應不同距離與桿法</li>
+        </ul>
+      </div>
+
+      <!-- 校正框架 -->
+      <div class="calib-section">
+        <div class="section-title">環境校正框架</div>
+        <div class="calib-highlight">
+          <div class="calib-icon">🎯</div>
+          <div class="calib-text">
+            <h3>Homography 透視座標轉換</h3>
+            <p>拍攝檯面四角進行透視校正，自動映射像素座標至實際球檯座標，陌生環境可在短時間內快速建立精準的視覺地圖。</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右欄 -->
+    <div style="display:flex;flex-direction:column;gap:6mm;">
+
+      <!-- 軟體系統 -->
+      <div class="software-section">
+        <div class="section-title">軟體控制系統</div>
+        <div class="software-grid">
+          <div class="sw-card">
+            <div class="sw-icon">🪟</div>
+            <div class="sw-name">Windows</div>
+            <div class="sw-desc">視覺畫面<br>控制面板<br>策略參數調整</div>
+          </div>
+          <div class="sw-card">
+            <div class="sw-icon">🐧</div>
+            <div class="sw-name">WSL / Linux</div>
+            <div class="sw-desc">角度座標運算<br>力道軌跡計算<br>反彈路徑規劃</div>
+          </div>
+          <div class="sw-card">
+            <div class="sw-icon">⚡</div>
+            <div class="sw-name">Arduino</div>
+            <div class="sw-desc">位移控制<br>力道訊號輸出<br>機構驅動</div>
+          </div>
+        </div>
+        <div style="font-size:7.5pt;color:#666;text-align:center;margin-top:3mm;line-height:1.5;">
+          三系統透過訊息傳遞機制整合，達成「分開開發、分開測試、統一應對」
+        </div>
+      </div>
+
+      <!-- 圖片區（預留） -->
+      <div class="images-section">
+        <div class="img-placeholder">
+          <div class="placeholder-icon">🖼️</div>
+          <div>末端載具結構圖<br>（待置入圖片）</div>
+        </div>
+        <div class="img-placeholder">
+          <div class="placeholder-icon">🖼️</div>
+          <div>軟體系統截圖<br>（待置入圖片）</div>
+        </div>
+        <div class="img-placeholder">
+          <div class="placeholder-icon">🖼️</div>
+          <div>擊球測試畫面<br>（待置入圖片）</div>
+        </div>
+        <div class="img-placeholder">
+          <div class="placeholder-icon">🖼️</div>
+          <div>校正流程圖<br>（待置入圖片）</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 底部成果 -->
+  <div class="footer">
+    <div class="footer-label">成果亮點</div>
+    <div class="footer-text">
+      整合步進馬達、3D 列印機構與 Homography 校正，打造可在陌生環境快速部署的智慧撞球系統
+    </div>
+  </div>
+
+  <div class="watermark">金門大學資工系 · 上銀撞球組</div>
+
+</div>
+</body>
+</html>
