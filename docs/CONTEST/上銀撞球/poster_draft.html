@@ -23,13 +23,13 @@
   }
 
   .poster {
-    width: 210mm;
-    height: 297mm;
-    /* A4: 210×297mm */
-    padding: 18mm 16mm;
+    width: 297mm;
+    height: 420mm;
+    /* A4 portrait scaled × 1.414 ≈ A1 short side */
+    padding: 16mm 14mm;
     display: flex;
     flex-direction: column;
-    gap: 10mm;
+    gap: 8mm;
     background: #fafbfc;
     position: relative;
     overflow: hidden;
@@ -103,7 +103,7 @@
   .main-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8mm;
+    gap: 6mm;
     flex: 1;
   }
 
@@ -366,7 +366,7 @@
   <div class="main-content">
 
     <!-- 左欄 -->
-    <div style="display:flex;flex-direction:column;gap:6mm;">
+    <div style="display:flex;flex-direction:column;gap:5mm;">
 
       <!-- 系統架構 -->
       <div class="arch-section">
@@ -411,7 +411,7 @@
     </div>
 
     <!-- 右欄 -->
-    <div style="display:flex;flex-direction:column;gap:6mm;">
+    <div style="display:flex;flex-direction:column;gap:5mm;">
 
       <!-- 軟體系統 -->
       <div class="software-section">
