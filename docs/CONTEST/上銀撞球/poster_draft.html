@@ -276,7 +276,7 @@
   }
 
   .img-placeholder {
-    aspect-ratio: 16/9;
+    aspect-ratio: 4/3;
     background: #f0f2f5;
     border-radius: 3mm;
     border: 2px dashed #ccc;
@@ -288,7 +288,7 @@
     color: #aaa;
     font-size: 8pt;
     text-align: center;
-    padding: 3mm;
+    padding: 2mm;
     overflow: hidden;
   }
 
@@ -338,19 +338,28 @@
 
   /* === 成果圖片區 === */
   .成果圖片區 {
-      margin: 0;
-    }
+    margin: 0;
+  }
 
-    .成果圖片區 .img-placeholder {
-      aspect-ratio: 4/3;
-    }
+  .成果圖片區 .images-section {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4mm;
+    background: #fff;
+    border-radius: 4mm;
+    padding: 4mm;
+    border: 1.5px solid #e0e0e0;
+  }
 
-    .成果圖片區 .img-placeholder img {
-      width: 80%;
-      height: 80%;
-      object-fit: contain;
-      border-radius: 2mm;
-    }
+  .成果圖片區 .img-placeholder {
+    aspect-ratio: 4/3;
+  }
+
+  .成果圖片區 .img-placeholder img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+    border-radius: 2mm;
+  }
 
 </style>
 </head>
